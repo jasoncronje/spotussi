@@ -161,7 +161,13 @@ Ordering: M0 runs first (everything depends on the scaffold and contract). Then 
 
 ### After 0.1 beta (suggested order)
 
-1. **DF9** Library and playlist sync (distinctive; scope partly granted already).
+1. **DF9** Library and playlist sync (distinctive; scope partly granted already). ✅ Built (D36), measured on synthetic data and on the owner's account. Scope `user-library-read` added. Migration 0010 has library syncs, membership spans, playlists and walks. `internal/library` runs an hourly quick check and a daily full walk in the limiter's background lane, and seeds the catalog without lookups. It has `/library/*` endpoints, `POST /library/sync`, `saved_at` on tracks, the `get_library` MCP tool, a Library page, a playlist page and a Settings → Spotify panel.
+   - **Requests (fake Spotify, tests):** a quick check of an unchanged library costs 3 requests. Followed and Spotify-made playlists never request items. No catalog lookups are made.
+   - **Correctness:** the differential test covers every library endpoint against the mock oracle, including after exclusion and settings changes. ISRC and relink matching are tested both ways.
+   - **Speed:** library endpoints on the full reference dataset (500k plays, about 8k saved songs, 130 playlists) measure p50 1.6–22 ms and p95 2–28 ms. That was on an M1 Max at load average 140–310, so the 25 ms dashboard budget is met only within noise. The perf CI job now covers them.
+   - **What fixed speed:** ISRCs, relinks, played name keys and the catalog rows of unplayed tracks are cached per snapshot, and spans are cached until the newest library sync row changes. Before this, p95 was 120–280 ms, 70% of it SQLite page reads.
+   - **UI:** axe WCAG 2.2 AA found 0 violations in phone and desktop, light and dark, with no horizontal scroll.
+   - **Owner's account (D36):** the library endpoints answer `200` while catalog lookups answer `429 QUOTA_EXCEEDED`. The first full sync (1,287 saved songs, 45 albums, 56 playlists) took 68 requests in 30.8 s; a quick check of the unchanged library takes 4 requests in 1.2 s. 13 saved songs (1%) match a play only by ISRC, a lower bound while ISRCs fill in.
 2. **DF1 + DF2** DuckDB, the data explorer, and the SQL `query` tool for API/MCP.
 3. **DF8** Year in Review and period comparison (build on DF1), then pattern extras.
 4. **DF6** Wrapped comparison from the basic package.

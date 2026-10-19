@@ -3,7 +3,7 @@
 **Running spotussi**
 
 - [Install and update](install.md): Docker Compose, HTTPS behind Traefik, single sign-on, standalone binaries, updating
-- [Connecting Spotify](spotify.md): the developer app, live capture, artwork and metadata
+- [Connecting Spotify](spotify.md): the developer app, permissions, live capture, artwork and metadata, library sync
 - [Importing your history](import.md): Spotify's Extended Streaming History
 - [Backup and restore](backup.md)
 - [Configuration](configuration.md): environment variables and the command line

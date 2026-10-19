@@ -66,8 +66,9 @@ Remote connectors added in Claude's settings sign in with OAuth, which spotussi 
 | `get_history(range, filters, cursor, limit)` | Individual plays, newest first, filterable by entity, skipped, shuffle, counted, device, platform |
 | `get_sessions(range, limit, offset, session_id)` | Longest listening sessions, or one session with its plays |
 | `search_catalog(query, limit)` | Artists, albums and tracks by name, to get the IDs the other tools take |
+| `get_library(view, played, sort, relation, playlist_id, limit, offset)` | Your saved songs, albums and playlists with their plays: a summary (never-played share, days from saving to first play and to heavy rotation), saved songs filtered by played / other release / never played, saved albums, playlists with how much of each you play, or one playlist's songs |
 
-Ranges are the dashboard's presets (`today`, `this_week`, `this_month`, `this_year`, `last_7d`, `last_4w`, `last_6m`, `last_12m`, `prev_day`, `prev_week`, `prev_month`, `prev_year`, `all`) or `custom` with `from` and `to` (inclusive local dates). Results are compact JSON with names and IDs; durations are minutes (aggregates) or seconds (single plays), and times are RFC 3339 in your display timezone. Lists are capped (top 50, history 100, sessions 50, session plays 100, timeline 400 points).
+Ranges are the dashboard's presets (`today`, `this_week`, `this_month`, `this_year`, `last_7d`, `last_4w`, `last_6m`, `last_12m`, `prev_day`, `prev_week`, `prev_month`, `prev_year`, `all`) or `custom` with `from` and `to` (inclusive local dates). Results are compact JSON with names and IDs; durations are minutes (aggregates) or seconds (single plays), and times are RFC 3339 in your display timezone. Lists are capped (top 50, history 100, sessions 50, session plays 100, timeline 400 points, library 50).
 
 ### Behind a forward-auth proxy
 

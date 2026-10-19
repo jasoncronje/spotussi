@@ -25,6 +25,8 @@ Every environment variable is optional.
 | `METADATA_LISTENBRAINZ` | `true` | Fallback: ListenBrainz (artist genres from MusicBrainz data, looked up in batches; runs before MusicBrainz and spares it most artists) |
 | `METADATA_MUSICBRAINZ` | `true` | Fallback: MusicBrainz (genres of the artists ListenBrainz didn't find; 1 request/s as MusicBrainz asks) |
 | `METADATA_CONTACT` | unset | Appended to the User-Agent the fallback sources see (a URL or address for the operator, as MusicBrainz recommends) |
+| `LIBRARY_SYNC_ENABLED` | `true` | Sync saved songs, saved albums and playlists for the Library page ([spotify.md](spotify.md#library)) |
+| `LIBRARY_SYNC_INTERVAL` | `1h` | Time between quick library checks (10m to 24h); every list is also read in full once a day |
 | `IMPORT_MAX_BYTES` | `2147483648` (2 GiB) | Largest accepted export upload |
 
 ## Command line
