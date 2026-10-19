@@ -22,7 +22,8 @@ Every environment variable is optional.
 | `HYDRATE_SPOTIFY_LOOKUPS` | `true` | `false` makes no Spotify catalog lookups at all and leaves the daily quota untouched; capture and the fallback sources still fill in details |
 | `METADATA_OEMBED` | `true` | Fallback: Spotify oEmbed (artwork and titles by exact URI; no credentials) |
 | `METADATA_DEEZER` | `true` | Fallback: Deezer's public API (durations, ISRCs, pictures, release dates; matched by name) |
-| `METADATA_MUSICBRAINZ` | `true` | Fallback: MusicBrainz (artist genres; 1 request/s as MusicBrainz asks) |
+| `METADATA_LISTENBRAINZ` | `true` | Fallback: ListenBrainz (artist genres from MusicBrainz data, looked up in batches; runs before MusicBrainz and spares it most artists) |
+| `METADATA_MUSICBRAINZ` | `true` | Fallback: MusicBrainz (genres of the artists ListenBrainz didn't find; 1 request/s as MusicBrainz asks) |
 | `METADATA_CONTACT` | unset | Appended to the User-Agent the fallback sources see (a URL or address for the operator, as MusicBrainz recommends) |
 | `IMPORT_MAX_BYTES` | `2147483648` (2 GiB) | Largest accepted export upload |
 

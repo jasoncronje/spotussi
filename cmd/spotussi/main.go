@@ -186,6 +186,9 @@ func serve(args []string) error {
 			if cfg.MetadataDeezer {
 				fb.Deezer = metadata.NewDeezer("", ua, nil, nil)
 			}
+			if cfg.MetadataListenBrainz {
+				fb.ListenBrainz = metadata.NewListenBrainz("", "", ua, nil, nil)
+			}
 			if cfg.MetadataMusicBrainz {
 				fb.MusicBrainz = metadata.NewMusicBrainz("", ua, nil, nil)
 			}

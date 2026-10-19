@@ -195,3 +195,80 @@ func TestLimiter(t *testing.T) {
 		t.Errorf("cancelled wait: %v", err)
 	}
 }
+
+func TestListenBrainz(t *testing.T) {
+	s := metadatatest.New(t)
+	lb := s.ListenBrainz()
+	ctx := context.Background()
+	items := []metadata.LBLookup{
+		{Artist: "Nobody", Recording: "Nothing", Release: "Nowhere"},
+		{Artist: "rick astley", Recording: "Never Gonna Give You Up", Release: metadatatest.Album},
+		{Artist: metadatatest.Artist, Recording: metadatatest.Track, Release: "Another Album"},
+	}
+	hits, err := lb.Lookup(ctx, items, true)
+	if err != nil || len(hits) != 1 || hits[0].Index != 1 || hits[0].RecordingID != metadatatest.RecordingMBID ||
+		len(hits[0].ArtistMBIDs) != 1 || hits[0].ArtistMBIDs[0] != metadatatest.MBID {
+		t.Fatalf("lookup with release: %+v %v", hits, err)
+	}
+	// Without the release, the other album's item matches too.
+	if hits, err := lb.Lookup(ctx, items, false); err != nil || len(hits) != 2 || hits[1].Index != 2 {
+		t.Fatalf("lookup without release: %+v %v", hits, err)
+	}
+	recs, err := lb.Recordings(ctx, []string{metadatatest.RecordingMBID, "00000000-0000-0000-0000-000000000000"})
+	r, ok := recs[metadatatest.RecordingMBID]
+	if err != nil || len(recs) != 1 || !ok || r.Recording.Name != metadatatest.Track || r.Recording.LengthMs != 212960 ||
+		len(r.Artist.Artists) != 1 || r.Artist.Artists[0].ID != metadatatest.MBID {
+		t.Fatalf("recordings: %+v %v", recs, err)
+	}
+	if g := metadata.TopGenres(r.ArtistGenres(metadatatest.MBID), 5); strings.Join(g, ",") != "blue-eyed soul,dance-pop,pop" {
+		t.Errorf("genres %v", g)
+	}
+	if g := r.ArtistGenres("someone-else"); len(g) != 0 {
+		t.Errorf("another artist's genres %v", g)
+	}
+	ids, err := lb.SpotifyTrackIDs(ctx, []string{metadatatest.RecordingMBID})
+	if err != nil || len(ids[metadatatest.RecordingMBID]) == 0 {
+		t.Fatalf("spotify ids: %v %v", ids, err)
+	}
+	if lb.Requests() != 4 {
+		t.Errorf("requests %d", lb.Requests())
+	}
+}
+
+func TestSpotifyArtistID(t *testing.T) {
+	s := metadatatest.New(t)
+	_, _, m := s.Clients()
+	a, err := m.Artist(context.Background(), metadatatest.MBID)
+	if err != nil || a.SpotifyArtistID() != metadatatest.ArtistID {
+		t.Fatalf("recorded artist: %q %v", a.SpotifyArtistID(), err)
+	}
+	link := func(urls ...string) *metadata.MBArtist {
+		var a metadata.MBArtist
+		for _, u := range urls {
+			a.Relations = append(a.Relations, struct {
+				Type string `json:"type"`
+				URL  struct {
+					Resource string `json:"resource"`
+				} `json:"url"`
+			}{})
+			a.Relations[len(a.Relations)-1].URL.Resource = u
+		}
+		return &a
+	}
+	const other = "4tZwfgrHOc3mvqYlEYSvVi"
+	for _, c := range []struct {
+		urls []string
+		want string
+	}{
+		{nil, ""},
+		{[]string{"https://open.spotify.com/artist/" + other}, other},
+		{[]string{"https://open.spotify.com/artist/" + other, "https://open.spotify.com/artist/" + other}, other},
+		{[]string{"https://open.spotify.com/artist/" + other, "https://open.spotify.com/artist/" + metadatatest.ArtistID}, ""},
+		{[]string{"https://open.spotify.com/album/" + other, "https://example.org/artist/" + other}, ""},
+		{[]string{"https://open.spotify.com/artist/short"}, ""},
+	} {
+		if got := link(c.urls...).SpotifyArtistID(); got != c.want {
+			t.Errorf("%v: got %q, want %q", c.urls, got, c.want)
+		}
+	}
+}

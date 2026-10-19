@@ -541,7 +541,8 @@ func (b *Backend) SystemStatus(ctx context.Context) (*api.SystemStatus, error) {
 		c.Fallbacks = []api.CatalogFallback{
 			{Source: "oembed", State: "running", Matched: fbTracks, Pending: pendTracks, ArtistsMatched: fbArtists, RatePerSec: &rate},
 			{Source: "deezer", State: "running", Matched: fbTracks * 9 / 10, Unmatched: fbTracks / 10, Pending: pendTracks, ArtistsMatched: fbArtists, RatePerSec: &rate},
-			{Source: "musicbrainz", State: "running", Matched: fbArtists * 2 / 3, Pending: pendTracks, ArtistsMatched: fbArtists * 2 / 3},
+			{Source: "listenbrainz", State: "idle", Matched: fbTracks * 6 / 10, Unmatched: fbTracks * 4 / 10, ArtistsMatched: fbArtists / 2},
+			{Source: "musicbrainz", State: "running", Matched: fbArtists * 2 / 3, Pending: pendTracks, ArtistsMatched: fbArtists / 6},
 		}
 	}
 	return st, nil
@@ -555,7 +556,7 @@ func mockCatalog(now, tracks, tracksHyd, albums, artists, artistsHyd, contexts, 
 		ContextsResolved: ctxResolved,
 		Queue:            api.CatalogQueueCounts{Track: tracks - tracksHyd, Artist: artists - artistsHyd}}
 	c.QueueLength = c.Queue.Track + c.Queue.Artist
-	for _, src := range []string{"oembed", "deezer", "musicbrainz"} {
+	for _, src := range []string{"oembed", "deezer", "listenbrainz", "musicbrainz"} {
 		c.Fallbacks = append(c.Fallbacks, api.CatalogFallback{Source: src, State: "paused", Pending: c.Queue.Track})
 	}
 	if c.QueueLength > 0 {

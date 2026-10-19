@@ -93,14 +93,16 @@ type Config struct {
 	HydrateSpotifyLookups bool
 	// Fallback metadata sources (D27), each on by default and used only
 	// while hydration runs: Spotify oEmbed (METADATA_OEMBED), Deezer
-	// (METADATA_DEEZER), MusicBrainz (METADATA_MUSICBRAINZ).
+	// (METADATA_DEEZER), ListenBrainz (METADATA_LISTENBRAINZ, D37),
+	// MusicBrainz (METADATA_MUSICBRAINZ).
 	// MetadataContact (METADATA_CONTACT) is appended to the User-Agent
 	// they get (a URL or address of the instance's operator; unset by
 	// default).
-	MetadataOEmbed      bool
-	MetadataDeezer      bool
-	MetadataMusicBrainz bool
-	MetadataContact     string
+	MetadataOEmbed       bool
+	MetadataDeezer       bool
+	MetadataListenBrainz bool
+	MetadataMusicBrainz  bool
+	MetadataContact      string
 
 	// ImportMaxBytes caps one uploaded export (IMPORT_MAX_BYTES, default
 	// 2 GiB); larger uploads get 413 (D23).
@@ -131,7 +133,7 @@ func FromLookup(lookup func(string) (string, bool)) (Config, error) {
 	}
 	cfg := Config{Port: DefaultPort, DataDir: "./data", AuthMode: AuthPassword, ProxyAuthHeader: DefaultProxyAuthHeader,
 		CaptureEnabled: true, HydrateEnabled: true, HydrateSpotifyLookups: true, ImportMaxBytes: DefaultImportMaxBytes,
-		MetadataOEmbed: true, MetadataDeezer: true, MetadataMusicBrainz: true}
+		MetadataOEmbed: true, MetadataDeezer: true, MetadataListenBrainz: true, MetadataMusicBrainz: true}
 	var errs []error
 	number := func(key string, lo, hi float64) float64 {
 		v := get(key)
@@ -182,7 +184,7 @@ func FromLookup(lookup func(string) (string, bool)) (Config, error) {
 		}
 	}
 	for key, dst := range map[string]*bool{"HYDRATE_SPOTIFY_LOOKUPS": &cfg.HydrateSpotifyLookups, "METADATA_OEMBED": &cfg.MetadataOEmbed, "METADATA_DEEZER": &cfg.MetadataDeezer,
-		"METADATA_MUSICBRAINZ": &cfg.MetadataMusicBrainz} {
+		"METADATA_LISTENBRAINZ": &cfg.MetadataListenBrainz, "METADATA_MUSICBRAINZ": &cfg.MetadataMusicBrainz} {
 		if v := get(key); v != "" {
 			b, err := strconv.ParseBool(v)
 			if err != nil {

@@ -1,7 +1,7 @@
 //go:build measure
 
 // Measures whether ListenBrainz's keyless batch endpoints could replace
-// or speed up the MusicBrainz fallback stage (D27; proposal D36). Nothing
+// or speed up the MusicBrainz fallback stage (D27; proposal D37). Nothing
 // here is wired into the worker. It makes no Spotify Web API calls; it
 // calls labs.api.listenbrainz.org (acrr-lookup, acr-lookup,
 // spotify-id-from-mbid), api.listenbrainz.org/1/metadata/recording,
@@ -139,7 +139,7 @@ type lbMeta struct {
 	} `json:"tag"`
 }
 
-type lbTrack struct {
+type lbmTrack struct {
 	id, part string
 	e        exportTrack
 	stage    string
@@ -188,7 +188,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 	r := rand.New(rand.NewPCG(1, 2))
 	r.Shuffle(len(rest), func(i, j int) { rest[i], rest[j] = rest[j], rest[i] })
 	tailIDs := rest[:min(tail, len(rest))]
-	var tracks []*lbTrack
+	var tracks []*lbmTrack
 	for _, set := range []struct {
 		ids  []string
 		part string
@@ -199,7 +199,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 				t.Fatal(err)
 			}
 			if ok {
-				tracks = append(tracks, &lbTrack{id: id, part: set.part, e: e})
+				tracks = append(tracks, &lbmTrack{id: id, part: set.part, e: e})
 			}
 		}
 	}
@@ -231,7 +231,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 	const lookupBatch = 200
 	t0 := time.Now()
 	for _, st := range stages {
-		var todo []*lbTrack
+		var todo []*lbmTrack
 		for _, tr := range tracks {
 			if tr.stage == "" {
 				todo = append(todo, tr)
@@ -264,7 +264,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 	}
 	timing["lookup"] = time.Since(t0)
 
-	var hits []*lbTrack
+	var hits []*lbmTrack
 	for _, tr := range tracks {
 		if tr.stage != "" {
 			hits = append(hits, tr)
@@ -672,7 +672,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 	t.Logf("timing: %v", timing)
 
 	if f := os.Getenv("MEASURE_SPOTCHECK"); f != "" {
-		var unver, ver []*lbTrack
+		var unver, ver []*lbmTrack
 		for _, tr := range hits {
 			if tr.accepted && !tr.verified {
 				unver = append(unver, tr)
@@ -683,7 +683,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 		r.Shuffle(len(unver), func(i, j int) { unver[i], unver[j] = unver[j], unver[i] })
 		r.Shuffle(len(ver), func(i, j int) { ver[i], ver[j] = ver[j], ver[i] })
 		var b strings.Builder
-		line := func(tr *lbTrack) {
+		line := func(tr *lbmTrack) {
 			var recName, ac string
 			var length int64
 			if tr.meta != nil {
@@ -702,7 +702,7 @@ func TestMeasureListenBrainz(t *testing.T) {
 			line(tr)
 		}
 		b.WriteString("# rejected hits\n")
-		var rej []*lbTrack
+		var rej []*lbmTrack
 		for _, tr := range hits {
 			if !tr.accepted {
 				rej = append(rej, tr)

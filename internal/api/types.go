@@ -37,7 +37,8 @@ type EntityMetadata struct {
 	// State: spotify, fallback or pending.
 	State string `json:"state"`
 	// Sources: the fallback sources that filled fields (oembed, deezer,
-	// musicbrainz), in stage order; empty unless State is fallback.
+	// listenbrainz, musicbrainz), in stage order; empty unless State is
+	// fallback.
 	Sources []string `json:"sources"`
 }
 

@@ -1,0 +1,14 @@
+{
+  "index": 0,
+  "artist_credit_arg": "Rick Astley",
+  "recording_arg": "Never Gonna Give You Up",
+  "artist_credit_name": "Rick Astley",
+  "release_name": "Whenever You Need Somebody",
+  "recording_name": "Never Gonna Give You Up",
+  "artist_credit_id": 32667,
+  "artist_mbids": [
+    "db92a151-1ac2-438b-bc43-b82e149ddd50"
+  ],
+  "release_mbid": "bf9e91ea-8029-4a04-a26a-224e00a83266",
+  "recording_mbid": "8f3471b5-7e6a-48da-86a9-c1c07a0f47ae"
+}

@@ -13,10 +13,11 @@
 	const SOURCE: Record<Schemas['EntityMetadata']['sources'][number], string> = {
 		oembed: 'Spotify’s public embed data',
 		deezer: 'a public music catalog',
+		listenbrainz: 'an open music database',
 		musicbrainz: 'an open music database'
 	};
 	const from = $derived.by(() => {
-		const names = meta.sources.map((s) => SOURCE[s]);
+		const names = [...new Set(meta.sources.map((s) => SOURCE[s]))];
 		if (names.length < 2) return names[0] ?? 'public music catalogs';
 		return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
 	});

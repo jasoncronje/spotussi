@@ -131,10 +131,13 @@ func TestFallbackPipeline(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(st.Fallbacks) != 3 {
+	if len(st.Fallbacks) != 4 || st.Fallbacks[2].State != hydrate.FallbackDisabled {
 		t.Fatalf("fallback status: %+v", st.Fallbacks)
 	}
 	for _, f := range st.Fallbacks {
+		if f.State == hydrate.FallbackDisabled {
+			continue // ListenBrainz (off here)
+		}
 		if f.Matched != 1 || f.Unmatched != 1 || f.Pending != 0 || f.Requests == 0 {
 			t.Errorf("%s status %+v", f.Source, f)
 		}
