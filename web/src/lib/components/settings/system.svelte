@@ -290,3 +290,14 @@
 		>
 	</div>
 </SettingsPanel>
+
+<!-- AGPL-3.0 §13: every running instance offers its users the source (D33). -->
+<p class="px-1 text-xs text-muted-foreground">
+	spotussi is free software under AGPL-3.0.
+	<a
+		href="https://github.com/jasoncronje/spotussi"
+		target="_blank"
+		rel="noopener"
+		class="underline underline-offset-2 hover:text-foreground">Source code</a
+	>. Modified versions run as a service must link their own.
+</p>
