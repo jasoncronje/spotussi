@@ -65,7 +65,7 @@ func TestMCPCommand(t *testing.T) {
 		t.Fatalf("connect: %v (stderr: %s)", err, stderr.String())
 	}
 	tools, err := cs.ListTools(cctx, nil)
-	if err != nil || len(tools.Tools) != 8 {
+	if err != nil || len(tools.Tools) != 9 {
 		t.Fatalf("list tools: %v %v", err, tools)
 	}
 	res, err := cs.CallTool(cctx, &sdk.CallToolParams{Name: "get_overview", Arguments: map[string]any{"range": "all"}})
