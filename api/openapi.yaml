@@ -1682,7 +1682,7 @@ components:
           type: string
           enum: [disabled, not_connected, idle, syncing, backing_off, quota_exceeded]
           description: |
-            `disabled`: `LIBRARY_SYNC_ENABLED=false`, or mock mode. `backing_off`: the last sync
+            `disabled`: `LIBRARY_SYNC_ENABLED=false`. `backing_off`: the last sync
             failed and is retried (see `last_error`). `quota_exceeded`: a Spotify quota bucket is
             spent; sync resumes at `resumes_at`.
         last_sync_at:

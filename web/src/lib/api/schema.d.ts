@@ -859,6 +859,171 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/library/summary': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * The saved library at a glance, with how saves turn into plays (D36)
+		 * @description Counts what is in the library now (saved tracks, saved albums, playlists) and
+		 *     splits the saved tracks by play status (see `LibraryPlayStatus`). Plays are
+		 *     all-time counted plays (play rule and exclusions apply; excluded tracks and
+		 *     tracks by excluded artists are left out).
+		 *
+		 *     **Heavy rotation** is a track's 5th counted play (`rotation_plays`). For each
+		 *     saved track, the days from its save to its first play and to heavy rotation
+		 *     are measured; the medians cover tracks that reached them after saving.
+		 *     `rotation_mix` buckets saved tracks by when the 5th play came: before saving,
+		 *     within a day, a week or 30 days of saving, later, or not yet.
+		 */
+		get: operations['getLibrarySummary'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/tracks': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Saved tracks with their plays (saved but never played first-class)
+		 * @description The tracks saved now ("Liked Songs"). `played` filters by play status;
+		 *     `counts` always covers every status. Sorts: `added` (newest save first),
+		 *     `plays` (most counted plays first), `last_played` (most recent play first,
+		 *     never played last). Ties break by track ID.
+		 */
+		get: operations['getLibraryTracks'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/albums': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Saved albums with how much of each has been played
+		 * @description `tracks_played` counts the album's tracks with at least one counted play.
+		 *     Sorts: `added` (newest save first), `plays`, `played_share`
+		 *     (`tracks_played / tracks_total`, unknown totals last). Ties break by album ID.
+		 */
+		get: operations['getLibraryAlbums'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/playlists': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * The user's playlists with play-through and plays started from them
+		 * @description Every playlist in the library: the user's own, collaborative and followed
+		 *     ones. **Play-through** (`tracks_played / tracks`) is the share of a
+		 *     playlist's tracks ever played, from anywhere. Spotify gives a
+		 *     development-mode app the items of own and collaborative playlists only, so
+		 *     followed playlists have `items_available: false` and null play-through, but
+		 *     still report plays started from them (`plays_here`, from play contexts, D17).
+		 *     Sorts: `plays_here` (default), `played_share` (unknown last), `name`.
+		 *     Ties break by playlist ID.
+		 */
+		get: operations['getLibraryPlaylists'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/playlists/{id}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** One playlist's items in order, with plays overall and from the playlist */
+		get: operations['getLibraryPlaylist'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/timeline': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Saves and removals over time
+		 * @description Tracks and albums saved (by Spotify's `added_at`) and removed (by the sync
+		 *     that first found them gone), and items added to and removed from the
+		 *     user's own and collaborative playlists, per bucket. Removals are known only
+		 *     from the first sync on; saves go back as far as the library does. Defaults
+		 *     to `range=all`.
+		 */
+		get: operations['getLibraryTimeline'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/library/sync': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Check the library for changes now
+		 * @description Runs a quick check now (first pages and playlist snapshots; changed lists are
+		 *     walked). Needs a signed-in browser identity (API tokens are read-only).
+		 *     `409 sync_running` while a sync runs; `503 sync_disabled` when library sync
+		 *     is off or the instance has no live backend.
+		 */
+		post: operations['syncLibrary'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 	'/search': {
 		parameters: {
 			query?: never;
@@ -1105,6 +1270,198 @@ export interface components {
 			spotify_owned: boolean;
 			image_url: string | null;
 		};
+		LibraryListStatus: {
+			/**
+			 * @description `pending`: not synced yet. `needs_scope`: Spotify was connected without
+			 *     `user-library-read` (or it was revoked); reconnect Spotify to sync saved tracks and
+			 *     albums. Playlists need only `playlist-read-private`.
+			 * @enum {string}
+			 */
+			state: 'ok' | 'pending' | 'needs_scope' | 'error';
+			last_error: string | null;
+		};
+		/**
+		 * @description Library sync (D36): an hourly quick check and a daily full walk in the background
+		 *     lane of the shared request budget. None of its requests count against the daily
+		 *     catalog lookup quota.
+		 */
+		LibraryStatus: {
+			/**
+			 * @description `disabled`: `LIBRARY_SYNC_ENABLED=false`. `backing_off`: the last sync
+			 *     failed and is retried (see `last_error`). `quota_exceeded`: a Spotify quota bucket is
+			 *     spent; sync resumes at `resumes_at`.
+			 * @enum {string}
+			 */
+			state: 'disabled' | 'not_connected' | 'idle' | 'syncing' | 'backing_off' | 'quota_exceeded';
+			/** @description End of the last sync that finished without error. */
+			last_sync_at: components['schemas']['EpochMs'] | null;
+			/** @description End of the last full walk. */
+			last_full_at: components['schemas']['EpochMs'] | null;
+			next_sync_at: components['schemas']['EpochMs'] | null;
+			resumes_at: components['schemas']['EpochMs'] | null;
+			/** @description While syncing. */
+			progress: number | null;
+			lists: {
+				tracks: components['schemas']['LibraryListStatus'];
+				albums: components['schemas']['LibraryListStatus'];
+				playlists: components['schemas']['LibraryListStatus'];
+			};
+			saved_tracks: number;
+			saved_albums: number;
+			playlists: number;
+			/** @description Playlists whose items are synced (own and collaborative). */
+			playlists_with_items: number;
+			last_error: string | null;
+			last_error_at: components['schemas']['EpochMs'] | null;
+		};
+		/**
+		 * @description `played`: a counted play of the same track ID, of a track Spotify relinked it to,
+		 *     or of a track with the same ISRC (the same recording on another release); `plays`
+		 *     and the play dates count all of them. `maybe_played`: not played, but a played
+		 *     track has the same title and main artist (normalized), e.g. another release whose
+		 *     ISRC is not known yet. `never_played`: neither.
+		 * @enum {string}
+		 */
+		LibraryPlayStatus: 'played' | 'maybe_played' | 'never_played';
+		LibraryDays: {
+			/** @description Median days */
+			median: number | null;
+			/** @description Saved tracks measured. */
+			count: number;
+		};
+		LibrarySummary: {
+			last_sync_at: components['schemas']['EpochMs'] | null;
+			saved_tracks: number;
+			saved_albums: number;
+			playlists: number;
+			/** @description Saved tracks by play status. */
+			tracks: {
+				played: number;
+				maybe_played: number;
+				never_played: number;
+			};
+			/** @description The counted play that marks heavy rotation (5). */
+			rotation_plays: number;
+			days_to_first_play: components['schemas']['LibraryDays'];
+			days_to_rotation: components['schemas']['LibraryDays'];
+			rotation_mix: {
+				before_saving: number;
+				within_day: number;
+				within_week: number;
+				/** @description Within 30 days. */
+				within_month: number;
+				later: number;
+				/** @description Fewer than `rotation_plays` counted plays. */
+				not_yet: number;
+			};
+		};
+		LibraryTrack: {
+			track: components['schemas']['TrackRef'];
+			added_at: components['schemas']['EpochMs'] | null;
+			status: components['schemas']['LibraryPlayStatus'];
+			plays: number;
+			ms_played: number;
+			first_played_at: components['schemas']['EpochMs'] | null;
+			last_played_at: components['schemas']['EpochMs'] | null;
+			/** @description Start of the 5th counted play (heavy rotation); null before it. */
+			rotation_at: components['schemas']['EpochMs'] | null;
+		};
+		LibraryTracks: {
+			counts: {
+				all: number;
+				played: number;
+				maybe_played: number;
+				never_played: number;
+			};
+			/** @description Items matching the filter. */
+			total: number;
+			offset: number;
+			limit: number;
+			items: components['schemas']['LibraryTrack'][];
+		};
+		LibraryAlbum: {
+			album: components['schemas']['AlbumRef'];
+			added_at: components['schemas']['EpochMs'] | null;
+			tracks_total: number | null;
+			tracks_played: number;
+			plays: number;
+			ms_played: number;
+		};
+		LibraryAlbums: {
+			total: number;
+			offset: number;
+			limit: number;
+			items: components['schemas']['LibraryAlbum'][];
+		};
+		LibraryPlaylistRef: {
+			id: string;
+			uri: string;
+			name: string;
+			owner_name: string | null;
+			/** @enum {string} */
+			relation: 'own' | 'collaborative' | 'followed';
+			image_url: string | null;
+			/** @description Spotify-made (D17); its items are never requested. */
+			spotify_owned: boolean;
+		};
+		LibraryPlaylist: {
+			playlist: components['schemas']['LibraryPlaylistRef'];
+			/** @description As Spotify counts them (episodes included). */
+			items_total: number | null;
+			/** @description Whether the items are synced (own and collaborative playlists). */
+			items_available: boolean;
+			/** @description Different tracks in the playlist now; null without items. */
+			tracks: number | null;
+			/** @description Of `tracks` */
+			tracks_played: number | null;
+			/** @description Counted plays started from this playlist (all time). */
+			plays_here: number;
+			ms_here: number;
+			last_played_here_at: components['schemas']['EpochMs'] | null;
+		};
+		LibraryPlaylists: {
+			total: number;
+			offset: number;
+			limit: number;
+			items: components['schemas']['LibraryPlaylist'][];
+		};
+		LibraryPlaylistItem: {
+			position: number;
+			track: components['schemas']['TrackRef'];
+			added_at: components['schemas']['EpochMs'] | null;
+			/** @description Spotify user ID of who added it. */
+			added_by: string | null;
+			/** @description Added by the connected account. */
+			added_by_owner: boolean;
+			status: components['schemas']['LibraryPlayStatus'];
+			plays: number;
+			/** @description Counted plays of this track started from this playlist. */
+			plays_here: number;
+		};
+		LibraryPlaylistDetail: {
+			playlist: components['schemas']['LibraryPlaylist'];
+			/** @description Track items present now. */
+			total: number;
+			offset: number;
+			limit: number;
+			items: components['schemas']['LibraryPlaylistItem'][];
+		};
+		LibraryTimelinePoint: {
+			/** @description Bucket label in local time (as in `TimelinePoint`). */
+			key: string;
+			start_at: components['schemas']['EpochMs'];
+			tracks_saved: number;
+			tracks_removed: number;
+			albums_saved: number;
+			albums_removed: number;
+			playlist_adds: number;
+			playlist_removals: number;
+		};
+		LibraryTimeline: {
+			range: components['schemas']['ResolvedRange'];
+			bucket: components['schemas']['BucketSize'];
+			points: components['schemas']['LibraryTimelinePoint'][];
+		};
 		Health: {
 			/** @enum {string} */
 			status: 'ok' | 'degraded';
@@ -1179,6 +1536,7 @@ export interface components {
 			updated_at: components['schemas']['EpochMs'] | null;
 		};
 		SystemStatus: {
+			library: components['schemas']['LibraryStatus'];
 			auth: {
 				/**
 				 * @description Instance access mode (D13). Show a persistent warning for `none`.
@@ -1190,6 +1548,8 @@ export interface components {
 				/** @enum {string} */
 				state: 'not_configured' | 'connected' | 'reconnect_required';
 				account_name: string | null;
+				/** @description Scopes Spotify granted (empty when not connected). Library sync needs `user-library-read` (D36). */
+				scopes: string[];
 				connected_at: components['schemas']['EpochMs'] | null;
 			};
 			/**
@@ -1747,6 +2107,8 @@ export interface components {
 		TrackDetail: {
 			track: components['schemas']['TrackFull'];
 			excluded: boolean;
+			/** @description When the track was saved to the library (D36); null when it is not saved now. */
+			saved_at: components['schemas']['EpochMs'] | null;
 			range: components['schemas']['ResolvedRange'];
 			previous: components['schemas']['ResolvedRange'] | null;
 			metric: components['schemas']['Metric'];
@@ -1942,6 +2304,8 @@ export interface components {
 		TrackScope: string;
 		/** @description Restrict to plays crediting an artist with this genre. At most one scope parameter per request. */
 		GenreScope: string;
+		/** @description Filter saved tracks by play status (`LibraryPlayStatus`). */
+		LibraryPlayed: 'all' | 'played' | 'maybe_played' | 'never_played';
 		EntityId: string;
 	};
 	requestBodies: never;
@@ -3143,6 +3507,185 @@ export interface operations {
 				};
 			};
 			404: components['responses']['Error'];
+			default: components['responses']['Error'];
+		};
+	};
+	getLibrarySummary: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibrarySummary'];
+				};
+			};
+			default: components['responses']['Error'];
+		};
+	};
+	getLibraryTracks: {
+		parameters: {
+			query?: {
+				/** @description Filter saved tracks by play status (`LibraryPlayStatus`). */
+				played?: components['parameters']['LibraryPlayed'];
+				sort?: 'added' | 'plays' | 'last_played';
+				limit?: components['parameters']['Limit'];
+				offset?: components['parameters']['Offset'];
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryTracks'];
+				};
+			};
+			default: components['responses']['Error'];
+		};
+	};
+	getLibraryAlbums: {
+		parameters: {
+			query?: {
+				sort?: 'added' | 'plays' | 'played_share';
+				limit?: components['parameters']['Limit'];
+				offset?: components['parameters']['Offset'];
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryAlbums'];
+				};
+			};
+			default: components['responses']['Error'];
+		};
+	};
+	getLibraryPlaylists: {
+		parameters: {
+			query?: {
+				relation?: 'all' | 'own' | 'collaborative' | 'followed';
+				sort?: 'plays_here' | 'played_share' | 'name';
+				limit?: components['parameters']['Limit'];
+				offset?: components['parameters']['Offset'];
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryPlaylists'];
+				};
+			};
+			default: components['responses']['Error'];
+		};
+	};
+	getLibraryPlaylist: {
+		parameters: {
+			query?: {
+				limit?: components['parameters']['Limit'];
+				offset?: components['parameters']['Offset'];
+			};
+			header?: never;
+			path: {
+				id: components['parameters']['EntityId'];
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryPlaylistDetail'];
+				};
+			};
+			404: components['responses']['Error'];
+			default: components['responses']['Error'];
+		};
+	};
+	getLibraryTimeline: {
+		parameters: {
+			query?: {
+				/** @description Range preset. Defaults to `all`, or `custom` when `from`/`to` are given. */
+				range?: components['parameters']['HistoryRange'];
+				/** @description Custom range start, inclusive local date. Requires `to`. */
+				from?: components['parameters']['From'];
+				/** @description Custom range end, inclusive local date. Requires `from`. */
+				to?: components['parameters']['To'];
+				/** @description Series bucket size. `auto` picks one from the range span. At most 10000 buckets. */
+				bucket?: components['parameters']['Bucket'];
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description OK */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryTimeline'];
+				};
+			};
+			default: components['responses']['Error'];
+		};
+	};
+	syncLibrary: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description The sync was started */
+			202: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LibraryStatus'];
+				};
+			};
+			409: components['responses']['Error'];
+			503: components['responses']['Error'];
 			default: components['responses']['Error'];
 		};
 	};

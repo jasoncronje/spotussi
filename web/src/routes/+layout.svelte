@@ -6,6 +6,7 @@
 	import ChartColumn from '@lucide/svelte/icons/chart-column';
 	import History from '@lucide/svelte/icons/history';
 	import Timer from '@lucide/svelte/icons/timer';
+	import Library from '@lucide/svelte/icons/library';
 	import Wordmark from '#lib/components/shell/wordmark.svelte';
 	import RangePicker from '#lib/components/shell/range-picker.svelte';
 	import MetricToggle from '#lib/components/shell/metric-toggle.svelte';
@@ -72,7 +73,8 @@
 		{ path: '/top', label: 'Top', icon: ListOrdered },
 		{ path: '/stats', label: 'Stats', icon: ChartColumn },
 		{ path: '/history', label: 'History', icon: History },
-		{ path: '/sessions', label: 'Sessions', icon: Timer }
+		{ path: '/sessions', label: 'Sessions', icon: Timer },
+		{ path: '/library', label: 'Library', icon: Library }
 	] as const;
 
 	// Views that rank or chart by a measure get the Plays/Time toggle.
@@ -87,7 +89,12 @@
 	]);
 
 	const routeId = $derived(page.route.id ?? '');
-	const showRange = $derived(!routeId.startsWith('/settings') && routeId !== '/sessions/[id]');
+	// Library is all-time: saves carry their own dates (D36).
+	const showRange = $derived(
+		!routeId.startsWith('/settings') &&
+			!routeId.startsWith('/library') &&
+			routeId !== '/sessions/[id]'
+	);
 	const showMetric = $derived(METRIC_VIEWS.has(routeId));
 	const busy = $derived(activity.refreshing > 0 || navigating.to !== null);
 
@@ -196,7 +203,7 @@
 			aria-label="Main"
 			class="fixed inset-x-0 bottom-0 z-40 border-t bg-background/92 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
 		>
-			<ul class="mx-auto grid h-16 max-w-md grid-cols-5">
+			<ul class="mx-auto grid h-16 max-w-lg grid-cols-6">
 				{#each sections as s (s.path)}
 					{@const active = isActive(s.path)}
 					<li>

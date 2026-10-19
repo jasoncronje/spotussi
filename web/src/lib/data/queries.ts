@@ -170,6 +170,59 @@ export function importsQuery() {
 	return q('/imports', {}, () => api.GET('/imports'));
 }
 
+// ---------- library (D36) ----------
+
+export type LibraryPlayed = 'all' | 'played' | 'maybe_played' | 'never_played';
+export type LibraryTrackSort = 'added' | 'plays' | 'last_played';
+export type LibraryAlbumSort = 'added' | 'plays' | 'played_share';
+export type LibraryPlaylistSort = 'plays_here' | 'played_share' | 'name';
+export type LibraryRelation = 'all' | 'own' | 'collaborative' | 'followed';
+
+export function librarySummaryQuery() {
+	return q('/library/summary', {}, () => api.GET('/library/summary'));
+}
+
+export function libraryTimelineQuery() {
+	const query = { range: 'all' as const, bucket: 'month' as const };
+	return q('/library/timeline', query, () => api.GET('/library/timeline', { params: { query } }));
+}
+
+export function libraryTracksQuery(
+	played: LibraryPlayed,
+	sort: LibraryTrackSort,
+	limit = 50,
+	offset = 0
+) {
+	const query = { played, sort, limit, offset: offset || undefined };
+	return q('/library/tracks', query, () => api.GET('/library/tracks', { params: { query } }));
+}
+
+export function libraryAlbumsQuery(sort: LibraryAlbumSort, limit = 50, offset = 0) {
+	const query = { sort, limit, offset: offset || undefined };
+	return q('/library/albums', query, () => api.GET('/library/albums', { params: { query } }));
+}
+
+export function libraryPlaylistsQuery(
+	relation: LibraryRelation,
+	sort: LibraryPlaylistSort,
+	limit = 50,
+	offset = 0
+) {
+	const query = { relation, sort, limit, offset: offset || undefined };
+	return q('/library/playlists', query, () => api.GET('/library/playlists', { params: { query } }));
+}
+
+export function libraryPlaylistQuery(id: string, limit = 100, offset = 0) {
+	const query = { limit, offset: offset || undefined };
+	return q(`/library/playlists/${id}`, query, () =>
+		api.GET('/library/playlists/{id}', { params: { path: { id }, query } })
+	);
+}
+
+export async function syncLibrary() {
+	return unwrap(api.POST('/library/sync'));
+}
+
 // ---------- entities ----------
 
 export function artistQuery(id: string, sel: RangeSel, metric: Metric) {

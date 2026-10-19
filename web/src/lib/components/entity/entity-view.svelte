@@ -14,6 +14,8 @@
 	import Artwork from '#lib/components/common/artwork.svelte';
 	import GenreGlyph from '#lib/components/common/genre-glyph.svelte';
 	import DetailsBadge from '#lib/components/common/details-badge.svelte';
+	import Lamp from '#lib/components/shell/lamp.svelte';
+	import { resolve } from '$app/paths';
 	import ChartPanel from '#lib/components/common/chart-panel.svelte';
 	import SectionError from '#lib/components/common/section-error.svelte';
 	import EstimatedNote from '#lib/components/common/estimated-note.svelte';
@@ -342,7 +344,11 @@
 				{/if}
 				<div class="min-w-0">
 					<p class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground">
-						{head?.kicker ?? ' '}{#if meta}<DetailsBadge {meta} />{/if}
+						{head?.kicker ?? ' '}{#if d && 'track' in d && d.saved_at}<a
+								href={resolve('/library')}
+								class="hit inline-flex items-center gap-1.5 hover:text-foreground"
+								title="In your saved songs"><Lamp on />Saved {dateAt(d.saved_at)}</a
+							>{/if}{#if meta}<DetailsBadge {meta} />{/if}
 					</p>
 					<h1 class="display text-2xl text-balance break-words sm:text-3xl">
 						{#if head}{head.name}{:else}<Skeleton class="h-9 w-64" />{/if}

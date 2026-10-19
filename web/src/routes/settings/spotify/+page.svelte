@@ -3,9 +3,11 @@
 	import Connection from '#lib/components/settings/connection.svelte';
 	import { Resource } from '#lib/data/resource.svelte.js';
 	import { invalidate } from '#lib/data/cache.js';
-	import { connectionQuery } from '#lib/data/queries.js';
+	import LibrarySync from '#lib/components/settings/library-sync.svelte';
+	import { connectionQuery, statusQuery } from '#lib/data/queries.js';
 
 	const connection = new Resource(() => connectionQuery());
+	const status = new Resource(() => statusQuery());
 </script>
 
 {#if connection.error && !connection.current}
@@ -19,3 +21,11 @@
 		}}
 	/>
 {/if}
+
+<LibrarySync
+	data={status.current?.library}
+	onchange={() => {
+		invalidate('/system/status');
+		status.refresh();
+	}}
+/>
