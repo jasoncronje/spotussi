@@ -213,7 +213,7 @@
 			<h1 class="display text-2xl text-balance sm:text-3xl">
 				{title}{#if scope}<span class="text-muted-foreground"> {scopeLabel}</span>{/if}
 			</h1>
-			<p class="mt-2 min-h-5 text-sm text-muted-foreground">
+			<p class="mt-2 min-h-10 text-sm text-muted-foreground sm:min-h-5">
 				{#if l}
 					<span class="text-foreground">{rangeTitle}, {dateSpan(l.range.from, l.range.to)}.</span>
 					{compare}

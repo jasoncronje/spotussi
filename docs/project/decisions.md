@@ -559,6 +559,15 @@ Decided by the owner on 2026-10-18 (option A below; option B is open as O1). The
 - **Why:** it roughly halves the slowest stage with the same genres and no new keys, and nothing else changes: no Spotify tables, no track data, low-confidence hits rejected.
 - **Rejected:** ListenBrainz in place of MusicBrainz (it misses ~30% of the artists MusicBrainz finds). ListenBrainz for track fields (Deezer covers more). The authenticated `api.listenbrainz.org/1/metadata/lookup/` fuzzy lookup (needs a user token).
 
+### D38. A first paint that doesn't move (settled fixing the load twitch, 2026-10-19)
+
+Pages twitched when they first loaded: text reflowed when Archivo replaced the fallback font, and content dropped when data replaced skeletons that were shorter than what they stood in for. The fix, measured with a `layout-shift` PerformanceObserver on the production build (mock mode, API delayed 1.5 s so the skeletons show, 1440 and 390 px wide):
+
+- **The font loads before the first render.** The root `load` (`web/src/routes/+layout.ts`) waits for Archivo's latin face (`web/src/lib/fonts.ts`) next to the session check, at most 1.5 s. The face is registered from the same hashed file `layout.css` points at, so the browser fetches it once. A size-adjusted fallback `@font-face` was rejected: Archivo's width axis spans 62–125% and no fallback metric override matches every cut. `font-display: block` was rejected: invisible text still lays out in the fallback, so the shift remains.
+- **Skeletons take the height of what they replace,** line for line: summary readouts, chart panels (the summary line is reserved, two lines on phones), stats charts at their drawn height, the 24-row hours table, list rows with an artist line (63 px against 56), as many list rows as the list asks for. Data-dependent heights reserve their room either way: the estimated-time note under the hero readout, the now-playing card (its playing height), page subtitles (two lines on phones, where they wrap).
+- **The range bar stays hidden on Library (decided):** no empty 48 px bar. On first load nothing moves, because the layout knows the route before it first paints. Moving between Library and another section shifts the page by the bar's height, which follows a click and doesn't count as a layout shift. An empty bar would be a band of chrome that suggests missing controls.
+- **Accepted:** shifts from data that only the response knows, such as a long name wrapping to two lines or a list with fewer rows than it asked for.
+
 ## Deferred
 
 ### DF1. DuckDB analytics engine

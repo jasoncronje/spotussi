@@ -159,7 +159,7 @@
 <div class="mx-auto max-w-[90rem] px-4 pt-6 pb-20 sm:px-6 lg:px-10 lg:pt-10">
 	<header>
 		<h1 class="display text-2xl text-balance sm:text-3xl">Library</h1>
-		<p class="mt-2 min-h-5 text-sm text-muted-foreground">
+		<p class="mt-2 min-h-10 text-sm text-muted-foreground sm:min-h-5">
 			{#if s}
 				<span class="text-foreground"
 					>{int(s.saved_tracks)} saved {s.saved_tracks === 1 ? 'song' : 'songs'}, {int(

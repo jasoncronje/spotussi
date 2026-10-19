@@ -2,6 +2,7 @@
 // writes the fallback page that the Go server returns for every route).
 import { redirect } from '@sveltejs/kit';
 import { authRedirect, loadSession } from '#lib/state/session.svelte.js';
+import { fontsReady } from '#lib/fonts.js';
 import type { LayoutLoad } from './$types';
 
 export const ssr = false;
@@ -11,11 +12,14 @@ export const prerender = false;
 // on login or first-run setup instead of a page full of 401s.
 export const load: LayoutLoad = async ({ url }) => {
 	let target: string | null = null;
+	// The font loads alongside the session check, so first paint is final.
+	const fonts = fontsReady();
 	try {
 		const s = await loadSession();
 		target = authRedirect(s, url.pathname, url.search);
 	} catch {
 		// Server unreachable: let the page render and show its own errors.
 	}
+	await fonts;
 	if (target && target !== url.pathname + url.search) redirect(307, target);
 };

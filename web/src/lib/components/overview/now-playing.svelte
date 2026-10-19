@@ -30,7 +30,7 @@
 
 <section
 	aria-label={playing ? 'Now playing' : 'Last played'}
-	class="flex min-w-0 items-center gap-4 rounded-xl border bg-card p-3 pr-4 sm:w-[23rem]"
+	class="flex min-h-26 min-w-0 items-center gap-4 rounded-xl border bg-card p-3 pr-4 sm:w-[23rem]"
 >
 	{#if track}
 		<Artwork src={track.image_url} name={track.name} class="size-16" eager />

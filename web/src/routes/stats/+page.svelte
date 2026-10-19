@@ -193,8 +193,17 @@
 
 <svelte:head><title>Stats, {rangeTitle} – spotussi</title></svelte:head>
 
+<!-- Skeletons take the drawn chart's height, so panels don't grow when data lands. -->
 {#snippet chartSkeleton(h = 'min-h-56')}
 	<div class="flex {h} flex-1 px-6 pt-4 pb-6"><Skeleton class="flex-1 rounded-lg" /></div>
+{/snippet}
+
+<!-- ShareColumns (216px + padding) and its legend. -->
+{#snippet shareSkeleton()}
+	{@render chartSkeleton('min-h-[14.25rem]')}
+	<div class="flex flex-wrap gap-x-5 gap-y-1.5 px-5 pb-5 sm:px-6" aria-hidden="true">
+		{#each { length: 8 } as _, i (i)}<Skeleton class="h-5 w-28" />{/each}
+	</div>
 {/snippet}
 {#snippet chartFailed()}
 	<p
@@ -324,7 +333,7 @@
 					{/snippet}
 					{#if tl}
 						{#await timelineChart}
-							{@render chartSkeleton('min-h-64')}
+							{@render chartSkeleton('min-h-64 sm:min-h-72')}
 						{:then { default: TimelineChart }}
 							<svelte:boundary>
 								<!-- A definite height: nothing beside this panel stretches it. -->
@@ -335,7 +344,7 @@
 							</svelte:boundary>
 						{/await}
 					{:else}
-						{@render chartSkeleton('min-h-64')}
+						{@render chartSkeleton('min-h-64 sm:min-h-72')}
 					{/if}
 					{#snippet table()}
 						{#if tl}
@@ -392,7 +401,7 @@
 							{@render noData('No artists in this range.')}
 						{/if}
 					{:else}
-						{@render chartSkeleton()}
+						{@render shareSkeleton()}
 					{/if}
 					{#snippet table()}
 						{#if ar}{@render breakdownTable('Share of listening by top artist', ar, arBucket)}{/if}
@@ -513,8 +522,11 @@
 					</table>
 				</div>
 			{:else}
-				<div aria-busy="true" class="grid gap-2 pt-3">
-					{#each { length: 8 } as _, i (i)}<Skeleton class="h-9 w-full" />{/each}
+				<!-- The table's header and its 24 hour rows (51px each). -->
+				<div aria-busy="true" class="pt-[2.125rem]">
+					{#each { length: 24 } as _, i (i)}
+						<div class="flex h-[3.1875rem] items-center"><Skeleton class="h-9 w-full" /></div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -538,7 +550,7 @@
 							format={yearFmt}
 						/>
 					{:else}
-						{@render chartSkeleton()}
+						{@render chartSkeleton('min-h-[13.25rem]')}
 					{/if}
 					{#snippet table()}
 						{#if yr}{@render averageTable(
@@ -572,7 +584,7 @@
 							step={0.05}
 						/>
 					{:else}
-						{@render chartSkeleton()}
+						{@render chartSkeleton('min-h-[13.25rem]')}
 					{/if}
 					{#snippet table()}
 						{#if pt}{@render averageTable(
@@ -615,7 +627,7 @@
 							)}
 						{/if}
 					{:else}
-						{@render chartSkeleton()}
+						{@render shareSkeleton()}
 					{/if}
 					{#snippet table()}
 						{#if gr}{@render breakdownTable('Share of listening by genre', gr, grBucket)}{/if}

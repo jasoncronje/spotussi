@@ -48,7 +48,9 @@
 				</button>
 			</div>
 		</div>
-		{#if summary}<p class="mt-0.5 text-xs text-muted-foreground">{summary}</p>{/if}
+		<!-- Reserved while data loads (two lines on phones, where it wraps), so the
+		     chart doesn't drop when it lands. -->
+		<p class="mt-0.5 min-h-9 text-xs text-muted-foreground sm:min-h-[1.125rem]">{summary ?? ''}</p>
 	</header>
 	<div
 		class="relative flex flex-1 flex-col transition-opacity duration-200 {dim ? 'opacity-55' : ''}"

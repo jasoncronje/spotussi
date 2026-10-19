@@ -175,8 +175,14 @@
 							<span>Same as the period before</span>
 						{/if}
 					</p>
-					{#if r.hero && cur.ms_estimated > 0}
-						<EstimatedNote ms={cur.ms_estimated} total={cur.ms_played} />
+					{#if r.hero}
+						<!-- Room for the note either way, so the panel keeps its height
+						     from skeleton to data (it wraps in the narrow phone cell). -->
+						<div class="min-h-9 sm:min-h-[1.125rem]">
+							{#if cur.ms_estimated > 0}
+								<EstimatedNote ms={cur.ms_estimated} total={cur.ms_played} />
+							{/if}
+						</div>
 					{/if}
 				</dd>
 			</div>

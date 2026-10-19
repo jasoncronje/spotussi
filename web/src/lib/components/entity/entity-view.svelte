@@ -352,11 +352,16 @@
 					{/if}
 				{:else}
 					<Skeleton
-						class="size-20 shrink-0 sm:size-28 lg:size-32 {kind === 'artist' ? 'rounded-full' : ''}"
+						class="size-20 shrink-0 sm:size-28 {kind === 'genre' ? '' : 'lg:size-32'} {kind ===
+						'artist'
+							? 'rounded-full'
+							: ''}"
 					/>
 				{/if}
 				<div class="min-w-0">
-					<p class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground">
+					<p
+						class="flex min-h-5 flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground"
+					>
 						{head?.kicker ?? ' '}{#if d && 'track' in d && d.saved_at}<a
 								href={resolve('/library')}
 								class="hit inline-flex items-center gap-1.5 hover:text-foreground"
@@ -364,9 +369,17 @@
 							>{/if}{#if meta}<DetailsBadge {meta} />{/if}
 					</p>
 					<h1 class="display text-2xl text-balance break-words sm:text-3xl">
-						{#if head}{head.name}{:else}<Skeleton class="h-9 w-64" />{/if}
+						{#if head}{head.name}{:else}<Skeleton
+								class="inline-block h-9 w-64 max-w-full align-middle"
+							/>{/if}
 					</h1>
-					<div class="mt-1.5 min-h-5 text-sm text-muted-foreground">
+					<!-- Artists show genre chips (24px); the others a line of text, two
+					     on phones beside the artwork. -->
+					<div
+						class="mt-1.5 text-sm text-muted-foreground {kind === 'artist'
+							? 'min-h-6'
+							: 'min-h-10 sm:min-h-5'}"
+					>
 						{#if d && 'artist' in d}
 							{#if d.artist.genres.length}
 								<ul class="flex flex-wrap gap-1.5" aria-label="Genres">
@@ -475,7 +488,7 @@
 								<p class="text-xs text-muted-foreground">Not played in this range</p>
 							{/if}
 						{:else}
-							<Skeleton class="h-9 w-20" /><Skeleton class="h-3.5 w-32" />
+							<Skeleton class="h-9 w-20 sm:h-[3.25rem]" /><Skeleton class="h-[1.125rem] w-32" />
 						{/if}
 					</dd>
 				</div>
@@ -498,7 +511,7 @@
 								<EstimatedNote ms={d.in_range.ms_estimated} total={d.in_range.ms_played} />
 							{/if}
 						{:else}
-							<Skeleton class="h-9 w-24" /><Skeleton class="h-3.5 w-32" />
+							<Skeleton class="h-9 w-24 sm:h-[3.25rem]" /><Skeleton class="h-[1.125rem] w-32" />
 						{/if}
 					</dd>
 				</div>
@@ -520,7 +533,7 @@
 								{other(d.all_time)}, {int(d.all_time.skips)} skipped
 							</p>
 						{:else}
-							<Skeleton class="h-9 w-24" /><Skeleton class="h-3.5 w-32" />
+							<Skeleton class="h-9 w-24 sm:h-[3.25rem]" /><Skeleton class="h-[1.125rem] w-32" />
 						{/if}
 					</dd>
 				</div>
@@ -685,7 +698,7 @@
 								{hasPrevious}
 							/>
 						{:else}
-							{@render listSkeleton()}
+							{@render listSkeleton(want[l.key], l.key !== 'artists')}
 						{/if}
 					</div>
 				{/each}
@@ -735,7 +748,7 @@
 									<p class="py-6 text-sm text-muted-foreground">No plays in this range.</p>
 								{/if}
 							{:else}
-								{@render listSkeleton()}
+								{@render listSkeleton(10)}
 							{/if}
 						</section>
 					</div>
@@ -745,13 +758,19 @@
 	{/if}
 </div>
 
-{#snippet listSkeleton()}
+<!-- As many rows as the list asks for; track and album rows carry an artist
+     line (63px against 56). -->
+{#snippet listSkeleton(rows = 5, tall = false)}
 	<div aria-busy="true">
 		<div class="mb-2 flex justify-between border-b pb-2.5">
 			<Skeleton class="h-6 w-28" /><Skeleton class="h-4 w-12" />
 		</div>
-		{#each { length: 5 } as _, i (i)}
-			<div class="grid grid-cols-[1.25rem_auto_1fr_auto] items-center gap-x-3 py-2">
+		{#each { length: rows } as _, i (i)}
+			<div
+				class="grid grid-cols-[1.25rem_auto_1fr_auto] items-center gap-x-3 py-2 {tall
+					? 'min-h-[3.9375rem]'
+					: ''}"
+			>
 				<span></span>
 				<Skeleton class="size-10 rounded-[4px]" />
 				<div class="grid gap-1.5"><Skeleton class="h-4 w-3/4" /><Skeleton class="h-3 w-1/2" /></div>

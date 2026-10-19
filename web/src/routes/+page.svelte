@@ -225,7 +225,7 @@
 			<h1 class="display text-2xl text-balance sm:text-3xl">
 				<span class="sr-only">Overview, </span>{title}
 			</h1>
-			<p class="mt-2 min-h-5 text-sm text-muted-foreground">
+			<p class="mt-2 min-h-10 text-sm text-muted-foreground sm:min-h-5">
 				{#if s}
 					<span class="text-foreground">{dateSpan(s.range.from, s.range.to)}.</span>
 					{compare}
@@ -257,10 +257,12 @@
 									? 'border-t lg:border-t-0'
 									: ''} {i === 2 ? 'lg:border-l' : ''}"
 							>
+								<!-- Line for line the heights of SummaryPanel's readouts. -->
 								<Skeleton class="h-5 w-24" />
-								<Skeleton class="h-9 w-36 sm:h-[3.25rem]" />
+								<Skeleton class="w-36 {i === 0 ? 'h-9 sm:h-[3.25rem]' : 'h-[1.625rem] sm:h-9'}" />
 								<Skeleton class="h-3.5 w-full max-w-72" />
-								<Skeleton class="h-[1.125rem] w-40" />
+								<Skeleton class="h-[1.1875rem] w-40" />
+								{#if i === 0}<div class="h-9 sm:h-[1.125rem]"></div>{/if}
 							</div>
 						{/each}
 					</div>
@@ -412,8 +414,14 @@
 							<div class="mb-2 flex justify-between border-b pb-2.5">
 								<Skeleton class="h-6 w-28" /><Skeleton class="h-4 w-12" />
 							</div>
+							<!-- Track and album rows carry an artist line: 63px against 56. -->
 							{#each { length: 5 } as _, i (i)}
-								<div class="grid grid-cols-[1.25rem_auto_1fr_auto] items-center gap-x-3 py-2">
+								<div
+									class="grid grid-cols-[1.25rem_auto_1fr_auto] items-center gap-x-3 py-2 {l.kind ===
+										'tracks' || l.kind === 'albums'
+										? 'min-h-[3.9375rem]'
+										: ''}"
+								>
 									<span></span>
 									<Skeleton class="size-10 rounded-[4px]" />
 									<div class="grid gap-1.5">
