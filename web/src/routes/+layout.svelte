@@ -7,11 +7,13 @@
 	import History from '@lucide/svelte/icons/history';
 	import Timer from '@lucide/svelte/icons/timer';
 	import Library from '@lucide/svelte/icons/library';
+	import SettingsIcon from '@lucide/svelte/icons/settings';
+	import { settingsHref } from '#lib/components/settings/tabs.js';
 	import Wordmark from '#lib/components/shell/wordmark.svelte';
 	import RangePicker from '#lib/components/shell/range-picker.svelte';
 	import MetricToggle from '#lib/components/shell/metric-toggle.svelte';
-	import AccountMenu from '#lib/components/shell/account-menu.svelte';
-	import Lamp from '#lib/components/shell/lamp.svelte';
+	import MainNav from '#lib/components/shell/main-nav.svelte';
+	import PhoneNav from '#lib/components/shell/phone-nav.svelte';
 	import ShieldAlert from '@lucide/svelte/icons/shield-alert';
 	import { sectionHref } from '#lib/state/view.svelte.js';
 	import { activity, Resource } from '#lib/data/resource.svelte.js';
@@ -74,7 +76,8 @@
 		{ path: '/stats', label: 'Stats', icon: ChartColumn },
 		{ path: '/history', label: 'History', icon: History },
 		{ path: '/sessions', label: 'Sessions', icon: Timer },
-		{ path: '/library', label: 'Library', icon: Library }
+		{ path: '/library', label: 'Library', icon: Library },
+		{ path: '/settings', label: 'Settings', icon: SettingsIcon }
 	] as const;
 
 	// Views that rank or chart by a measure get the Plays/Time toggle.
@@ -97,6 +100,12 @@
 	);
 	const showMetric = $derived(METRIC_VIEWS.has(routeId));
 	const busy = $derived(activity.refreshing > 0 || navigating.to !== null);
+
+	/** Settings opens on its General tab directly, skipping the /settings redirect. */
+	function navHref(path: string) {
+		const p = path as (typeof sections)[number]['path'];
+		return p === '/settings' ? settingsHref('general') : sectionHref(p);
+	}
 
 	function isActive(path: string) {
 		return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
@@ -139,34 +148,17 @@
 			</aside>
 		{/if}
 		<header class="border-b bg-background">
-			<div class="mx-auto flex h-14 max-w-[90rem] items-center gap-6 px-4 sm:px-6 lg:px-10">
+			<div
+				class="mx-auto flex h-14 max-w-[90rem] items-center gap-6 px-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-10"
+			>
 				<a
 					href={sectionHref('/')}
-					class="-mx-1 rounded-md px-1 py-1"
+					class="-mx-1 justify-self-start rounded-md px-1 py-1"
 					aria-label="spotussi, overview"
 				>
 					<Wordmark />
 				</a>
-				<nav aria-label="Main" class="hidden md:block">
-					<ul class="flex items-center gap-1">
-						{#each sections as s (s.path)}
-							{@const active = isActive(s.path)}
-							<li>
-								<a
-									href={sectionHref(s.path)}
-									aria-current={active ? 'page' : undefined}
-									class="flex h-9 items-center gap-2 rounded-lg px-3 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current]:text-foreground"
-								>
-									<Lamp on={active} class={active ? '' : 'opacity-0'} />
-									<span class="font-medium">{s.label}</span>
-								</a>
-							</li>
-						{/each}
-					</ul>
-				</nav>
-				<div class="ml-auto flex items-center">
-					<AccountMenu current={isActive('/settings')} />
-				</div>
+				<MainNav {sections} href={navHref} {isActive} />
 			</div>
 		</header>
 
@@ -198,30 +190,7 @@
 			{@render children()}
 		</main>
 
-		<!-- Phone navigation -->
-		<nav
-			aria-label="Main"
-			class="fixed inset-x-0 bottom-0 z-40 border-t bg-background/92 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
-		>
-			<ul class="mx-auto grid h-16 max-w-lg grid-cols-6">
-				{#each sections as s (s.path)}
-					{@const active = isActive(s.path)}
-					<li>
-						<a
-							href={sectionHref(s.path)}
-							aria-current={active ? 'page' : undefined}
-							class="flex h-full flex-col items-center justify-center gap-1 text-2xs text-muted-foreground aria-[current]:text-foreground"
-						>
-							<span class="relative">
-								<s.icon class="size-5" strokeWidth={active ? 2.25 : 1.75} />
-								{#if active}<Lamp on class="absolute -top-1 -right-2" />{/if}
-							</span>
-							{s.label}
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</nav>
+		<PhoneNav {sections} href={navHref} {isActive} />
 	</div>
 {/if}
 

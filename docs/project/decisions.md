@@ -559,7 +559,14 @@ Decided by the owner on 2026-10-18 (option A below; option B is open as O1). The
 - **Why:** it roughly halves the slowest stage with the same genres and no new keys, and nothing else changes: no Spotify tables, no track data, low-confidence hits rejected.
 - **Rejected:** ListenBrainz in place of MusicBrainz (it misses ~30% of the artists MusicBrainz finds). ListenBrainz for track fields (Deezer covers more). The authenticated `api.listenbrainz.org/1/metadata/lookup/` fuzzy lookup (needs a user token).
 
-### D38. A first paint that doesn't move (settled fixing the load twitch, 2026-10-19)
+### D38. Navigation: a sliding key, centred, with Settings as the last section (owner, 2026-10-19)
+- **Desktop header:** the wordmark on the left and the sections centred in the header from 1024 px up (a three-column grid; between 768 and 1023 px they sit after the wordmark without icons so nothing overflows). Each section is an icon and a label; the current one stands on a raised key (the card surface with a hairline) and its icon lights in the signal colour. The key is one element under the links that glides to the new section on each navigation (300 ms, ease-out-quart), so the move reads as one control changing position; it jumps without the glide for reduced motion.
+- **Phone tab bar:** the same pattern, with a pill behind the current tab's icon gliding between tabs.
+- **Settings is the seventh section** (gear icon, last), linking straight to Settings → General. The header's settings dropdown is gone: the theme was already in Settings → General (D22), and sign-out, with "Signed in as" in proxy mode, moved to an Account panel at the end of Settings → General (shown only in password and proxy modes).
+- **Why:** the owner compared five patterns live in the mock (text with the indicator lamp beside the current one, as before; a static raised key; a row of lit meter dots on the header's hairline; icons in a recessed well with only the current one labelled; this one) and chose the raised key, then asked for it to slide, for the links to be centred and for Settings to join them.
+- **Rejected:** the other four patterns above; a dropdown for settings, theme and sign-out in the header.
+
+### D39. A first paint that doesn't move (settled fixing the load twitch, 2026-10-19)
 
 Pages twitched when they first loaded: text reflowed when Archivo replaced the fallback font, and content dropped when data replaced skeletons that were shorter than what they stood in for. The fix, measured with a `layout-shift` PerformanceObserver on the production build (mock mode, API delayed 1.5 s so the skeletons show, 1440 and 390 px wide):
 
