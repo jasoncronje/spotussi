@@ -440,6 +440,81 @@ Settled while building M9 (2026-10-18), refining D16:
 - **Previews are public URLs.** The page holds nothing private, but share them knowing that.
 - **Rejected:** GitHub Pages (needs a paid GitHub plan while the repository is private; no pull-request previews); Vercel (the free Hobby plan is for non-commercial use); classic Cloudflare Pages via `--force` (the path Cloudflare is retiring).
 
+### D36. Library and playlist sync (DF9) — proposed, awaiting owner approval
+
+Design for DF9, written 2026-10-18 before any code. Spotify facts checked against the [Feb 2026 migration guide](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide) and the endpoint references the same day; items marked *measure* are verified on the owner's account in step 2.
+
+**What Spotify still allows a Development Mode app (read-only)**
+
+| Data | Endpoint | Scope | Page size | Quota bucket (D24) |
+|---|---|---|---|---|
+| Saved tracks, newest first, with `added_at` and a full track object | `GET /me/tracks` | `user-library-read` (new) | 50 | `user` |
+| Saved albums with `added_at` and a full album object (its first 50 tracks) | `GET /me/albums` | `user-library-read` (new) | 50 | `user` |
+| The user's playlists (own, collaborative, followed) with `snapshot_id` and owner | `GET /me/playlists` | `playlist-read-private` (have) | 50 | `user` |
+| Items of a playlist with `added_at`, `added_by`, `is_local` and a full track object | `GET /playlists/{id}/items` | `playlist-read-private` (have) | 50 | `playlists` |
+
+- **Followed playlists have no items.** Since Feb 2026, `/playlists/{id}/items` answers `403` unless the user owns or collaborates on the playlist, and a playlist object for anyone else's playlist carries metadata only. So followed playlists sync as metadata (name, owner, image, `snapshot_id`), not contents. Spotify-made playlists (`37i9dQZ` prefix) are skipped without a request, as in D24.
+- **None of these are catalog lookups.** `/me/…` is in the `user` bucket and `/playlists/…` in its own (both verified outside the catalog quota for `/me/playlists` and `/playlists/{id}` in D24). *Measure:* `/me/tracks`, `/me/albums` and `/playlists/{id}/items` still answer `200` while the catalog quota is spent.
+- **Every item carries a full track object,** so the library seeds the catalog the way live capture does (D24 seeding): no lookups, no quota.
+
+**Scope and reconnect**
+
+- `Scopes` gains `user-library-read` (D12 anticipated this). `spotify_connection.scopes` already stores what Spotify granted, so the server knows when it is missing.
+- `/system/status` `spotify` gains `scopes` and `missing_scopes`. An instance connected before this release keeps working (capture, hydration, playlist sync); only saved tracks and albums wait.
+- **UI:** a dismissible info strip in the shell (D32's banner slot, below the non-dismissible reconnect banner in priority): "Reconnect Spotify to sync your saved songs and albums", linking to the existing focused reconnect flow `/welcome?step=connect&reconnect=1&next=/library`. Dismissed per browser; the Library page and Settings → Spotify keep saying it. The wizard's consent step lists the new scope in plain words.
+- **Without the scope:** the saved-tracks and saved-albums steps are skipped and reported (`library.tracks.state: needs_scope`); playlists still sync. A `403` on `/me/tracks` (scope revoked in Spotify) sets the same state; nothing else is retried.
+
+**Data model (migration 0009): observations, kept forever (D3)**
+
+The API shows only current state, so sync records what it saw and when:
+
+- `library_syncs`: one row per run (`id`, kind `quick`/`full`, started/finished, `complete`, requests, error). Only a complete walk of a list can prove a removal.
+- `library_spans`: one row per stretch of membership: `list` (`tracks`, `albums` or a playlist ID), `item_uri`, `added_at`, `added_by`, `first_seen_sync`, `last_seen_sync`, `gone_sync` (null while present), `json` (the verbatim item at first sight). An item removed and saved again is a new span (it has a new `added_at`). Reorders are not tracked.
+- `library_playlists`: one row per playlist seen: ID, name, owner, `relation` (`own`, `collaborative`, `followed`), public, image, `snapshot_id`, item total, `items_available`, first/last seen, `gone_sync`, verbatim JSON. Names update in place and also fill `contexts` (D17), so every playlist in the library is named without a lookup.
+- Adds and removals over time are derived from the spans (`added_at`, and the sync that first missed the item), not stored twice.
+
+**Sync job (`internal/library`)**
+
+- Background lane of the shared limiter, so live capture keeps its reserve; a `QUOTA_EXCEEDED` on a bucket pauses only that part of the sync until its reset (D24).
+- **Quick check, hourly** (`LIBRARY_SYNC_INTERVAL`, default 1 h): page 1 of `/me/tracks` and `/me/albums` (50 each, newest first) and every page of `/me/playlists`. A list whose total and first page match the stored state is unchanged. Otherwise that list gets a full walk. Owned and collaborative playlists whose `snapshot_id` changed (or that are new) get their items walked; unchanged ones cost nothing. For a library of ~2,000 songs and ~50 playlists that's about 3 requests an hour.
+- **Full walk, daily** (and on first sync): every page of every list, as a safety net for changes the quick check can't see (an add plus a removal deeper in the list keeps the total). First sync for 2,000 songs, 200 albums and 50 own playlists averaging 100 items: about 40 + 4 + 1 + 100 = 145 requests, about 75 s at the planning rate of 2/s.
+- First run 2 minutes after start or after (re)connecting; `LIBRARY_SYNC_ENABLED=false` turns it off. `POST /library/sync` (signed-in session only, like backups) runs a quick check now, in the interactive lane.
+- Restart-safe: an interrupted walk is not `complete`, so it never closes spans.
+- **Status:** `/system/status` gains `library`: `state` (`disabled`, `not_connected`, `idle`, `syncing`, `backing_off`, `quota_exceeded`), `last_sync_at`, `last_full_at`, `next_sync_at`, `progress` (0–1 while walking), per-list `state` (`ok`, `needs_scope`, `error`), counts (saved tracks, albums, playlists, playlists with items), `last_error`.
+
+**Catalog: seed, don't queue**
+
+- Track and album objects from the library are upserted into the catalog as live capture's are (D24), so saved and playlist tracks have names, artwork and durations at once, at no quota cost. Local files are kept with `is_local = 1`.
+- **Unplayed library tracks are not queued for lookups,** and their unhydrated artists are not queued either: the quota (506/day) goes to what you listen to. A library track that gets played is queued by the usual rules. The catalog-changed cue (D25) fires once per sync that seeded anything.
+
+**Matching saves to plays**
+
+- A saved track counts as played when a play has its ID, or its relinked ID (`tracks.linked_from`), or the same ISRC (so a song saved from one release and played from another is not "never played"). *Measure* how many saved tracks match only by ISRC on the owner's account.
+- Play counts follow the play rule and exclusions (D7), as everywhere else.
+
+**What it unlocks: API (OpenAPI first, D6/D16)**
+
+All read-only, answered from the library tables plus the derive snapshot's per-track totals; `range`/`from`/`to` filter by save date or play date as stated.
+
+- `GET /library/summary`: counts (saved tracks, albums, playlists), never-played saved tracks (count and share), save → first play and save → heavy rotation (median days; heavy rotation = the 5th counted play), the save-lag mix (played before saving, within a day, a week, a month, later, never), last sync.
+- `GET /library/tracks?played=never|ever|all&sort=added|plays|last_played`: saved tracks with `added_at`, plays, first and last play, days to first play; paginated.
+- `GET /library/albums?…`: saved albums with tracks played / total and plays.
+- `GET /library/playlists`: each playlist with relation, items, tracks ever played (and the share: the play-through), plays started from it (contexts, D17); followed playlists list plays from them but no play-through.
+- `GET /library/playlists/{id}`: the playlist's items in order, each with `added_at`, `added_by` (owner or a collaborator), plays, plays from this playlist.
+- `GET /library/timeline?bucket=…`: saves and removals per bucket (tracks, albums, playlist items).
+- Track pages (`/tracks/{id}`) gain `saved_at` (null when not saved). Additive, no version change (D28).
+- `serve --mock` generates a library from the reference dataset (saves spread over the years, a share never played, a few playlists of each relation), and the differential test covers every new endpoint.
+
+**UI (hi-fi readout, D32 patterns)**
+
+- New **Library** page in the nav: a summary row (saved, never played, median save → heavy rotation), a saves timeline, and the save-lag mix as a dot-row meter; tabs for Songs (filter "never played" first, it's the headline), Albums and Playlists (play-through as a meter per playlist); a playlist detail page. Empty states by cause: needs the scope (reconnect button), first sync running, nothing saved.
+- Track pages show "Saved <date>". Settings → Spotify shows the granted scopes and the library sync status, with "Sync now".
+
+**MCP:** one tool, `get_library(view: summary|tracks|albums|playlists|playlist, played, playlist_id, limit)`, over the same Backend methods ("which songs did I save and never play?" is the question it answers).
+
+- **Why:** Neither Your Spotify nor stats.fm syncs the library (DF9). Every endpoint used is outside the catalog quota, and the library seeds the catalog for free, so the feature costs a few requests an hour. Spans keep the raw observations without storing a copy of the whole library every hour.
+- **Rejected:** storing a full snapshot per sync (hourly copies of thousands of rows that are almost always identical); queueing unplayed library tracks for lookups (would spend days of quota on music not listened to); contents of followed playlists (Spotify refuses them since Feb 2026); a non-dismissible banner for the missing scope (nothing is lost while it's missing, unlike a revoked token).
+
 ### D37. ListenBrainz as a first pass before the MusicBrainz stage (owner, 2026-10-18)
 
 Decided by the owner on 2026-10-18 (option A below; option B is open as O1). The MusicBrainz stage (D27) is the slow one, ~6.5 h for the whole catalog at 1 request/s and 2.2 requests per artist. ListenBrainz serves MusicBrainz data through keyless batch endpoints. The question was whether those can replace that stage or cut its work.
