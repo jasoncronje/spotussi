@@ -312,40 +312,56 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   pick();
 })();
 
-// Installation: one stage open at a time. Opening a stage plays its sketch,
-// which replays while the section is on screen. The sketches ship finished,
-// so without script or with reduced motion they hold their last frame.
+// Installation: one stage open at a time. A stage's sketch plays once, the
+// first time the stage is open on screen, and then holds its last frame. The
+// sketches ship finished, so without script or with reduced motion they hold
+// that frame from the start.
 (() => {
-  const stages = [...document.querySelectorAll('.stage')];
-  if (!stages.length) return;
-  const art = (stage) => stage.querySelector('.s-art');
+  const box = document.querySelector('.stages');
+  if (!box) return;
+  const stages = [...box.querySelectorAll('.stage')];
+  const arts = stages.map((s) => s.querySelector('.s-art'));
   let open = stages.find((s) => s.classList.contains('is-open'));
-  let timer = 0, visible = false;
+  let visible = false;
+  const played = new Set();
   const animate = !reduced && 'IntersectionObserver' in window;
+
+  // Side by side, the row is as tall as the tallest stage, so switching
+  // stages never changes its height. Measured with every sketch finished.
+  const wide = matchMedia('(min-width: 1101px)');
+  const fit = () => {
+    box.style.minHeight = '';
+    if (!wide.matches) return;
+    const fresh = arts.filter((a) => !a.classList.contains('is-on'));
+    box.classList.add('is-measure');
+    fresh.forEach((a) => a.classList.add('is-on'));
+    box.style.minHeight = `${Math.max(...stages.map((s) => s.querySelector('.stage-body').scrollHeight))}px`;
+    fresh.forEach((a) => a.classList.remove('is-on'));
+    void box.offsetWidth;
+    box.classList.remove('is-measure');
+  };
+  fit();
+  let resizing = 0;
+  addEventListener('resize', () => { cancelAnimationFrame(resizing); resizing = requestAnimationFrame(fit); });
+  document.fonts?.ready.then(fit);
 
   const counters = (root) => root.querySelectorAll('[data-count]').forEach((el) => {
     const end = +el.dataset.count, dur = +(el.dataset.dur || 1200);
     const t0 = performance.now() + +(el.dataset.delay || 0);
-    const id = (el.run = (el.run || 0) + 1);
     const tick = (now) => {
-      if (el.run !== id) return;
       const k = Math.max(0, Math.min(1, (now - t0) / dur));
       el.textContent = Math.round(end * k).toLocaleString('en-US');
       if (k < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   });
-  const play = (a) => {
-    a.classList.remove('is-on', 'is-out');
-    void a.offsetWidth;
-    a.classList.add('is-on', 'is-vis');
-    counters(a);
-    timer = setTimeout(() => { a.classList.add('is-out'); timer = setTimeout(() => play(a), 400); }, +a.dataset.loop);
-  };
-  const run = () => {
-    clearTimeout(timer);
-    stages.forEach((s) => art(s).classList.remove('is-on', 'is-out', 'is-vis'));
-    if (visible && open) timer = setTimeout(() => play(art(open)), 350);
+  const play = () => {
+    const stage = open;
+    const a = stage.querySelector('.s-art');
+    if (!visible || played.has(a)) return;
+    played.add(a);
+    // Wait for the stage body to fade in.
+    setTimeout(() => { void a.offsetWidth; a.classList.add('is-on', 'is-vis'); counters(a); }, 350);
   };
 
   stages.forEach((stage) => {
@@ -358,13 +374,13 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       });
       // The tab hides once its stage is open; keep focus on the stage it opened.
       stage.querySelector('h3').focus({ preventScroll: true });
-      if (animate) run();
+      if (animate) play();
     });
   });
 
   if (!animate) return;
-  run();
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }, { threshold: 0.3 }).observe(document.querySelector('.stages'));
+  arts.forEach((a) => a.classList.remove('is-on'));
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; play(); }, { threshold: 0.3 }).observe(box);
 })();
 
 // FAQ: cards in a drawer, one open at a time.
