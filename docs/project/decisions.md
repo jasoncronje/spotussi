@@ -440,9 +440,9 @@ Settled while building M9 (2026-10-18), refining D16:
 - **Previews are public URLs.** The page holds nothing private, but share them knowing that.
 - **Rejected:** GitHub Pages (needs a paid GitHub plan while the repository is private; no pull-request previews); Vercel (the free Hobby plan is for non-commercial use); classic Cloudflare Pages via `--force` (the path Cloudflare is retiring).
 
-### D36. Library and playlist sync (DF9) — proposed, awaiting owner approval
+### D36. Library and playlist sync (DF9) (owner, 2026-10-18)
 
-Design for DF9, written 2026-10-18 before any code. Spotify facts checked against the [Feb 2026 migration guide](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide) and the endpoint references the same day; items marked *measure* are verified on the owner's account in step 2.
+Design for DF9, approved by the owner decision by decision on 2026-10-18 before any code. Spotify facts checked against the [Feb 2026 migration guide](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide) and the endpoint references the same day; items marked *measure* are verified on the owner's account in step 2.
 
 **What Spotify still allows a Development Mode app (read-only)**
 
@@ -460,9 +460,8 @@ Design for DF9, written 2026-10-18 before any code. Spotify facts checked agains
 **Scope and reconnect**
 
 - `Scopes` gains `user-library-read` (D12 anticipated this). `spotify_connection.scopes` already stores what Spotify granted, so the server knows when it is missing.
-- `/system/status` `spotify` gains `scopes` and `missing_scopes`. An instance connected before this release keeps working (capture, hydration, playlist sync); only saved tracks and albums wait.
-- **UI:** a dismissible info strip in the shell (D32's banner slot, below the non-dismissible reconnect banner in priority): "Reconnect Spotify to sync your saved songs and albums", linking to the existing focused reconnect flow `/welcome?step=connect&reconnect=1&next=/library`. Dismissed per browser; the Library page and Settings → Spotify keep saying it. The wizard's consent step lists the new scope in plain words.
-- **Without the scope:** the saved-tracks and saved-albums steps are skipped and reported (`library.tracks.state: needs_scope`); playlists still sync. A `403` on `/me/tracks` (scope revoked in Spotify) sets the same state; nothing else is retried.
+- **Set up from scratch (owner, 2026-10-18):** the instance is treated as unreleased, so there is no reconnect strip or upgrade flow in the UI. The wizard's consent step lists the new scope. An instance connected without it (the homelab, until it reconnects once; noted in the release notes) syncs playlists only, and the Library page and Settings → Spotify say the scope is missing instead of failing (`library.lists.tracks.state: needs_scope`). A `403` on `/me/tracks` (scope revoked in Spotify) sets the same state and is not retried until the next connect.
+- `/system/status` `spotify` gains `scopes` (granted).
 
 **Data model (migration 0009): observations, kept forever (D3)**
 
@@ -491,12 +490,13 @@ The API shows only current state, so sync records what it saw and when:
 
 - A saved track counts as played when a play has its ID, or its relinked ID (`tracks.linked_from`), or the same ISRC (so a song saved from one release and played from another is not "never played"). *Measure* how many saved tracks match only by ISRC on the owner's account.
 - Play counts follow the play rule and exclusions (D7), as everywhere else.
+- A saved track with no play by ID and no ISRC on either side yet (an export track not looked up) is reported as `maybe_played` rather than never played, so the never-played list doesn't fill with tracks that only lack metadata.
 
 **What it unlocks: API (OpenAPI first, D6/D16)**
 
 All read-only, answered from the library tables plus the derive snapshot's per-track totals; `range`/`from`/`to` filter by save date or play date as stated.
 
-- `GET /library/summary`: counts (saved tracks, albums, playlists), never-played saved tracks (count and share), save → first play and save → heavy rotation (median days; heavy rotation = the 5th counted play), the save-lag mix (played before saving, within a day, a week, a month, later, never), last sync.
+- `GET /library/summary`: counts (saved tracks, albums, playlists), never-played saved tracks (count and share), save → first play and save → heavy rotation (median days), the save-lag mix, last sync. **Heavy rotation is a track's 5th counted play** (owner, 2026-10-18): simple to explain and the same for export and live history. The mix buckets saved tracks by when that play came: before saving, within a day, a week, a month, later, or not yet (under 5 plays). Rejected: "N plays within 30 days" (harder to explain; a slow, steady favourite never qualifies) and a user-set threshold (a setting few would change; easy to add later).
 - `GET /library/tracks?played=never|ever|all&sort=added|plays|last_played`: saved tracks with `added_at`, plays, first and last play, days to first play; paginated.
 - `GET /library/albums?…`: saved albums with tracks played / total and plays.
 - `GET /library/playlists`: each playlist with relation, items, tracks ever played (and the share: the play-through), plays started from it (contexts, D17); followed playlists list plays from them but no play-through.
@@ -507,13 +507,13 @@ All read-only, answered from the library tables plus the derive snapshot's per-t
 
 **UI (hi-fi readout, D32 patterns)**
 
-- New **Library** page in the nav: a summary row (saved, never played, median save → heavy rotation), a saves timeline, and the save-lag mix as a dot-row meter; tabs for Songs (filter "never played" first, it's the headline), Albums and Playlists (play-through as a meter per playlist); a playlist detail page. Empty states by cause: needs the scope (reconnect button), first sync running, nothing saved.
+- New **Library** page in the nav: a summary row (saved, never played, median save → heavy rotation), a saves timeline, and the save-lag mix as a dot-row meter; tabs for Songs (filter "never played" first, it's the headline), Albums and Playlists (play-through as a meter per playlist); a playlist detail page. Empty states by cause: scope missing (reconnect button), first sync running, nothing saved.
 - Track pages show "Saved <date>". Settings → Spotify shows the granted scopes and the library sync status, with "Sync now".
 
 **MCP:** one tool, `get_library(view: summary|tracks|albums|playlists|playlist, played, playlist_id, limit)`, over the same Backend methods ("which songs did I save and never play?" is the question it answers).
 
 - **Why:** Neither Your Spotify nor stats.fm syncs the library (DF9). Every endpoint used is outside the catalog quota, and the library seeds the catalog for free, so the feature costs a few requests an hour. Spans keep the raw observations without storing a copy of the whole library every hour.
-- **Rejected:** storing a full snapshot per sync (hourly copies of thousands of rows that are almost always identical); queueing unplayed library tracks for lookups (would spend days of quota on music not listened to); contents of followed playlists (Spotify refuses them since Feb 2026); a non-dismissible banner for the missing scope (nothing is lost while it's missing, unlike a revoked token).
+- **Rejected:** storing a full snapshot per sync (hourly copies of thousands of rows that are almost always identical); queueing unplayed library tracks for lookups (would spend days of quota on music not listened to); contents of followed playlists (Spotify refuses them since Feb 2026); an in-app reconnect strip for the missing scope (the owner treats the instance as set up from scratch).
 
 ### D37. ListenBrainz as a first pass before the MusicBrainz stage (owner, 2026-10-18)
 
