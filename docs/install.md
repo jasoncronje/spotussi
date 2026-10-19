@@ -9,7 +9,7 @@ You also need a Spotify account with Premium: Spotify only lets Premium accounts
 ```yaml
 services:
   spotussi:
-    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.1
+    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.2
     container_name: spotussi
     restart: unless-stopped
     ports:
@@ -36,7 +36,7 @@ Over HTTPS, Spotify redirects straight back to your instance after you approve i
 ```yaml
 services:
   spotussi:
-    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.1
+    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.2
     container_name: spotussi
     restart: unless-stopped
     volumes:
@@ -95,8 +95,8 @@ Each [release](https://github.com/jasoncronje/spotussi/releases) has static bina
 
 ```sh
 sha256sum -c SHA256SUMS --ignore-missing   # macOS: shasum -a 256 -c SHA256SUMS --ignore-missing
-tar -xzf spotussi_0.1.0-beta.1_linux_amd64.tar.gz
-DATA_DIR=/var/lib/spotussi ./spotussi_0.1.0-beta.1_linux_amd64/spotussi serve
+tar -xzf spotussi_0.1.0-beta.2_linux_amd64.tar.gz
+DATA_DIR=/var/lib/spotussi ./spotussi_0.1.0-beta.2_linux_amd64/spotussi serve
 ```
 
 The macOS binaries aren't notarized; allow them with `xattr -d com.apple.quarantine spotussi`. A minimal systemd unit:

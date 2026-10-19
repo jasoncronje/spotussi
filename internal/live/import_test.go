@@ -189,7 +189,9 @@ func TestImportUpload(t *testing.T) {
 		return out
 	}
 	job := post("", "application/octet-stream", buf.Bytes(), 202)
-	if job["filename"] != "upload.zip" || job["state"] != "queued" {
+	// The worker can pick the job up before the 202 is written, so the
+	// response may already say running.
+	if st := job["state"]; job["filename"] != "upload.zip" || (st != "queued" && st != "running") {
 		t.Fatalf("job: %v", job)
 	}
 	var j map[string]any

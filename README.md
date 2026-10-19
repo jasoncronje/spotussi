@@ -19,7 +19,7 @@ You need Docker and a Spotify account with Premium (Spotify only lets Premium ac
 ```yaml
 services:
   spotussi:
-    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.1
+    image: ghcr.io/jasoncronje/spotussi:0.1.0-beta.2
     restart: unless-stopped
     ports:
       - "8080:8080"

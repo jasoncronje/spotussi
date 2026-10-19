@@ -11,7 +11,7 @@ body:
     attributes:
       label: Version
       description: Output of `spotussi version`, or the image tag.
-      placeholder: 0.1.0-beta.1
+      placeholder: 0.1.0-beta.2
     validations:
       required: true
   - type: dropdown
