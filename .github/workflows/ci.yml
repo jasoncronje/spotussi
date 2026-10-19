@@ -13,9 +13,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Which parts of the tree changed, so a site- or docs-only change skips
+  # the Go, web and image jobs. Skipped jobs count as passing for the
+  # required checks on main. Shared inputs (mise.toml, this file) run
+  # everything, and so does any push without a usable base.
+  changes:
+    name: Changed paths
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.diff.outputs.go }}
+      web: ${{ steps.diff.outputs.web }}
+      image: ${{ steps.diff.outputs.image }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = 0000000000000000000000000000000000000000 ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            files=ALL
+          else
+            files=$(git diff --name-only "$(git merge-base "$BASE" "$HEAD")" "$HEAD")
+          fi
+          printf '%s\n' "$files"
+          any() { [ "$files" = ALL ] || printf '%s\n' "$files" | grep -qE "$1"; }
+          shared='^(mise\.toml|\.github/workflows/ci\.yml)$'
+          go=false; web=false; image=false
+          any "$shared|^(cmd|internal|api)/|^web/embed\.go$|^go\.(mod|sum)$|^Makefile$" && go=true
+          any "$shared|^web/|^api/openapi\.yaml$" && web=true
+          { [ $go = true ] || [ $web = true ] || any '^(Dockerfile|\.dockerignore)$'; } && image=true
+          echo "go=$go web=$web image=$image" | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo "go=$go"; echo "web=$web"; echo "image=$image"; } >> "$GITHUB_OUTPUT"
+
   go:
     name: Go vet and test
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     steps:
       - uses: actions/checkout@v7
       # Go and Node versions come from mise.toml, same as local development.
@@ -31,6 +68,8 @@ jobs:
   perf:
     name: Performance budgets
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
@@ -53,6 +92,8 @@ jobs:
   web:
     name: Web check, lint and build
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
@@ -80,7 +121,11 @@ jobs:
   image:
     name: Multi-arch image build
     runs-on: ubuntu-latest
-    needs: [go, web]
+    needs: [changes, go, web]
+    # Runs when its inputs changed and go/web passed or were skipped.
+    if: >-
+      !cancelled() && needs.changes.outputs.image == 'true' &&
+      !contains(needs.*.result, 'failure')
     steps:
       - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v4

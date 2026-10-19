@@ -10,7 +10,7 @@ The design record is in [docs/project/decisions.md](docs/project/decisions.md) (
 - **One pull request per change.** A fix, a feature or a refactor, not several at once. Unrelated cleanups go in their own pull request.
 - **Squash merges.** Each pull request becomes one commit on `main`, so the pull request title is the commit title and the description is its body: say what changed and why.
 - **Conventional Commit titles**, for example `fix(import): keep rows with a null URI`, `feat(api): add genre timelines`, `docs: explain TRUSTED_PROXIES`. Types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`. Mark breaking changes with `!` (`feat(api)!: …`) and explain them in the description; during 0.x they're allowed but must be listed in the next release notes.
-- **CI must pass** (Go vet and tests, the performance budgets, web check, lint and build, the image build, DCO sign-off) before a pull request is merged.
+- **CI must pass** (Go vet and tests, the performance budgets, web check, lint and build, the image build, DCO sign-off) before a pull request is merged. Jobs whose inputs did not change are skipped: a site, docs or `motion/` change runs only the DCO check (and the site preview), Go changes skip the web job, and web changes skip the Go and performance jobs.
 
 ## Sign your commits off (DCO)
 
