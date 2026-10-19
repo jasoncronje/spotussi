@@ -22,7 +22,8 @@ type Scenario struct {
 	// "sparse" (like a fresh import: a quarter from Spotify, half from
 	// the fallback sources, a quarter known by name only).
 	Catalog string `json:"catalog"`
-	// Spotify: "" (connected), "reconnect_required" or "not_configured".
+	// Spotify: "" (connected), "reconnect_required", "not_configured" or
+	// "needs_scope" (connected before user-library-read existed, D36).
 	Spotify string `json:"spotify"`
 	// Fail answers every /api/v1 request whose path starts with it with
 	// FailStatus (default 500); "*" fails everything.
@@ -153,6 +154,12 @@ func (b *Backend) Wrap(h http.Handler) http.Handler {
 		if s.Spotify != "" && path == "/spotify/connection" && r.Method == http.MethodGet {
 			c := api.SpotifyConnection{State: s.Spotify, Scopes: []string{}}
 			c.Callback.Mode, c.Callback.RedirectURI = "direct", "https://"+r.Host+"/oauth/spotify/callback"
+			if s.Spotify == "needs_scope" {
+				c.State = "connected"
+				c.ClientID, c.AccountID, c.AccountName = ptr("mockclientid"), ptr("listener"), ptr("listener")
+				c.ConnectedAt = ptr(b.ds.PollerSince)
+				c.Scopes = []string{"user-read-playback-state", "user-read-recently-played", "playlist-read-private"}
+			}
 			if s.Spotify == "reconnect_required" {
 				c.ClientID, c.AccountID, c.AccountName = ptr("mockclientid"), ptr("listener"), ptr("listener")
 				c.ConnectedAt = ptr(b.ds.PollerSince)
