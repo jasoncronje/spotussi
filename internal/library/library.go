@@ -3,7 +3,7 @@
 // playlists the user owns or collaborates on.
 //
 // Spotify exposes only the current state, so every sync records what it
-// saw (migration 0009): a library_syncs row per run, a library_walks row
+// saw (migration 0010): a library_syncs row per run, a library_walks row
 // per list checked or walked, and library_spans, one per stretch of
 // membership of an item in a list. Only a complete walk closes a span.
 // Adds and removals over time are read from the spans.

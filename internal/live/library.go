@@ -12,7 +12,7 @@ import (
 	"spotussi/internal/query"
 )
 
-// Library endpoints (D36): the library tables (migration 0009) give what
+// Library endpoints (D36): the library tables (migration 0010) give what
 // is saved and when; plays come from the snapshot. A saved track matches
 // every track with its ID, a track relinked from or to it, and every
 // track with its ISRC (catalog), so a song saved from one release and

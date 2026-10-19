@@ -463,7 +463,7 @@ Design for DF9, approved by the owner decision by decision on 2026-10-18 before 
 - **Set up from scratch (owner, 2026-10-18):** the instance is treated as unreleased, so there is no reconnect strip or upgrade flow in the UI. The wizard's consent step lists the new scope. An instance connected without it (the homelab, until it reconnects once; noted in the release notes) syncs playlists only, and the Library page and Settings → Spotify say the scope is missing instead of failing (`library.lists.tracks.state: needs_scope`). A `403` on `/me/tracks` (scope revoked in Spotify) sets the same state and is not retried until the next connect.
 - `/system/status` `spotify` gains `scopes` (granted).
 
-**Data model (migration 0009): observations, kept forever (D3)**
+**Data model (migration 0010): observations, kept forever (D3)**
 
 The API shows only current state, so sync records what it saw and when:
 
