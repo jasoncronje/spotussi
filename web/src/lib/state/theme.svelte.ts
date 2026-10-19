@@ -1,6 +1,6 @@
 // Theme: system (default), light or dark. A per-browser preference (D22),
 // not a server setting: app.html applies it before first paint; this keeps
-// it in sync afterwards. Chosen from the header toggle or Settings.
+// it in sync afterwards. Chosen in Settings, General.
 export type Theme = 'system' | 'light' | 'dark';
 
 const KEY = 'spotussi:theme';

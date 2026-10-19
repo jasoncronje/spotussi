@@ -1,6 +1,6 @@
 <!--
-	Indicator lamp: the "selected" signal used by every selector in the app
-	(range, metric, navigation), like the LED over a hi-fi input button.
+	Indicator lamp: the "selected" signal used by the app's selectors
+	(range, metric), like the LED over a hi-fi input button.
 	Decorative; selection is also exposed via aria-current / aria-checked.
 -->
 <script lang="ts">
