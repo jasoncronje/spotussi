@@ -516,6 +516,16 @@ All read-only, answered from the library tables plus the derive snapshot's per-t
 - **Why:** Neither Your Spotify nor stats.fm syncs the library (DF9). Every endpoint used is outside the catalog quota, and the library seeds the catalog for free, so the feature costs a few requests an hour. Spans keep the raw observations without storing a copy of the whole library every hour.
 - **Rejected:** storing a full snapshot per sync (hourly copies of thousands of rows that are almost always identical); queueing unplayed library tracks for lookups (would spend days of quota on music not listened to); contents of followed playlists (Spotify refuses them since Feb 2026); an in-app reconnect strip for the missing scope (the owner treats the instance as set up from scratch).
 
+**As built (2026-10-18).** Where the build differs from or settles the design above:
+
+- **Play status has three values:** `played`, `maybe_played`, `never_played`; `/library/tracks?played=` takes those or `all` (not `never|ever|all`). `played` = a counted play of the ID, of a relinked ID in either direction (`tracks.linked_from`), or of the same ISRC. `maybe_played` = not played, but a played track has the same normalized title and main artist (the export-history case where the ISRC isn't known yet). The design's "no ISRC on either side" rule was replaced by this one: it is testable and doesn't depend on lookup progress.
+- **The daily full walk covers saved tracks and albums.** Playlist items are walked only when the playlist's `snapshot_id` differs from the one their items were last walked at, on every run; a snapshot is trustworthy for that, so a daily re-walk would only spend requests.
+- **Saved albums seed the album, not its tracks.** The album object's embedded track page is ignored: album pages list tracks by lookup as before, and the play-through counts tracks with plays against `total_tracks`.
+- **`POST /library/sync`** answers `202` with the library status, `409 sync_running` while a sync runs, `503 sync_disabled` when `LIBRARY_SYNC_ENABLED=false`. The mock answers `202` and never changes.
+- **Config:** `LIBRARY_SYNC_ENABLED` (default `true`), `LIBRARY_SYNC_INTERVAL` (default `1h`, 10 m–24 h).
+- **UI:** the Library page opens on the never-played filter; the save-lag mix uses the shared mix meter; song rows show five rotation lamps (one per counted play up to heavy rotation) and a ring for `maybe_played`. With the scope missing, the empty state points to Settings → Spotify (setup from scratch, no reconnect button). Settings → Spotify has a Library Sync panel (state, last sync, next check, per-list counts, Sync now). Checked with axe (WCAG 2.2 AA) in phone and desktop, light and dark.
+- **MCP `get_library`** also takes `sort`, `relation` and `offset`; at most 50 items per call.
+
 ### D37. ListenBrainz as a first pass before the MusicBrainz stage (owner, 2026-10-18)
 
 Decided by the owner on 2026-10-18 (option A below; option B is open as O1). The MusicBrainz stage (D27) is the slow one, ~6.5 h for the whole catalog at 1 request/s and 2.2 requests per artist. ListenBrainz serves MusicBrainz data through keyless batch endpoints. The question was whether those can replace that stage or cut its work.

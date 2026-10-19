@@ -64,6 +64,10 @@ type Backend struct {
 	settingsMu sync.Mutex // serialises settings read-modify-write
 	cacheMu    sync.Mutex
 	cached     *api.Settings // settings as last read or written
+
+	libMu  sync.Mutex
+	libIdx *libIndex  // the library's catalog index for the newest snapshot
+	spans  *spanCache // library spans as of the newest sync row
 }
 
 var _ api.Backend = (*Backend)(nil)

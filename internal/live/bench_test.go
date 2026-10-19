@@ -143,6 +143,7 @@ func BenchmarkLive(b *testing.B) {
 	track := first("/top/tracks?range=all", "track.id")
 	genre := first("/top/genres?range=all", "genre.id")
 	session := first("/sessions?range=all", "id")
+	playlist := first("/library/playlists?sort=name", "playlist.id")
 	cursor := ""
 	page := benchGet(b, h, "/history?range=all&limit=50")
 	for range 50 { // a cursor 50 pages deep
@@ -165,6 +166,9 @@ func BenchmarkLive(b *testing.B) {
 		"/artists/" + artist + "?range=all", "/albums/" + album + "?range=all", "/tracks/" + track + "?range=all",
 		"/genres/" + genre + "?range=all", "/sessions/" + session, "/top/tracks?range=all&artist_id=" + artist,
 		"/timeline?range=all&genre_id=" + url.QueryEscape(genre), "/system/status",
+		"/library/summary", "/library/timeline?range=all&bucket=month", "/library/tracks?played=never_played",
+		"/library/tracks?sort=plays", "/library/albums?sort=played_share", "/library/playlists",
+		"/library/playlists/" + playlist,
 	}
 	history := []string{
 		"/history?range=all&limit=50", "/history?range=all&limit=50&cursor=" + url.QueryEscape(cursor),

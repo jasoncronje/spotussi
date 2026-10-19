@@ -16,7 +16,7 @@ const RotationPlays = 5
 // Errors of POST /library/sync.
 var (
 	ErrSyncRunning  = errors.New("a library sync is already running; try again when it finishes")
-	ErrSyncDisabled = errors.New("library sync is off on this instance (LIBRARY_SYNC_ENABLED=false or mock mode)")
+	ErrSyncDisabled = errors.New("library sync is off on this instance (LIBRARY_SYNC_ENABLED=false)")
 )
 
 // LibraryTracksParams are the /library/tracks parameters.

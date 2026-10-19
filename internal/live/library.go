@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"sync"
 
 	"spotussi/internal/api"
+	"spotussi/internal/derive"
 	"spotussi/internal/library"
 	"spotussi/internal/libview"
 	"spotussi/internal/query"
@@ -35,24 +37,37 @@ func trackKey(uri string) string {
 
 // catTrack is what the catalog knows about a track not in the snapshot.
 type catTrack struct {
-	name, isrc, linked string
-	ref                api.TrackRef
-	artistIDs          []string
-	mainArtist         string
+	name       string
+	ref        api.TrackRef
+	artistIDs  []string
+	mainArtist string
 }
 
-// libQuery is one request's library view: the snapshot plus catalog
-// lookups for library tracks the snapshot doesn't have.
+// libIndex is the catalog side of the library view for one snapshot:
+// ISRCs and relinks of every catalog track, the name keys of played
+// tracks, and the catalog rows of library tracks the snapshot lacks.
+// Hydration and library sync announce catalog changes, which rebuild the
+// snapshot, so a new snapshot gets a fresh index.
+type libIndex struct {
+	snap    *derive.Snapshot
+	isrcOf  map[string]string   // catalog key -> ISRC
+	byISRC  map[string][]string // ISRC -> catalog keys
+	relinks map[string][]string // relinks, both ways
+	played  map[string]bool     // MatchKey of tracks with counted plays
+
+	mu  sync.Mutex
+	cat map[string]*catTrack // tracks not in the snapshot, as loaded
+}
+
+// libQuery is one request's library view: the snapshot, its library
+// index and catalog rows for library tracks the snapshot doesn't have.
 type libQuery struct {
 	*q
-	db  *sql.DB
-	cat map[string]*catTrack
-	// isrc maps ISRCs to catalog track keys, relink both ways.
-	byISRC   map[string][]string
-	relinks  map[string][]string
-	played   map[string]bool // MatchKey of tracks with counted plays
+	*libIndex
+	db       *sql.DB
+	cat      map[string]*catTrack
 	groups   map[string][]int32
-	starts   map[int32]*libview.Starts
+	starts   []*libview.Starts // by snapshot track, for tracks in groups
 	scanned  bool
 	ctxPlays map[int32]*ctxTally
 }
@@ -67,45 +82,76 @@ func (b *Backend) libQuery(ctx context.Context) (*libQuery, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &libQuery{q: x, db: b.db.Read, cat: map[string]*catTrack{}, groups: map[string][]int32{}}, nil
+	idx, err := b.libIndex(ctx, x)
+	if err != nil {
+		return nil, err
+	}
+	return &libQuery{q: x, libIndex: idx, db: b.db.Read, cat: map[string]*catTrack{}, groups: map[string][]int32{}}, nil
 }
 
-// load reads catalog facts for keys: names and refs of tracks the
-// snapshot lacks, ISRCs and relinks of all of them.
+// libIndex returns the index for x's snapshot, building it once.
+func (b *Backend) libIndex(ctx context.Context, x *q) (*libIndex, error) {
+	b.libMu.Lock()
+	defer b.libMu.Unlock()
+	if b.libIdx != nil && b.libIdx.snap == x.Snapshot {
+		return b.libIdx, nil
+	}
+	idx := &libIndex{snap: x.Snapshot, isrcOf: map[string]string{}, byISRC: map[string][]string{},
+		relinks: map[string][]string{}, played: map[string]bool{}, cat: map[string]*catTrack{}}
+	rows, err := b.db.Read.QueryContext(ctx, `SELECT id, COALESCE(isrc, ''), COALESCE(linked_from, '') FROM tracks
+		WHERE isrc IS NOT NULL OR linked_from IS NOT NULL`)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var id, isrc, linked string
+		if err := rows.Scan(&id, &isrc, &linked); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		if isrc != "" {
+			idx.isrcOf[id] = isrc
+			idx.byISRC[isrc] = append(idx.byISRC[isrc], id)
+		}
+		if linked != "" {
+			idx.relinks[id] = append(idx.relinks[id], linked)
+			idx.relinks[linked] = append(idx.relinks[linked], id)
+		}
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	for t := range x.e.Tracks {
+		if x.TrackPlays[t] > 0 {
+			idx.played[nameKey(x.e, int32(t))] = true
+		}
+	}
+	b.libIdx = idx
+	return idx, nil
+}
+
+// load reads the catalog rows of keys the snapshot lacks (names, refs),
+// once per snapshot.
 func (l *libQuery) load(ctx context.Context, keys []string) error {
-	if l.byISRC == nil {
-		l.byISRC, l.relinks = map[string][]string{}, map[string][]string{}
-		rows, err := l.db.QueryContext(ctx, `SELECT id, COALESCE(isrc, ''), COALESCE(linked_from, '') FROM tracks
-			WHERE isrc IS NOT NULL OR linked_from IS NOT NULL`)
-		if err != nil {
-			return err
-		}
-		for rows.Next() {
-			var id, isrc, linked string
-			if err := rows.Scan(&id, &isrc, &linked); err != nil {
-				rows.Close()
-				return err
-			}
-			if isrc != "" {
-				l.byISRC[isrc] = append(l.byISRC[isrc], id)
-			}
-			if linked != "" {
-				l.relinks[id] = append(l.relinks[id], linked)
-				l.relinks[linked] = append(l.relinks[linked], id)
-			}
-		}
-		rows.Close()
-		if err := rows.Err(); err != nil {
-			return err
-		}
-	}
 	var missing []string
+	l.mu.Lock()
 	for _, k := range keys {
-		if _, ok := l.cat[k]; !ok {
-			l.cat[k] = nil
-			missing = append(missing, k)
+		if _, ok := l.e.TrackByID[k]; ok {
+			continue
 		}
+		if _, ok := l.cat[k]; ok {
+			continue
+		}
+		if c, ok := l.libIndex.cat[k]; ok {
+			l.cat[k] = c
+			continue
+		}
+		l.cat[k] = nil
+		missing = append(missing, k)
 	}
+	l.mu.Unlock()
+	found := map[string]*catTrack{}
 	for len(missing) > 0 {
 		n := min(len(missing), 500)
 		chunk := missing[:n]
@@ -114,8 +160,7 @@ func (l *libQuery) load(ctx context.Context, keys []string) error {
 		for i, k := range chunk {
 			args[i] = k
 		}
-		rows, err := l.db.QueryContext(ctx, `SELECT t.id, t.name, COALESCE(t.isrc, ''), COALESCE(t.linked_from, ''),
-			t.duration_ms, al.id, al.name, al.image_url
+		rows, err := l.db.QueryContext(ctx, `SELECT t.id, t.name, t.duration_ms, al.id, al.name, al.image_url
 			FROM tracks t LEFT JOIN albums al ON al.id = t.album_id WHERE t.id IN (`+placeholders(n)+`)`, args...)
 		if err != nil {
 			return err
@@ -125,7 +170,7 @@ func (l *libQuery) load(ctx context.Context, keys []string) error {
 			var id string
 			var dur sql.NullInt64
 			var alID, alName, img sql.NullString
-			if err := rows.Scan(&id, &c.name, &c.isrc, &c.linked, &dur, &alID, &alName, &img); err != nil {
+			if err := rows.Scan(&id, &c.name, &dur, &alID, &alName, &img); err != nil {
 				rows.Close()
 				return err
 			}
@@ -137,7 +182,7 @@ func (l *libQuery) load(ctx context.Context, keys []string) error {
 				c.ref.Album = &api.AlbumLite{ID: alID.String, Name: alName.String}
 				c.ref.ImageURL = strPtr(img.String)
 			}
-			l.cat[id] = &c
+			found[id] = &c
 		}
 		rows.Close()
 		if err := rows.Err(); err != nil {
@@ -155,7 +200,7 @@ func (l *libQuery) load(ctx context.Context, keys []string) error {
 				rows.Close()
 				return err
 			}
-			if c := l.cat[tid]; c != nil {
+			if c := found[tid]; c != nil {
 				if len(c.artistIDs) == 0 {
 					c.mainArtist = name
 				}
@@ -167,6 +212,16 @@ func (l *libQuery) load(ctx context.Context, keys []string) error {
 		if err := rows.Err(); err != nil {
 			return err
 		}
+	}
+	if len(found) > 0 {
+		// Only rows found are kept: a track seeded since the snapshot
+		// is read again until the next one.
+		l.mu.Lock()
+		for k, c := range found {
+			l.cat[k] = c
+			l.libIndex.cat[k] = c
+		}
+		l.mu.Unlock()
 	}
 	return nil
 }
@@ -190,8 +245,8 @@ func (l *libQuery) group(key string) []int32 {
 	for _, k := range l.relinks[key] {
 		addKey(k)
 	}
-	if c := l.cat[key]; c != nil && c.isrc != "" {
-		for _, k := range l.byISRC[c.isrc] {
+	if isrc := l.isrcOf[key]; isrc != "" {
+		for _, k := range l.byISRC[isrc] {
 			addKey(k)
 		}
 	}
@@ -229,7 +284,7 @@ func (l *libQuery) scan(contexts map[int32]bool) {
 		return
 	}
 	l.scanned = true
-	l.starts = map[int32]*libview.Starts{}
+	l.starts = make([]*libview.Starts, len(l.e.Tracks))
 	for _, g := range l.groups {
 		for _, t := range g {
 			if l.starts[t] == nil {
@@ -241,6 +296,7 @@ func (l *libQuery) scan(contexts map[int32]bool) {
 	for c := range contexts {
 		l.ctxPlays[c] = &ctxTally{perTrack: map[int32]int64{}}
 	}
+	byCtx := len(l.ctxPlays) > 0
 	for _, i := range l.Vis {
 		t := l.Track[i]
 		if s := l.starts[t]; s != nil {
@@ -250,7 +306,7 @@ func (l *libQuery) scan(contexts map[int32]bool) {
 				s.AddMs(int64(l.Ms[i]))
 			}
 		}
-		if c := l.Ctx[i]; c >= 0 {
+		if c := l.Ctx[i]; byCtx && c >= 0 {
 			if ct := l.ctxPlays[c]; ct != nil {
 				ct.ms += int64(l.Ms[i])
 				if l.Counted[i] {
@@ -261,19 +317,13 @@ func (l *libQuery) scan(contexts map[int32]bool) {
 			}
 		}
 	}
-	l.played = map[string]bool{}
-	for t := range l.e.Tracks {
-		if l.TrackPlays[t] > 0 {
-			l.played[l.nameKey(int32(t))] = true
-		}
-	}
 }
 
-func (l *libQuery) nameKey(t int32) string {
-	r := &l.e.Tracks[t]
+func nameKey(e *derive.Entities, t int32) string {
+	r := &e.Tracks[t]
 	main := ""
 	if len(r.Artists) > 0 {
-		main = l.e.Artists[r.Artists[0]].Name
+		main = e.Artists[r.Artists[0]].Name
 	}
 	return libview.MatchKey(r.Name, main)
 }
@@ -281,13 +331,13 @@ func (l *libQuery) nameKey(t int32) string {
 // track builds a saved track's view (after load, group and scan).
 func (l *libQuery) track(key string, addedAt int64) libview.Track {
 	out := libview.Track{AddedAt: addedAt}
-	var nameKey string
+	var mk string
 	if t, ok := l.e.TrackByID[key]; ok {
 		out.Ref = l.trackRef(t)
-		nameKey = l.nameKey(t)
+		mk = nameKey(l.e, t)
 	} else if c := l.cat[key]; c != nil {
 		out.Ref = c.ref
-		nameKey = libview.MatchKey(c.name, c.mainArtist)
+		mk = libview.MatchKey(c.name, c.mainArtist)
 	} else {
 		out.Ref = api.TrackRef{ID: key, Name: key, Artists: []api.ArtistLite{}}
 	}
@@ -298,11 +348,36 @@ func (l *libQuery) track(key string, addedAt int64) libview.Track {
 		}
 	}
 	s.Fill(&out)
-	out.Status = libview.Status(out.Plays, nameKey != "" && l.played[nameKey])
+	out.Status = libview.Status(out.Plays, mk != "" && l.played[mk])
 	return out
 }
 
+// spanCache is the present spans of each list read since the newest
+// library sync row last changed (a sync starting or finishing), so a
+// sync's writes show once it finishes.
+type spanCache struct {
+	ver   string
+	lists map[string][]libTrack
+}
+
+// readSpans returns a list's present spans in order; callers must not
+// modify the slice.
 func (b *Backend) readSpans(ctx context.Context, list string) ([]libTrack, error) {
+	var id int64
+	var fin sql.NullInt64
+	err := b.db.Read.QueryRowContext(ctx, `SELECT id, finished_at FROM library_syncs ORDER BY id DESC LIMIT 1`).Scan(&id, &fin)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	ver := fmt.Sprint(id, fin.Valid, fin.Int64)
+	b.libMu.Lock()
+	if c := b.spans; c != nil && c.ver == ver {
+		if v, ok := c.lists[list]; ok {
+			b.libMu.Unlock()
+			return v, nil
+		}
+	}
+	b.libMu.Unlock()
 	rows, err := b.db.Read.QueryContext(ctx, `SELECT item_uri, COALESCE(added_at, 0), COALESCE(added_by, ''), COALESCE(position, 0)
 		FROM library_spans WHERE list = ? AND gone_sync IS NULL ORDER BY position, id`, list)
 	if err != nil {
@@ -322,7 +397,16 @@ func (b *Backend) readSpans(ctx context.Context, list string) ([]libTrack, error
 		}
 		out = append(out, t)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	b.libMu.Lock()
+	if b.spans == nil || b.spans.ver != ver {
+		b.spans = &spanCache{ver: ver, lists: map[string][]libTrack{}}
+	}
+	b.spans.lists[list] = out
+	b.libMu.Unlock()
+	return out, nil
 }
 
 // savedTracks is every saved track not hidden by exclusions.

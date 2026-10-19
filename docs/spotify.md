@@ -11,6 +11,12 @@ Every instance uses its own Spotify developer app: Spotify no longer lets one ap
 
 To reconnect later (a revoked token, a new app), use Settings → Spotify. A banner on every page tells you when it's needed.
 
+### Permissions
+
+spotussi asks only for read access: what's playing, recently played tracks, your private and collaborative playlists, and your saved songs and albums (`user-library-read`, for the Library page). It never changes anything in your Spotify account.
+
+An instance connected before the Library page existed lacks `user-library-read`. It keeps working, and the Library page and Settings → Spotify say the permission is missing. To add it, reconnect once: Settings → Spotify → reconnect, and approve the consent page.
+
 ## Live capture
 
 Once connected, spotussi records listening by itself. It polls the player about every 12 s while music plays (90 s when idle) and checks recently played tracks every 20 minutes to catch anything missed. Spotify only keeps the last 50 recently played tracks, so keep the server running. Settings → System shows capture status and errors. Intervals are configurable ([configuration.md](configuration.md)).
@@ -27,3 +33,15 @@ Artwork, genres and durations are looked up in the background, most-played track
 | MusicBrainz | Genres of the artists ListenBrainz didn't find | Name (1 request/s, as MusicBrainz asks) |
 
 A large export's whole catalog fills in about 3 to 5 hours this way (MusicBrainz is the slow step; ListenBrainz takes most of its artists off it). Low-confidence matches are rejected, and Spotify's data replaces fallback data as its quota allows. Pages show what's known and mark provisional details. Each source can be turned off with its `METADATA_*` variable, and `HYDRATE_SPOTIFY_LOOKUPS=false` leaves Spotify's quota untouched.
+
+## Library
+
+spotussi also reads your saved songs, saved albums and playlists, so the Library page can show which saved songs you never play, how long saved songs took to reach heavy rotation (their 5th counted play), and how much of each playlist you actually play.
+
+- **How often:** a quick check every hour (one page each of saved songs, saved albums and your playlist list; about 3 requests when nothing changed) and a full pass once a day. A playlist's songs are read again only when Spotify reports it changed. The first sync starts 2 minutes after connecting. Settings → Spotify shows the last sync and has **Sync now**.
+- **No lookup quota:** these requests don't count against the daily lookup quota, and they fill in names and artwork for the songs they return. Saved songs you have never played are not looked up.
+- **Followed playlists:** since February 2026 Spotify only shares the songs of playlists you made or collaborate on. Playlists by others (including Spotify's own mixes) show their name and the plays you started from them, but not their songs.
+- **History:** spotussi keeps what each sync saw, so removals and re-saves show on the saves chart from the first sync on. Spotify doesn't report when something was removed before that.
+- **Played or not:** a saved song counts as played when you played that track, a version Spotify relinked it to, or the same recording on another release (same ISRC). "Other release" means a played song has the same title and main artist but the recording isn't confirmed yet.
+
+Turn it off with `LIBRARY_SYNC_ENABLED=false`, or change the interval with `LIBRARY_SYNC_INTERVAL` ([configuration.md](configuration.md)).
