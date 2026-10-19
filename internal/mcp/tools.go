@@ -220,4 +220,15 @@ func registerTools(s *sdk.Server, o Options) {
 		"Find artists, albums and tracks in the listening history by name (case-insensitive substring), most played first. "+
 			"Use it to turn a name into the ID other tools take. Default limit 5 per kind (max 20).",
 		nil, func(ctx context.Context, in searchArgs) (any, error) { return search(ctx, b, in) })
+
+	addTool(s, "get_library", "Saved songs, albums and playlists",
+		"The owner's Spotify library as last synced, joined with their listening: view=summary (default) counts saved songs by "+
+			"whether they were ever played and how long saving took to turn into plays (heavy rotation = the 5th counted play); "+
+			"view=tracks lists saved songs with plays and dates (filter played=never_played for \"saved but never played\"); "+
+			"view=albums saved albums with how many of their tracks were played; view=playlists the owner's playlists with plays "+
+			"started from each; view=playlist one playlist's songs (playlist_id; Spotify shares the songs of own and collaborative "+
+			"playlists only). Plays are all-time. Default limit 20 (max 50); page with offset.",
+		map[string][]any{"view": {"summary", "tracks", "albums", "playlists", "playlist"},
+			"played": {"all", "played", "maybe_played", "never_played"}, "relation": {"all", "own", "collaborative", "followed"}},
+		func(ctx context.Context, in libraryArgs) (any, error) { return library(ctx, b, in) })
 }

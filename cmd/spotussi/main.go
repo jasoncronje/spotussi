@@ -45,6 +45,7 @@ import (
 	"spotussi/internal/hydrate"
 	"spotussi/internal/importer"
 	"spotussi/internal/keyring"
+	"spotussi/internal/library"
 	"spotussi/internal/live"
 	"spotussi/internal/mcp"
 	"spotussi/internal/metadata"
@@ -246,6 +247,20 @@ func serve(args []string) error {
 			slog.Info("live capture running")
 		} else {
 			slog.Warn("CAPTURE_ENABLED=false: not recording listening")
+		}
+		if cfg.LibrarySyncEnabled {
+			// Library and playlist sync (DF9, D36): quick checks hourly,
+			// a full walk daily; new library tracks seed the catalog.
+			lib := library.New(library.Options{DB: database, Client: spotifyClient, Interval: cfg.LibrarySyncInterval,
+				OnCatalogChanged: catalogChanged})
+			lo.Library = lib
+			spotifyClient.OnConnect(lib.Connected)
+			libCtx, libCancel := context.WithCancel(ctx)
+			libDone := make(chan struct{})
+			go func() { lib.Run(libCtx); close(libDone) }()
+			defer func() { libCancel(); <-libDone }()
+		} else {
+			slog.Warn("LIBRARY_SYNC_ENABLED=false: not syncing saved tracks, albums or playlists")
 		}
 		be := live.New(lo)
 		engine.Store(be.Engine())

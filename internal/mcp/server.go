@@ -36,6 +36,7 @@ const instructions = `spotussi holds one person's Spotify listening history (pla
 - Every result carries names and IDs. Pass IDs from one tool to another: search_catalog finds an artist, album or track by name; get_top, get_entity, get_history and get_sessions accept those IDs.
 - Time ranges: range is a preset (today, this_week, this_month, this_year, last_7d, last_4w, last_6m, last_12m, prev_day, prev_week, prev_month, prev_year, all) or custom with from and to (inclusive local dates, YYYY-MM-DD). Day boundaries use the owner's timezone.
 - metric "plays" ranks by counted plays, "time" by listening time. A play counts when it passes the owner's play rule (see get_status); skips are plays that ended early.
+- get_library joins the owner's saved songs, saved albums and playlists (as last synced from Spotify) with their listening, e.g. songs saved but never played.
 - Minutes are listening minutes; times are local to the owner's timezone (RFC 3339).`
 
 // NewServer builds the MCP server and registers every tool.

@@ -104,6 +104,13 @@ type Config struct {
 	MetadataMusicBrainz  bool
 	MetadataContact      string
 
+	// LibrarySyncEnabled (LIBRARY_SYNC_ENABLED, default true) syncs saved
+	// tracks, saved albums and playlists from Spotify (D36).
+	// LibrarySyncInterval (LIBRARY_SYNC_INTERVAL, default 1h) is the time
+	// between quick checks; every list is walked in full once a day.
+	LibrarySyncEnabled  bool
+	LibrarySyncInterval time.Duration
+
 	// ImportMaxBytes caps one uploaded export (IMPORT_MAX_BYTES, default
 	// 2 GiB); larger uploads get 413 (D23).
 	ImportMaxBytes int64
@@ -132,7 +139,7 @@ func FromLookup(lookup func(string) (string, bool)) (Config, error) {
 		return strings.TrimSpace(v)
 	}
 	cfg := Config{Port: DefaultPort, DataDir: "./data", AuthMode: AuthPassword, ProxyAuthHeader: DefaultProxyAuthHeader,
-		CaptureEnabled: true, HydrateEnabled: true, HydrateSpotifyLookups: true, ImportMaxBytes: DefaultImportMaxBytes,
+		CaptureEnabled: true, HydrateEnabled: true, LibrarySyncEnabled: true, HydrateSpotifyLookups: true, ImportMaxBytes: DefaultImportMaxBytes,
 		MetadataOEmbed: true, MetadataDeezer: true, MetadataListenBrainz: true, MetadataMusicBrainz: true}
 	var errs []error
 	number := func(key string, lo, hi float64) float64 {
@@ -183,7 +190,8 @@ func FromLookup(lookup func(string) (string, bool)) (Config, error) {
 			cfg.HydrateEnabled = b
 		}
 	}
-	for key, dst := range map[string]*bool{"HYDRATE_SPOTIFY_LOOKUPS": &cfg.HydrateSpotifyLookups, "METADATA_OEMBED": &cfg.MetadataOEmbed, "METADATA_DEEZER": &cfg.MetadataDeezer,
+	cfg.LibrarySyncInterval = duration("LIBRARY_SYNC_INTERVAL", 10*time.Minute, 24*time.Hour)
+	for key, dst := range map[string]*bool{"LIBRARY_SYNC_ENABLED": &cfg.LibrarySyncEnabled, "HYDRATE_SPOTIFY_LOOKUPS": &cfg.HydrateSpotifyLookups, "METADATA_OEMBED": &cfg.MetadataOEmbed, "METADATA_DEEZER": &cfg.MetadataDeezer,
 		"METADATA_LISTENBRAINZ": &cfg.MetadataListenBrainz, "METADATA_MUSICBRAINZ": &cfg.MetadataMusicBrainz} {
 		if v := get(key); v != "" {
 			b, err := strconv.ParseBool(v)

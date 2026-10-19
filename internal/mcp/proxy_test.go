@@ -57,7 +57,7 @@ func TestStdioProxyEndToEnd(t *testing.T) {
 	}
 	ctx := context.Background()
 	tools, err := cs.ListTools(ctx, nil)
-	if err != nil || len(tools.Tools) != 8 {
+	if err != nil || len(tools.Tools) != 9 {
 		t.Fatalf("list tools: %v (%d tools)", err, len(tools.Tools))
 	}
 	// Concurrent calls come back to the right callers.
