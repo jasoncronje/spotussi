@@ -489,7 +489,7 @@
           <p>Save the compose file from the install guide and run <code>docker compose up -d</code>. One container, one data volume.</p>
           <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/install.md">Install guide</a></p>
         </div>
-        <div class="s-art art-run is-on" data-loop="6500" aria-hidden="true">
+        <div class="s-art art-run is-on" aria-hidden="true">
           <div class="run-file">
             <p class="s-label">compose.yaml</p>
             <pre class="mono"><span style="--i:0"><em>services:</em></span><span style="--i:1"><em>  spotussi:</em></span><span style="--i:2"><em>    image:</em> ghcr.io/jasoncronje/spotussi:beta</span><span style="--i:3"><em>    ports:</em> ["8080:8080"]</span><span style="--i:4"><em>    volumes:</em> [spotussi-data:/data]</span></pre>
@@ -511,7 +511,7 @@
           <p>Open spotussi in your browser, enter the setup token from the container log and choose an owner password. Single sign-on through a forward-auth proxy works too.</p>
           <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/install.md#single-sign-on-forward-auth">Sign-in options</a></p>
         </div>
-        <div class="s-art art-claim is-on" data-loop="7000" aria-hidden="true">
+        <div class="s-art art-claim is-on" aria-hidden="true">
           <div class="tuner" style="--at:0"><i class="tn-needle"></i><ol><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ol></div>
           <p class="s-h">Claim this instance</p>
           <div class="fields">
@@ -533,7 +533,7 @@
           <p>Create your own Spotify app, paste its Client ID and approve read-only access. The wizard shows every value to copy.</p>
           <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/spotify.md">Spotify guide</a></p>
         </div>
-        <div class="s-art art-connect is-on" data-loop="7500" aria-hidden="true">
+        <div class="s-art art-connect is-on" aria-hidden="true">
           <div class="tuner" style="--at:3"><i class="tn-needle"></i><ol><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ol></div>
           <div class="cn-rows">
             <div class="cn-row cn-1">
@@ -560,7 +560,7 @@
           <p>Request your Extended Streaming History from Spotify. It can take up to 30 days. Drop the zip in when it arrives.</p>
           <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/import.md">Import guide</a></p>
         </div>
-        <div class="s-art art-import is-on" data-loop="7000" aria-hidden="true">
+        <div class="s-art art-import is-on" aria-hidden="true">
           <div class="drop">
             <span class="drop-zip mono">my_spotify_data.zip</span>
             <p class="drop-hint">Drop your export here</p>
@@ -583,17 +583,17 @@
           <p>Play music as normal. spotussi checks your player about every 12 seconds, so each play lands as you hear it.</p>
           <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/spotify.md#live-capture">Live capture</a></p>
         </div>
-        <div class="s-art art-listen is-on" data-loop="7000" aria-hidden="true">
+        <div class="s-art art-listen is-on" aria-hidden="true">
           <p class="poll"><i></i>Reading your player every 12 s</p>
           <div class="ls-now">
             <span class="cov" style="--a:#d9770f;--b:#3a6bc4">NE</span>
-            <p class="who"><b>Nothing Else Matters</b><span>Metallica</span></p>
+            <p class="who"><b>Nothing Else Matters</b><span>Metallica &middot; Metallica</span></p>
             <span class="pbar" style="--to:1;--t:2.6s;--d:.4s"></span>
           </div>
           <ol class="ls-list">
-            <li class="ls-new"><span class="cov" style="--a:#d9770f;--b:#3a6bc4">NE</span><p class="who"><b>Nothing Else Matters</b><span>Metallica</span></p><em>just now</em></li>
-            <li><span class="cov" style="--a:#0c9ba8;--b:#8a5ccf">AR</span><p class="who"><b>Arabella</b><span>Arctic Monkeys</span></p><em>11:31 AM</em></li>
-            <li><span class="cov" style="--a:#c2406a;--b:#d9770f">PA</span><p class="who"><b>Passionfruit</b><span>Drake</span></p><em>11:26 AM</em></li>
+            <li class="ls-new"><span class="cov" style="--a:#d9770f;--b:#3a6bc4">NE</span><p class="who"><b>Nothing Else Matters</b><span>Metallica &middot; Metallica</span></p><em>just now</em></li>
+            <li><span class="cov" style="--a:#0c9ba8;--b:#8a5ccf">AR</span><p class="who"><b>Arabella</b><span>Arctic Monkeys &middot; AM</span></p><em>11:31 AM</em></li>
+            <li><span class="cov" style="--a:#c2406a;--b:#d9770f">PA</span><p class="who"><b>Passionfruit</b><span>Drake &middot; More Life</span></p><em>11:26 AM</em></li>
           </ol>
           <p class="ls-foot"><span class="sw"><span class="st-a">83</span><span class="st-b">84</span></span> plays today</p>
         </div>
