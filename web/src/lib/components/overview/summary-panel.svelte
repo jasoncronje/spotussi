@@ -18,6 +18,7 @@
 	} from '#lib/format.js';
 	import { artistHref, trackHref } from '#lib/state/view.svelte.js';
 	import type { Schemas } from '#lib/api/client.js';
+	import { sources as dataSources } from '#lib/state/sources.svelte.js';
 	import type { Metric } from '#lib/ranges.js';
 
 	let { data, metric }: { data: Schemas['OverviewSummary']; metric: Metric } = $props();
@@ -237,7 +238,7 @@
 		{/each}
 	</div>
 
-	{#if hasListening}
+	{#if hasListening && dataSources.show}
 		<div class="grid gap-5 border-t px-5 py-4 sm:grid-cols-2 sm:px-6">
 			<MixMeter
 				label="Plays from"

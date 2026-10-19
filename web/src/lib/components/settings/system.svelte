@@ -55,7 +55,7 @@
 	// Fallback sources (D27), named by what they are rather than by brand.
 	const SOURCE = {
 		oembed: 'Spotify embeds',
-		deezer: 'Music catalog',
+		deezer: 'Public music catalog',
 		listenbrainz: 'Open music database, in batches',
 		musicbrainz: 'Open music database, one by one'
 	} as const;

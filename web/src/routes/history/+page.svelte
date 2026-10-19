@@ -13,6 +13,7 @@
 	import Segmented from '#lib/components/common/segmented.svelte';
 	import EntitySearch from '#lib/components/common/entity-search.svelte';
 	import PlayRow, { SOURCES } from '#lib/components/history/play-row.svelte';
+	import { sources as dataSources } from '#lib/state/sources.svelte.js';
 	import { Resource } from '#lib/data/resource.svelte.js';
 	import { fetchQuery, type Query } from '#lib/data/cache.js';
 	import {
@@ -288,17 +289,19 @@
 
 	<!-- Legend -->
 	<p class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-		<span>Sources, in order:</span>
-		{#each SOURCES as s, i (s.key)}
-			<span class="inline-flex items-center gap-1.5" title={s.hint}>
-				<span class="inline-flex gap-[3px]" aria-hidden="true">
-					{#each SOURCES as _, j (j)}<span
-							class="size-[5px] rounded-full {i === j ? 'bg-signal' : 'bg-grille'}"
-						></span>{/each}
+		{#if dataSources.show}
+			<span>Sources, in order:</span>
+			{#each SOURCES as s, i (s.key)}
+				<span class="inline-flex items-center gap-1.5" title={s.hint}>
+					<span class="inline-flex gap-[3px]" aria-hidden="true">
+						{#each SOURCES as _, j (j)}<span
+								class="size-[5px] rounded-full {i === j ? 'bg-signal' : 'bg-grille'}"
+							></span>{/each}
+					</span>
+					{s.hint}
 				</span>
-				{s.hint}
-			</span>
-		{/each}
+			{/each}
+		{/if}
 		<span class="inline-flex items-center gap-1.5">
 			<span
 				aria-hidden="true"

@@ -7,11 +7,13 @@ poller rows (`Capture Artist N`). CAPTURE_ENABLED=false throughout.
 
 | File | State |
 |---|---|
-| overview-sparse-reconnect-{light,dark} | Mock, sparse catalog, Spotify reconnect required: reconnect banner, catalog strip (quota), Plays from / Track details mixes |
+| overview-sparse-reconnect-{light,dark} | Mock, sparse catalog, Spotify reconnect required: reconnect banner, catalog strip (quota), Plays from / Track details mixes (Data sources on) |
 | overview-phone-light | Same, phone width, full page |
-| track-provisional-dark | Track with fallback details: "Provisional details" badge |
+| track-provisional-dark | Track with fallback details: "Provisional details" badge (Data sources on) |
 | track-names-only-dark | Track known by name only: badge, unlit artwork |
 | artist-phone-dark | Artist page, phone |
+| settings-data-sources-light | Settings → General → Display: the Data sources switch (off by default) |
+| album-artists-dark | Album with four artists on its tracks: "Artists on this album" after the tracks |
 | settings-system-{light,dark} | Catalog state, Spotify + provisional coverage, fallback sources, Download backup |
 | reconnect-dark | Focused reconnect at `/welcome?step=connect&reconnect=1` |
 | card-failure-light | Top artists failing with a 500 (mock scenario), rest of Overview intact |
@@ -27,4 +29,7 @@ track, Settings System, Settings Spotify, reconnect) and 5 fresh-instance
 empty pages, desktop/phone × light/dark, plus Overview with a failed card.
 No console errors or warnings clicking through every page, both settings
 tabs, every onboarding step and range switches on each.
+After the owner review: 40 more axe runs (Overview, History, a one-artist and
+a four-artist album, Settings × desktop/phone × light/dark × Data sources off
+and on), 0 violations, no console errors.
 Range-switch timings: `perf.md`.
