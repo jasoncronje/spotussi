@@ -147,7 +147,7 @@ func exclusionKind(r *http.Request) (ExclusionKind, error) {
 }
 
 func registerRoutes(mux *http.ServeMux, b Backend) {
-	const v1 = "/api/v1"
+	registerLibrary(mux, b)
 	get(mux, v1+"/now-playing", func(r *http.Request, _ *params) (*NowPlaying, error) {
 		return b.NowPlaying(r.Context())
 	})

@@ -125,6 +125,9 @@ func writeCatalog(ctx context.Context, tx *sql.Tx, ds *refdata.Dataset) error {
 		}
 	}
 
+	if err := writeLibrary(ctx, tx, ds); err != nil {
+		return err
+	}
 	return exec(`INSERT INTO imports (id, filename, origin, kind, state, created_at) VALUES (1, 'refdata', 'cli', 'zip', 'done', 0)`)
 }
 

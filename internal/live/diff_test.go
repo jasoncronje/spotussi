@@ -87,6 +87,35 @@ func TestDifferential(t *testing.T) {
 			dc.get("/history", "/history"+q+"&limit=100")
 		}
 	}
+	// Library (D36): every list, sort and filter, and a playlist of each
+	// relation.
+	library := func() {
+		dc.get("/library/summary", "/library/summary")
+		for _, q := range []string{"", "?played=played", "?played=maybe_played", "?played=never_played", "?sort=plays",
+			"?sort=last_played&limit=500", "?sort=plays&offset=30&limit=20"} {
+			dc.get("/library/tracks", "/library/tracks"+q)
+		}
+		for _, q := range []string{"", "?sort=plays", "?sort=played_share&limit=500"} {
+			dc.get("/library/albums", "/library/albums"+q)
+		}
+		for _, q := range []string{"", "?relation=own", "?relation=collaborative", "?relation=followed&sort=name",
+			"?sort=played_share&limit=500"} {
+			dc.get("/library/playlists", "/library/playlists"+q)
+		}
+		for _, pl := range ds.Library.Playlists {
+			dc.get("/library/playlists/{id}", "/library/playlists/"+pl.ID+"?limit=500")
+		}
+		for _, q := range []string{"", "?range=last_12m&bucket=week", "?range=this_month&bucket=day", "?range=last_4w"} {
+			dc.get("/library/timeline", "/library/timeline"+q)
+		}
+		for _, s := range ds.Library.Tracks[:min(5, len(ds.Library.Tracks))] {
+			if int(s.Item) < len(ds.Tracks) {
+				dc.get("/tracks/{id}", "/tracks/"+ds.Tracks[s.Item].ID+"?range=all")
+			}
+		}
+	}
+	library()
+
 	allRanges := []string{"", "range=today", "range=this_week", "range=this_month", "range=this_year",
 		"range=last_7d", "range=last_4w", "range=last_6m", "range=last_12m", "range=prev_day",
 		"range=prev_week", "range=prev_month", "range=prev_year", "range=all", "from=2025-02-01&to=2025-03-15",
@@ -130,11 +159,13 @@ func TestDifferential(t *testing.T) {
 	dc.do("PUT", "/exclusions/{kind}/{id}", "/exclusions/artists/"+ids["artist"], nil) // idempotent
 	dc.do("PUT", "/playlists/{id}/name", "/playlists/"+playlist+"/name", map[string]any{"name": "Morning Mix"})
 	dashboard([]string{"range=all", "range=last_12m"})
+	library()
 	dc.get("/artists/{id}", "/artists/"+ids["artist"]+"?range=all")
 	dc.status()
 	dc.do("PATCH", "/settings", "/settings", map[string]any{"play_rule": "fixed", "play_rule_threshold_ms": 45000,
 		"session_gap_minutes": 40, "timezone": "America/New_York", "week_start": "sunday"})
 	dashboard([]string{"range=all", "range=this_week", "range=last_7d", "from=2024-11-03&to=2024-11-03"})
+	library()
 	dc.status()
 	dc.do("DELETE", "/exclusions/{kind}/{id}", "/exclusions/artists/"+ids["artist"], nil)
 	dc.do("PUT", "/playlists/{id}/name", "/playlists/"+playlist+"/name", map[string]any{"name": nil})

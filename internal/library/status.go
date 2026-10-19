@@ -117,4 +117,3 @@ func ReadStatus(ctx context.Context, q *sql.DB, scopes []string) (Status, error)
 	}
 	return st, rows.Err()
 }
-

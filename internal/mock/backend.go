@@ -495,13 +495,15 @@ func (b *Backend) SystemStatus(ctx context.Context) (*api.SystemStatus, error) {
 		}
 	}
 	st := &api.SystemStatus{
-		Spotify: api.SpotifyStatus{State: "connected", AccountName: ptr("listener"), ConnectedAt: ptr(ds.PollerSince)},
+		Spotify: api.SpotifyStatus{State: "connected", AccountName: ptr("listener"), ConnectedAt: ptr(ds.PollerSince),
+			Scopes: slices.Clone(mockScopes)},
 		Capture: api.CaptureStatus{State: "playing", LastPollAt: ptr(now - 4_000), LastPlayAt: nil},
 		Imports: b.importList(5),
 		Catalog: mockCatalog(now, int64(len(ds.Tracks)), tracksHyd, int64(len(ds.Albums)), int64(len(ds.Artists)), artistsHyd,
 			int64(len(ds.Contexts)), ctxResolved),
-		Derive: api.DeriveStatus{State: "idle", LastRebuildAt: ptr(b.lastRebuildAt), LastRebuildMs: ptr(b.lastRebuildMs)},
-		Data:   api.DataStatus{Rows: int64(len(b.vis)), Plays: plays},
+		Derive:  api.DeriveStatus{State: "idle", LastRebuildAt: ptr(b.lastRebuildAt), LastRebuildMs: ptr(b.lastRebuildMs)},
+		Data:    api.DataStatus{Rows: int64(len(b.vis)), Plays: plays},
+		Library: b.libraryStatus(),
 	}
 	if n := len(b.vis); n > 0 {
 		st.Data.FirstPlayAt = ptr(ds.Plays[b.vis[0]].StartMs)

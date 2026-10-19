@@ -162,6 +162,7 @@ func Generate(cfg Config) *Dataset {
 	g.listen()
 	g.nowPlaying()
 	g.prune()
+	g.library(cfg.Seed)
 	return g.ds
 }
 

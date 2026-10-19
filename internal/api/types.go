@@ -130,6 +130,7 @@ type SystemStatus struct {
 	Derive  DeriveStatus  `json:"derive"`
 	Data    DataStatus    `json:"data"`
 	Auth    AuthStatus    `json:"auth"`
+	Library LibraryStatus `json:"library"`
 }
 
 // AuthStatus reports the instance access mode (D13); the UI shows a
@@ -139,9 +140,10 @@ type AuthStatus struct {
 }
 
 type SpotifyStatus struct {
-	State       string  `json:"state"`
-	AccountName *string `json:"account_name"`
-	ConnectedAt *int64  `json:"connected_at"`
+	State       string   `json:"state"`
+	AccountName *string  `json:"account_name"`
+	ConnectedAt *int64   `json:"connected_at"`
+	Scopes      []string `json:"scopes"`
 }
 
 type CaptureStatus struct {
@@ -560,6 +562,7 @@ type AlbumDetail struct {
 type TrackDetail struct {
 	Track    TrackFull      `json:"track"`
 	Excluded bool           `json:"excluded"`
+	SavedAt  *int64         `json:"saved_at"`
 	Range    ResolvedRange  `json:"range"`
 	Previous *ResolvedRange `json:"previous"`
 	Metric   string         `json:"metric"`
