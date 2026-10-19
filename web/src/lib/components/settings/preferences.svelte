@@ -1,9 +1,10 @@
 <!--
 	Instance settings: how plays are counted (D7), sessions, time zone and
-	calendar, plus the per-browser theme (D22). Changes that rebuild derived
-	data (rule, threshold, time zone, session gap) are saved together with an
-	explicit button and reload every view afterwards; display-only ones
-	(date format, week start, theme) apply at once.
+	calendar, plus the per-browser theme (D22) and data-sources view (D32).
+	Changes that rebuild derived data (rule, threshold, time zone, session gap)
+	are saved together with an explicit button and reload every view
+	afterwards; display-only ones (date format, week start, theme, data
+	sources) apply at once.
 -->
 <script lang="ts">
 	import Segmented from '#lib/components/common/segmented.svelte';
@@ -15,6 +16,7 @@
 	import { invalidate } from '#lib/data/cache.js';
 	import { applySettings, prefs } from '#lib/state/prefs.svelte.js';
 	import { theme, type Theme } from '#lib/state/theme.svelte.js';
+	import { sources } from '#lib/state/sources.svelte.js';
 
 	let { settings, onchange }: { settings: Schemas['Settings']; onchange: () => void } = $props();
 
@@ -287,6 +289,27 @@
 					{ value: 'system', label: 'System' },
 					{ value: 'light', label: 'Light' },
 					{ value: 'dark', label: 'Dark' }
+				]}
+				class="w-fit"
+			/>
+		</div>
+		<div class="grid gap-1.5">
+			<span class="flex items-center gap-1.5 text-sm font-medium"
+				><span
+					>Data sources <span class="font-normal text-muted-foreground">(this browser)</span></span
+				>
+				<Hint
+					text="Where plays and track details came from: the mix on Overview, source lamps on each play in History, and a badge on pages with provisional details."
+				/></span
+			>
+			<Segmented
+				label="Data sources"
+				size="md"
+				value={sources.show ? 'show' : 'hide'}
+				onchange={(v) => sources.set(v === 'show')}
+				options={[
+					{ value: 'hide', label: 'Hide' },
+					{ value: 'show', label: 'Show' }
 				]}
 				class="w-fit"
 			/>

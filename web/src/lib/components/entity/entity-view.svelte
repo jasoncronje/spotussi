@@ -103,7 +103,7 @@
 	// What each page lists inside the entity.
 	const LISTS = {
 		artist: { tracks: 8, albums: 5, artists: 0 },
-		album: { tracks: 12, albums: 0, artists: 0 },
+		album: { tracks: 12, albums: 0, artists: 5 },
 		track: { tracks: 0, albums: 0, artists: 0 },
 		genre: { tracks: 5, albums: 5, artists: 5 }
 	} as const;
@@ -271,23 +271,36 @@
 	const albumItems = $derived((albums.current?.items ?? []).map(albumItem));
 	const artistItems = $derived((artists.current?.items ?? []).map(artistItem));
 	const scopeParam = $derived(Object.fromEntries(Object.entries(scope)) as Record<string, string>);
-	const lists = $derived(
-		[
-			want.artists && { key: 'artists', title: 'Top artists', res: artists, items: artistItems },
-			want.tracks && {
-				key: 'tracks',
-				title: kind === 'album' ? 'Tracks on this album' : 'Top tracks',
-				res: tracks,
-				items: trackItems
-			},
-			want.albums && { key: 'albums', title: 'Top albums', res: albums, items: albumItems }
-		].filter(Boolean) as {
+	// Most albums have one or two artists, named in the header; the ranked
+	// list (artists on its tracks, features included) is for compilations,
+	// soundtracks and feature-heavy albums, after the tracks (D14, D32).
+	const lists = $derived.by(() => {
+		const a = want.artists &&
+			(kind !== 'album' || (artists.current?.total ?? 0) >= 3) && {
+				key: 'artists' as const,
+				title: kind === 'album' ? 'Artists on this album' : 'Top artists',
+				res: artists,
+				items: artistItems
+			};
+		const t = want.tracks && {
+			key: 'tracks' as const,
+			title: kind === 'album' ? 'Tracks on this album' : 'Top tracks',
+			res: tracks,
+			items: trackItems
+		};
+		const b = want.albums && {
+			key: 'albums' as const,
+			title: 'Top albums',
+			res: albums,
+			items: albumItems
+		};
+		return (kind === 'album' ? [t, a] : [a, t, b]).filter(Boolean) as {
 			key: 'artists' | 'tracks' | 'albums';
 			title: string;
 			res: Resource<{ total: number }>;
 			items: typeof trackItems;
-		}[]
-	);
+		}[];
+	});
 	const historyLink = $derived(historyHref(scopeParam));
 </script>
 
@@ -657,7 +670,7 @@
 					<div
 						class="min-w-0 transition-opacity duration-200 {l.res.stale
 							? 'opacity-55'
-							: ''} {kind === 'album' ? 'xl:col-span-2' : ''}"
+							: ''} {kind === 'album' && l.key === 'tracks' ? 'xl:col-span-2' : ''}"
 					>
 						{#if l.res.error && (!l.res.current || l.res.stale)}
 							<SectionError what={l.title.toLowerCase()} error={l.res.error} retry={l.res.retry} />

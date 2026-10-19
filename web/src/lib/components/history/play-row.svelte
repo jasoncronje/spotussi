@@ -3,8 +3,9 @@
 	is known about it: when, how long you actually listened, whether it was
 	skipped or too short to count, whether the time is estimated from the
 	track length (D7), where it was played from, and which sources saw it
-	(D8): Live capture, Recently played, and the Export. A live-only play the
-	export later contradicts is flagged.
+	(D8): Live capture, Recently played, and the Export, when "Show data
+	sources" is on (D32). A live-only play the export later contradicts is
+	flagged.
 -->
 <script lang="ts" module>
 	import type { Schemas } from '#lib/api/client.js';
@@ -20,6 +21,7 @@
 	import Artwork from '#lib/components/common/artwork.svelte';
 	import { albumHref, artistHref, trackHref } from '#lib/state/view.svelte.js';
 	import { clockTime, dateAt, fullDateTime, trackLength } from '#lib/format.js';
+	import { sources as dataSources } from '#lib/state/sources.svelte.js';
 
 	let {
 		play: p,
@@ -48,10 +50,12 @@
 
 <li
 	class="grid items-center gap-x-3 py-2 {withDate
-		? 'grid-cols-[5.5rem_auto_minmax(0,1fr)_auto] sm:grid-cols-[6.5rem_auto_minmax(0,1fr)_auto_auto]'
-		: 'grid-cols-[3.75rem_auto_minmax(0,1fr)_auto] sm:grid-cols-[4.5rem_auto_minmax(0,1fr)_auto_auto]'} {p.counts_as_play
-		? ''
-		: 'text-muted-foreground'}"
+		? 'grid-cols-[5.5rem_auto_minmax(0,1fr)_auto] sm:grid-cols-[6.5rem_auto_minmax(0,1fr)_auto]'
+		: 'grid-cols-[3.75rem_auto_minmax(0,1fr)_auto] sm:grid-cols-[4.5rem_auto_minmax(0,1fr)_auto]'} {dataSources.show
+		? withDate
+			? 'sm:grid-cols-[6.5rem_auto_minmax(0,1fr)_auto_auto]'
+			: 'sm:grid-cols-[4.5rem_auto_minmax(0,1fr)_auto_auto]'
+		: ''} {p.counts_as_play ? '' : 'text-muted-foreground'}"
 >
 	<div class="tnum text-xs leading-tight text-muted-foreground">
 		{#if index !== undefined}<span class="figure block text-sm text-foreground/80">{index}</span
@@ -108,19 +112,19 @@
 		</p>
 	</div>
 	<!-- Sources (D8): three lamps in a fixed order, lit for each source. -->
-	<span
-		class="hidden items-center gap-1.5 text-2xs text-muted-foreground sm:inline-flex"
-		title={sources.map((s) => s.hint).join('; ')}
-	>
-		<span class="inline-flex gap-[3px]" aria-hidden="true">
-			{#each SOURCES as s (s.key)}
-				<span
-					class="size-[5px] rounded-full {p.sources.includes(s.key) ? 'bg-signal' : 'bg-grille'}"
-				></span>
-			{/each}
-		</span>
-		<span class="sr-only">Sources: </span>{sourceText}
-	</span>
+	{#if dataSources.show}<span
+			class="hidden items-center gap-1.5 text-2xs text-muted-foreground sm:inline-flex"
+			title={sources.map((s) => s.hint).join('; ')}
+		>
+			<span class="inline-flex gap-[3px]" aria-hidden="true">
+				{#each SOURCES as s (s.key)}
+					<span
+						class="size-[5px] rounded-full {p.sources.includes(s.key) ? 'bg-signal' : 'bg-grille'}"
+					></span>
+				{/each}
+			</span>
+			<span class="sr-only">Sources: </span>{sourceText}
+		</span>{/if}
 	<div class="tnum text-right text-xs whitespace-nowrap">
 		{#if p.ms_estimated}
 			<span
@@ -140,12 +144,14 @@
 		{#if len && !p.ms_estimated}
 			<span class="block text-2xs text-faint">of {trackLength(len)}</span>
 		{/if}
-		<span class="mt-0.5 flex justify-end gap-[3px] sm:hidden" aria-hidden="true">
-			{#each SOURCES as s (s.key)}
-				<span
-					class="size-[4px] rounded-full {p.sources.includes(s.key) ? 'bg-signal' : 'bg-grille'}"
-				></span>
-			{/each}
-		</span>
+		{#if dataSources.show}
+			<span class="mt-0.5 flex justify-end gap-[3px] sm:hidden" aria-hidden="true">
+				{#each SOURCES as s (s.key)}
+					<span
+						class="size-[4px] rounded-full {p.sources.includes(s.key) ? 'bg-signal' : 'bg-grille'}"
+					></span>
+				{/each}
+			</span>
+		{/if}
 	</div>
 </li>
