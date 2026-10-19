@@ -46,8 +46,13 @@ func (s *Service) Status(ctx context.Context) (Status, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	st.State = s.state
-	if !connected {
+	switch {
+	case !connected:
 		st.State = StateNotConnected
+	case st.State == StateNotConnected:
+		// Connected since the last run found no connection: idle until
+		// the first sync after connecting.
+		st.State = StateIdle
 	}
 	if !s.nextAt.IsZero() && st.State != StateSyncing {
 		st.NextSyncAt = s.nextAt.UnixMilli()
