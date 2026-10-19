@@ -17,6 +17,8 @@ const (
 	SourceAPI    = "api"
 	SourcePoller = "poller"
 	SourceRecent = "recent"
+	// SourceLibrary marks a track written from library sync (D36).
+	SourceLibrary = "library"
 	// SourceFallback marks a track row only fallback sources wrote
 	// (hydrated_at null; per-field sources in catalog_provenance, D27).
 	SourceFallback = "fallback"
@@ -104,7 +106,8 @@ func storeAlbum(ctx context.Context, tx *sql.Tx, a *spotify.SimpleAlbum, now, pr
 }
 
 // storeCredits replaces the artist credits of a track or album, adds the
-// artists as known-by-name and enqueues the unhydrated ones.
+// artists as known-by-name and enqueues the unhydrated ones (none when
+// prio is negative: library tracks nobody played, D36).
 func storeCredits(ctx context.Context, tx *sql.Tx, table, col, id string, artists []spotify.SimpleArtist, prio int64) error {
 	if _, err := tx.ExecContext(ctx, `DELETE FROM `+table+` WHERE `+col+` = ?`, id); err != nil {
 		return err
@@ -126,6 +129,9 @@ func storeCredits(ctx context.Context, tx *sql.Tx, table, col, id string, artist
 		if _, err := tx.ExecContext(ctx, `INSERT INTO artists (id, name) VALUES (?, ?)
 			ON CONFLICT (id) DO UPDATE SET name = excluded.name WHERE hydrated_at IS NULL`, a.ID, name); err != nil {
 			return err
+		}
+		if prio < 0 {
+			continue
 		}
 		if _, err := tx.ExecContext(ctx, `INSERT INTO hydration_queue (entity_type, id, priority)
 			SELECT 'artist', ?1, ?2 WHERE NOT EXISTS (SELECT 1 FROM artists WHERE id = ?1 AND hydrated_at IS NOT NULL)

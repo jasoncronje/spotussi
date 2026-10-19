@@ -657,7 +657,7 @@ func (b *Backend) Track(ctx context.Context, id string, spec query.Spec, metric 
 	for _, a := range x.Artists {
 		excluded = excluded || b.exclArtists[a]
 	}
-	return &api.TrackDetail{Track: full, Excluded: excluded, Range: wireRange(cur), Previous: wireRangePtr(prev),
+	return &api.TrackDetail{Track: full, Excluded: excluded, SavedAt: b.savedAt(t), Range: wireRange(cur), Previous: wireRangePtr(prev),
 		Metric: string(metric), InRange: es, AllTime: at}, nil
 }
 

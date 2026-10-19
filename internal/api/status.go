@@ -19,6 +19,7 @@ func systemStatus(o Options) http.HandlerFunc {
 			Imports: []ImportJob{},
 			Catalog: CatalogStatus{State: "disabled", Fallbacks: []CatalogFallback{}},
 			Derive:  DeriveStatus{State: "idle"},
+			Library: DisabledLibraryStatus(),
 		}
 		if o.Backend != nil {
 			var err error
@@ -34,7 +35,7 @@ func systemStatus(o Options) http.HandlerFunc {
 				writeResult[SystemStatus](w, r, nil, err)
 				return
 			}
-			st.Spotify = SpotifyStatus{State: string(s.State)}
+			st.Spotify = SpotifyStatus{State: string(s.State), Scopes: s.Scopes}
 			if s.State != spotify.StateNotConfigured {
 				name := s.AccountName
 				if name == "" {
@@ -43,6 +44,16 @@ func systemStatus(o Options) http.HandlerFunc {
 				st.Spotify.AccountName, st.Spotify.ConnectedAt = &name, &s.ConnectedAt
 			}
 		}
+		if st.Spotify.Scopes == nil {
+			st.Spotify.Scopes = []string{}
+		}
 		writeJSON(w, r, http.StatusOK, st)
 	}
+}
+
+// DisabledLibraryStatus is the library status of an instance without
+// library sync.
+func DisabledLibraryStatus() LibraryStatus {
+	pending := LibraryListStatus{State: "pending"}
+	return LibraryStatus{State: "disabled", Lists: LibraryLists{Tracks: pending, Albums: pending, Playlists: pending}}
 }

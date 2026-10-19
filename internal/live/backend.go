@@ -21,6 +21,7 @@ import (
 	"spotussi/internal/derive"
 	"spotussi/internal/hydrate"
 	"spotussi/internal/importer"
+	"spotussi/internal/library"
 	"spotussi/internal/spotify"
 )
 
@@ -42,6 +43,9 @@ type Options struct {
 	// Catalog reports hydration progress (nil: hydration is off and the
 	// catalog is counted from the database).
 	Catalog func(context.Context) (hydrate.Status, error)
+	// Library is the library sync job (nil: sync is off; synced data is
+	// still served).
+	Library *library.Service
 }
 
 // Backend implements api.Backend for live mode.
@@ -55,6 +59,7 @@ type Backend struct {
 	engine    *derive.Engine
 
 	catalog func(context.Context) (hydrate.Status, error)
+	library *library.Service
 
 	settingsMu sync.Mutex // serialises settings read-modify-write
 	cacheMu    sync.Mutex
@@ -66,7 +71,7 @@ var _ api.Backend = (*Backend)(nil)
 // New builds a Backend and its derivation engine (started by Run).
 func New(o Options) *Backend {
 	b := &Backend{db: o.DB, defaultTZ: o.DefaultTimezone, now: o.Now, limiter: o.LimiterStats, imports: o.Imports,
-		catalog: o.Catalog}
+		catalog: o.Catalog, library: o.Library}
 	if o.Capture != nil {
 		b.capture = o.Capture
 	}
@@ -134,6 +139,11 @@ func (b *Backend) SystemStatus(ctx context.Context) (*api.SystemStatus, error) {
 		Imports: wireJobs(jobs),
 		Catalog: cat,
 	}
+	ls, err := b.libraryStatus(ctx)
+	if err != nil {
+		return nil, err
+	}
+	st.Library = WireLibraryStatus(ls)
 	ds := b.engine.Status()
 	st.Derive = api.DeriveStatus{State: ds.State}
 	if ds.State == "rebuilding" {

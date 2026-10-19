@@ -295,11 +295,12 @@ func (f *fixture) discoverIDs() map[string]string {
 		return s
 	}
 	ids := map[string]string{
-		"artist":  first(get("/api/v1/top/artists?range=all&limit=1"), "artist", "id"),
-		"album":   first(get("/api/v1/top/albums?range=all&limit=1"), "album", "id"),
-		"track":   first(get("/api/v1/top/tracks?range=all&limit=1"), "track", "id"),
-		"session": first(get("/api/v1/sessions?range=all&limit=1"), "id"),
-		"genre":   first(get("/api/v1/top/genres?range=all&limit=1"), "genre", "id"),
+		"artist":           first(get("/api/v1/top/artists?range=all&limit=1"), "artist", "id"),
+		"album":            first(get("/api/v1/top/albums?range=all&limit=1"), "album", "id"),
+		"track":            first(get("/api/v1/top/tracks?range=all&limit=1"), "track", "id"),
+		"session":          first(get("/api/v1/sessions?range=all&limit=1"), "id"),
+		"library_playlist": first(get("/api/v1/library/playlists?relation=own&limit=1"), "playlist", "id"),
+		"genre":            first(get("/api/v1/top/genres?range=all&limit=1"), "genre", "id"),
 	}
 	for _, it := range get("/api/v1/contexts?range=all&limit=500")["items"].([]any) {
 		c := dig(it, "context").(map[string]any)
@@ -373,6 +374,29 @@ func TestEveryOperationMatchesContract(t *testing.T) {
 	f.call("GET", at("/history"), "skipped=true&shuffle=false&counted=false&limit=3", nil, 200)
 	f.call("GET", at("/history"), "device=iPhone&limit=3", nil, 200)
 	f.call("GET", at("/history"), "platform=ios&limit=3", nil, 200)
+
+	// Library (D36).
+	if sum := f.call("GET", at("/library/summary"), "", nil, 200); sum["saved_tracks"].(float64) == 0 {
+		t.Fatalf("library summary: %v", sum)
+	}
+	for _, q := range []string{"", "played=never_played&limit=5", "played=maybe_played", "sort=plays&limit=3&offset=2", "sort=last_played"} {
+		f.call("GET", at("/library/tracks"), q, nil, 200)
+	}
+	f.call("GET", at("/library/tracks"), "played=sometimes", nil, 400)
+	f.call("GET", at("/library/tracks"), "sort=name", nil, 400)
+	for _, q := range []string{"", "sort=plays", "sort=played_share&limit=2"} {
+		f.call("GET", at("/library/albums"), q, nil, 200)
+	}
+	for _, q := range []string{"", "relation=followed", "sort=name", "sort=played_share&relation=collaborative"} {
+		f.call("GET", at("/library/playlists"), q, nil, 200)
+	}
+	f.call("GET", at("/library/playlists"), "relation=mine", nil, 400)
+	f.call("GET", at("/library/playlists/{id}", ids["library_playlist"]), "limit=5", nil, 200)
+	f.call("GET", at("/library/playlists/{id}", "nope"), "", nil, 404)
+	for _, q := range []string{"", "range=last_12m&bucket=month", "range=this_month&bucket=day"} {
+		f.call("GET", at("/library/timeline"), q, nil, 200)
+	}
+	f.call("POST", at("/library/sync"), "", nil, 202)
 
 	// Imports: the dataset's own import, then a simulated upload.
 	if l := f.call("GET", at("/imports"), "", nil, 200); len(l["items"].([]any)) != 1 {

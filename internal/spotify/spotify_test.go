@@ -186,7 +186,7 @@ func TestAuthorizeURLAndPKCE(t *testing.T) {
 	if u.Path != "/authorize" || q.Get("client_id") != clientID || q.Get("response_type") != "code" ||
 		q.Get("redirect_uri") != "https://stats.example.com/oauth/spotify/callback" ||
 		q.Get("code_challenge_method") != "S256" || len(q.Get("code_challenge")) != 43 || len(q.Get("state")) < 40 ||
-		q.Get("scope") != "user-read-playback-state user-read-recently-played playlist-read-private" {
+		q.Get("scope") != "user-read-playback-state user-read-recently-played playlist-read-private user-library-read" {
 		t.Fatalf("authorize URL: %s", req.URL)
 	}
 	// The stored verifier hashes to the challenge sent to Spotify (S256).
@@ -211,7 +211,7 @@ func TestConnectViaPasteBackAndStatus(t *testing.T) {
 	e.connect(c)
 	st, err := c.Status(ctx)
 	if err != nil || st.State != spotify.StateConnected || st.AccountID != "listener42" || st.AccountName != "Test Listener" ||
-		st.ClientID != clientID || len(st.Scopes) != 3 || st.ConnectedAt != e.clock().UnixMilli() {
+		st.ClientID != clientID || len(st.Scopes) != 4 || st.ConnectedAt != e.clock().UnixMilli() {
 		t.Fatalf("status: %+v %v", st, err)
 	}
 	// The refresh token is encrypted at rest and is a live token at Spotify.

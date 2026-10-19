@@ -116,6 +116,17 @@ type Backend interface {
 	Imports(ctx context.Context) (*ImportJobList, error)
 	Import(ctx context.Context, id string) (*ImportJob, error)
 
+	// Library (D36).
+	LibrarySummary(ctx context.Context) (*LibrarySummary, error)
+	LibraryTracks(ctx context.Context, p LibraryTracksParams) (*LibraryTracks, error)
+	LibraryAlbums(ctx context.Context, p LibraryAlbumsParams) (*LibraryAlbums, error)
+	LibraryPlaylists(ctx context.Context, p LibraryPlaylistsParams) (*LibraryPlaylists, error)
+	LibraryPlaylist(ctx context.Context, id string, p Page) (*LibraryPlaylistDetail, error)
+	LibraryTimeline(ctx context.Context, r query.Spec, b query.Bucket) (*LibraryTimeline, error)
+	// SyncLibrary starts a quick check now (ErrSyncRunning,
+	// ErrSyncDisabled).
+	SyncLibrary(ctx context.Context) (*LibraryStatus, error)
+
 	Settings(ctx context.Context) (*Settings, error)
 	UpdateSettings(ctx context.Context, p SettingsPatch) (*Settings, error)
 	Exclusions(ctx context.Context) (*Exclusions, error)

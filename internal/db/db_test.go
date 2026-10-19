@@ -102,6 +102,52 @@ func TestAppliesSkippedVersion(t *testing.T) {
 	}
 }
 
+// An instance that ran the ListenBrainz build (schema at 0009, deployed
+// before library sync was numbered) upgrades to 0010 alone: 0009 is not
+// run again (its ADD COLUMN would fail) and the library tables appear.
+func TestUpgradesFrom0009ListenBrainz(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "x.db")
+	d, err := OpenPath(ctx, path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, q := range []string{
+		`DELETE FROM schema_migrations WHERE version >= 10`,
+		`DROP TABLE library_spans`, `DROP TABLE library_walks`,
+		`DROP TABLE library_playlists`, `DROP TABLE library_syncs`,
+	} {
+		if _, err := d.Write.Exec(q); err != nil {
+			t.Fatalf("%s: %v", q, err)
+		}
+	}
+	d.Close()
+	d, err = OpenPath(ctx, path)
+	if err != nil {
+		t.Fatalf("upgrade from 0009: %v", err)
+	}
+	defer d.Close()
+	var names []string
+	rs, err := d.Read.Query(`SELECT name FROM schema_migrations WHERE version IN (9, 10) ORDER BY version`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for rs.Next() {
+		var n string
+		if err := rs.Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		names = append(names, n)
+	}
+	rs.Close()
+	if len(names) != 2 || names[0] != "0009_listenbrainz.sql" || names[1] != "0010_library.sql" {
+		t.Fatalf("migrations 9 and 10 = %v", names)
+	}
+	if _, err := d.Read.Exec(`SELECT COUNT(*) FROM library_syncs`); err != nil {
+		t.Errorf("library tables not created: %v", err)
+	}
+}
+
 func TestRefusesNewerSchema(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "x.db")

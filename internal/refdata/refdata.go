@@ -163,4 +163,5 @@ type Dataset struct {
 	Platforms []string
 	Plays     []Play // sorted by StartMs
 	Now       NowPlaying
+	Library   Library
 }

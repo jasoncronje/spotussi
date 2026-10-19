@@ -96,6 +96,7 @@ tags:
   - name: history
   - name: sessions
   - name: settings
+  - name: library
 
 paths:
   /health:
@@ -1041,6 +1042,171 @@ paths:
         '404': { $ref: '#/components/responses/Error' }
         default: { $ref: '#/components/responses/Error' }
 
+  /library/summary:
+    get:
+      tags: [library]
+      operationId: getLibrarySummary
+      summary: The saved library at a glance, with how saves turn into plays (D36)
+      description: |
+        Counts what is in the library now (saved tracks, saved albums, playlists) and
+        splits the saved tracks by play status (see `LibraryPlayStatus`). Plays are
+        all-time counted plays (play rule and exclusions apply; excluded tracks and
+        tracks by excluded artists are left out).
+
+        **Heavy rotation** is a track's 5th counted play (`rotation_plays`). For each
+        saved track, the days from its save to its first play and to heavy rotation
+        are measured; the medians cover tracks that reached them after saving.
+        `rotation_mix` buckets saved tracks by when the 5th play came: before saving,
+        within a day, a week or 30 days of saving, later, or not yet.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibrarySummary' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/tracks:
+    get:
+      tags: [library]
+      operationId: getLibraryTracks
+      summary: Saved tracks with their plays (saved but never played first-class)
+      description: |
+        The tracks saved now ("Liked Songs"). `played` filters by play status;
+        `counts` always covers every status. Sorts: `added` (newest save first),
+        `plays` (most counted plays first), `last_played` (most recent play first,
+        never played last). Ties break by track ID.
+      parameters:
+        - $ref: '#/components/parameters/LibraryPlayed'
+        - name: sort
+          in: query
+          schema: { type: string, enum: [added, plays, last_played], default: added }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryTracks' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/albums:
+    get:
+      tags: [library]
+      operationId: getLibraryAlbums
+      summary: Saved albums with how much of each has been played
+      description: |
+        `tracks_played` counts the album's tracks with at least one counted play.
+        Sorts: `added` (newest save first), `plays`, `played_share`
+        (`tracks_played / tracks_total`, unknown totals last). Ties break by album ID.
+      parameters:
+        - name: sort
+          in: query
+          schema: { type: string, enum: [added, plays, played_share], default: added }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryAlbums' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/playlists:
+    get:
+      tags: [library]
+      operationId: getLibraryPlaylists
+      summary: The user's playlists with play-through and plays started from them
+      description: |
+        Every playlist in the library: the user's own, collaborative and followed
+        ones. **Play-through** (`tracks_played / tracks`) is the share of a
+        playlist's tracks ever played, from anywhere. Spotify gives a
+        development-mode app the items of own and collaborative playlists only, so
+        followed playlists have `items_available: false` and null play-through, but
+        still report plays started from them (`plays_here`, from play contexts, D17).
+        Sorts: `plays_here` (default), `played_share` (unknown last), `name`.
+        Ties break by playlist ID.
+      parameters:
+        - name: relation
+          in: query
+          schema: { type: string, enum: [all, own, collaborative, followed], default: all }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [plays_here, played_share, name], default: plays_here }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryPlaylists' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/playlists/{id}:
+    get:
+      tags: [library]
+      operationId: getLibraryPlaylist
+      summary: One playlist's items in order, with plays overall and from the playlist
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryPlaylistDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/timeline:
+    get:
+      tags: [library]
+      operationId: getLibraryTimeline
+      summary: Saves and removals over time
+      description: |
+        Tracks and albums saved (by Spotify's `added_at`) and removed (by the sync
+        that first found them gone), and items added to and removed from the
+        user's own and collaborative playlists, per bucket. Removals are known only
+        from the first sync on; saves go back as far as the library does. Defaults
+        to `range=all`.
+      parameters:
+        - $ref: '#/components/parameters/HistoryRange'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Bucket'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryTimeline' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /library/sync:
+    post:
+      tags: [library]
+      operationId: syncLibrary
+      summary: Check the library for changes now
+      description: |
+        Runs a quick check now (first pages and playlist snapshots; changed lists are
+        walked). Needs a signed-in browser identity (API tokens are read-only).
+        `409 sync_running` while a sync runs; `503 sync_disabled` when library sync
+        is off or the instance has no live backend.
+      responses:
+        '202':
+          description: The sync was started
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryStatus' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
   /search:
     get:
       tags: [entities]
@@ -1223,6 +1389,11 @@ components:
       in: query
       description: Restrict to plays crediting an artist with this genre. At most one scope parameter per request.
       schema: { type: string }
+    LibraryPlayed:
+      name: played
+      in: query
+      description: Filter saved tracks by play status (`LibraryPlayStatus`).
+      schema: { type: string, enum: [all, played, maybe_played, never_played], default: all }
     EntityId:
       name: id
       in: path
@@ -1482,6 +1653,304 @@ components:
           description: Spotify-made playlist that apps cannot read (D17); can be named manually.
         image_url: { type: [string, 'null'] }
 
+    # ---------- library (D36) ----------
+    LibraryListStatus:
+      type: object
+      additionalProperties: false
+      required: [state, last_error]
+      properties:
+        state:
+          type: string
+          enum: [ok, pending, needs_scope, error]
+          description: |
+            `pending`: not synced yet. `needs_scope`: Spotify was connected without
+            `user-library-read` (or it was revoked); reconnect Spotify to sync saved tracks and
+            albums. Playlists need only `playlist-read-private`.
+        last_error: { type: [string, 'null'] }
+
+    LibraryStatus:
+      type: object
+      additionalProperties: false
+      description: |
+        Library sync (D36): an hourly quick check and a daily full walk in the background
+        lane of the shared request budget. None of its requests count against the daily
+        catalog lookup quota.
+      required: [state, last_sync_at, last_full_at, next_sync_at, resumes_at, progress, lists, saved_tracks,
+        saved_albums, playlists, playlists_with_items, last_error, last_error_at]
+      properties:
+        state:
+          type: string
+          enum: [disabled, not_connected, idle, syncing, backing_off, quota_exceeded]
+          description: |
+            `disabled`: `LIBRARY_SYNC_ENABLED=false`. `backing_off`: the last sync
+            failed and is retried (see `last_error`). `quota_exceeded`: a Spotify quota bucket is
+            spent; sync resumes at `resumes_at`.
+        last_sync_at:
+          description: End of the last sync that finished without error.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        last_full_at:
+          description: End of the last full walk.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        next_sync_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        resumes_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        progress: { type: [number, 'null'], minimum: 0, maximum: 1, description: While syncing. }
+        lists:
+          type: object
+          additionalProperties: false
+          required: [tracks, albums, playlists]
+          properties:
+            tracks: { $ref: '#/components/schemas/LibraryListStatus' }
+            albums: { $ref: '#/components/schemas/LibraryListStatus' }
+            playlists: { $ref: '#/components/schemas/LibraryListStatus' }
+        saved_tracks: { type: integer, minimum: 0 }
+        saved_albums: { type: integer, minimum: 0 }
+        playlists: { type: integer, minimum: 0 }
+        playlists_with_items: { type: integer, minimum: 0, description: Playlists whose items are synced (own and collaborative). }
+        last_error: { type: [string, 'null'] }
+        last_error_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    LibraryPlayStatus:
+      type: string
+      enum: [played, maybe_played, never_played]
+      description: |
+        `played`: a counted play of the same track ID, of a track Spotify relinked it to,
+        or of a track with the same ISRC (the same recording on another release); `plays`
+        and the play dates count all of them. `maybe_played`: not played, but a played
+        track has the same title and main artist (normalized), e.g. another release whose
+        ISRC is not known yet. `never_played`: neither.
+
+    LibraryDays:
+      type: object
+      additionalProperties: false
+      required: [median, count]
+      properties:
+        median: { type: [number, 'null'], description: Median days, to one decimal; null when count is 0. }
+        count: { type: integer, minimum: 0, description: Saved tracks measured. }
+
+    LibrarySummary:
+      type: object
+      additionalProperties: false
+      required: [last_sync_at, saved_tracks, saved_albums, playlists, tracks, rotation_plays, days_to_first_play,
+        days_to_rotation, rotation_mix]
+      properties:
+        last_sync_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        saved_tracks: { type: integer, minimum: 0 }
+        saved_albums: { type: integer, minimum: 0 }
+        playlists: { type: integer, minimum: 0 }
+        tracks:
+          type: object
+          additionalProperties: false
+          required: [played, maybe_played, never_played]
+          description: Saved tracks by play status.
+          properties:
+            played: { type: integer, minimum: 0 }
+            maybe_played: { type: integer, minimum: 0 }
+            never_played: { type: integer, minimum: 0 }
+        rotation_plays: { type: integer, description: 'The counted play that marks heavy rotation (5).' }
+        days_to_first_play: { $ref: '#/components/schemas/LibraryDays' }
+        days_to_rotation: { $ref: '#/components/schemas/LibraryDays' }
+        rotation_mix:
+          type: object
+          additionalProperties: false
+          required: [before_saving, within_day, within_week, within_month, later, not_yet]
+          properties:
+            before_saving: { type: integer, minimum: 0 }
+            within_day: { type: integer, minimum: 0 }
+            within_week: { type: integer, minimum: 0 }
+            within_month: { type: integer, minimum: 0, description: Within 30 days. }
+            later: { type: integer, minimum: 0 }
+            not_yet: { type: integer, minimum: 0, description: Fewer than `rotation_plays` counted plays. }
+
+    LibraryTrack:
+      type: object
+      additionalProperties: false
+      required: [track, added_at, status, plays, ms_played, first_played_at, last_played_at, rotation_at]
+      properties:
+        track: { $ref: '#/components/schemas/TrackRef' }
+        added_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        status: { $ref: '#/components/schemas/LibraryPlayStatus' }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        first_played_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        last_played_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        rotation_at:
+          description: Start of the 5th counted play (heavy rotation); null before it.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    LibraryTracks:
+      type: object
+      additionalProperties: false
+      required: [counts, total, offset, limit, items]
+      properties:
+        counts:
+          type: object
+          additionalProperties: false
+          required: [all, played, maybe_played, never_played]
+          properties:
+            all: { type: integer, minimum: 0 }
+            played: { type: integer, minimum: 0 }
+            maybe_played: { type: integer, minimum: 0 }
+            never_played: { type: integer, minimum: 0 }
+        total: { type: integer, minimum: 0, description: Items matching the filter. }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/LibraryTrack' }
+
+    LibraryAlbum:
+      type: object
+      additionalProperties: false
+      required: [album, added_at, tracks_total, tracks_played, plays, ms_played]
+      properties:
+        album: { $ref: '#/components/schemas/AlbumRef' }
+        added_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        tracks_total: { type: [integer, 'null'], minimum: 0 }
+        tracks_played: { type: integer, minimum: 0 }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+
+    LibraryAlbums:
+      type: object
+      additionalProperties: false
+      required: [total, offset, limit, items]
+      properties:
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/LibraryAlbum' }
+
+    LibraryPlaylistRef:
+      type: object
+      additionalProperties: false
+      required: [id, uri, name, owner_name, relation, image_url, spotify_owned]
+      properties:
+        id: { type: string }
+        uri: { type: string }
+        name: { type: string }
+        owner_name: { type: [string, 'null'] }
+        relation:
+          type: string
+          enum: [own, collaborative, followed]
+        image_url: { type: [string, 'null'] }
+        spotify_owned: { type: boolean, description: Spotify-made (D17); its items are never requested. }
+
+    LibraryPlaylist:
+      type: object
+      additionalProperties: false
+      required: [playlist, items_total, items_available, tracks, tracks_played, plays_here, ms_here, last_played_here_at]
+      properties:
+        playlist: { $ref: '#/components/schemas/LibraryPlaylistRef' }
+        items_total: { type: [integer, 'null'], minimum: 0, description: As Spotify counts them (episodes included). }
+        items_available: { type: boolean, description: Whether the items are synced (own and collaborative playlists). }
+        tracks: { type: [integer, 'null'], minimum: 0, description: Different tracks in the playlist now; null without items. }
+        tracks_played: { type: [integer, 'null'], minimum: 0, description: Of `tracks`, those ever played (from anywhere). }
+        plays_here: { type: integer, minimum: 0, description: Counted plays started from this playlist (all time). }
+        ms_here: { type: integer, minimum: 0 }
+        last_played_here_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    LibraryPlaylists:
+      type: object
+      additionalProperties: false
+      required: [total, offset, limit, items]
+      properties:
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/LibraryPlaylist' }
+
+    LibraryPlaylistItem:
+      type: object
+      additionalProperties: false
+      required: [position, track, added_at, added_by, added_by_owner, status, plays, plays_here]
+      properties:
+        position: { type: integer, minimum: 0 }
+        track: { $ref: '#/components/schemas/TrackRef' }
+        added_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        added_by: { type: [string, 'null'], description: Spotify user ID of who added it. }
+        added_by_owner: { type: boolean, description: Added by the connected account. }
+        status: { $ref: '#/components/schemas/LibraryPlayStatus' }
+        plays: { type: integer, minimum: 0 }
+        plays_here: { type: integer, minimum: 0, description: Counted plays of this track started from this playlist. }
+
+    LibraryPlaylistDetail:
+      type: object
+      additionalProperties: false
+      required: [playlist, total, offset, limit, items]
+      properties:
+        playlist: { $ref: '#/components/schemas/LibraryPlaylist' }
+        total: { type: integer, minimum: 0, description: Track items present now. }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/LibraryPlaylistItem' }
+
+    LibraryTimelinePoint:
+      type: object
+      additionalProperties: false
+      required: [key, start_at, tracks_saved, tracks_removed, albums_saved, albums_removed, playlist_adds, playlist_removals]
+      properties:
+        key: { type: string, description: Bucket label in local time (as in `TimelinePoint`). }
+        start_at: { $ref: '#/components/schemas/EpochMs' }
+        tracks_saved: { type: integer, minimum: 0 }
+        tracks_removed: { type: integer, minimum: 0 }
+        albums_saved: { type: integer, minimum: 0 }
+        albums_removed: { type: integer, minimum: 0 }
+        playlist_adds: { type: integer, minimum: 0 }
+        playlist_removals: { type: integer, minimum: 0 }
+
+    LibraryTimeline:
+      type: object
+      additionalProperties: false
+      required: [range, bucket, points]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        bucket: { $ref: '#/components/schemas/BucketSize' }
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/LibraryTimelinePoint' }
+
     # ---------- system ----------
     Health:
       type: object
@@ -1577,8 +2046,9 @@ components:
     SystemStatus:
       type: object
       additionalProperties: false
-      required: [spotify, capture, imports, catalog, derive, data, auth]
+      required: [spotify, capture, imports, catalog, derive, data, auth, library]
       properties:
+        library: { $ref: '#/components/schemas/LibraryStatus' }
         auth:
           type: object
           additionalProperties: false
@@ -1591,12 +2061,16 @@ components:
         spotify:
           type: object
           additionalProperties: false
-          required: [state, account_name, connected_at]
+          required: [state, account_name, connected_at, scopes]
           properties:
             state:
               type: string
               enum: [not_configured, connected, reconnect_required]
             account_name: { type: [string, 'null'] }
+            scopes:
+              type: array
+              description: Scopes Spotify granted (empty when not connected). Library sync needs `user-library-read` (D36).
+              items: { type: string }
             connected_at:
               oneOf:
                 - $ref: '#/components/schemas/EpochMs'
@@ -2524,10 +2998,15 @@ components:
     TrackDetail:
       type: object
       additionalProperties: false
-      required: [track, excluded, range, previous, metric, in_range, all_time]
+      required: [track, excluded, saved_at, range, previous, metric, in_range, all_time]
       properties:
         track: { $ref: '#/components/schemas/TrackFull' }
         excluded: { type: boolean }
+        saved_at:
+          description: When the track was saved to the library (D36); null when it is not saved now.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
         range: { $ref: '#/components/schemas/ResolvedRange' }
         previous:
           oneOf:

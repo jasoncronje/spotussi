@@ -113,3 +113,25 @@ func (UnimplementedBackend) Imports(context.Context) (*ImportJobList, error) {
 func (UnimplementedBackend) Import(context.Context, string) (*ImportJob, error) {
 	return nil, ErrNotImplemented
 }
+
+func (UnimplementedBackend) LibrarySummary(context.Context) (*LibrarySummary, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) LibraryTracks(context.Context, LibraryTracksParams) (*LibraryTracks, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) LibraryAlbums(context.Context, LibraryAlbumsParams) (*LibraryAlbums, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) LibraryPlaylists(context.Context, LibraryPlaylistsParams) (*LibraryPlaylists, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) LibraryPlaylist(context.Context, string, Page) (*LibraryPlaylistDetail, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) LibraryTimeline(context.Context, query.Spec, query.Bucket) (*LibraryTimeline, error) {
+	return nil, ErrNotImplemented
+}
+func (UnimplementedBackend) SyncLibrary(context.Context) (*LibraryStatus, error) {
+	return nil, ErrNotImplemented
+}

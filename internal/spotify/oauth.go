@@ -73,8 +73,11 @@ func (lp LoopbackPort) port(hostPort string) int {
 	return DefaultLoopbackPort
 }
 
-// Scopes are the read-only scopes requested (D12, D17).
-var Scopes = []string{"user-read-playback-state", "user-read-recently-played", "playlist-read-private"}
+// Scopes are the read-only scopes requested (D12, D17, D36).
+var Scopes = []string{"user-read-playback-state", "user-read-recently-played", "playlist-read-private", ScopeLibrary}
+
+// ScopeLibrary reads saved tracks and albums (library sync, D36).
+const ScopeLibrary = "user-library-read"
 
 // CallbackMode is how the authorization code gets back to the server.
 type CallbackMode string

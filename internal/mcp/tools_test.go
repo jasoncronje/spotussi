@@ -117,12 +117,12 @@ func TestListTools(t *testing.T) {
 			t.Errorf("%s: not annotated read-only", tool.Name)
 		}
 		schema, _ := json.Marshal(tool.InputSchema)
-		if tool.Name != "get_status" && tool.Name != "search_catalog" && !strings.Contains(string(schema), `"last_4w"`) {
+		if tool.Name != "get_status" && tool.Name != "search_catalog" && tool.Name != "get_library" && !strings.Contains(string(schema), `"last_4w"`) {
 			t.Errorf("%s: range enum missing from schema %s", tool.Name, schema)
 		}
 	}
 	slices.Sort(names)
-	want := []string{"get_entity", "get_history", "get_overview", "get_sessions", "get_status", "get_timeline", "get_top", "search_catalog"}
+	want := []string{"get_entity", "get_history", "get_library", "get_overview", "get_sessions", "get_status", "get_timeline", "get_top", "search_catalog"}
 	if !slices.Equal(names, want) {
 		t.Errorf("tools %v, want %v", names, want)
 	}
@@ -384,4 +384,43 @@ func TestToolErrorHidesInternals(t *testing.T) {
 	if err.Error() != "invalid arguments: limit too big" {
 		t.Errorf("bad request: %v", err)
 	}
+}
+
+func TestGetLibrary(t *testing.T) {
+	cs := connect(t)
+	ctx := context.Background()
+	b := mockBackend()
+	sum := call[librarySummaryOut](t, cs, "get_library", nil)
+	want, _ := b.LibrarySummary(ctx)
+	if sum.SavedTracks != want.SavedTracks || sum.Tracks != want.Tracks || sum.RotationPlays != 5 || sum.LastSync == nil {
+		t.Errorf("summary %+v, api %+v", sum, want)
+	}
+	type list struct {
+		libraryListOut
+		Items []map[string]any `json:"items"`
+	}
+	never := call[list](t, cs, "get_library", map[string]any{"view": "tracks", "played": "never_played", "limit": 5})
+	if never.Total != want.Tracks.NeverPlayed || len(never.Items) != min(5, never.Total) || never.Counts == nil {
+		t.Errorf("never played: total %d of %d, %d items", never.Total, want.Tracks.NeverPlayed, len(never.Items))
+	}
+	for _, it := range never.Items {
+		if it["status"] != "never_played" || it["plays"] != 0.0 {
+			t.Errorf("never played item %v", it)
+		}
+	}
+	albums := call[list](t, cs, "get_library", map[string]any{"view": "albums", "sort": "plays", "limit": 3})
+	if len(albums.Items) != 3 || albums.NextOffset == nil {
+		t.Errorf("albums %+v", albums.libraryListOut)
+	}
+	own := call[list](t, cs, "get_library", map[string]any{"view": "playlists", "relation": "own", "limit": 1})
+	if len(own.Items) != 1 || own.Items[0]["relation"] != "own" || own.Items[0]["songs"] == nil {
+		t.Fatalf("own playlists %+v", own.Items)
+	}
+	pl := call[list](t, cs, "get_library", map[string]any{"view": "playlist", "playlist_id": own.Items[0]["id"], "limit": 50})
+	if pl.Playlist == nil || pl.Playlist.ID != own.Items[0]["id"] || len(pl.Items) == 0 {
+		t.Errorf("playlist %+v", pl.libraryListOut)
+	}
+	wantToolError(t, cs, "get_library", map[string]any{"view": "playlist"}, "playlist_id")
+	wantToolError(t, cs, "get_library", map[string]any{"view": "playlist", "playlist_id": "nope"}, "not found")
+	wantToolError(t, cs, "get_library", map[string]any{"view": "albums", "sort": "name"}, "sort must be one of")
 }

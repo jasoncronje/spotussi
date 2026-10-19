@@ -142,7 +142,11 @@ func (b *Backend) Track(ctx context.Context, id string, spec query.Spec, metric 
 	if full.Metadata, err = b.metadata(ctx, "track", r.ID, r.Meta); err != nil {
 		return nil, err
 	}
-	return &api.TrackDetail{Track: full, Excluded: excluded, Range: wireRange(cur), Previous: wireRangePtr(prev),
+	saved, err := b.savedAt(ctx, r.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &api.TrackDetail{Track: full, Excluded: excluded, SavedAt: saved, Range: wireRange(cur), Previous: wireRangePtr(prev),
 		Metric: string(metric), InRange: es, AllTime: at}, nil
 }
 

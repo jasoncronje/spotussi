@@ -40,6 +40,7 @@ type Fake struct {
 	codes   map[string]grant  // authorization code -> grant
 	refresh map[string]bool   // valid refresh tokens
 	access  map[string]bool   // valid access tokens
+	scopes  map[string]string // access token -> scopes
 	granted map[string]string // refresh token -> scopes
 	used    map[string]bool   // redeemed codes
 	Seen    map[string]url.Values
@@ -58,6 +59,8 @@ type Fake struct {
 	hits  map[string]int
 	// catalog serves the catalog endpoints (catalog.go).
 	catalog *catalog
+	// library serves the library endpoints (library.go).
+	library *Library
 }
 
 // Failure is an injected Web API error response.
@@ -74,7 +77,7 @@ type grant struct {
 // New starts a fake accepting clientID.
 func New(clientID string) *Fake {
 	f := &Fake{ClientID: clientID, codes: map[string]grant{}, refresh: map[string]bool{},
-		access: map[string]bool{}, granted: map[string]string{}, used: map[string]bool{}, Seen: map[string]url.Values{},
+		access: map[string]bool{}, scopes: map[string]string{}, granted: map[string]string{}, used: map[string]bool{}, Seen: map[string]url.Values{},
 		fail: map[string][]Failure{}, hits: map[string]int{}}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /authorize", f.authorize)
@@ -83,6 +86,7 @@ func New(clientID string) *Fake {
 	mux.HandleFunc("GET /v1/me/player", f.playerHandler)
 	mux.HandleFunc("GET /v1/me/player/recently-played", f.recentHandler)
 	f.registerCatalog(mux)
+	f.registerLibrary(mux)
 	f.Server = httptest.NewServer(mux)
 	return f
 }
@@ -205,6 +209,7 @@ func (f *Fake) token(w http.ResponseWriter, r *http.Request) {
 	}
 	access := random()
 	f.access[access] = true
+	f.scopes[access] = scope
 	resp := map[string]any{"access_token": access, "token_type": "Bearer", "scope": scope, "expires_in": 3600}
 	if refresh != "" {
 		resp["refresh_token"] = refresh

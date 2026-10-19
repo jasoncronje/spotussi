@@ -89,7 +89,7 @@ export function setMetric(metric: Metric) {
 	return goto(`${page.url.pathname}?${p}`, { reset: false });
 }
 
-type Section = '/' | '/top' | '/stats' | '/history' | '/sessions' | '/settings';
+type Section = '/' | '/top' | '/stats' | '/history' | '/sessions' | '/library' | '/settings';
 
 /** Link to a top-level view, keeping the selected range. */
 export function sectionHref(section: Section, sel?: RangeSel) {
@@ -150,4 +150,7 @@ export function trackHref(id: string) {
 }
 export function genreHref(id: string) {
 	return resolve('/genres/[id]', { id }) + rangeSearch();
+}
+export function libraryPlaylistHref(id: string) {
+	return resolve('/library/playlists/[id]', { id });
 }
