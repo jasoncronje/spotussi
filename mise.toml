@@ -1,0 +1,7 @@
+# Project-local toolchain. Run `mise install` once, then `mise exec -- <cmd>`
+# (or activate mise in your shell). Nothing here touches global installs.
+[tools]
+go = "1.27.2"
+# Node 26 matches the owner's installed runtime and becomes the active LTS line
+# in late Oct 2026; the web app has no Node-version-specific code.
+node = "26.12.0"

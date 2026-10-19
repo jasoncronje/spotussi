@@ -1,0 +1,17 @@
+# Local data directory (SQLite database, key)
+/data/
+# Build outputs
+/bin/
+/dist/
+*.test
+*.prof
+.DS_Store
+
+# Agent worktrees
+.claude/worktrees/
+
+# Design-skill working files (direction sheet, inspector screenshots)
+/.taste-skill/
+
+# Wrangler cache from site deploys (D35)
+/.wrangler/

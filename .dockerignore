@@ -1,0 +1,7 @@
+.git
+bin
+data
+web/node_modules
+web/.svelte-kit
+web/build/spa
+**/.DS_Store

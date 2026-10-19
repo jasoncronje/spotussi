@@ -1,0 +1,42 @@
+{
+ "id": 901415162,
+ "title": "Whenever You Need Somebody",
+ "upc": "859381157694",
+ "cover": "https://api.deezer.com/album/901415162/image",
+ "cover_small": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/56x56-000000-80-0-0.jpg",
+ "cover_medium": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/250x250-000000-80-0-0.jpg",
+ "cover_big": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/500x500-000000-80-0-0.jpg",
+ "cover_xl": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/1000x1000-000000-80-0-0.jpg",
+ "genre_id": 132,
+ "genres": {
+  "data": [
+   {
+    "id": 132,
+    "name": "Pop",
+    "picture": "https://api.deezer.com/genre/132/image",
+    "type": "genre"
+   }
+  ]
+ },
+ "label": "BMG Rights Management (UK) Ltd.",
+ "nb_tracks": 10,
+ "duration": 2207,
+ "fans": 746,
+ "release_date": "1987-11-12",
+ "record_type": "album",
+ "available": true,
+ "explicit_lyrics": false,
+ "explicit_content_lyrics": 0,
+ "explicit_content_cover": 0,
+ "artist": {
+  "id": 6160,
+  "name": "Rick Astley",
+  "picture": "https://api.deezer.com/artist/6160/image",
+  "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+  "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+  "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+  "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+  "type": "artist"
+ },
+ "type": "album"
+}

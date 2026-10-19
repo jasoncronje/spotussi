@@ -1,0 +1,149 @@
+{
+ "data": [
+  {
+   "id": 909591702,
+   "title": "Whenever You Need Somebody (Deluxe Edition / Remastered 2022)",
+   "cover": "https://api.deezer.com/album/909591702/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/f93d54aa0c8411c092d93c65546a8f41/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/f93d54aa0c8411c092d93c65546a8f41/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/f93d54aa0c8411c092d93c65546a8f41/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/f93d54aa0c8411c092d93c65546a8f41/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 36,
+   "record_type": "album",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 6160,
+    "name": "Rick Astley",
+    "picture": "https://api.deezer.com/artist/6160/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  },
+  {
+   "id": 901415162,
+   "title": "Whenever You Need Somebody",
+   "cover": "https://api.deezer.com/album/901415162/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/07de029f6cbc9ce63d9b6064f68b7455/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 10,
+   "record_type": "album",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 6160,
+    "name": "Rick Astley",
+    "picture": "https://api.deezer.com/artist/6160/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  },
+  {
+   "id": 903794362,
+   "title": "The Best of Me",
+   "cover": "https://api.deezer.com/album/903794362/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 30,
+   "record_type": "album",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 6160,
+    "name": "Rick Astley",
+    "picture": "https://api.deezer.com/artist/6160/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  },
+  {
+   "id": 905271022,
+   "title": "3 Originals",
+   "cover": "https://api.deezer.com/album/905271022/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/acfeb5bfe7ad94f2bffefd00b5a4ac98/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/acfeb5bfe7ad94f2bffefd00b5a4ac98/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/acfeb5bfe7ad94f2bffefd00b5a4ac98/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/acfeb5bfe7ad94f2bffefd00b5a4ac98/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 31,
+   "record_type": "album",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 6160,
+    "name": "Rick Astley",
+    "picture": "https://api.deezer.com/artist/6160/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  },
+  {
+   "id": 901480252,
+   "title": "The Best of Me",
+   "cover": "https://api.deezer.com/album/901480252/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/1fcfca61ca4e05027612a1af865b2e03/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 31,
+   "record_type": "album",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 6160,
+    "name": "Rick Astley",
+    "picture": "https://api.deezer.com/artist/6160/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  },
+  {
+   "id": 6451757,
+   "title": "Whenever You Need Somebody (In the Style of Rick Astley) [Karaoke Version] - Single",
+   "cover": "https://api.deezer.com/album/6451757/image",
+   "cover_small": "https://cdn-images.dzcdn.net/images/cover/654f8d08ce4b91f36ba0dc9fc8cb06a1/56x56-000000-80-0-0.jpg",
+   "cover_medium": "https://cdn-images.dzcdn.net/images/cover/654f8d08ce4b91f36ba0dc9fc8cb06a1/250x250-000000-80-0-0.jpg",
+   "cover_big": "https://cdn-images.dzcdn.net/images/cover/654f8d08ce4b91f36ba0dc9fc8cb06a1/500x500-000000-80-0-0.jpg",
+   "cover_xl": "https://cdn-images.dzcdn.net/images/cover/654f8d08ce4b91f36ba0dc9fc8cb06a1/1000x1000-000000-80-0-0.jpg",
+   "genre_id": 132,
+   "nb_tracks": 1,
+   "record_type": "single",
+   "explicit_lyrics": false,
+   "artist": {
+    "id": 4399840,
+    "name": "Ameritz Digital Karaoke",
+    "picture": "https://api.deezer.com/artist/4399840/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/18a0b6882a6409269e7cd3622ba80d70/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/18a0b6882a6409269e7cd3622ba80d70/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/18a0b6882a6409269e7cd3622ba80d70/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/18a0b6882a6409269e7cd3622ba80d70/1000x1000-000000-80-0-0.jpg",
+    "type": "artist"
+   },
+   "type": "album"
+  }
+ ],
+ "total": 6
+}

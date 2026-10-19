@@ -1,0 +1,8505 @@
+[
+ {
+  "name": "Drake",
+  "genres": [
+   "hip hop",
+   "rap",
+   "canadian hip hop"
+  ],
+  "image": ".cache/img/6bdc715cd0502565.jpg",
+  "albums": [
+   {
+    "name": "HABIBTI (FOMO)",
+    "cover": ".cache/img/652c1341ca0554e0.jpg",
+    "tracks": [
+     {
+      "name": "Solar Eclipse",
+      "ms": 218000
+     },
+     {
+      "name": "Cold Shoulder",
+      "ms": 234000
+     },
+     {
+      "name": "Quebec",
+      "ms": 130000
+     }
+    ]
+   },
+   {
+    "name": "ICEMAN",
+    "cover": ".cache/img/907254f3bd694d20.jpg",
+    "tracks": [
+     {
+      "name": "Shabang",
+      "ms": 188000
+     },
+     {
+      "name": "Ran To Atlanta",
+      "ms": 247000
+     },
+     {
+      "name": "Burning Bridges",
+      "ms": 226000
+     },
+     {
+      "name": "National Treasures",
+      "ms": 200000
+     },
+     {
+      "name": "Whisper My Name",
+      "ms": 222000
+     },
+     {
+      "name": "2 Hard 4 The Radio",
+      "ms": 183000
+     },
+     {
+      "name": "B’s On The Table",
+      "ms": 137000
+     }
+    ]
+   },
+   {
+    "name": "Views",
+    "cover": ".cache/img/4f6741b994037976.jpg",
+    "tracks": [
+     {
+      "name": "One Dance",
+      "ms": 174000
+     },
+     {
+      "name": "Hotline Bling",
+      "ms": 267000
+     }
+    ]
+   },
+   {
+    "name": "Scorpion",
+    "cover": ".cache/img/6a8b79776492d332.jpg",
+    "tracks": [
+     {
+      "name": "God's Plan",
+      "ms": 198000
+     },
+     {
+      "name": "Nonstop",
+      "ms": 239000
+     },
+     {
+      "name": "In My Feelings",
+      "ms": 218000
+     },
+     {
+      "name": "Nice For What",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Forever",
+    "cover": ".cache/img/eac3f9048d557860.jpg",
+    "tracks": [
+     {
+      "name": "Forever",
+      "ms": 357000
+     }
+    ]
+   },
+   {
+    "name": "Nothing Was The Same",
+    "cover": ".cache/img/6b4cf0ab4b2e3193.jpg",
+    "tracks": [
+     {
+      "name": "Hold On, We're Going Home",
+      "ms": 227000
+     }
+    ]
+   },
+   {
+    "name": "Take Care",
+    "cover": ".cache/img/e28fb31f5f294b6d.jpg",
+    "tracks": [
+     {
+      "name": "Headlines",
+      "ms": 236000
+     },
+     {
+      "name": "Marvins Room",
+      "ms": 347000
+     }
+    ]
+   },
+   {
+    "name": "More Life",
+    "cover": ".cache/img/7d78e889f13d1de9.jpg",
+    "tracks": [
+     {
+      "name": "Passionfruit",
+      "ms": 299000
+     }
+    ]
+   },
+   {
+    "name": "$ome $exy $ongs 4 U",
+    "cover": ".cache/img/e432f5e6e92e48b5.jpg",
+    "tracks": [
+     {
+      "name": "NOKIA",
+      "ms": 241000
+     }
+    ]
+   },
+   {
+    "name": "The Best In The World Pack",
+    "cover": ".cache/img/4797b1058bdfce22.jpg",
+    "tracks": [
+     {
+      "name": "Money In The Grave",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "So Far Gone",
+    "cover": ".cache/img/e3ef246d4393afb2.jpg",
+    "tracks": [
+     {
+      "name": "Best I Ever Had",
+      "ms": 258000
+     }
+    ]
+   },
+   {
+    "name": "Care Package",
+    "cover": ".cache/img/8b6f214da1a41458.jpg",
+    "tracks": [
+     {
+      "name": "Trust Issues",
+      "ms": 282000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Kendrick Lamar",
+  "genres": [
+   "hip hop",
+   "west coast hip hop"
+  ],
+  "image": ".cache/img/fb022be914f2b4b4.jpg",
+  "albums": [
+   {
+    "name": "Not Like Us",
+    "cover": ".cache/img/8570ba0878f90c77.jpg",
+    "tracks": [
+     {
+      "name": "Not Like Us",
+      "ms": 274000
+     }
+    ]
+   },
+   {
+    "name": "good kid, m.A.A.d city",
+    "cover": ".cache/img/4b711889ec6442a9.jpg",
+    "tracks": [
+     {
+      "name": "Money Trees",
+      "ms": 387000
+     },
+     {
+      "name": "m.A.A.d city",
+      "ms": 350000
+     },
+     {
+      "name": "Poetic Justice",
+      "ms": 300000
+     },
+     {
+      "name": "The Recipe",
+      "ms": 353000
+     }
+    ]
+   },
+   {
+    "name": "GNX",
+    "cover": ".cache/img/f34821c648bc3c87.jpg",
+    "tracks": [
+     {
+      "name": "tv off",
+      "ms": 221000
+     },
+     {
+      "name": "luther",
+      "ms": 178000
+     },
+     {
+      "name": "squabble up",
+      "ms": 158000
+     },
+     {
+      "name": "peekaboo",
+      "ms": 156000
+     },
+     {
+      "name": "wacced out murals",
+      "ms": 317000
+     },
+     {
+      "name": "reincarnated",
+      "ms": 276000
+     }
+    ]
+   },
+   {
+    "name": "Black Panther The Album Music From And Inspired By",
+    "cover": ".cache/img/4718c6e8407d206a.jpg",
+    "tracks": [
+     {
+      "name": "All The Stars",
+      "ms": 235000
+     }
+    ]
+   },
+   {
+    "name": "DAMN.",
+    "cover": ".cache/img/369d8b870c78461a.jpg",
+    "tracks": [
+     {
+      "name": "HUMBLE.",
+      "ms": 177000
+     },
+     {
+      "name": "DNA.",
+      "ms": 185000
+     },
+     {
+      "name": "LOVE.",
+      "ms": 213000
+     },
+     {
+      "name": "PRIDE.",
+      "ms": 275000
+     },
+     {
+      "name": "LOYALTY.",
+      "ms": 227000
+     }
+    ]
+   },
+   {
+    "name": "Swimming Pools (Drank)",
+    "cover": ".cache/img/e6498b1bbb180e30.jpg",
+    "tracks": [
+     {
+      "name": "Swimming Pools (Drank)",
+      "ms": 248000
+     }
+    ]
+   },
+   {
+    "name": "To Pimp A Butterfly",
+    "cover": ".cache/img/d8d71f23d473d988.jpg",
+    "tracks": [
+     {
+      "name": "Alright",
+      "ms": 219000
+     },
+     {
+      "name": "King Kunta",
+      "ms": 235000
+     }
+    ]
+   },
+   {
+    "name": "euphoria",
+    "cover": ".cache/img/b1b11579bfce84cf.jpg",
+    "tracks": [
+     {
+      "name": "euphoria",
+      "ms": 384000
+     }
+    ]
+   },
+   {
+    "name": "Mr. Morale & The Big Steppers",
+    "cover": ".cache/img/56fd48e2f042d485.jpg",
+    "tracks": [
+     {
+      "name": "United In Grief",
+      "ms": 255000
+     },
+     {
+      "name": "Die Hard",
+      "ms": 239000
+     },
+     {
+      "name": "Count Me Out",
+      "ms": 283000
+     },
+     {
+      "name": "Rich Spirit",
+      "ms": 202000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Travis Scott",
+  "genres": [
+   "rap",
+   "hip hop"
+  ],
+  "image": ".cache/img/1173446539c0be83.jpg",
+  "albums": [
+   {
+    "name": "ASTROWORLD",
+    "cover": ".cache/img/6a9c68a4cd92d894.jpg",
+    "tracks": [
+     {
+      "name": "SICKO MODE",
+      "ms": 312000
+     },
+     {
+      "name": "BUTTERFLY EFFECT",
+      "ms": 190000
+     },
+     {
+      "name": "STARGAZING",
+      "ms": 270000
+     },
+     {
+      "name": "WHO? WHAT!",
+      "ms": 176000
+     },
+     {
+      "name": "CAN'T SAY",
+      "ms": 198000
+     },
+     {
+      "name": "ASTROTHUNDER",
+      "ms": 143000
+     }
+    ]
+   },
+   {
+    "name": "Birds In The Trap Sing McKnight",
+    "cover": ".cache/img/e84f6a63f0f3b4f1.jpg",
+    "tracks": [
+     {
+      "name": "goosebumps",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "UTOPIA",
+    "cover": ".cache/img/7dba0f255b7e3ef8.jpg",
+    "tracks": [
+     {
+      "name": "FE!N",
+      "ms": 191000
+     },
+     {
+      "name": "I KNOW ?",
+      "ms": 211000
+     },
+     {
+      "name": "TELEKINESIS",
+      "ms": 353000
+     },
+     {
+      "name": "MY EYES",
+      "ms": 251000
+     },
+     {
+      "name": "MELTDOWN",
+      "ms": 246000
+     }
+    ]
+   },
+   {
+    "name": "HIGHEST IN THE ROOM",
+    "cover": ".cache/img/a4d29eaf8253da22.jpg",
+    "tracks": [
+     {
+      "name": "HIGHEST IN THE ROOM",
+      "ms": 175000
+     }
+    ]
+   },
+   {
+    "name": "Rodeo",
+    "cover": ".cache/img/1775199b6e609755.jpg",
+    "tracks": [
+     {
+      "name": "Antidote",
+      "ms": 264000
+     },
+     {
+      "name": "Nightcrawler",
+      "ms": 321000
+     },
+     {
+      "name": "90210",
+      "ms": 339000
+     }
+    ]
+   },
+   {
+    "name": "RHYNO (from GTAVI: The Album)",
+    "cover": ".cache/img/725e2ef682257735.jpg",
+    "tracks": [
+     {
+      "name": "RHYNO (from GTAVI: The Album)",
+      "ms": 180000
+     }
+    ]
+   },
+   {
+    "name": "Rodeo",
+    "cover": ".cache/img/b149232eccca4df8.jpg",
+    "tracks": [
+     {
+      "name": "Apple Pie",
+      "ms": 219000
+     }
+    ]
+   },
+   {
+    "name": "4X4",
+    "cover": ".cache/img/38092fe649fdbc56.jpg",
+    "tracks": [
+     {
+      "name": "4X4",
+      "ms": 191000
+     }
+    ]
+   },
+   {
+    "name": "JACKBOYS 2",
+    "cover": ".cache/img/7e4ce536c0d0bb98.jpg",
+    "tracks": [
+     {
+      "name": "DUMBO",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "ESCAPE PLAN / MAFIA",
+    "cover": ".cache/img/fda336690d98680e.jpg",
+    "tracks": [
+     {
+      "name": "MAFIA",
+      "ms": 240000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Fred again..",
+  "genres": [
+   "electronic",
+   "house"
+  ],
+  "image": ".cache/img/56630ee05dd2b721.jpg",
+  "albums": [
+   {
+    "name": "Victory Lap Five",
+    "cover": ".cache/img/5bdfd1023ed221c4.jpg",
+    "tracks": [
+     {
+      "name": "Victory Lap Five",
+      "ms": 344000
+     }
+    ]
+   },
+   {
+    "name": "Victory Lap",
+    "cover": ".cache/img/5bdfd1023ed221c4.jpg",
+    "tracks": [
+     {
+      "name": "Victory Lap",
+      "ms": 165000
+     }
+    ]
+   },
+   {
+    "name": "Lights Burn Dimmer",
+    "cover": ".cache/img/d736f0e2a6eeb447.jpg",
+    "tracks": [
+     {
+      "name": "Lights Burn Dimmer",
+      "ms": 260000
+     }
+    ]
+   },
+   {
+    "name": "9 months & 50 hours",
+    "cover": ".cache/img/9b01bc1273808b91.jpg",
+    "tracks": [
+     {
+      "name": "benjy chord",
+      "ms": 165000
+     },
+     {
+      "name": "Hey Hey",
+      "ms": 125000
+     },
+     {
+      "name": "Mabe",
+      "ms": 294000
+     },
+     {
+      "name": "Halo",
+      "ms": 184000
+     }
+    ]
+   },
+   {
+    "name": "Marea (we’ve lost dancing)",
+    "cover": ".cache/img/d01472c060168bdd.jpg",
+    "tracks": [
+     {
+      "name": "Marea (we’ve lost dancing)",
+      "ms": 285000
+     }
+    ]
+   },
+   {
+    "name": "ten",
+    "cover": ".cache/img/60758bb1dbe6d384.jpg",
+    "tracks": [
+     {
+      "name": "ten",
+      "ms": 181000
+     }
+    ]
+   },
+   {
+    "name": "leavemealone",
+    "cover": ".cache/img/cb0de9ef080f8254.jpg",
+    "tracks": [
+     {
+      "name": "leavemealone",
+      "ms": 222000
+     }
+    ]
+   },
+   {
+    "name": "Actual Life (April 14 - December 17 2020)",
+    "cover": ".cache/img/51d0a6e124b4c245.jpg",
+    "tracks": [
+     {
+      "name": "Dermot (see yourself in my eyes)",
+      "ms": 228000
+     },
+     {
+      "name": "Julia (deep diving)",
+      "ms": 274000
+     },
+     {
+      "name": "Kyle (i found you)",
+      "ms": 196000
+     },
+     {
+      "name": "Yasminah (see your face again)",
+      "ms": 184000
+     },
+     {
+      "name": "Me (heavy)",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "places to be",
+    "cover": ".cache/img/bb7f472004504c01.jpg",
+    "tracks": [
+     {
+      "name": "places to be",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "I Luv U",
+    "cover": ".cache/img/04a69637cd0dffd4.jpg",
+    "tracks": [
+     {
+      "name": "I Luv U",
+      "ms": 198000
+     }
+    ]
+   },
+   {
+    "name": "Danielle (smile on my face)",
+    "cover": ".cache/img/14ff9dbd42376fdf.jpg",
+    "tracks": [
+     {
+      "name": "Danielle (smile on my face)",
+      "ms": 201000
+     }
+    ]
+   },
+   {
+    "name": "USB",
+    "cover": ".cache/img/04a69637cd0dffd4.jpg",
+    "tracks": [
+     {
+      "name": "..FEISTY",
+      "ms": 171000
+     }
+    ]
+   },
+   {
+    "name": "Actual Life 3 (January 1 - September 9 2022)",
+    "cover": ".cache/img/585b46cede2422d2.jpg",
+    "tracks": [
+     {
+      "name": "Delilah (pull me out of this)",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "Talk of the Town",
+    "cover": ".cache/img/247882c0fbc54491.jpg",
+    "tracks": [
+     {
+      "name": "Talk of the Town",
+      "ms": 193000
+     }
+    ]
+   },
+   {
+    "name": "Hannah (the sun)",
+    "cover": ".cache/img/0caa10e7cff208e4.jpg",
+    "tracks": [
+     {
+      "name": "Hannah (the sun)",
+      "ms": 196000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Arctic Monkeys",
+  "genres": [
+   "indie rock",
+   "rock"
+  ],
+  "image": ".cache/img/613bc37cdbf92dec.jpg",
+  "albums": [
+   {
+    "name": "Favourite Worst Nightmare",
+    "cover": ".cache/img/4364d9677498745d.jpg",
+    "tracks": [
+     {
+      "name": "505",
+      "ms": 253000
+     },
+     {
+      "name": "Brianstorm",
+      "ms": 170000
+     },
+     {
+      "name": "Old Yellow Bricks",
+      "ms": 187000
+     },
+     {
+      "name": "Teddy Picker",
+      "ms": 160000
+     },
+     {
+      "name": "Only Ones Who Know",
+      "ms": 181000
+     },
+     {
+      "name": "Do Me a Favour",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "AM",
+    "cover": ".cache/img/87d166fb0efa100a.jpg",
+    "tracks": [
+     {
+      "name": "Do I Wanna Know?",
+      "ms": 272000
+     },
+     {
+      "name": "No. 1 Party Anthem",
+      "ms": 243000
+     },
+     {
+      "name": "Why'd You Only Call Me When You're High?",
+      "ms": 161000
+     },
+     {
+      "name": "R U Mine?",
+      "ms": 201000
+     },
+     {
+      "name": "Knee Socks",
+      "ms": 257000
+     },
+     {
+      "name": "Snap Out Of It",
+      "ms": 193000
+     },
+     {
+      "name": "Arabella",
+      "ms": 207000
+     },
+     {
+      "name": "One For The Road",
+      "ms": 206000
+     },
+     {
+      "name": "Mad Sounds",
+      "ms": 215000
+     },
+     {
+      "name": "Fireside",
+      "ms": 181000
+     },
+     {
+      "name": "I Want It All",
+      "ms": 185000
+     }
+    ]
+   },
+   {
+    "name": "Fluorescent Adolescent",
+    "cover": ".cache/img/f555da4f2bf3e868.jpg",
+    "tracks": [
+     {
+      "name": "Fluorescent Adolescent",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "Whatever People Say I Am, That's What I'm Not",
+    "cover": ".cache/img/0382a384d00961f3.jpg",
+    "tracks": [
+     {
+      "name": "I Bet You Look Good On The Dancefloor",
+      "ms": 173000
+     },
+     {
+      "name": "When The Sun Goes Down",
+      "ms": 202000
+     },
+     {
+      "name": "Mardy Bum",
+      "ms": 175000
+     },
+     {
+      "name": "From The Ritz To The Rubble",
+      "ms": 193000
+     },
+     {
+      "name": "Fake Tales Of San Francisco",
+      "ms": 177000
+     },
+     {
+      "name": "A Certain Romance",
+      "ms": 331000
+     },
+     {
+      "name": "Perhaps Vampires Is A Bit Strong But…",
+      "ms": 268000
+     },
+     {
+      "name": "The View From The Afternoon",
+      "ms": 222000
+     }
+    ]
+   },
+   {
+    "name": "Humbug",
+    "cover": ".cache/img/a1675b8363c246e1.jpg",
+    "tracks": [
+     {
+      "name": "Crying Lightning",
+      "ms": 224000
+     },
+     {
+      "name": "Secret Door",
+      "ms": 223000
+     },
+     {
+      "name": "Cornerstone",
+      "ms": 197000
+     }
+    ]
+   },
+   {
+    "name": "Leave Before The Lights Come On",
+    "cover": ".cache/img/0ffded12c586ebc5.jpg",
+    "tracks": [
+     {
+      "name": "Baby I'm Yours",
+      "ms": 152000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Metallica",
+  "genres": [
+   "metal",
+   "hard rock"
+  ],
+  "image": ".cache/img/9739cafc81cc6c3a.jpg",
+  "albums": [
+   {
+    "name": "Metallica",
+    "cover": ".cache/img/6cbee040bd08bb9f.jpg",
+    "tracks": [
+     {
+      "name": "Enter Sandman",
+      "ms": 331000
+     },
+     {
+      "name": "Nothing Else Matters",
+      "ms": 388000
+     },
+     {
+      "name": "The Unforgiven",
+      "ms": 387000
+     },
+     {
+      "name": "Wherever I May Roam",
+      "ms": 404000
+     },
+     {
+      "name": "Sad But True",
+      "ms": 324000
+     },
+     {
+      "name": "Don't Tread On Me",
+      "ms": 240000
+     },
+     {
+      "name": "My Friend Of Misery",
+      "ms": 409000
+     }
+    ]
+   },
+   {
+    "name": "...And Justice for All",
+    "cover": ".cache/img/9ebc1eb00ab11384.jpg",
+    "tracks": [
+     {
+      "name": "One",
+      "ms": 446000
+     }
+    ]
+   },
+   {
+    "name": "Ride The Lightning",
+    "cover": ".cache/img/092e9e6414bb23d4.jpg",
+    "tracks": [
+     {
+      "name": "For Whom The Bell Tolls",
+      "ms": 309000
+     },
+     {
+      "name": "Fade To Black",
+      "ms": 417000
+     },
+     {
+      "name": "Ride The Lightning",
+      "ms": 396000
+     },
+     {
+      "name": "Creeping Death",
+      "ms": 395000
+     },
+     {
+      "name": "Trapped Under Ice",
+      "ms": 244000
+     },
+     {
+      "name": "The Call Of Ktulu",
+      "ms": 533000
+     }
+    ]
+   },
+   {
+    "name": "Master of Puppets",
+    "cover": ".cache/img/124fca9154f0fef4.jpg",
+    "tracks": [
+     {
+      "name": "Master Of Puppets",
+      "ms": 515000
+     },
+     {
+      "name": "Welcome Home (Sanitarium)",
+      "ms": 387000
+     },
+     {
+      "name": "Battery",
+      "ms": 312000
+     },
+     {
+      "name": "Orion",
+      "ms": 507000
+     },
+     {
+      "name": "Disposable Heroes",
+      "ms": 496000
+     }
+    ]
+   },
+   {
+    "name": "Kill 'Em All",
+    "cover": ".cache/img/1206afefbedd8dac.jpg",
+    "tracks": [
+     {
+      "name": "Seek & Destroy",
+      "ms": 414000
+     },
+     {
+      "name": "The Four Horsemen",
+      "ms": 432000
+     }
+    ]
+   },
+   {
+    "name": "Reload",
+    "cover": ".cache/img/8f43126aa6e5b881.jpg",
+    "tracks": [
+     {
+      "name": "Fuel",
+      "ms": 269000
+     },
+     {
+      "name": "The Unforgiven II",
+      "ms": 396000
+     }
+    ]
+   },
+   {
+    "name": "Load",
+    "cover": ".cache/img/be6743435ca411f1.jpg",
+    "tracks": [
+     {
+      "name": "Until It Sleeps",
+      "ms": 269000
+     }
+    ]
+   },
+   {
+    "name": "Garage, Inc.",
+    "cover": ".cache/img/55e15161924163e6.jpg",
+    "tracks": [
+     {
+      "name": "Whiskey In The Jar",
+      "ms": 304000
+     },
+     {
+      "name": "Am I Evil?",
+      "ms": 470000
+     }
+    ]
+   },
+   {
+    "name": "Death Magnetic",
+    "cover": ".cache/img/6e656d1b5516fe4b.jpg",
+    "tracks": [
+     {
+      "name": "The Day That Never Comes",
+      "ms": 476000
+     }
+    ]
+   },
+   {
+    "name": "...And Justice for All",
+    "cover": ".cache/img/cf0f6c0cb7e5f8d1.jpg",
+    "tracks": [
+     {
+      "name": "Blackened",
+      "ms": 402000
+     },
+     {
+      "name": "...And Justice for All",
+      "ms": 585000
+     }
+    ]
+   },
+   {
+    "name": "St. Anger",
+    "cover": ".cache/img/0aca58ca2900eb46.jpg",
+    "tracks": [
+     {
+      "name": "St. Anger",
+      "ms": 441000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "J. Cole",
+  "genres": [
+   "hip hop",
+   "rap"
+  ],
+  "image": ".cache/img/3c3cfcde3efb42a4.jpg",
+  "albums": [
+   {
+    "name": "2014 Forest Hills Drive",
+    "cover": ".cache/img/04a7f2adc695dbf1.jpg",
+    "tracks": [
+     {
+      "name": "No Role Modelz",
+      "ms": 292000
+     },
+     {
+      "name": "Wet Dreamz",
+      "ms": 239000
+     },
+     {
+      "name": "G.O.M.D",
+      "ms": 301000
+     },
+     {
+      "name": "A Tale Of 2 Citiez",
+      "ms": 269000
+     },
+     {
+      "name": "Love Yourz",
+      "ms": 211000
+     },
+     {
+      "name": "Apparently",
+      "ms": 293000
+     }
+    ]
+   },
+   {
+    "name": "Cole World: The Sideline Story",
+    "cover": ".cache/img/86e51bb6cbe4cb6f.jpg",
+    "tracks": [
+     {
+      "name": "Work Out",
+      "ms": 234000
+     },
+     {
+      "name": "Can't Get Enough",
+      "ms": 225000
+     },
+     {
+      "name": "Nobody's Perfect",
+      "ms": 190000
+     }
+    ]
+   },
+   {
+    "name": "Born Sinner",
+    "cover": ".cache/img/5644c361d056f628.jpg",
+    "tracks": [
+     {
+      "name": "Power Trip",
+      "ms": 240000
+     },
+     {
+      "name": "She Knows",
+      "ms": 296000
+     },
+     {
+      "name": "Forbidden Fruit",
+      "ms": 268000
+     }
+    ]
+   },
+   {
+    "name": "MIDDLE CHILD",
+    "cover": ".cache/img/4dcbceb6f161af33.jpg",
+    "tracks": [
+     {
+      "name": "MIDDLE CHILD",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "The Off-Season",
+    "cover": ".cache/img/02ba9c602bf900e7.jpg",
+    "tracks": [
+     {
+      "name": "m y . l i f e",
+      "ms": 219000
+     },
+     {
+      "name": "p r i d e . i s . t h e . d e v i l",
+      "ms": 218000
+     }
+    ]
+   },
+   {
+    "name": "4 Your Eyez Only",
+    "cover": ".cache/img/cea9874b966319e5.jpg",
+    "tracks": [
+     {
+      "name": "Neighbors",
+      "ms": 216000
+     },
+     {
+      "name": "Change",
+      "ms": 331000
+     }
+    ]
+   },
+   {
+    "name": "Born Sinner",
+    "cover": ".cache/img/33e1bd5b18b4e8af.jpg",
+    "tracks": [
+     {
+      "name": "Crooked Smile",
+      "ms": 278000
+     }
+    ]
+   },
+   {
+    "name": "The Fall-Off",
+    "cover": ".cache/img/0a80dbdc6fa40bbe.jpg",
+    "tracks": [
+     {
+      "name": "Only You",
+      "ms": 287000
+     },
+     {
+      "name": "Bombs in the Ville/Hit the Gas",
+      "ms": 246000
+     },
+     {
+      "name": "Two Six",
+      "ms": 196000
+     },
+     {
+      "name": "WHO TF IZ U",
+      "ms": 277000
+     },
+     {
+      "name": "39 Intro",
+      "ms": 366000
+     }
+    ]
+   },
+   {
+    "name": "KOD",
+    "cover": ".cache/img/b091cdf14c61e0e8.jpg",
+    "tracks": [
+     {
+      "name": "Kevin’s Heart",
+      "ms": 200000
+     }
+    ]
+   },
+   {
+    "name": "Birthday Blizzard ‘26",
+    "cover": ".cache/img/890dff1c69af9b32.jpg",
+    "tracks": [
+     {
+      "name": "Winter Storm Freestyle",
+      "ms": 138000
+     }
+    ]
+   },
+   {
+    "name": "Might Delete Later",
+    "cover": ".cache/img/0ff1c1472b584cd9.jpg",
+    "tracks": [
+     {
+      "name": "Huntin’ Wabbitz",
+      "ms": 162000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "The Weeknd",
+  "genres": [
+   "r&b",
+   "pop"
+  ],
+  "image": ".cache/img/c5fcf44c5eb50b67.jpg",
+  "albums": [
+   {
+    "name": "After Hours",
+    "cover": ".cache/img/bab5f3f9da47b597.jpg",
+    "tracks": [
+     {
+      "name": "Blinding Lights",
+      "ms": 200000
+     }
+    ]
+   },
+   {
+    "name": "The Idol Episode 4 (Music from the HBO Original Series)",
+    "cover": ".cache/img/2b0a032e21a90523.jpg",
+    "tracks": [
+     {
+      "name": "One Of The Girls",
+      "ms": 245000
+     }
+    ]
+   },
+   {
+    "name": "Starboy",
+    "cover": ".cache/img/01a61327b65241a3.jpg",
+    "tracks": [
+     {
+      "name": "Starboy",
+      "ms": 230000
+     },
+     {
+      "name": "I Feel It Coming",
+      "ms": 269000
+     },
+     {
+      "name": "Die For You",
+      "ms": 260000
+     }
+    ]
+   },
+   {
+    "name": "Beauty Behind The Madness",
+    "cover": ".cache/img/cbe5de4302e0e6b5.jpg",
+    "tracks": [
+     {
+      "name": "The Hills",
+      "ms": 242000
+     },
+     {
+      "name": "Can't Feel My Face",
+      "ms": 215000
+     },
+     {
+      "name": "Often",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "Hurry Up Tomorrow",
+    "cover": ".cache/img/8aab59ee4b474224.jpg",
+    "tracks": [
+     {
+      "name": "Timeless",
+      "ms": 256000
+     },
+     {
+      "name": "São Paulo",
+      "ms": 302000
+     },
+     {
+      "name": "Cry For Me",
+      "ms": 224000
+     }
+    ]
+   },
+   {
+    "name": "Save Your Tears (Remix)",
+    "cover": ".cache/img/2d90626dd56946f6.jpg",
+    "tracks": [
+     {
+      "name": "Save Your Tears",
+      "ms": 191000
+     }
+    ]
+   },
+   {
+    "name": "Dawn FM",
+    "cover": ".cache/img/70da198c2ca87ad3.jpg",
+    "tracks": [
+     {
+      "name": "Gasoline",
+      "ms": 212000
+     },
+     {
+      "name": "How Do I Make You Love Me?",
+      "ms": 214000
+     },
+     {
+      "name": "Dawn FM",
+      "ms": 96000
+     },
+     {
+      "name": "Take My Breath",
+      "ms": 339000
+     },
+     {
+      "name": "Sacrifice",
+      "ms": 188000
+     },
+     {
+      "name": "Out of Time",
+      "ms": 214000
+     },
+     {
+      "name": "Best Friends",
+      "ms": 163000
+     },
+     {
+      "name": "Is There Someone Else?",
+      "ms": 199000
+     },
+     {
+      "name": "Here We Go… Again",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "My Dear Melancholy,",
+    "cover": ".cache/img/8b4ef63015a7bac0.jpg",
+    "tracks": [
+     {
+      "name": "Call Out My Name",
+      "ms": 228000
+     }
+    ]
+   },
+   {
+    "name": "House Of Balloons (Original)",
+    "cover": ".cache/img/7e1cf82d514babd7.jpg",
+    "tracks": [
+     {
+      "name": "House Of Balloons / Glass Table Girls",
+      "ms": 407000
+     }
+    ]
+   },
+   {
+    "name": "The Highlights",
+    "cover": ".cache/img/193ef2886cb5b4cb.jpg",
+    "tracks": [
+     {
+      "name": "Wicked Games",
+      "ms": 325000
+     }
+    ]
+   },
+   {
+    "name": "Pray For Me",
+    "cover": ".cache/img/5ed8c7bf7df15fc7.jpg",
+    "tracks": [
+     {
+      "name": "Pray For Me",
+      "ms": 211000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Tame Impala",
+  "genres": [
+   "psychedelic rock"
+  ],
+  "image": ".cache/img/95ed00f792f45927.jpg",
+  "albums": [
+   {
+    "name": "Dracula",
+    "cover": ".cache/img/bb428a06befb7ebe.jpg",
+    "tracks": [
+     {
+      "name": "Dracula",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "Deadbeat",
+    "cover": ".cache/img/2d2b4efcb27fac69.jpg",
+    "tracks": [
+     {
+      "name": "Loser",
+      "ms": 223000
+     },
+     {
+      "name": "My Old Ways",
+      "ms": 298000
+     },
+     {
+      "name": "Afterthought",
+      "ms": 241000
+     },
+     {
+      "name": "Obsolete",
+      "ms": 263000
+     },
+     {
+      "name": "Piece Of Heaven",
+      "ms": 284000
+     },
+     {
+      "name": "End Of Summer",
+      "ms": 434000
+     },
+     {
+      "name": "Oblivion",
+      "ms": 269000
+     }
+    ]
+   },
+   {
+    "name": "Currents",
+    "cover": ".cache/img/a124f29ed6645675.jpg",
+    "tracks": [
+     {
+      "name": "The Less I Know The Better",
+      "ms": 217000
+     },
+     {
+      "name": "New Person, Same Old Mistakes",
+      "ms": 362000
+     },
+     {
+      "name": "Let It Happen",
+      "ms": 469000
+     },
+     {
+      "name": "Eventually",
+      "ms": 319000
+     },
+     {
+      "name": "The Moment",
+      "ms": 255000
+     },
+     {
+      "name": "Yes I'm Changing",
+      "ms": 270000
+     },
+     {
+      "name": "Nangs",
+      "ms": 106000
+     }
+    ]
+   },
+   {
+    "name": "The Slow Rush",
+    "cover": ".cache/img/81356a43dc426238.jpg",
+    "tracks": [
+     {
+      "name": "Borderline",
+      "ms": 240000
+     },
+     {
+      "name": "One More Hour",
+      "ms": 433000
+     },
+     {
+      "name": "Lost In Yesterday",
+      "ms": 250000
+     },
+     {
+      "name": "Is It True",
+      "ms": 238000
+     },
+     {
+      "name": "Breathe Deeper",
+      "ms": 373000
+     },
+     {
+      "name": "Posthumous Forgiveness",
+      "ms": 366000
+     }
+    ]
+   },
+   {
+    "name": "Lonerism",
+    "cover": ".cache/img/1376934ef125ed56.jpg",
+    "tracks": [
+     {
+      "name": "Feels Like We Only Go Backwards",
+      "ms": 193000
+     },
+     {
+      "name": "Elephant",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "InnerSpeaker",
+    "cover": ".cache/img/f160466586e550db.jpg",
+    "tracks": [
+     {
+      "name": "Solitude Is Bliss",
+      "ms": 236000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Future",
+  "genres": [
+   "rap",
+   "trap"
+  ],
+  "image": ".cache/img/f9782a8af158f5ec.jpg",
+  "albums": [
+   {
+    "name": "WE DON'T TRUST YOU",
+    "cover": ".cache/img/37514ec5e218f2b7.jpg",
+    "tracks": [
+     {
+      "name": "Like That",
+      "ms": 267000
+     },
+     {
+      "name": "Cinderella",
+      "ms": 169000
+     }
+    ]
+   },
+   {
+    "name": "FUTURE",
+    "cover": ".cache/img/6600f916c9ef1dce.jpg",
+    "tracks": [
+     {
+      "name": "Mask Off",
+      "ms": 204000
+     }
+    ]
+   },
+   {
+    "name": "EVOL",
+    "cover": ".cache/img/1234885b75712ac9.jpg",
+    "tracks": [
+     {
+      "name": "Low Life",
+      "ms": 315000
+     },
+     {
+      "name": "Wicked",
+      "ms": 173000
+     }
+    ]
+   },
+   {
+    "name": "I NEVER LIKED YOU",
+    "cover": ".cache/img/c463f9f63b7717dc.jpg",
+    "tracks": [
+     {
+      "name": "WAIT FOR U",
+      "ms": 189000
+     }
+    ]
+   },
+   {
+    "name": "Life Is Good",
+    "cover": ".cache/img/8d3c78b6f8b114cf.jpg",
+    "tracks": [
+     {
+      "name": "Life Is Good",
+      "ms": 237000
+     }
+    ]
+   },
+   {
+    "name": "HNDRXX",
+    "cover": ".cache/img/dbe75eb213daa985.jpg",
+    "tracks": [
+     {
+      "name": "Solo",
+      "ms": 265000
+     }
+    ]
+   },
+   {
+    "name": "MIXTAPE PLUTO",
+    "cover": ".cache/img/93afd565eb21bcd4.jpg",
+    "tracks": [
+     {
+      "name": "TEFLON DON",
+      "ms": 159000
+     }
+    ]
+   },
+   {
+    "name": "The Real Me",
+    "cover": ".cache/img/b9633701ec6bcdd6.jpg",
+    "tracks": [
+     {
+      "name": "California Girls",
+      "ms": 150000
+     },
+     {
+      "name": "Konnichiwa",
+      "ms": 154000
+     }
+    ]
+   },
+   {
+    "name": "Monster",
+    "cover": ".cache/img/138440f543a7bc94.jpg",
+    "tracks": [
+     {
+      "name": "Codeine Crazy",
+      "ms": 347000
+     },
+     {
+      "name": "Throw Away",
+      "ms": 316000
+     }
+    ]
+   },
+   {
+    "name": "56 Nights",
+    "cover": ".cache/img/9e0f3564648c7e69.jpg",
+    "tracks": [
+     {
+      "name": "March Madness",
+      "ms": 244000
+     }
+    ]
+   },
+   {
+    "name": "Game Time (FIFA World Cup 2026™)",
+    "cover": ".cache/img/adc2f0cb6ae7f074.jpg",
+    "tracks": [
+     {
+      "name": "Game Time",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "High Off Life",
+    "cover": ".cache/img/ab106abab70ca00e.jpg",
+    "tracks": [
+     {
+      "name": "Too Comfortable",
+      "ms": 236000
+     }
+    ]
+   },
+   {
+    "name": "DS2",
+    "cover": ".cache/img/cd5b55b2e17bd696.jpg",
+    "tracks": [
+     {
+      "name": "The Percocet & Stripper Joint",
+      "ms": 155000
+     }
+    ]
+   },
+   {
+    "name": "WE STILL DON'T TRUST YOU",
+    "cover": ".cache/img/ab39aab715bdea8f.jpg",
+    "tracks": [
+     {
+      "name": "We Still Don't Trust You",
+      "ms": 253000
+     }
+    ]
+   },
+   {
+    "name": "Pluto x Baby Pluto",
+    "cover": ".cache/img/5db3d8f0af90a314.jpg",
+    "tracks": [
+     {
+      "name": "Drankin N Smokin",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "I NEVER LIKED YOU",
+    "cover": ".cache/img/c463f9f63b7717dc.jpg",
+    "tracks": [
+     {
+      "name": "PUFFIN ON ZOOTIEZ",
+      "ms": 172000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Post Malone",
+  "genres": [
+   "hip hop",
+   "pop"
+  ],
+  "image": ".cache/img/163d5df1fca0c398.jpg",
+  "albums": [
+   {
+    "name": "Spider-Man: Into the Spider-Verse (Soundtrack From & Inspired by the Motion Picture)",
+    "cover": ".cache/img/dbe1ef6a5349834c.jpg",
+    "tracks": [
+     {
+      "name": "Sunflower",
+      "ms": 158000
+     }
+    ]
+   },
+   {
+    "name": "I Had Some Help",
+    "cover": ".cache/img/f65b1f0ed2e31acd.jpg",
+    "tracks": [
+     {
+      "name": "I Had Some Help",
+      "ms": 178000
+     }
+    ]
+   },
+   {
+    "name": "beerbongs & bentleys",
+    "cover": ".cache/img/f43285829b2df3cb.jpg",
+    "tracks": [
+     {
+      "name": "rockstar",
+      "ms": 219000
+     },
+     {
+      "name": "Better Now",
+      "ms": 230000
+     },
+     {
+      "name": "Psycho",
+      "ms": 221000
+     },
+     {
+      "name": "Candy Paint",
+      "ms": 229000
+     },
+     {
+      "name": "Stay",
+      "ms": 204000
+     }
+    ]
+   },
+   {
+    "name": "Hollywood's Bleeding",
+    "cover": ".cache/img/718a6d002a0adbd0.jpg",
+    "tracks": [
+     {
+      "name": "Circles",
+      "ms": 215000
+     },
+     {
+      "name": "Take What You Want",
+      "ms": 231000
+     },
+     {
+      "name": "Hollywood's Bleeding",
+      "ms": 156000
+     }
+    ]
+   },
+   {
+    "name": "Stoney",
+    "cover": ".cache/img/dcfba85c12b2a917.jpg",
+    "tracks": [
+     {
+      "name": "White Iverson",
+      "ms": 254000
+     },
+     {
+      "name": "Congratulations",
+      "ms": 221000
+     },
+     {
+      "name": "I Fall Apart",
+      "ms": 226000
+     },
+     {
+      "name": "Feeling Whitney",
+      "ms": 258000
+     },
+     {
+      "name": "Go Flex",
+      "ms": 180000
+     }
+    ]
+   },
+   {
+    "name": "Wow.",
+    "cover": ".cache/img/feabc571efdc4c9b.jpg",
+    "tracks": [
+     {
+      "name": "Wow.",
+      "ms": 150000
+     }
+    ]
+   },
+   {
+    "name": "Pour Me A Drink",
+    "cover": ".cache/img/a56e63a404ab2134.jpg",
+    "tracks": [
+     {
+      "name": "Pour Me A Drink",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Twelve Carat Toothache",
+    "cover": ".cache/img/19fb3a73a65a1ecf.jpg",
+    "tracks": [
+     {
+      "name": "I Like You (A Happier Song)",
+      "ms": 195000
+     },
+     {
+      "name": "Lemon Tree",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "One Right Now",
+    "cover": ".cache/img/6a5157fd0a5a91a5.jpg",
+    "tracks": [
+     {
+      "name": "One Right Now",
+      "ms": 192000
+     }
+    ]
+   },
+   {
+    "name": "Goodbyes",
+    "cover": ".cache/img/3637677cd9907971.jpg",
+    "tracks": [
+     {
+      "name": "Goodbyes",
+      "ms": 174000
+     }
+    ]
+   },
+   {
+    "name": "F-1 Trillion",
+    "cover": ".cache/img/484db9ffad9ed11b.jpg",
+    "tracks": [
+     {
+      "name": "Guy For That",
+      "ms": 164000
+     },
+     {
+      "name": "Losers",
+      "ms": 209000
+     },
+     {
+      "name": "Wrong Ones",
+      "ms": 196000
+     },
+     {
+      "name": "Nosedive",
+      "ms": 192000
+     }
+    ]
+   },
+   {
+    "name": "Motley Crew",
+    "cover": ".cache/img/949344971e8a48dc.jpg",
+    "tracks": [
+     {
+      "name": "Motley Crew",
+      "ms": 184000
+     }
+    ]
+   },
+   {
+    "name": "Chemical",
+    "cover": ".cache/img/3b78c107667dd2b9.jpg",
+    "tracks": [
+     {
+      "name": "Chemical",
+      "ms": 184000
+     }
+    ]
+   },
+   {
+    "name": "Cooped Up / Return Of The Mack",
+    "cover": ".cache/img/0a914ed730e4e79c.jpg",
+    "tracks": [
+     {
+      "name": "Cooped Up / Return Of The Mack",
+      "ms": 126000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Red Hot Chili Peppers",
+  "genres": [
+   "rock",
+   "funk rock"
+  ],
+  "image": ".cache/img/7c0ffe37bcd0e001.jpg",
+  "albums": [
+   {
+    "name": "By the Way",
+    "cover": ".cache/img/a0081c6d5a73f25d.jpg",
+    "tracks": [
+     {
+      "name": "Can't Stop",
+      "ms": 269000
+     },
+     {
+      "name": "By the Way",
+      "ms": 216000
+     },
+     {
+      "name": "The Zephyr Song",
+      "ms": 231000
+     },
+     {
+      "name": "Dosed",
+      "ms": 311000
+     }
+    ]
+   },
+   {
+    "name": "Greatest Hits",
+    "cover": ".cache/img/0e89903fd75fc314.jpg",
+    "tracks": [
+     {
+      "name": "Under the Bridge",
+      "ms": 264000
+     },
+     {
+      "name": "Soul to Squeeze",
+      "ms": 289000
+     },
+     {
+      "name": "Higher Ground",
+      "ms": 203000
+     }
+    ]
+   },
+   {
+    "name": "Californication",
+    "cover": ".cache/img/1f31ddcdc8e56ba7.jpg",
+    "tracks": [
+     {
+      "name": "Scar Tissue",
+      "ms": 215000
+     },
+     {
+      "name": "Californication",
+      "ms": 329000
+     },
+     {
+      "name": "Otherside",
+      "ms": 255000
+     },
+     {
+      "name": "Around the World",
+      "ms": 238000
+     },
+     {
+      "name": "Parallel Universe",
+      "ms": 269000
+     },
+     {
+      "name": "Road Trippin'",
+      "ms": 205000
+     },
+     {
+      "name": "This Velvet Glove",
+      "ms": 225000
+     }
+    ]
+   },
+   {
+    "name": "Stadium Arcadium",
+    "cover": ".cache/img/3674220f90e48e05.jpg",
+    "tracks": [
+     {
+      "name": "Snow (Hey Oh)",
+      "ms": 334000
+     },
+     {
+      "name": "Dani California",
+      "ms": 282000
+     },
+     {
+      "name": "Tell Me Baby",
+      "ms": 247000
+     },
+     {
+      "name": "Hard to Concentrate",
+      "ms": 241000
+     },
+     {
+      "name": "Slow Cheetah",
+      "ms": 319000
+     }
+    ]
+   },
+   {
+    "name": "Blood Sugar Sex Magik",
+    "cover": ".cache/img/981863c99f20d9a6.jpg",
+    "tracks": [
+     {
+      "name": "Give It Away",
+      "ms": 282000
+     },
+     {
+      "name": "Suck My Kiss",
+      "ms": 217000
+     },
+     {
+      "name": "Breaking the Girl",
+      "ms": 295000
+     }
+    ]
+   },
+   {
+    "name": "The Getaway",
+    "cover": ".cache/img/b9737b1ad91730e3.jpg",
+    "tracks": [
+     {
+      "name": "Dark Necessities",
+      "ms": 302000
+     },
+     {
+      "name": "Sick Love",
+      "ms": 221000
+     },
+     {
+      "name": "The Getaway",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "One Hot Minute",
+    "cover": ".cache/img/c080b75bc36b3d47.jpg",
+    "tracks": [
+     {
+      "name": "Aeroplane",
+      "ms": 285000
+     },
+     {
+      "name": "My Friends",
+      "ms": 248000
+     }
+    ]
+   },
+   {
+    "name": "I'm with You",
+    "cover": ".cache/img/2b1ea575525eab26.jpg",
+    "tracks": [
+     {
+      "name": "The Adventures of Rain Dance Maggie",
+      "ms": 282000
+     }
+    ]
+   },
+   {
+    "name": "Unlimited Love",
+    "cover": ".cache/img/e7dc32cee0dd0d30.jpg",
+    "tracks": [
+     {
+      "name": "Black Summer",
+      "ms": 232000
+     },
+     {
+      "name": "White Braids & Pillow Chair",
+      "ms": 220000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Metro Boomin",
+  "genres": [
+   "hip hop",
+   "trap"
+  ],
+  "image": ".cache/img/7829d58dfedb6be7.jpg",
+  "albums": [
+   {
+    "name": "HEROES & VILLAINS",
+    "cover": ".cache/img/54bf75c2a2a12ba0.jpg",
+    "tracks": [
+     {
+      "name": "Creepin'",
+      "ms": 221000
+     },
+     {
+      "name": "Too Many Nights",
+      "ms": 199000
+     },
+     {
+      "name": "Trance",
+      "ms": 194000
+     },
+     {
+      "name": "Superhero (Heroes & Villains)",
+      "ms": 182000
+     },
+     {
+      "name": "Around Me",
+      "ms": 191000
+     },
+     {
+      "name": "Raindrops (Insane)",
+      "ms": 188000
+     },
+     {
+      "name": "Niagara Falls (Foot or 2)",
+      "ms": 207000
+     }
+    ]
+   },
+   {
+    "name": "METRO BOOMIN PRESENTS SPIDER-MAN: ACROSS THE SPIDER-VERSE (SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE)",
+    "cover": ".cache/img/740a978011d5d229.jpg",
+    "tracks": [
+     {
+      "name": "Am I Dreaming",
+      "ms": 256000
+     },
+     {
+      "name": "Hummingbird",
+      "ms": 319000
+     },
+     {
+      "name": "Self Love",
+      "ms": 189000
+     },
+     {
+      "name": "Calling",
+      "ms": 219000
+     }
+    ]
+   },
+   {
+    "name": "NOT ALL HEROES WEAR CAPES",
+    "cover": ".cache/img/5e5ced550df08c14.jpg",
+    "tracks": [
+     {
+      "name": "Space Cadet",
+      "ms": 205000
+     },
+     {
+      "name": "10 Freaky Girls",
+      "ms": 209000
+     },
+     {
+      "name": "No Complaints",
+      "ms": 265000
+     }
+    ]
+   },
+   {
+    "name": "Metro Boomin Presents: A Futuristic Summa (Hosted by DJ Spinz)",
+    "cover": ".cache/img/86d87b953ccbadc0.jpg",
+    "tracks": [
+     {
+      "name": "Take Me Thru Dere",
+      "ms": 162000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Daft Punk",
+  "genres": [
+   "electronic",
+   "french house"
+  ],
+  "image": ".cache/img/dd99573906d131f6.jpg",
+  "albums": [
+   {
+    "name": "Discovery",
+    "cover": ".cache/img/28c659088763cbbb.jpg",
+    "tracks": [
+     {
+      "name": "One More Time",
+      "ms": 320000
+     },
+     {
+      "name": "Face to Face",
+      "ms": 240000
+     },
+     {
+      "name": "Harder, Better, Faster, Stronger",
+      "ms": 226000
+     },
+     {
+      "name": "Something About Us",
+      "ms": 232000
+     },
+     {
+      "name": "Veridis Quo",
+      "ms": 345000
+     },
+     {
+      "name": "Digital Love",
+      "ms": 301000
+     },
+     {
+      "name": "Aerodynamic",
+      "ms": 212000
+     },
+     {
+      "name": "Voyager",
+      "ms": 227000
+     },
+     {
+      "name": "Crescendolls",
+      "ms": 211000
+     },
+     {
+      "name": "Superheroes",
+      "ms": 237000
+     }
+    ]
+   },
+   {
+    "name": "Random Access Memories",
+    "cover": ".cache/img/6385286d8f50fcd1.jpg",
+    "tracks": [
+     {
+      "name": "Instant Crush",
+      "ms": 337000
+     },
+     {
+      "name": "Lose Yourself to Dance",
+      "ms": 353000
+     },
+     {
+      "name": "Giorgio by Moroder",
+      "ms": 544000
+     },
+     {
+      "name": "Give Life Back to Music",
+      "ms": 274000
+     },
+     {
+      "name": "Fragments of Time",
+      "ms": 279000
+     },
+     {
+      "name": "The Game of Love",
+      "ms": 321000
+     },
+     {
+      "name": "Within",
+      "ms": 228000
+     }
+    ]
+   },
+   {
+    "name": "Get Lucky",
+    "cover": ".cache/img/806faf4bc51dc603.jpg",
+    "tracks": [
+     {
+      "name": "Get Lucky",
+      "ms": 248000
+     }
+    ]
+   },
+   {
+    "name": "Homework",
+    "cover": ".cache/img/63d68ada7b5657f2.jpg",
+    "tracks": [
+     {
+      "name": "Around the World",
+      "ms": 429000
+     },
+     {
+      "name": "Da Funk",
+      "ms": 328000
+     },
+     {
+      "name": "Revolution 909",
+      "ms": 335000
+     }
+    ]
+   },
+   {
+    "name": "Human After All",
+    "cover": ".cache/img/2acb1be21d1d1e49.jpg",
+    "tracks": [
+     {
+      "name": "Technologic",
+      "ms": 284000
+     }
+    ]
+   },
+   {
+    "name": "Musique, Vol. 1",
+    "cover": ".cache/img/e314ee772202abda.jpg",
+    "tracks": [
+     {
+      "name": "Robot Rock",
+      "ms": 287000
+     }
+    ]
+   },
+   {
+    "name": "TRON: Legacy - The Complete Edition (Original Motion Picture Soundtrack)",
+    "cover": ".cache/img/c2c62fdb002a0559.jpg",
+    "tracks": [
+     {
+      "name": "End of Line",
+      "ms": 156000
+     },
+     {
+      "name": "The Son of Flynn",
+      "ms": 95000
+     }
+    ]
+   },
+   {
+    "name": "Alive 2007",
+    "cover": ".cache/img/7600d5c51c881d2b.jpg",
+    "tracks": [
+     {
+      "name": "Around the World / Harder, Better, Faster, Stronger",
+      "ms": 342000
+     }
+    ]
+   },
+   {
+    "name": "Random Access Memories",
+    "cover": ".cache/img/e4d2b399fc490ee9.jpg",
+    "tracks": [
+     {
+      "name": "Infinity Repeating (2013 Demo)",
+      "ms": 239000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Tyler, The Creator",
+  "genres": [
+   "hip hop",
+   "alternative hip hop"
+  ],
+  "image": ".cache/img/7b1e0636833fad8b.jpg",
+  "albums": [
+   {
+    "name": "Flower Boy",
+    "cover": ".cache/img/aa21e10c984f6b00.jpg",
+    "tracks": [
+     {
+      "name": "See You Again",
+      "ms": 180000
+     },
+     {
+      "name": "911 / Mr. Lonely",
+      "ms": 255000
+     }
+    ]
+   },
+   {
+    "name": "DON'T TAP THE GLASS",
+    "cover": ".cache/img/e49028ddcbb05df0.jpg",
+    "tracks": [
+     {
+      "name": "Sugar On My Tongue",
+      "ms": 153000
+     },
+     {
+      "name": "Ring Ring Ring",
+      "ms": 201000
+     },
+     {
+      "name": "I'll Take Care of You",
+      "ms": 200000
+     },
+     {
+      "name": "Big Poe",
+      "ms": 182000
+     }
+    ]
+   },
+   {
+    "name": "CHROMAKOPIA",
+    "cover": ".cache/img/4d1c3ed0e9bad5d7.jpg",
+    "tracks": [
+     {
+      "name": "Sticky",
+      "ms": 255000
+     },
+     {
+      "name": "Like Him",
+      "ms": 278000
+     },
+     {
+      "name": "St. Chroma",
+      "ms": 197000
+     },
+     {
+      "name": "Darling, I",
+      "ms": 253000
+     },
+     {
+      "name": "Balloon",
+      "ms": 154000
+     },
+     {
+      "name": "Thought I Was Dead",
+      "ms": 207000
+     },
+     {
+      "name": "Noid",
+      "ms": 284000
+     },
+     {
+      "name": "Rah Tah Tah",
+      "ms": 165000
+     },
+     {
+      "name": "I Killed You",
+      "ms": 168000
+     },
+     {
+      "name": "Take Your Mask Off",
+      "ms": 253000
+     }
+    ]
+   },
+   {
+    "name": "IGOR",
+    "cover": ".cache/img/0770ed3dbd2ea278.jpg",
+    "tracks": [
+     {
+      "name": "ARE WE STILL FRIENDS?",
+      "ms": 265000
+     },
+     {
+      "name": "EARFQUAKE",
+      "ms": 190000
+     },
+     {
+      "name": "GONE, GONE / THANK YOU",
+      "ms": 375000
+     },
+     {
+      "name": "NEW MAGIC WAND",
+      "ms": 195000
+     },
+     {
+      "name": "I THINK",
+      "ms": 212000
+     },
+     {
+      "name": "RUNNING OUT OF TIME",
+      "ms": 177000
+     },
+     {
+      "name": "A BOY IS A GUN*",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Goblin",
+    "cover": ".cache/img/478142601498345a.jpg",
+    "tracks": [
+     {
+      "name": "She",
+      "ms": 253000
+     }
+    ]
+   },
+   {
+    "name": "CALL ME IF YOU GET LOST",
+    "cover": ".cache/img/78cfbf64525ed71f.jpg",
+    "tracks": [
+     {
+      "name": "SWEET / I THOUGHT YOU WANTED TO DANCE",
+      "ms": 588000
+     }
+    ]
+   },
+   {
+    "name": "Wolf",
+    "cover": ".cache/img/7770bb9fd1a2fee1.jpg",
+    "tracks": [
+     {
+      "name": "Answer",
+      "ms": 230000
+     },
+     {
+      "name": "IFHY",
+      "ms": 320000
+     }
+    ]
+   },
+   {
+    "name": "THAT GUY",
+    "cover": ".cache/img/27a09507affc26d4.jpg",
+    "tracks": [
+     {
+      "name": "THAT GUY",
+      "ms": 167000
+     }
+    ]
+   },
+   {
+    "name": "BEST INTEREST",
+    "cover": ".cache/img/079714e2c0cc4fd5.jpg",
+    "tracks": [
+     {
+      "name": "BEST INTEREST",
+      "ms": 127000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Foo Fighters",
+  "genres": [
+   "rock",
+   "alternative rock"
+  ],
+  "image": ".cache/img/25c1cbbcadb3f2d5.jpg",
+  "albums": [
+   {
+    "name": "Greatest Hits",
+    "cover": ".cache/img/c21e05b3b306b9d5.jpg",
+    "tracks": [
+     {
+      "name": "Everlong",
+      "ms": 250000
+     },
+     {
+      "name": "The Pretender",
+      "ms": 269000
+     },
+     {
+      "name": "Learn to Fly",
+      "ms": 238000
+     },
+     {
+      "name": "My Hero",
+      "ms": 260000
+     },
+     {
+      "name": "Best of You",
+      "ms": 256000
+     },
+     {
+      "name": "All My Life",
+      "ms": 262000
+     },
+     {
+      "name": "Monkey Wrench",
+      "ms": 231000
+     },
+     {
+      "name": "Big Me",
+      "ms": 132000
+     },
+     {
+      "name": "Wheels",
+      "ms": 278000
+     },
+     {
+      "name": "Long Road To Ruin",
+      "ms": 225000
+     },
+     {
+      "name": "Breakout",
+      "ms": 201000
+     }
+    ]
+   },
+   {
+    "name": "One By One",
+    "cover": ".cache/img/782d7f447baffb91.jpg",
+    "tracks": [
+     {
+      "name": "Times Like These",
+      "ms": 266000
+     }
+    ]
+   },
+   {
+    "name": "Wasting Light",
+    "cover": ".cache/img/96cca65d5d48f800.jpg",
+    "tracks": [
+     {
+      "name": "Walk",
+      "ms": 256000
+     },
+     {
+      "name": "These Days",
+      "ms": 298000
+     },
+     {
+      "name": "Rope",
+      "ms": 259000
+     }
+    ]
+   },
+   {
+    "name": "Foo Fighters",
+    "cover": ".cache/img/b8fcffc2d9612d3a.jpg",
+    "tracks": [
+     {
+      "name": "I'll Stick Around",
+      "ms": 232000
+     },
+     {
+      "name": "This Is a Call",
+      "ms": 233000
+     },
+     {
+      "name": "Good Grief",
+      "ms": 241000
+     }
+    ]
+   },
+   {
+    "name": "Concrete and Gold",
+    "cover": ".cache/img/e4fdaf59050f6ba6.jpg",
+    "tracks": [
+     {
+      "name": "The Sky Is A Neighborhood",
+      "ms": 244000
+     },
+     {
+      "name": "Run",
+      "ms": 323000
+     }
+    ]
+   },
+   {
+    "name": "There Is Nothing Left To Lose",
+    "cover": ".cache/img/1afc3d6949413ed8.jpg",
+    "tracks": [
+     {
+      "name": "Stacked Actors",
+      "ms": 257000
+     },
+     {
+      "name": "Ain't It The Life",
+      "ms": 257000
+     }
+    ]
+   },
+   {
+    "name": "Echoes, Silence, Patience & Grace",
+    "cover": ".cache/img/abf02fef003589f4.jpg",
+    "tracks": [
+     {
+      "name": "Stranger Things Have Happened",
+      "ms": 321000
+     },
+     {
+      "name": "Let It Die",
+      "ms": 245000
+     }
+    ]
+   },
+   {
+    "name": "In Your Honor",
+    "cover": ".cache/img/220acec709a9e1a8.jpg",
+    "tracks": [
+     {
+      "name": "DOA",
+      "ms": 252000
+     },
+     {
+      "name": "No Way Back",
+      "ms": 196000
+     }
+    ]
+   },
+   {
+    "name": "Saint Cecilia EP",
+    "cover": ".cache/img/03289e2ea5216d8a.jpg",
+    "tracks": [
+     {
+      "name": "Saint Cecilia",
+      "ms": 221000
+     }
+    ]
+   },
+   {
+    "name": "Of All People",
+    "cover": ".cache/img/466a94334fe8b342.jpg",
+    "tracks": [
+     {
+      "name": "Of All People",
+      "ms": 154000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "21 Savage",
+  "genres": [
+   "rap",
+   "trap"
+  ],
+  "image": ".cache/img/0f3c8bb27555d366.jpg",
+  "albums": [
+   {
+    "name": "i am > i was",
+    "cover": ".cache/img/bc75bbb0ad54b763.jpg",
+    "tracks": [
+     {
+      "name": "a lot",
+      "ms": 290000
+     }
+    ]
+   },
+   {
+    "name": "american dream",
+    "cover": ".cache/img/6541f1c12e4e6484.jpg",
+    "tracks": [
+     {
+      "name": "redrum",
+      "ms": 270000
+     },
+     {
+      "name": "prove it",
+      "ms": 207000
+     },
+     {
+      "name": "should've wore a bonnet",
+      "ms": 186000
+     }
+    ]
+   },
+   {
+    "name": "Issa Album",
+    "cover": ".cache/img/bcee3e400b4ab597.jpg",
+    "tracks": [
+     {
+      "name": "Bank Account",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "SAVAGE MODE II",
+    "cover": ".cache/img/19877dfbbb30ba06.jpg",
+    "tracks": [
+     {
+      "name": "Glock In My Lap",
+      "ms": 193000
+     },
+     {
+      "name": "Runnin",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Savage Mode",
+    "cover": ".cache/img/d72c3debe5f0e973.jpg",
+    "tracks": [
+     {
+      "name": "X",
+      "ms": 258000
+     }
+    ]
+   },
+   {
+    "name": "Without Warning",
+    "cover": ".cache/img/0c5b54c9e6c8b6b6.jpg",
+    "tracks": [
+     {
+      "name": "Ghostface Killers",
+      "ms": 269000
+     },
+     {
+      "name": "Rap Saved Me",
+      "ms": 258000
+     }
+    ]
+   },
+   {
+    "name": "WHAT HAPPENED TO THE STREETS?",
+    "cover": ".cache/img/c33d73e62a75c3dc.jpg",
+    "tracks": [
+     {
+      "name": "MR RECOUP",
+      "ms": 164000
+     }
+    ]
+   },
+   {
+    "name": "i am > i was",
+    "cover": ".cache/img/bc75bbb0ad54b763.jpg",
+    "tracks": [
+     {
+      "name": "can't leave without it",
+      "ms": 205000
+     },
+     {
+      "name": "ball w/o you",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Secret",
+    "cover": ".cache/img/19d237fa8c653f0d.jpg",
+    "tracks": [
+     {
+      "name": "Secret",
+      "ms": 210000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Zach Bryan",
+  "genres": [
+   "country",
+   "americana"
+  ],
+  "image": ".cache/img/67b8eb804189b932.jpg",
+  "albums": [
+   {
+    "name": "Zach Bryan",
+    "cover": ".cache/img/3093d6bc05c0a79b.jpg",
+    "tracks": [
+     {
+      "name": "I Remember Everything",
+      "ms": 227000
+     },
+     {
+      "name": "East Side of Sorrow",
+      "ms": 209000
+     },
+     {
+      "name": "Spotless",
+      "ms": 169000
+     },
+     {
+      "name": "Hey Driver",
+      "ms": 227000
+     },
+     {
+      "name": "Tourniquet",
+      "ms": 189000
+     },
+     {
+      "name": "Fear and Friday's",
+      "ms": 171000
+     },
+     {
+      "name": "Ticking",
+      "ms": 242000
+     }
+    ]
+   },
+   {
+    "name": "With Heaven On Top",
+    "cover": ".cache/img/29fafbd2a1dfb3bf.jpg",
+    "tracks": [
+     {
+      "name": "Plastic Cigarette",
+      "ms": 185000
+     },
+     {
+      "name": "With Heaven On Top",
+      "ms": 233000
+     },
+     {
+      "name": "Say Why",
+      "ms": 143000
+     }
+    ]
+   },
+   {
+    "name": "Lies",
+    "cover": ".cache/img/317a56f2644569b9.jpg",
+    "tracks": [
+     {
+      "name": "Lies",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "American Heartbreak",
+    "cover": ".cache/img/4d61d7c8d5d87dd6.jpg",
+    "tracks": [
+     {
+      "name": "Something in the Orange",
+      "ms": 254000
+     },
+     {
+      "name": "Sun to Me",
+      "ms": 163000
+     },
+     {
+      "name": "The Good I'll Do",
+      "ms": 211000
+     },
+     {
+      "name": "Tishomingo",
+      "ms": 188000
+     },
+     {
+      "name": "Younger Years",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "Summertime Blues",
+    "cover": ".cache/img/053b11540c8492c3.jpg",
+    "tracks": [
+     {
+      "name": "Oklahoma Smokeshow",
+      "ms": 211000
+     },
+     {
+      "name": "Motorcycle Drive By",
+      "ms": 161000
+     }
+    ]
+   },
+   {
+    "name": "Pink Skies",
+    "cover": ".cache/img/4f04e8d2f2950d56.jpg",
+    "tracks": [
+     {
+      "name": "Pink Skies",
+      "ms": 194000
+     }
+    ]
+   },
+   {
+    "name": "Elisabeth",
+    "cover": ".cache/img/8fe5e114ede6a2d3.jpg",
+    "tracks": [
+     {
+      "name": "Revival",
+      "ms": 221000
+     }
+    ]
+   },
+   {
+    "name": "Heading South",
+    "cover": ".cache/img/d4353c3315365149.jpg",
+    "tracks": [
+     {
+      "name": "Heading South",
+      "ms": 171000
+     }
+    ]
+   },
+   {
+    "name": "Burn, Burn, Burn",
+    "cover": ".cache/img/df37725875cb7be9.jpg",
+    "tracks": [
+     {
+      "name": "Burn, Burn, Burn",
+      "ms": 268000
+     }
+    ]
+   },
+   {
+    "name": "Dawns",
+    "cover": ".cache/img/537a94d31eb7d785.jpg",
+    "tracks": [
+     {
+      "name": "Dawns",
+      "ms": 290000
+     }
+    ]
+   },
+   {
+    "name": "Boys Of Faith",
+    "cover": ".cache/img/47c4385097e7e539.jpg",
+    "tracks": [
+     {
+      "name": "Nine Ball",
+      "ms": 169000
+     }
+    ]
+   },
+   {
+    "name": "The Great American Bar Scene",
+    "cover": ".cache/img/0978176d9ddfb65c.jpg",
+    "tracks": [
+     {
+      "name": "28",
+      "ms": 233000
+     },
+     {
+      "name": "Bass Boat",
+      "ms": 216000
+     },
+     {
+      "name": "American Nights",
+      "ms": 218000
+     }
+    ]
+   },
+   {
+    "name": "Plainsman",
+    "cover": ".cache/img/317a56f2644569b9.jpg",
+    "tracks": [
+     {
+      "name": "Plainsman",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "Quiet, Heavy Dreams",
+    "cover": ".cache/img/0c1ddbda297d7bae.jpg",
+    "tracks": [
+     {
+      "name": "Crooked Teeth",
+      "ms": 197000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Mac Miller",
+  "genres": [
+   "hip hop"
+  ],
+  "image": ".cache/img/fac65535f9f0b29d.jpg",
+  "albums": [
+   {
+    "name": "The Divine Feminine",
+    "cover": ".cache/img/9480a1990db469d0.jpg",
+    "tracks": [
+     {
+      "name": "Cinderella",
+      "ms": 480000
+     },
+     {
+      "name": "My Favorite Part",
+      "ms": 216000
+     },
+     {
+      "name": "Congratulations",
+      "ms": 256000
+     },
+     {
+      "name": "Dang!",
+      "ms": 305000
+     }
+    ]
+   },
+   {
+    "name": "K.I.D.S.",
+    "cover": ".cache/img/b35cebfae7f01360.jpg",
+    "tracks": [
+     {
+      "name": "The Spins",
+      "ms": 196000
+     },
+     {
+      "name": "Nikes on My Feet",
+      "ms": 165000
+     }
+    ]
+   },
+   {
+    "name": "Swimming",
+    "cover": ".cache/img/90651ce3f7fbf704.jpg",
+    "tracks": [
+     {
+      "name": "Self Care",
+      "ms": 345000
+     },
+     {
+      "name": "Ladders",
+      "ms": 287000
+     },
+     {
+      "name": "Small Worlds",
+      "ms": 271000
+     },
+     {
+      "name": "Come Back to Earth",
+      "ms": 161000
+     },
+     {
+      "name": "Jet Fuel",
+      "ms": 345000
+     },
+     {
+      "name": "Hurt Feelings",
+      "ms": 245000
+     },
+     {
+      "name": "What's the Use?",
+      "ms": 288000
+     },
+     {
+      "name": "Wings",
+      "ms": 250000
+     },
+     {
+      "name": "Dunno",
+      "ms": 237000
+     }
+    ]
+   },
+   {
+    "name": "The Divine Feminine",
+    "cover": ".cache/img/8a4e5aa0b05cab9f.jpg",
+    "tracks": [
+     {
+      "name": "Channel 13",
+      "ms": 264000
+     }
+    ]
+   },
+   {
+    "name": "GO:OD AM",
+    "cover": ".cache/img/78954b71cdf4a14b.jpg",
+    "tracks": [
+     {
+      "name": "Weekend",
+      "ms": 208000
+     },
+     {
+      "name": "Ascension",
+      "ms": 292000
+     }
+    ]
+   },
+   {
+    "name": "Blue Slide Park",
+    "cover": ".cache/img/8884c6a8859c2921.jpg",
+    "tracks": [
+     {
+      "name": "Missed Calls",
+      "ms": 179000
+     }
+    ]
+   },
+   {
+    "name": "Circles",
+    "cover": ".cache/img/e8a59ff34341dffb.jpg",
+    "tracks": [
+     {
+      "name": "Blue World",
+      "ms": 209000
+     },
+     {
+      "name": "Surf",
+      "ms": 330000
+     },
+     {
+      "name": "Woods",
+      "ms": 286000
+     }
+    ]
+   },
+   {
+    "name": "Balloonerism",
+    "cover": ".cache/img/718074f417da95eb.jpg",
+    "tracks": [
+     {
+      "name": "Stoned",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "Butterflies",
+    "cover": ".cache/img/2e25a4cb84d37a43.jpg",
+    "tracks": [
+     {
+      "name": "Butterflies",
+      "ms": 194000
+     }
+    ]
+   },
+   {
+    "name": "Good News",
+    "cover": ".cache/img/e8a59ff34341dffb.jpg",
+    "tracks": [
+     {
+      "name": "Good News",
+      "ms": 342000
+     }
+    ]
+   },
+   {
+    "name": "Watching Movies with the Sound Off",
+    "cover": ".cache/img/7621c9e79953230b.jpg",
+    "tracks": [
+     {
+      "name": "Someone Like You",
+      "ms": 256000
+     }
+    ]
+   },
+   {
+    "name": "I Love Life, Thank You",
+    "cover": ".cache/img/1a958f1e2e2221dc.jpg",
+    "tracks": [
+     {
+      "name": "Love Lost",
+      "ms": 163000
+     }
+    ]
+   },
+   {
+    "name": "Programs",
+    "cover": ".cache/img/c26142731a083cea.jpg",
+    "tracks": [
+     {
+      "name": "Programs",
+      "ms": 190000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Linkin Park",
+  "genres": [
+   "alternative rock",
+   "nu metal"
+  ],
+  "image": ".cache/img/0b0eb869321d7556.jpg",
+  "albums": [
+   {
+    "name": "Hybrid Theory",
+    "cover": ".cache/img/b9a93dbd012818c7.jpg",
+    "tracks": [
+     {
+      "name": "In the End",
+      "ms": 216000
+     },
+     {
+      "name": "One Step Closer",
+      "ms": 157000
+     },
+     {
+      "name": "Crawling",
+      "ms": 209000
+     },
+     {
+      "name": "Papercut",
+      "ms": 184000
+     },
+     {
+      "name": "A Place for My Head",
+      "ms": 184000
+     },
+     {
+      "name": "With You",
+      "ms": 203000
+     },
+     {
+      "name": "Runaway",
+      "ms": 183000
+     },
+     {
+      "name": "Points of Authority",
+      "ms": 200000
+     },
+     {
+      "name": "By Myself",
+      "ms": 189000
+     }
+    ]
+   },
+   {
+    "name": "Meteora",
+    "cover": ".cache/img/6457f7405520e919.jpg",
+    "tracks": [
+     {
+      "name": "Numb",
+      "ms": 187000
+     },
+     {
+      "name": "Somewhere I Belong",
+      "ms": 213000
+     },
+     {
+      "name": "Faint",
+      "ms": 162000
+     },
+     {
+      "name": "Breaking the Habit",
+      "ms": 196000
+     },
+     {
+      "name": "Lying from You",
+      "ms": 175000
+     },
+     {
+      "name": "Figure.09",
+      "ms": 197000
+     },
+     {
+      "name": "Don't Stay",
+      "ms": 187000
+     },
+     {
+      "name": "From the Inside",
+      "ms": 175000
+     },
+     {
+      "name": "Hit the Floor",
+      "ms": 164000
+     }
+    ]
+   },
+   {
+    "name": "Minutes to Midnight",
+    "cover": ".cache/img/837d239bd2b63cba.jpg",
+    "tracks": [
+     {
+      "name": "What I've Done",
+      "ms": 205000
+     },
+     {
+      "name": "Given Up",
+      "ms": 189000
+     },
+     {
+      "name": "Bleed It Out",
+      "ms": 164000
+     },
+     {
+      "name": "Shadow of the Day",
+      "ms": 289000
+     },
+     {
+      "name": "Leave Out All The Rest",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "LIVING THINGS",
+    "cover": ".cache/img/d486746ba0c974a5.jpg",
+    "tracks": [
+     {
+      "name": "BURN IT DOWN",
+      "ms": 230000
+     },
+     {
+      "name": "CASTLE OF GLASS",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "From Zero",
+    "cover": ".cache/img/be44e4b3e5bf000a.jpg",
+    "tracks": [
+     {
+      "name": "Heavy Is the Crown",
+      "ms": 167000
+     }
+    ]
+   },
+   {
+    "name": "The Emptiness Machine",
+    "cover": ".cache/img/be44e4b3e5bf000a.jpg",
+    "tracks": [
+     {
+      "name": "The Emptiness Machine",
+      "ms": 190000
+     }
+    ]
+   },
+   {
+    "name": "One More Light",
+    "cover": ".cache/img/81a59dafdcea1f66.jpg",
+    "tracks": [
+     {
+      "name": "One More Light",
+      "ms": 255000
+     }
+    ]
+   },
+   {
+    "name": "Lost",
+    "cover": ".cache/img/21378388a618b197.jpg",
+    "tracks": [
+     {
+      "name": "Lost",
+      "ms": 199000
+     }
+    ]
+   },
+   {
+    "name": "Transformers: Revenge Of The Fallen The Album",
+    "cover": ".cache/img/72567c9c2b4c0fc9.jpg",
+    "tracks": [
+     {
+      "name": "New Divide",
+      "ms": 268000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Eminem",
+  "genres": [
+   "hip hop",
+   "rap"
+  ],
+  "image": ".cache/img/16a9a5bd3fd612cb.jpg",
+  "albums": [
+   {
+    "name": "The Eminem Show",
+    "cover": ".cache/img/c3f586df3b7dd2f1.jpg",
+    "tracks": [
+     {
+      "name": "Without Me",
+      "ms": 290000
+     },
+     {
+      "name": "Till I Collapse",
+      "ms": 297000
+     },
+     {
+      "name": "Superman",
+      "ms": 350000
+     },
+     {
+      "name": "Sing For The Moment",
+      "ms": 339000
+     },
+     {
+      "name": "Cleanin' Out My Closet",
+      "ms": 297000
+     }
+    ]
+   },
+   {
+    "name": "Curtain Call: The Hits",
+    "cover": ".cache/img/ebd3473a1c1a3f28.jpg",
+    "tracks": [
+     {
+      "name": "Lose Yourself",
+      "ms": 326000
+     },
+     {
+      "name": "The Real Slim Shady",
+      "ms": 284000
+     },
+     {
+      "name": "Mockingbird",
+      "ms": 251000
+     },
+     {
+      "name": "Shake That",
+      "ms": 275000
+     },
+     {
+      "name": "Stan",
+      "ms": 403000
+     },
+     {
+      "name": "My Name Is",
+      "ms": 268000
+     },
+     {
+      "name": "The Way I Am",
+      "ms": 291000
+     },
+     {
+      "name": "Just Lose It",
+      "ms": 249000
+     },
+     {
+      "name": "Like Toy Soldiers",
+      "ms": 297000
+     }
+    ]
+   },
+   {
+    "name": "Music To Be Murdered By",
+    "cover": ".cache/img/9cdc636b52260efe.jpg",
+    "tracks": [
+     {
+      "name": "Godzilla",
+      "ms": 211000
+     }
+    ]
+   },
+   {
+    "name": "Recovery",
+    "cover": ".cache/img/5e822a3c6813fb0a.jpg",
+    "tracks": [
+     {
+      "name": "Love The Way You Lie",
+      "ms": 263000
+     },
+     {
+      "name": "Not Afraid",
+      "ms": 251000
+     },
+     {
+      "name": "No Love",
+      "ms": 300000
+     }
+    ]
+   },
+   {
+    "name": "The Marshall Mathers LP2",
+    "cover": ".cache/img/90a72d5544cb8b90.jpg",
+    "tracks": [
+     {
+      "name": "The Monster",
+      "ms": 250000
+     },
+     {
+      "name": "Rap God",
+      "ms": 364000
+     }
+    ]
+   },
+   {
+    "name": "Houdini",
+    "cover": ".cache/img/61ad2bd8c8ea4e08.jpg",
+    "tracks": [
+     {
+      "name": "Houdini",
+      "ms": 228000
+     }
+    ]
+   },
+   {
+    "name": "Kamikaze",
+    "cover": ".cache/img/f89a4c8e0b2f2297.jpg",
+    "tracks": [
+     {
+      "name": "Venom",
+      "ms": 270000
+     },
+     {
+      "name": "Lucky You",
+      "ms": 245000
+     }
+    ]
+   },
+   {
+    "name": "Revival",
+    "cover": ".cache/img/f8f04053d7bf65fe.jpg",
+    "tracks": [
+     {
+      "name": "River",
+      "ms": 221000
+     }
+    ]
+   },
+   {
+    "name": "Eminem Presents The Re-Up",
+    "cover": ".cache/img/9b38fa7d97c68c56.jpg",
+    "tracks": [
+     {
+      "name": "You Don't Know",
+      "ms": 262000
+     }
+    ]
+   },
+   {
+    "name": "Killshot",
+    "cover": ".cache/img/f474c7f60d132edf.jpg",
+    "tracks": [
+     {
+      "name": "Killshot",
+      "ms": 254000
+     }
+    ]
+   },
+   {
+    "name": "Relapse",
+    "cover": ".cache/img/0e40715e05d7c1a9.jpg",
+    "tracks": [
+     {
+      "name": "Beautiful",
+      "ms": 392000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Pink Floyd",
+  "genres": [
+   "progressive rock"
+  ],
+  "image": ".cache/img/f057ac15a322b239.jpg",
+  "albums": [
+   {
+    "name": "Wish You Were Here",
+    "cover": ".cache/img/c79316b0a8dfba82.jpg",
+    "tracks": [
+     {
+      "name": "Wish You Were Here",
+      "ms": 334000
+     },
+     {
+      "name": "Shine On You Crazy Diamond (Pts. 1-5)",
+      "ms": 812000
+     },
+     {
+      "name": "Have a Cigar",
+      "ms": 307000
+     },
+     {
+      "name": "Welcome to the Machine",
+      "ms": 451000
+     },
+     {
+      "name": "Shine On You Crazy Diamond (Pts. 6-9)",
+      "ms": 749000
+     }
+    ]
+   },
+   {
+    "name": "The Dark Side of the Moon",
+    "cover": ".cache/img/80f049ab171a4161.jpg",
+    "tracks": [
+     {
+      "name": "Time",
+      "ms": 422000
+     },
+     {
+      "name": "Money",
+      "ms": 380000
+     },
+     {
+      "name": "Breathe (In the Air)",
+      "ms": 169000
+     },
+     {
+      "name": "The Great Gig in the Sky",
+      "ms": 284000
+     },
+     {
+      "name": "Us and Them",
+      "ms": 472000
+     },
+     {
+      "name": "Eclipse",
+      "ms": 126000
+     },
+     {
+      "name": "Any Colour You Like",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "The Wall",
+    "cover": ".cache/img/5f8f6a9cbf64af2d.jpg",
+    "tracks": [
+     {
+      "name": "Another Brick in the Wall, Pt. 2",
+      "ms": 238000
+     },
+     {
+      "name": "Comfortably Numb",
+      "ms": 382000
+     },
+     {
+      "name": "Hey You",
+      "ms": 279000
+     },
+     {
+      "name": "Young Lust",
+      "ms": 209000
+     },
+     {
+      "name": "Run Like Hell",
+      "ms": 263000
+     },
+     {
+      "name": "The Happiest Days of Our Lives",
+      "ms": 111000
+     }
+    ]
+   },
+   {
+    "name": "A Momentary Lapse of Reason",
+    "cover": ".cache/img/195bda32c8f385af.jpg",
+    "tracks": [
+     {
+      "name": "Learning to Fly",
+      "ms": 292000
+     },
+     {
+      "name": "On the Turning Away",
+      "ms": 341000
+     }
+    ]
+   },
+   {
+    "name": "Animals",
+    "cover": ".cache/img/efc120468b23ee03.jpg",
+    "tracks": [
+     {
+      "name": "Pigs (Three Different Ones)",
+      "ms": 685000
+     },
+     {
+      "name": "Sheep",
+      "ms": 619000
+     }
+    ]
+   },
+   {
+    "name": "The Division Bell",
+    "cover": ".cache/img/ca8d21952b97b84d.jpg",
+    "tracks": [
+     {
+      "name": "High Hopes",
+      "ms": 510000
+     },
+     {
+      "name": "What Do You Want from Me",
+      "ms": 261000
+     },
+     {
+      "name": "Coming Back to Life",
+      "ms": 379000
+     },
+     {
+      "name": "Marooned",
+      "ms": 330000
+     },
+     {
+      "name": "Keep Talking",
+      "ms": 365000
+     },
+     {
+      "name": "Lost for Words",
+      "ms": 314000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Kid Cudi",
+  "genres": [
+   "hip hop"
+  ],
+  "image": ".cache/img/3ce84850652d98f8.jpg",
+  "albums": [
+   {
+    "name": "Man On The Moon: The End Of Day",
+    "cover": ".cache/img/c96b6eb1c6aa6e8b.jpg",
+    "tracks": [
+     {
+      "name": "Day 'N' Nite (nightmare)",
+      "ms": 223000
+     },
+     {
+      "name": "Pursuit Of Happiness (Nightmare)",
+      "ms": 295000
+     },
+     {
+      "name": "Soundtrack 2 My Life",
+      "ms": 235000
+     },
+     {
+      "name": "Up Up & Away",
+      "ms": 227000
+     },
+     {
+      "name": "Heart Of A Lion (Kid Cudi Theme Music)",
+      "ms": 261000
+     },
+     {
+      "name": "Solo Dolo (Nightmare)",
+      "ms": 266000
+     },
+     {
+      "name": "Make Her Say",
+      "ms": 216000
+     }
+    ]
+   },
+   {
+    "name": "Man On The Moon II: The Legend Of Mr. Rager",
+    "cover": ".cache/img/c3ef42dab1511453.jpg",
+    "tracks": [
+     {
+      "name": "Mr. Rager",
+      "ms": 298000
+     },
+     {
+      "name": "Erase Me",
+      "ms": 192000
+     },
+     {
+      "name": "Mojo So Dope",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Speedin' Bullet 2 Heaven",
+    "cover": ".cache/img/0c36a08bde768a9b.jpg",
+    "tracks": [
+     {
+      "name": "Wedding Tux",
+      "ms": 152000
+     }
+    ]
+   },
+   {
+    "name": "Indicud",
+    "cover": ".cache/img/cb86d9cb252227ac.jpg",
+    "tracks": [
+     {
+      "name": "Just What I Am",
+      "ms": 229000
+     }
+    ]
+   },
+   {
+    "name": "A Kid Named Cudi",
+    "cover": ".cache/img/d6b4d703dbe62b3b.jpg",
+    "tracks": [
+     {
+      "name": "Maui Wowie",
+      "ms": 143000
+     },
+     {
+      "name": "Man On The Moon (The Anthem)",
+      "ms": 207000
+     }
+    ]
+   },
+   {
+    "name": "The Boy Who Flew To The Moon (Vol. 1)",
+    "cover": ".cache/img/a48972c2f6fa620e.jpg",
+    "tracks": [
+     {
+      "name": "love.",
+      "ms": 328000
+     }
+    ]
+   },
+   {
+    "name": "Day 'N' Nite (Crookers Remix)",
+    "cover": ".cache/img/ef0c71cfd9b85269.jpg",
+    "tracks": [
+     {
+      "name": "Day 'N' Nite",
+      "ms": 282000
+     }
+    ]
+   },
+   {
+    "name": "INSANO",
+    "cover": ".cache/img/f1b90e2fe5dcb870.jpg",
+    "tracks": [
+     {
+      "name": "WOW",
+      "ms": 272000
+     },
+     {
+      "name": "AT THE PARTY",
+      "ms": 235000
+     }
+    ]
+   },
+   {
+    "name": "Man On The Moon III: The Chosen",
+    "cover": ".cache/img/2f9f382ed5d75d91.jpg",
+    "tracks": [
+     {
+      "name": "Show Out",
+      "ms": 174000
+     },
+     {
+      "name": "Tequila Shots",
+      "ms": 193000
+     }
+    ]
+   },
+   {
+    "name": "Passion, Pain & Demon Slayin'",
+    "cover": ".cache/img/a3cca9223d82fe6a.jpg",
+    "tracks": [
+     {
+      "name": "By Design",
+      "ms": 257000
+     },
+     {
+      "name": "Rose Golden",
+      "ms": 277000
+     }
+    ]
+   },
+   {
+    "name": "Entergalactic",
+    "cover": ".cache/img/a8f466e3a85be24b.jpg",
+    "tracks": [
+     {
+      "name": "Willing To Trust",
+      "ms": 282000
+     }
+    ]
+   },
+   {
+    "name": "Free",
+    "cover": ".cache/img/8db6d0cc6c91e91a.jpg",
+    "tracks": [
+     {
+      "name": "Mr. Miracle",
+      "ms": 192000
+     }
+    ]
+   },
+   {
+    "name": "Entergalactic",
+    "cover": ".cache/img/a8f466e3a85be24b.jpg",
+    "tracks": [
+     {
+      "name": "New Mode",
+      "ms": 236000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "AC/DC",
+  "genres": [
+   "hard rock"
+  ],
+  "image": ".cache/img/f6f91394122481ff.jpg",
+  "albums": [
+   {
+    "name": "Highway to Hell",
+    "cover": ".cache/img/48a3126e198dbd62.jpg",
+    "tracks": [
+     {
+      "name": "Highway to Hell",
+      "ms": 206000
+     },
+     {
+      "name": "If You Want Blood (You've Got It)",
+      "ms": 274000
+     },
+     {
+      "name": "Touch Too Much",
+      "ms": 264000
+     },
+     {
+      "name": "Girls Got Rhythm",
+      "ms": 203000
+     },
+     {
+      "name": "Walk All Over You",
+      "ms": 308000
+     }
+    ]
+   },
+   {
+    "name": "The Razors Edge",
+    "cover": ".cache/img/0c42f031abe15361.jpg",
+    "tracks": [
+     {
+      "name": "Thunderstruck",
+      "ms": 292000
+     },
+     {
+      "name": "Moneytalks",
+      "ms": 225000
+     },
+     {
+      "name": "Are You Ready",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "Back In Black",
+    "cover": ".cache/img/e177e58cd283c467.jpg",
+    "tracks": [
+     {
+      "name": "Back In Black",
+      "ms": 253000
+     },
+     {
+      "name": "You Shook Me All Night Long",
+      "ms": 208000
+     },
+     {
+      "name": "Hells Bells",
+      "ms": 309000
+     },
+     {
+      "name": "Shoot to Thrill",
+      "ms": 314000
+     },
+     {
+      "name": "Have a Drink on Me",
+      "ms": 237000
+     },
+     {
+      "name": "Rock and Roll Ain't Noise Pollution",
+      "ms": 266000
+     },
+     {
+      "name": "What Do You Do for Money Honey",
+      "ms": 213000
+     },
+     {
+      "name": "Let Me Put My Love Into You",
+      "ms": 252000
+     },
+     {
+      "name": "Givin the Dog a Bone",
+      "ms": 210000
+     },
+     {
+      "name": "Shake a Leg",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "High Voltage",
+    "cover": ".cache/img/febee0f1124de924.jpg",
+    "tracks": [
+     {
+      "name": "T.N.T.",
+      "ms": 214000
+     },
+     {
+      "name": "It's a Long Way to the Top (If You Wanna Rock 'N' Roll)",
+      "ms": 301000
+     }
+    ]
+   },
+   {
+    "name": "Dirty Deeds Done Dirt Cheap",
+    "cover": ".cache/img/f4196b3682777e63.jpg",
+    "tracks": [
+     {
+      "name": "Dirty Deeds Done Dirt Cheap",
+      "ms": 231000
+     },
+     {
+      "name": "Ride On",
+      "ms": 347000
+     },
+     {
+      "name": "Big Balls",
+      "ms": 159000
+     }
+    ]
+   },
+   {
+    "name": "For Those About to Rock (We Salute You)",
+    "cover": ".cache/img/dbcf04d938b31173.jpg",
+    "tracks": [
+     {
+      "name": "For Those About to Rock (We Salute You)",
+      "ms": 343000
+     }
+    ]
+   },
+   {
+    "name": "Who Made Who",
+    "cover": ".cache/img/50f32c72678a13e5.jpg",
+    "tracks": [
+     {
+      "name": "Who Made Who",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "Let There Be Rock",
+    "cover": ".cache/img/73144ff43de565e0.jpg",
+    "tracks": [
+     {
+      "name": "Let There Be Rock",
+      "ms": 366000
+     },
+     {
+      "name": "Whole Lotta Rosie",
+      "ms": 333000
+     }
+    ]
+   },
+   {
+    "name": "Black Ice",
+    "cover": ".cache/img/36ec766498930f77.jpg",
+    "tracks": [
+     {
+      "name": "Rock N Roll Train",
+      "ms": 261000
+     }
+    ]
+   },
+   {
+    "name": "'74 Jailbreak",
+    "cover": ".cache/img/a7a47a32326dbd53.jpg",
+    "tracks": [
+     {
+      "name": "Jailbreak",
+      "ms": 280000
+     }
+    ]
+   },
+   {
+    "name": "Backtracks",
+    "cover": ".cache/img/df89cb06d3fc95d4.jpg",
+    "tracks": [
+     {
+      "name": "Big Gun",
+      "ms": 259000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Frank Ocean",
+  "genres": [
+   "r&b"
+  ],
+  "image": ".cache/img/a0dd9c1efdbf3b5d.jpg",
+  "albums": [
+   {
+    "name": "channel ORANGE",
+    "cover": ".cache/img/4a7f5b54b180ab37.jpg",
+    "tracks": [
+     {
+      "name": "Thinkin Bout You",
+      "ms": 202000
+     },
+     {
+      "name": "Lost",
+      "ms": 234000
+     },
+     {
+      "name": "Pyramids",
+      "ms": 593000
+     },
+     {
+      "name": "Super Rich Kids",
+      "ms": 305000
+     },
+     {
+      "name": "Sweet Life",
+      "ms": 263000
+     },
+     {
+      "name": "Sierra Leone",
+      "ms": 149000
+     },
+     {
+      "name": "Crack Rock",
+      "ms": 224000
+     },
+     {
+      "name": "Pink Matter",
+      "ms": 269000
+     },
+     {
+      "name": "Pilot Jones",
+      "ms": 184000
+     },
+     {
+      "name": "Bad Religion",
+      "ms": 175000
+     },
+     {
+      "name": "Monks",
+      "ms": 200000
+     },
+     {
+      "name": "Forrest Gump",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Blonde",
+    "cover": ".cache/img/9162696511de7add.jpg",
+    "tracks": [
+     {
+      "name": "Pink + White",
+      "ms": 184000
+     },
+     {
+      "name": "Nights",
+      "ms": 307000
+     },
+     {
+      "name": "Ivy",
+      "ms": 249000
+     },
+     {
+      "name": "White Ferrari",
+      "ms": 248000
+     },
+     {
+      "name": "Self Control",
+      "ms": 249000
+     },
+     {
+      "name": "Godspeed",
+      "ms": 177000
+     },
+     {
+      "name": "Nikes",
+      "ms": 314000
+     },
+     {
+      "name": "Solo",
+      "ms": 257000
+     },
+     {
+      "name": "Seigfried",
+      "ms": 334000
+     },
+     {
+      "name": "Pretty Sweet",
+      "ms": 158000
+     }
+    ]
+   },
+   {
+    "name": "Novacane",
+    "cover": ".cache/img/583a75ad9ded792a.jpg",
+    "tracks": [
+     {
+      "name": "Novacane",
+      "ms": 302000
+     }
+    ]
+   },
+   {
+    "name": "Chanel",
+    "cover": ".cache/img/e63d1352bb1dca47.jpg",
+    "tracks": [
+     {
+      "name": "Chanel",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Moon River",
+    "cover": ".cache/img/af78b898ddc64c08.jpg",
+    "tracks": [
+     {
+      "name": "Moon River",
+      "ms": 188000
+     }
+    ]
+   },
+   {
+    "name": "In My Room",
+    "cover": ".cache/img/a38f1de4d332fc02.jpg",
+    "tracks": [
+     {
+      "name": "In My Room",
+      "ms": 133000
+     }
+    ]
+   },
+   {
+    "name": "Provider",
+    "cover": ".cache/img/ccd528ccec4747b6.jpg",
+    "tracks": [
+     {
+      "name": "Provider",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "Biking",
+    "cover": ".cache/img/1f428a6264c3f60b.jpg",
+    "tracks": [
+     {
+      "name": "Biking",
+      "ms": 277000
+     }
+    ]
+   },
+   {
+    "name": "Swim Good",
+    "cover": ".cache/img/d7db5a80a8463ea8.jpg",
+    "tracks": [
+     {
+      "name": "Swim Good",
+      "ms": 257000
+     }
+    ]
+   },
+   {
+    "name": "DHL",
+    "cover": ".cache/img/e3501f8a0ebc322a.jpg",
+    "tracks": [
+     {
+      "name": "DHL",
+      "ms": 268000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Gorillaz",
+  "genres": [
+   "alternative"
+  ],
+  "image": ".cache/img/ff9c849b50f66e7c.jpg",
+  "albums": [
+   {
+    "name": "Demon Days",
+    "cover": ".cache/img/c3407b29865d5f82.jpg",
+    "tracks": [
+     {
+      "name": "Feel Good Inc.",
+      "ms": 222000
+     },
+     {
+      "name": "DARE",
+      "ms": 245000
+     },
+     {
+      "name": "Dirty Harry",
+      "ms": 230000
+     },
+     {
+      "name": "Kids with Guns",
+      "ms": 225000
+     },
+     {
+      "name": "O Green World",
+      "ms": 275000
+     },
+     {
+      "name": "November Has Come",
+      "ms": 165000
+     },
+     {
+      "name": "El Mañana",
+      "ms": 236000
+     },
+     {
+      "name": "Last Living Souls",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "The Singles Collection 2001-2011",
+    "cover": ".cache/img/49ee004b6e7d5a2d.jpg",
+    "tracks": [
+     {
+      "name": "Clint Eastwood",
+      "ms": 340000
+     },
+     {
+      "name": "Tomorrow Comes Today",
+      "ms": 193000
+     },
+     {
+      "name": "19-2000",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Plastic Beach",
+    "cover": ".cache/img/1efe84707b36b471.jpg",
+    "tracks": [
+     {
+      "name": "On Melancholy Hill",
+      "ms": 233000
+     },
+     {
+      "name": "Rhinestone Eyes",
+      "ms": 200000
+     },
+     {
+      "name": "Empire Ants",
+      "ms": 283000
+     },
+     {
+      "name": "Plastic Beach",
+      "ms": 227000
+     },
+     {
+      "name": "Stylo",
+      "ms": 270000
+     }
+    ]
+   },
+   {
+    "name": "The Mountain",
+    "cover": ".cache/img/605b2e72012250a8.jpg",
+    "tracks": [
+     {
+      "name": "The Moon Cave",
+      "ms": 297000
+     },
+     {
+      "name": "The Mountain",
+      "ms": 290000
+     },
+     {
+      "name": "Orange County",
+      "ms": 208000
+     },
+     {
+      "name": "The Happy Dictator",
+      "ms": 284000
+     },
+     {
+      "name": "The Manifesto",
+      "ms": 439000
+     },
+     {
+      "name": "Delirium",
+      "ms": 232000
+     }
+    ]
+   },
+   {
+    "name": "New Gold",
+    "cover": ".cache/img/263a4b13fd0ae5a8.jpg",
+    "tracks": [
+     {
+      "name": "New Gold",
+      "ms": 215000
+     }
+    ]
+   },
+   {
+    "name": "Humanz",
+    "cover": ".cache/img/fc80220fb6d9581d.jpg",
+    "tracks": [
+     {
+      "name": "She's My Collar",
+      "ms": 209000
+     },
+     {
+      "name": "Andromeda",
+      "ms": 197000
+     }
+    ]
+   },
+   {
+    "name": "The Now Now",
+    "cover": ".cache/img/99302d7e6327a8e5.jpg",
+    "tracks": [
+     {
+      "name": "Tranz",
+      "ms": 162000
+     },
+     {
+      "name": "Souk Eye",
+      "ms": 274000
+     }
+    ]
+   },
+   {
+    "name": "Cracker Island",
+    "cover": ".cache/img/30fe1985fa6d35a5.jpg",
+    "tracks": [
+     {
+      "name": "Tormenta",
+      "ms": 193000
+     }
+    ]
+   },
+   {
+    "name": "Gorillaz",
+    "cover": ".cache/img/5a26961781330b1c.jpg",
+    "tracks": [
+     {
+      "name": "Dracula",
+      "ms": 281000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Led Zeppelin",
+  "genres": [
+   "hard rock",
+   "classic rock"
+  ],
+  "image": ".cache/img/c9df8fb56d664b81.jpg",
+  "albums": [
+   {
+    "name": "Led Zeppelin IV",
+    "cover": ".cache/img/2f60e056049635bd.jpg",
+    "tracks": [
+     {
+      "name": "Stairway to Heaven",
+      "ms": 482000
+     },
+     {
+      "name": "Black Dog",
+      "ms": 295000
+     },
+     {
+      "name": "Rock and Roll",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "Led Zeppelin III",
+    "cover": ".cache/img/ae3265a3e65833f6.jpg",
+    "tracks": [
+     {
+      "name": "Immigrant Song",
+      "ms": 146000
+     },
+     {
+      "name": "Since I've Been Loving You",
+      "ms": 444000
+     }
+    ]
+   },
+   {
+    "name": "Led Zeppelin II",
+    "cover": ".cache/img/e5224706e25dadcd.jpg",
+    "tracks": [
+     {
+      "name": "Whole Lotta Love",
+      "ms": 334000
+     },
+     {
+      "name": "Ramble On",
+      "ms": 274000
+     },
+     {
+      "name": "Thank You",
+      "ms": 289000
+     },
+     {
+      "name": "Heartbreaker",
+      "ms": 254000
+     },
+     {
+      "name": "Living Loving Maid (She's Just a Woman)",
+      "ms": 159000
+     },
+     {
+      "name": "The Lemon Song",
+      "ms": 379000
+     }
+    ]
+   },
+   {
+    "name": "Physical Graffiti",
+    "cover": ".cache/img/68b4a4c8ca4845f9.jpg",
+    "tracks": [
+     {
+      "name": "Kashmir",
+      "ms": 517000
+     },
+     {
+      "name": "The Rover",
+      "ms": 339000
+     },
+     {
+      "name": "Ten Years Gone",
+      "ms": 394000
+     }
+    ]
+   },
+   {
+    "name": "Led Zeppelin IV",
+    "cover": ".cache/img/808109999068c895.jpg",
+    "tracks": [
+     {
+      "name": "When the Levee Breaks",
+      "ms": 428000
+     },
+     {
+      "name": "The Battle of Evermore",
+      "ms": 351000
+     },
+     {
+      "name": "Misty Mountain Hop",
+      "ms": 278000
+     }
+    ]
+   },
+   {
+    "name": "Led Zeppelin",
+    "cover": ".cache/img/a234bf7d0008a004.jpg",
+    "tracks": [
+     {
+      "name": "Good Times Bad Times",
+      "ms": 166000
+     },
+     {
+      "name": "How Many More Times",
+      "ms": 507000
+     },
+     {
+      "name": "Your Time Is Gonna Come",
+      "ms": 274000
+     }
+    ]
+   },
+   {
+    "name": "Led Zeppelin",
+    "cover": ".cache/img/0db09735f1b70ef4.jpg",
+    "tracks": [
+     {
+      "name": "Dazed and Confused",
+      "ms": 388000
+     },
+     {
+      "name": "Babe I'm Gonna Leave You",
+      "ms": 402000
+     }
+    ]
+   },
+   {
+    "name": "In Through the out Door",
+    "cover": ".cache/img/ba2f6c7d380c16ca.jpg",
+    "tracks": [
+     {
+      "name": "Fool in the Rain",
+      "ms": 370000
+     },
+     {
+      "name": "All My Love",
+      "ms": 353000
+     }
+    ]
+   },
+   {
+    "name": "Houses of the Holy",
+    "cover": ".cache/img/1fffcefe02fcd62c.jpg",
+    "tracks": [
+     {
+      "name": "D'yer Mak'er",
+      "ms": 262000
+     },
+     {
+      "name": "The Ocean",
+      "ms": 271000
+     },
+     {
+      "name": "Over the Hills and Far Away",
+      "ms": 290000
+     },
+     {
+      "name": "The Rain Song",
+      "ms": 459000
+     }
+    ]
+   },
+   {
+    "name": "Coda",
+    "cover": ".cache/img/152976f9552f9f70.jpg",
+    "tracks": [
+     {
+      "name": "Hey, Hey, What Can I Do",
+      "ms": 236000
+     }
+    ]
+   },
+   {
+    "name": "Presence",
+    "cover": ".cache/img/aea196b2636e5567.jpg",
+    "tracks": [
+     {
+      "name": "Nobody's Fault but Mine",
+      "ms": 388000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Calvin Harris",
+  "genres": [
+   "electronic",
+   "dance"
+  ],
+  "image": ".cache/img/9c6c9ecabb8d56ea.jpg",
+  "albums": [
+   {
+    "name": "Feel So Close",
+    "cover": ".cache/img/1852e9b94c020bc1.jpg",
+    "tracks": [
+     {
+      "name": "Feel So Close",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "This Is What You Came For",
+    "cover": ".cache/img/0b5f5f9645ab4f06.jpg",
+    "tracks": [
+     {
+      "name": "This Is What You Came For",
+      "ms": 222000
+     }
+    ]
+   },
+   {
+    "name": "Motion",
+    "cover": ".cache/img/59cf6befe7630987.jpg",
+    "tracks": [
+     {
+      "name": "Summer",
+      "ms": 221000
+     },
+     {
+      "name": "Outside",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "Sweet Nothing",
+    "cover": ".cache/img/d4ab3eeb0a8adc51.jpg",
+    "tracks": [
+     {
+      "name": "Sweet Nothing",
+      "ms": 214000
+     }
+    ]
+   },
+   {
+    "name": "How Deep Is Your Love",
+    "cover": ".cache/img/e6de11eb12140995.jpg",
+    "tracks": [
+     {
+      "name": "How Deep Is Your Love",
+      "ms": 212000
+     }
+    ]
+   },
+   {
+    "name": "Feels",
+    "cover": ".cache/img/dc4a45345e99567e.jpg",
+    "tracks": [
+     {
+      "name": "Feels",
+      "ms": 223000
+     }
+    ]
+   },
+   {
+    "name": "Halcyon Nights",
+    "cover": ".cache/img/676e47aabe23cdca.jpg",
+    "tracks": [
+     {
+      "name": "I Need Your Love",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "Blame",
+    "cover": ".cache/img/d072804df27c5bb5.jpg",
+    "tracks": [
+     {
+      "name": "Blame",
+      "ms": 211000
+     }
+    ]
+   },
+   {
+    "name": "Slide",
+    "cover": ".cache/img/dd4c01e9336633cd.jpg",
+    "tracks": [
+     {
+      "name": "Slide",
+      "ms": 231000
+     }
+    ]
+   },
+   {
+    "name": "Promises",
+    "cover": ".cache/img/0afb40b1821553df.jpg",
+    "tracks": [
+     {
+      "name": "Promises",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "Blessings",
+    "cover": ".cache/img/b9ffb73db4727701.jpg",
+    "tracks": [
+     {
+      "name": "Blessings",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "My Way",
+    "cover": ".cache/img/d3d288ef3ef6987b.jpg",
+    "tracks": [
+     {
+      "name": "My Way",
+      "ms": 219000
+     }
+    ]
+   },
+   {
+    "name": "Satisfy",
+    "cover": ".cache/img/ebbc393873af89cd.jpg",
+    "tracks": [
+     {
+      "name": "Satisfy",
+      "ms": 186000
+     }
+    ]
+   },
+   {
+    "name": "18 Months",
+    "cover": ".cache/img/d96b93c944f0c699.jpg",
+    "tracks": [
+     {
+      "name": "Thinking About You",
+      "ms": 247000
+     }
+    ]
+   },
+   {
+    "name": "Under Control",
+    "cover": ".cache/img/63f5d84b2edbcb94.jpg",
+    "tracks": [
+     {
+      "name": "Under Control",
+      "ms": 184000
+     }
+    ]
+   },
+   {
+    "name": "Miracle",
+    "cover": ".cache/img/8db8cf901ba05366.jpg",
+    "tracks": [
+     {
+      "name": "Miracle",
+      "ms": 186000
+     }
+    ]
+   },
+   {
+    "name": "Stay With Me",
+    "cover": ".cache/img/ff42703bdbbb9ed1.jpg",
+    "tracks": [
+     {
+      "name": "Stay With Me",
+      "ms": 229000
+     }
+    ]
+   },
+   {
+    "name": "Giant",
+    "cover": ".cache/img/167b4edc3cce6329.jpg",
+    "tracks": [
+     {
+      "name": "Giant",
+      "ms": 229000
+     }
+    ]
+   },
+   {
+    "name": "Release The Pressure",
+    "cover": ".cache/img/0f8290664c9ce0d6.jpg",
+    "tracks": [
+     {
+      "name": "Release The Pressure",
+      "ms": 203000
+     }
+    ]
+   },
+   {
+    "name": "Potion",
+    "cover": ".cache/img/c7b0ac799d966813.jpg",
+    "tracks": [
+     {
+      "name": "Potion",
+      "ms": 214000
+     }
+    ]
+   },
+   {
+    "name": "I Created Disco",
+    "cover": ".cache/img/2448b246bd300683.jpg",
+    "tracks": [
+     {
+      "name": "Acceptable in the 80's",
+      "ms": 333000
+     }
+    ]
+   },
+   {
+    "name": "Over Now",
+    "cover": ".cache/img/78c08f8179fa793c.jpg",
+    "tracks": [
+     {
+      "name": "Over Now",
+      "ms": 211000
+     }
+    ]
+   },
+   {
+    "name": "I'm Not Alone 2019",
+    "cover": ".cache/img/7c822744543ef76c.jpg",
+    "tracks": [
+     {
+      "name": "I'm Not Alone",
+      "ms": 201000
+     }
+    ]
+   },
+   {
+    "name": "Ocean",
+    "cover": ".cache/img/adedb61ed4748a3e.jpg",
+    "tracks": [
+     {
+      "name": "Ocean",
+      "ms": 219000
+     }
+    ]
+   },
+   {
+    "name": "Let's Go",
+    "cover": ".cache/img/7dc18ef2ca190858.jpg",
+    "tracks": [
+     {
+      "name": "Let's Go",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "Desire",
+    "cover": ".cache/img/a3b2d302f753ddd0.jpg",
+    "tracks": [
+     {
+      "name": "Desire",
+      "ms": 179000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "A$AP Rocky",
+  "genres": [
+   "hip hop"
+  ],
+  "image": ".cache/img/456081e2fa07c187.jpg",
+  "albums": [
+   {
+    "name": "Shroom Clouds",
+    "cover": ".cache/img/50f7ba7f2c0fe971.jpg",
+    "tracks": [
+     {
+      "name": "Shroom Clouds",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "I Smoked Away My Brain (I'm God x Demons Mashup)",
+    "cover": ".cache/img/e209d705fd262132.jpg",
+    "tracks": [
+     {
+      "name": "I Smoked Away My Brain (I'm God x Demons Mashup)",
+      "ms": 190000
+     }
+    ]
+   },
+   {
+    "name": "LONG.LIVE.A$AP",
+    "cover": ".cache/img/c4603170a9cc5b63.jpg",
+    "tracks": [
+     {
+      "name": "F**kin' Problems",
+      "ms": 236000
+     },
+     {
+      "name": "Fashion Killa",
+      "ms": 236000
+     },
+     {
+      "name": "LVL",
+      "ms": 220000
+     },
+     {
+      "name": "Wild for the Night",
+      "ms": 212000
+     }
+    ]
+   },
+   {
+    "name": "TESTING",
+    "cover": ".cache/img/9f3d639cf90eec67.jpg",
+    "tracks": [
+     {
+      "name": "Praise The Lord (Da Shine)",
+      "ms": 206000
+     },
+     {
+      "name": "Fukk Sleep",
+      "ms": 193000
+     }
+    ]
+   },
+   {
+    "name": "Don't Be Dumb",
+    "cover": ".cache/img/670fba0711af1152.jpg",
+    "tracks": [
+     {
+      "name": "STAY HERE 4 LIFE",
+      "ms": 346000
+     },
+     {
+      "name": "STOLE YA FLOW",
+      "ms": 199000
+     },
+     {
+      "name": "STOP SNITCHING",
+      "ms": 200000
+     },
+     {
+      "name": "HELICOPTER",
+      "ms": 165000
+     }
+    ]
+   },
+   {
+    "name": "AT.LONG.LAST.A$AP",
+    "cover": ".cache/img/0d7bde64781f1a6a.jpg",
+    "tracks": [
+     {
+      "name": "Everyday",
+      "ms": 261000
+     },
+     {
+      "name": "Jukebox Joints",
+      "ms": 324000
+     },
+     {
+      "name": "Lord Pretty Flacko Jodye 2 (LPFJ2)",
+      "ms": 127000
+     }
+    ]
+   },
+   {
+    "name": "Sundress",
+    "cover": ".cache/img/5b987d906665b3cb.jpg",
+    "tracks": [
+     {
+      "name": "Sundress",
+      "ms": 158000
+     }
+    ]
+   },
+   {
+    "name": "LIVE.LOVE.A$AP",
+    "cover": ".cache/img/060594b3e78ebe7e.jpg",
+    "tracks": [
+     {
+      "name": "Peso",
+      "ms": 170000
+     },
+     {
+      "name": "Wassup",
+      "ms": 158000
+     }
+    ]
+   },
+   {
+    "name": "Trunks (From \"Highest 2 Lowest\")",
+    "cover": ".cache/img/271c739313a9ff10.jpg",
+    "tracks": [
+     {
+      "name": "Trunks (From \"Highest 2 Lowest\")",
+      "ms": 223000
+     }
+    ]
+   },
+   {
+    "name": "PUNK ROCKY",
+    "cover": ".cache/img/74c85150d0707805.jpg",
+    "tracks": [
+     {
+      "name": "PUNK ROCKY",
+      "ms": 235000
+     }
+    ]
+   },
+   {
+    "name": "A$AP Forever",
+    "cover": ".cache/img/cdf3fda398e4cee9.jpg",
+    "tracks": [
+     {
+      "name": "A$AP Forever",
+      "ms": 233000
+     }
+    ]
+   },
+   {
+    "name": "HIGHJACK",
+    "cover": ".cache/img/3c8a92dc2286b2c3.jpg",
+    "tracks": [
+     {
+      "name": "HIGHJACK",
+      "ms": 190000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Radiohead",
+  "genres": [
+   "alternative rock"
+  ],
+  "image": ".cache/img/5f94da24ad797259.jpg",
+  "albums": [
+   {
+    "name": "Pablo Honey",
+    "cover": ".cache/img/9eb18673e068da0a.jpg",
+    "tracks": [
+     {
+      "name": "Creep",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "OK Computer",
+    "cover": ".cache/img/e466aa67e3673bab.jpg",
+    "tracks": [
+     {
+      "name": "Let Down",
+      "ms": 299000
+     },
+     {
+      "name": "Karma Police",
+      "ms": 264000
+     },
+     {
+      "name": "Exit Music (For A Film)",
+      "ms": 267000
+     },
+     {
+      "name": "Paranoid Android",
+      "ms": 387000
+     },
+     {
+      "name": "Subterranean Homesick Alien",
+      "ms": 267000
+     },
+     {
+      "name": "Airbag",
+      "ms": 287000
+     },
+     {
+      "name": "Climbing Up the Walls",
+      "ms": 285000
+     }
+    ]
+   },
+   {
+    "name": "In Rainbows",
+    "cover": ".cache/img/58f774630234787f.jpg",
+    "tracks": [
+     {
+      "name": "Jigsaw Falling Into Place",
+      "ms": 248000
+     },
+     {
+      "name": "Weird Fishes / Arpeggi",
+      "ms": 318000
+     },
+     {
+      "name": "All I Need",
+      "ms": 228000
+     },
+     {
+      "name": "Nude",
+      "ms": 255000
+     },
+     {
+      "name": "15 Step",
+      "ms": 237000
+     },
+     {
+      "name": "Reckoner",
+      "ms": 290000
+     },
+     {
+      "name": "House Of Cards",
+      "ms": 328000
+     },
+     {
+      "name": "Bodysnatchers",
+      "ms": 242000
+     }
+    ]
+   },
+   {
+    "name": "No Surprises",
+    "cover": ".cache/img/c5299e6490a6d351.jpg",
+    "tracks": [
+     {
+      "name": "No Surprises",
+      "ms": 229000
+     }
+    ]
+   },
+   {
+    "name": "Kid A",
+    "cover": ".cache/img/87d08a058fcb849c.jpg",
+    "tracks": [
+     {
+      "name": "Everything In Its Right Place",
+      "ms": 251000
+     }
+    ]
+   },
+   {
+    "name": "The Bends",
+    "cover": ".cache/img/8bd999f606f4ea11.jpg",
+    "tracks": [
+     {
+      "name": "Fake Plastic Trees",
+      "ms": 290000
+     },
+     {
+      "name": "High and Dry",
+      "ms": 257000
+     },
+     {
+      "name": "Just",
+      "ms": 234000
+     },
+     {
+      "name": "Black Star",
+      "ms": 247000
+     },
+     {
+      "name": "Street Spirit (Fade Out)",
+      "ms": 253000
+     },
+     {
+      "name": "My Iron Lung",
+      "ms": 276000
+     },
+     {
+      "name": "The Bends",
+      "ms": 246000
+     },
+     {
+      "name": "(Nice Dream)",
+      "ms": 233000
+     }
+    ]
+   },
+   {
+    "name": "Amnesiac",
+    "cover": ".cache/img/847d26c52327b335.jpg",
+    "tracks": [
+     {
+      "name": "Pyramid Song",
+      "ms": 288000
+     }
+    ]
+   },
+   {
+    "name": "A Moon Shaped Pool",
+    "cover": ".cache/img/f21a1060a70ef069.jpg",
+    "tracks": [
+     {
+      "name": "Burn the Witch",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "Fake Plastic Trees",
+    "cover": ".cache/img/f1c2669a324bc306.jpg",
+    "tracks": [
+     {
+      "name": "India Rubber",
+      "ms": 206000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Morgan Wallen",
+  "genres": [
+   "country"
+  ],
+  "image": ".cache/img/1a3cd55ddc1ddec4.jpg",
+  "albums": [
+   {
+    "name": "Been By Now",
+    "cover": ".cache/img/ee8c367d07d97b82.jpg",
+    "tracks": [
+     {
+      "name": "Been By Now",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "I’m The Problem",
+    "cover": ".cache/img/437dc6b3245bbfff.jpg",
+    "tracks": [
+     {
+      "name": "What I Want",
+      "ms": 184000
+     },
+     {
+      "name": "Don't We",
+      "ms": 191000
+     }
+    ]
+   },
+   {
+    "name": "Last Thing You Need (from GTAVI: The Album)",
+    "cover": ".cache/img/725e2ef682257735.jpg",
+    "tracks": [
+     {
+      "name": "Last Thing You Need (from GTAVI: The Album)",
+      "ms": 196000
+     }
+    ]
+   },
+   {
+    "name": "Love Somebody",
+    "cover": ".cache/img/1678ec6a407468aa.jpg",
+    "tracks": [
+     {
+      "name": "Love Somebody",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "One Thing At A Time",
+    "cover": ".cache/img/fc48bb6fefa285eb.jpg",
+    "tracks": [
+     {
+      "name": "Last Night",
+      "ms": 163000
+     },
+     {
+      "name": "Ain’t That Some",
+      "ms": 157000
+     }
+    ]
+   },
+   {
+    "name": "Dangerous: The Double Album",
+    "cover": ".cache/img/666cfcb099b82ff7.jpg",
+    "tracks": [
+     {
+      "name": "Wasted On You",
+      "ms": 178000
+     }
+    ]
+   },
+   {
+    "name": "I'm The Problem",
+    "cover": ".cache/img/32457180c43b23df.jpg",
+    "tracks": [
+     {
+      "name": "I'm The Problem",
+      "ms": 177000
+     }
+    ]
+   },
+   {
+    "name": "If I Know Me",
+    "cover": ".cache/img/fd56973bccb588f3.jpg",
+    "tracks": [
+     {
+      "name": "Whiskey Glasses",
+      "ms": 234000
+     },
+     {
+      "name": "Chasin' You",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "Just In Case",
+    "cover": ".cache/img/c881e447132a4d8b.jpg",
+    "tracks": [
+     {
+      "name": "Just In Case",
+      "ms": 166000
+     }
+    ]
+   },
+   {
+    "name": "I Ain't Comin' Back",
+    "cover": ".cache/img/c881e447132a4d8b.jpg",
+    "tracks": [
+     {
+      "name": "I Ain't Comin' Back",
+      "ms": 175000
+     }
+    ]
+   },
+   {
+    "name": "One Thing At A Time",
+    "cover": ".cache/img/75a828c246a8a660.jpg",
+    "tracks": [
+     {
+      "name": "Cowgirls",
+      "ms": 181000
+     },
+     {
+      "name": "Thinkin’ Bout Me",
+      "ms": 177000
+     }
+    ]
+   },
+   {
+    "name": "I’m The Problem",
+    "cover": ".cache/img/c881e447132a4d8b.jpg",
+    "tracks": [
+     {
+      "name": "I Got Better",
+      "ms": 205000
+     }
+    ]
+   },
+   {
+    "name": "You Proof",
+    "cover": ".cache/img/7de7094560c132b3.jpg",
+    "tracks": [
+     {
+      "name": "You Proof",
+      "ms": 157000
+     }
+    ]
+   },
+   {
+    "name": "7 Summers",
+    "cover": ".cache/img/3a7fda313993288b.jpg",
+    "tracks": [
+     {
+      "name": "7 Summers",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "Thought You Should Know",
+    "cover": ".cache/img/5467673e5bfc3fbc.jpg",
+    "tracks": [
+     {
+      "name": "Thought You Should Know",
+      "ms": 215000
+     }
+    ]
+   },
+   {
+    "name": "Cover Me Up",
+    "cover": ".cache/img/c6cf1122ee4db5aa.jpg",
+    "tracks": [
+     {
+      "name": "Cover Me Up",
+      "ms": 292000
+     }
+    ]
+   },
+   {
+    "name": "More Than My Hometown",
+    "cover": ".cache/img/839f55229efb327f.jpg",
+    "tracks": [
+     {
+      "name": "More Than My Hometown",
+      "ms": 216000
+     }
+    ]
+   },
+   {
+    "name": "Smile",
+    "cover": ".cache/img/a23e519d97f798ab.jpg",
+    "tracks": [
+     {
+      "name": "Smile",
+      "ms": 224000
+     }
+    ]
+   },
+   {
+    "name": "Miami",
+    "cover": ".cache/img/660722dbafe8547a.jpg",
+    "tracks": [
+     {
+      "name": "Miami",
+      "ms": 217000
+     }
+    ]
+   },
+   {
+    "name": "Spin You Around (1/24)",
+    "cover": ".cache/img/4d75b51de2308a47.jpg",
+    "tracks": [
+     {
+      "name": "Spin You Around (1/24)",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "Dangerous: The Double Album",
+    "cover": ".cache/img/666cfcb099b82ff7.jpg",
+    "tracks": [
+     {
+      "name": "Somebody’s Problem",
+      "ms": 161000
+     }
+    ]
+   },
+   {
+    "name": "Lies Lies Lies",
+    "cover": ".cache/img/fb25e0592f267e66.jpg",
+    "tracks": [
+     {
+      "name": "Lies Lies Lies",
+      "ms": 198000
+     }
+    ]
+   },
+   {
+    "name": "I'm A Little Crazy",
+    "cover": ".cache/img/c881e447132a4d8b.jpg",
+    "tracks": [
+     {
+      "name": "I'm A Little Crazy",
+      "ms": 199000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "The Strokes",
+  "genres": [
+   "indie rock"
+  ],
+  "image": ".cache/img/d9920f77d1c251cf.jpg",
+  "albums": [
+   {
+    "name": "The New Abnormal",
+    "cover": ".cache/img/31148c37388dee92.jpg",
+    "tracks": [
+     {
+      "name": "The Adults Are Talking",
+      "ms": 309000
+     },
+     {
+      "name": "Ode To The Mets",
+      "ms": 351000
+     },
+     {
+      "name": "Selfless",
+      "ms": 222000
+     },
+     {
+      "name": "Why Are Sundays So Depressing",
+      "ms": 275000
+     },
+     {
+      "name": "Brooklyn Bridge To Chorus",
+      "ms": 235000
+     },
+     {
+      "name": "Bad Decisions",
+      "ms": 293000
+     },
+     {
+      "name": "At The Door",
+      "ms": 310000
+     }
+    ]
+   },
+   {
+    "name": "Is This It",
+    "cover": ".cache/img/16ff4589db859d60.jpg",
+    "tracks": [
+     {
+      "name": "Last Nite",
+      "ms": 192000
+     },
+     {
+      "name": "Someday",
+      "ms": 183000
+     },
+     {
+      "name": "Hard To Explain",
+      "ms": 223000
+     },
+     {
+      "name": "Is This It",
+      "ms": 150000
+     },
+     {
+      "name": "Take It Or Leave It",
+      "ms": 194000
+     },
+     {
+      "name": "Trying Your Luck",
+      "ms": 202000
+     },
+     {
+      "name": "The Modern Age",
+      "ms": 207000
+     }
+    ]
+   },
+   {
+    "name": "Room On Fire",
+    "cover": ".cache/img/fe9bea4a8baadf65.jpg",
+    "tracks": [
+     {
+      "name": "Reptilia",
+      "ms": 219000
+     },
+     {
+      "name": "12:51",
+      "ms": 146000
+     }
+    ]
+   },
+   {
+    "name": "Comedown Machine",
+    "cover": ".cache/img/1946e4e93b22d074.jpg",
+    "tracks": [
+     {
+      "name": "Call It Fate, Call It Karma",
+      "ms": 204000
+     },
+     {
+      "name": "80's Comedown Machine",
+      "ms": 298000
+     },
+     {
+      "name": "One Way Trigger",
+      "ms": 242000
+     }
+    ]
+   },
+   {
+    "name": "First Impressions Of Earth",
+    "cover": ".cache/img/92298afe4c434f40.jpg",
+    "tracks": [
+     {
+      "name": "You Only Live Once",
+      "ms": 186000
+     },
+     {
+      "name": "Heart In a Cage",
+      "ms": 206000
+     },
+     {
+      "name": "Juicebox",
+      "ms": 194000
+     },
+     {
+      "name": "Ize of the World",
+      "ms": 265000
+     }
+    ]
+   },
+   {
+    "name": "Reality Awaits",
+    "cover": ".cache/img/2bca662d33546cbf.jpg",
+    "tracks": [
+     {
+      "name": "Dine N'Dash",
+      "ms": 302000
+     },
+     {
+      "name": "Lonely in the Future",
+      "ms": 200000
+     },
+     {
+      "name": "Going to Babble On",
+      "ms": 246000
+     },
+     {
+      "name": "Falling out of Love",
+      "ms": 382000
+     }
+    ]
+   },
+   {
+    "name": "Angles",
+    "cover": ".cache/img/3b9d350f7c516bec.jpg",
+    "tracks": [
+     {
+      "name": "Under Cover of Darkness",
+      "ms": 236000
+     },
+     {
+      "name": "Machu Picchu",
+      "ms": 210000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Queen",
+  "genres": [
+   "classic rock"
+  ],
+  "image": ".cache/img/c02bcb38be2b4332.jpg",
+  "albums": [
+   {
+    "name": "A Night At The Opera",
+    "cover": ".cache/img/bac6a11d0fbea88d.jpg",
+    "tracks": [
+     {
+      "name": "Bohemian Rhapsody",
+      "ms": 354000
+     },
+     {
+      "name": "'39",
+      "ms": 211000
+     }
+    ]
+   },
+   {
+    "name": "Hot Space",
+    "cover": ".cache/img/c2e13819232ea825.jpg",
+    "tracks": [
+     {
+      "name": "Under Pressure",
+      "ms": 247000
+     },
+     {
+      "name": "Cool Cat",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "Jazz",
+    "cover": ".cache/img/74f54bc196f8af99.jpg",
+    "tracks": [
+     {
+      "name": "Don't Stop Me Now",
+      "ms": 212000
+     }
+    ]
+   },
+   {
+    "name": "The Game",
+    "cover": ".cache/img/71649bf780ec1a28.jpg",
+    "tracks": [
+     {
+      "name": "Another One Bites The Dust",
+      "ms": 217000
+     }
+    ]
+   },
+   {
+    "name": "Bohemian Rhapsody (The Original Soundtrack)",
+    "cover": ".cache/img/361e9c641a83c062.jpg",
+    "tracks": [
+     {
+      "name": "Killer Queen",
+      "ms": 182000
+     },
+     {
+      "name": "Somebody To Love",
+      "ms": 298000
+     },
+     {
+      "name": "Crazy Little Thing Called Love",
+      "ms": 164000
+     },
+     {
+      "name": "We Will Rock You",
+      "ms": 129000
+     },
+     {
+      "name": "We Are The Champions",
+      "ms": 237000
+     }
+    ]
+   },
+   {
+    "name": "Greatest Hits",
+    "cover": ".cache/img/d63f7ee3d82dc557.jpg",
+    "tracks": [
+     {
+      "name": "Fat Bottomed Girls",
+      "ms": 255000
+     },
+     {
+      "name": "You're My Best Friend",
+      "ms": 170000
+     },
+     {
+      "name": "Bicycle Race",
+      "ms": 184000
+     }
+    ]
+   },
+   {
+    "name": "Greatest Hits II",
+    "cover": ".cache/img/ce837c6ec5ed136f.jpg",
+    "tracks": [
+     {
+      "name": "Radio Ga Ga",
+      "ms": 347000
+     },
+     {
+      "name": "The Show Must Go On",
+      "ms": 264000
+     },
+     {
+      "name": "A Kind of Magic",
+      "ms": 263000
+     },
+     {
+      "name": "Who Wants To Live Forever",
+      "ms": 297000
+     },
+     {
+      "name": "Hammer To Fall",
+      "ms": 221000
+     }
+    ]
+   },
+   {
+    "name": "The Platinum Collection",
+    "cover": ".cache/img/e07d96975cef5fa6.jpg",
+    "tracks": [
+     {
+      "name": "Good Old-Fashioned Lover Boy",
+      "ms": 176000
+     }
+    ]
+   },
+   {
+    "name": "The Miracle",
+    "cover": ".cache/img/16619be416fbe703.jpg",
+    "tracks": [
+     {
+      "name": "I Want It All",
+      "ms": 241000
+     }
+    ]
+   },
+   {
+    "name": "The Works",
+    "cover": ".cache/img/a5a5a641abc689c5.jpg",
+    "tracks": [
+     {
+      "name": "I Want to Break Free",
+      "ms": 201000
+     }
+    ]
+   },
+   {
+    "name": "A Kind Of Magic",
+    "cover": ".cache/img/f40ab28d7d8cd5ef.jpg",
+    "tracks": [
+     {
+      "name": "Princes Of The Universe",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "Queen II",
+    "cover": ".cache/img/6df4ea3d9b9c674b.jpg",
+    "tracks": [
+     {
+      "name": "Seven Seas of Rhye",
+      "ms": 169000
+     }
+    ]
+   },
+   {
+    "name": "A Day At The Races",
+    "cover": ".cache/img/f8de7b3a1f6bc433.jpg",
+    "tracks": [
+     {
+      "name": "Tie Your Mother Down",
+      "ms": 288000
+     }
+    ]
+   },
+   {
+    "name": "Made In Heaven",
+    "cover": ".cache/img/58f5deb330105742.jpg",
+    "tracks": [
+     {
+      "name": "Heaven For Everyone",
+      "ms": 336000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Playboi Carti",
+  "genres": [
+   "rap"
+  ],
+  "image": ".cache/img/6db8c28ab6e773a8.jpg",
+  "albums": [
+   {
+    "name": "MUSIC",
+    "cover": ".cache/img/74225e2d1fea2a83.jpg",
+    "tracks": [
+     {
+      "name": "RATHER LIE",
+      "ms": 209000
+     },
+     {
+      "name": "LIKE WEEZY",
+      "ms": 115000
+     },
+     {
+      "name": "TOXIC",
+      "ms": 135000
+     },
+     {
+      "name": "EVIL J0RDAN",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "Whole Lotta Red",
+    "cover": ".cache/img/b7d637cd1711d9ce.jpg",
+    "tracks": [
+     {
+      "name": "Sky",
+      "ms": 193000
+     },
+     {
+      "name": "ILoveUIHateU",
+      "ms": 135000
+     },
+     {
+      "name": "Stop Breathing",
+      "ms": 218000
+     },
+     {
+      "name": "Vamp Anthem",
+      "ms": 124000
+     },
+     {
+      "name": "Punk Monk",
+      "ms": 229000
+     },
+     {
+      "name": "Over",
+      "ms": 166000
+     },
+     {
+      "name": "King Vamp",
+      "ms": 187000
+     },
+     {
+      "name": "Beno!",
+      "ms": 153000
+     }
+    ]
+   },
+   {
+    "name": "Playboi Carti",
+    "cover": ".cache/img/f560abfed3743554.jpg",
+    "tracks": [
+     {
+      "name": "Magnolia",
+      "ms": 182000
+     },
+     {
+      "name": "Location",
+      "ms": 169000
+     },
+     {
+      "name": "wokeuplikethis*",
+      "ms": 235000
+     },
+     {
+      "name": "Yah Mean",
+      "ms": 166000
+     },
+     {
+      "name": "Flex",
+      "ms": 240000
+     }
+    ]
+   },
+   {
+    "name": "Die Lit",
+    "cover": ".cache/img/101568ba82505baa.jpg",
+    "tracks": [
+     {
+      "name": "Fell In Luv",
+      "ms": 206000
+     },
+     {
+      "name": "Shoota",
+      "ms": 153000
+     },
+     {
+      "name": "Long Time",
+      "ms": 211000
+     },
+     {
+      "name": "Lean 4 Real",
+      "ms": 177000
+     },
+     {
+      "name": "R.I.P.",
+      "ms": 192000
+     }
+    ]
+   },
+   {
+    "name": "ALL RED",
+    "cover": ".cache/img/f60090c01fa701d7.jpg",
+    "tracks": [
+     {
+      "name": "ALL RED",
+      "ms": 148000
+     }
+    ]
+   },
+   {
+    "name": "MUSIC - SORRY 4 DA WAIT",
+    "cover": ".cache/img/74225e2d1fea2a83.jpg",
+    "tracks": [
+     {
+      "name": "FOMDJ",
+      "ms": 200000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Nirvana",
+  "genres": [
+   "grunge"
+  ],
+  "image": ".cache/img/31275154d91efdcd.jpg",
+  "albums": [
+   {
+    "name": "Nevermind",
+    "cover": ".cache/img/96d2a58e4873d311.jpg",
+    "tracks": [
+     {
+      "name": "Smells Like Teen Spirit",
+      "ms": 301000
+     },
+     {
+      "name": "Drain You",
+      "ms": 224000
+     }
+    ]
+   },
+   {
+    "name": "Nevermind",
+    "cover": ".cache/img/3553184aada1f309.jpg",
+    "tracks": [
+     {
+      "name": "Come As You Are",
+      "ms": 218000
+     }
+    ]
+   },
+   {
+    "name": "Nirvana",
+    "cover": ".cache/img/6d5a5c5aa38e1fa6.jpg",
+    "tracks": [
+     {
+      "name": "Lithium",
+      "ms": 255000
+     },
+     {
+      "name": "About A Girl",
+      "ms": 166000
+     },
+     {
+      "name": "You Know You're Right",
+      "ms": 218000
+     },
+     {
+      "name": "Sliver",
+      "ms": 132000
+     }
+    ]
+   },
+   {
+    "name": "In Utero",
+    "cover": ".cache/img/7905ac7e976aba3b.jpg",
+    "tracks": [
+     {
+      "name": "Heart-Shaped Box",
+      "ms": 281000
+     },
+     {
+      "name": "All Apologies",
+      "ms": 233000
+     },
+     {
+      "name": "Dumb",
+      "ms": 151000
+     },
+     {
+      "name": "Serve The Servants",
+      "ms": 217000
+     },
+     {
+      "name": "Very Ape",
+      "ms": 115000
+     },
+     {
+      "name": "Frances Farmer Will Have Her Revenge On Seattle",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "MTV Unplugged In New York",
+    "cover": ".cache/img/42737cb5ae38023b.jpg",
+    "tracks": [
+     {
+      "name": "The Man Who Sold The World",
+      "ms": 260000
+     },
+     {
+      "name": "Where Did You Sleep Last Night",
+      "ms": 307000
+     },
+     {
+      "name": "Lake Of Fire",
+      "ms": 175000
+     },
+     {
+      "name": "Plateau",
+      "ms": 218000
+     }
+    ]
+   },
+   {
+    "name": "In Bloom / On A Plain / Lithium / Breed",
+    "cover": ".cache/img/3553184aada1f309.jpg",
+    "tracks": [
+     {
+      "name": "In Bloom",
+      "ms": 254000
+     }
+    ]
+   },
+   {
+    "name": "Nevermind",
+    "cover": ".cache/img/c788616f5926a5ed.jpg",
+    "tracks": [
+     {
+      "name": "Breed",
+      "ms": 183000
+     },
+     {
+      "name": "Polly",
+      "ms": 174000
+     },
+     {
+      "name": "Territorial Pissings",
+      "ms": 142000
+     },
+     {
+      "name": "Lounge Act",
+      "ms": 156000
+     }
+    ]
+   },
+   {
+    "name": "Bleach",
+    "cover": ".cache/img/bfdf99181cd06586.jpg",
+    "tracks": [
+     {
+      "name": "Love Buzz",
+      "ms": 215000
+     },
+     {
+      "name": "Blew",
+      "ms": 174000
+     },
+     {
+      "name": "School",
+      "ms": 162000
+     },
+     {
+      "name": "Negative Creep",
+      "ms": 175000
+     }
+    ]
+   },
+   {
+    "name": "Incesticide",
+    "cover": ".cache/img/0f00d64eb7b8834c.jpg",
+    "tracks": [
+     {
+      "name": "Aneurysm",
+      "ms": 275000
+     }
+    ]
+   },
+   {
+    "name": "In Utero",
+    "cover": ".cache/img/3ae6023adde3481c.jpg",
+    "tracks": [
+     {
+      "name": "Marigold",
+      "ms": 153000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Avicii",
+  "genres": [
+   "electronic",
+   "dance"
+  ],
+  "image": ".cache/img/f26a0efc755d9bbe.jpg",
+  "albums": [
+   {
+    "name": "Levels",
+    "cover": ".cache/img/d96d7ed28379e4dd.jpg",
+    "tracks": [
+     {
+      "name": "Levels",
+      "ms": 199000
+     }
+    ]
+   },
+   {
+    "name": "The Days / Nights (EP)",
+    "cover": ".cache/img/838227686145dfb1.jpg",
+    "tracks": [
+     {
+      "name": "The Nights",
+      "ms": 179000
+     },
+     {
+      "name": "The Days",
+      "ms": 278000
+     }
+    ]
+   },
+   {
+    "name": "Stories",
+    "cover": ".cache/img/fd546f344ca2a127.jpg",
+    "tracks": [
+     {
+      "name": "Waiting For Love",
+      "ms": 228000
+     },
+     {
+      "name": "For A Better Day",
+      "ms": 205000
+     },
+     {
+      "name": "Broken Arrows",
+      "ms": 232000
+     },
+     {
+      "name": "Trouble",
+      "ms": 171000
+     },
+     {
+      "name": "Sunset Jesus",
+      "ms": 263000
+     },
+     {
+      "name": "Can't Catch Me",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "True",
+    "cover": ".cache/img/e58b79fb5d3b8947.jpg",
+    "tracks": [
+     {
+      "name": "Hey Brother",
+      "ms": 254000
+     },
+     {
+      "name": "Addicted To You",
+      "ms": 148000
+     },
+     {
+      "name": "You Make Me",
+      "ms": 233000
+     },
+     {
+      "name": "Shame On Me",
+      "ms": 253000
+     }
+    ]
+   },
+   {
+    "name": "I Could Be The One [Avicii vs Nicky Romero]",
+    "cover": ".cache/img/8d73a63be152df7f.jpg",
+    "tracks": [
+     {
+      "name": "I Could Be The One (Avicii Vs. Nicky Romero)",
+      "ms": 208000
+     }
+    ]
+   },
+   {
+    "name": "AVĪCI (01)",
+    "cover": ".cache/img/d20503165db545cf.jpg",
+    "tracks": [
+     {
+      "name": "Without You",
+      "ms": 181000
+     },
+     {
+      "name": "Lonely Together",
+      "ms": 180000
+     },
+     {
+      "name": "You Be Love",
+      "ms": 207000
+     }
+    ]
+   },
+   {
+    "name": "Taste The Feeling (Avicii Vs. Conrad Sewell)",
+    "cover": ".cache/img/45b9bfd3827c9d19.jpg",
+    "tracks": [
+     {
+      "name": "Taste The Feeling (Avicii Vs. Conrad Sewell)",
+      "ms": 191000
+     }
+    ]
+   },
+   {
+    "name": "Silhouettes",
+    "cover": ".cache/img/9178db8a79d2f790.jpg",
+    "tracks": [
+     {
+      "name": "Silhouettes",
+      "ms": 211000
+     }
+    ]
+   },
+   {
+    "name": "TIM",
+    "cover": ".cache/img/f8e03ebcaf088676.jpg",
+    "tracks": [
+     {
+      "name": "Heaven",
+      "ms": 277000
+     },
+     {
+      "name": "Tough Love",
+      "ms": 191000
+     },
+     {
+      "name": "Heart Upon My Sleeve",
+      "ms": 254000
+     }
+    ]
+   },
+   {
+    "name": "Forever Yours",
+    "cover": ".cache/img/26256bc0d3d1fa8e.jpg",
+    "tracks": [
+     {
+      "name": "Forever Yours",
+      "ms": 208000
+     }
+    ]
+   },
+   {
+    "name": "Fade Into Darkness",
+    "cover": ".cache/img/b1f21e7a72cf436b.jpg",
+    "tracks": [
+     {
+      "name": "Fade Into Darkness",
+      "ms": 199000
+     }
+    ]
+   },
+   {
+    "name": "Feeling Good",
+    "cover": ".cache/img/cfc56d2be3023b62.jpg",
+    "tracks": [
+     {
+      "name": "Feeling Good",
+      "ms": 229000
+     }
+    ]
+   },
+   {
+    "name": "SOS",
+    "cover": ".cache/img/b4d88ca414ae47b6.jpg",
+    "tracks": [
+     {
+      "name": "SOS",
+      "ms": 157000
+     }
+    ]
+   },
+   {
+    "name": "My Feelings For You",
+    "cover": ".cache/img/5cdd5497ced96874.jpg",
+    "tracks": [
+     {
+      "name": "My Feelings For You",
+      "ms": 159000
+     }
+    ]
+   },
+   {
+    "name": "hopecore songs",
+    "cover": ".cache/img/b70a04a478466cb2.jpg",
+    "tracks": [
+     {
+      "name": "Wake Me Up",
+      "ms": 269000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Childish Gambino",
+  "genres": [
+   "hip hop",
+   "funk"
+  ],
+  "image": ".cache/img/dd06614b342b9f9c.jpg",
+  "albums": [
+   {
+    "name": "\"Awaken, My Love!\"",
+    "cover": ".cache/img/ac244114fe64daa2.jpg",
+    "tracks": [
+     {
+      "name": "Redbone",
+      "ms": 326000
+     },
+     {
+      "name": "Me and Your Mama",
+      "ms": 379000
+     },
+     {
+      "name": "Riot",
+      "ms": 125000
+     },
+     {
+      "name": "Stand Tall",
+      "ms": 370000
+     },
+     {
+      "name": "Terrified",
+      "ms": 255000
+     }
+    ]
+   },
+   {
+    "name": "Camp",
+    "cover": ".cache/img/96eac4e1f1ad8ea1.jpg",
+    "tracks": [
+     {
+      "name": "Les",
+      "ms": 317000
+     },
+     {
+      "name": "Heartbeat",
+      "ms": 269000
+     },
+     {
+      "name": "Bonfire",
+      "ms": 192000
+     },
+     {
+      "name": "Letter Home",
+      "ms": 104000
+     }
+    ]
+   },
+   {
+    "name": "Because the Internet",
+    "cover": ".cache/img/26413b536c0f5552.jpg",
+    "tracks": [
+     {
+      "name": "3005",
+      "ms": 234000
+     },
+     {
+      "name": "IV. Sweatpants",
+      "ms": 180000
+     },
+     {
+      "name": "III. Telegraph Ave. (\"Oakland\" by Lloyd)",
+      "ms": 210000
+     }
+    ]
+   },
+   {
+    "name": "This Is America",
+    "cover": ".cache/img/51e5b60d1aac5b0d.jpg",
+    "tracks": [
+     {
+      "name": "This Is America",
+      "ms": 225000
+     }
+    ]
+   },
+   {
+    "name": "Summer Pack",
+    "cover": ".cache/img/f35cd26e054276bc.jpg",
+    "tracks": [
+     {
+      "name": "Feels Like Summer",
+      "ms": 297000
+     },
+     {
+      "name": "Summertime Magic",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "Lithonia",
+    "cover": ".cache/img/f1e0d8756fb737ac.jpg",
+    "tracks": [
+     {
+      "name": "Lithonia",
+      "ms": 181000
+     }
+    ]
+   },
+   {
+    "name": "Kauai",
+    "cover": ".cache/img/ea28e299980276c1.jpg",
+    "tracks": [
+     {
+      "name": "Sober",
+      "ms": 252000
+     }
+    ]
+   },
+   {
+    "name": "Atavista",
+    "cover": ".cache/img/441ada2f7e5f470c.jpg",
+    "tracks": [
+     {
+      "name": "Psilocybae (Millennial Love)",
+      "ms": 392000
+     },
+     {
+      "name": "Little Foot Big Foot",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "EP (2011 Re-Release)",
+    "cover": ".cache/img/c3e78e6873dadc9d.jpg",
+    "tracks": [
+     {
+      "name": "Freaks And Geeks",
+      "ms": 217000
+     }
+    ]
+   },
+   {
+    "name": "Because the Internet",
+    "cover": ".cache/img/26413b536c0f5552.jpg",
+    "tracks": [
+     {
+      "name": "I. Crawl",
+      "ms": 209000
+     },
+     {
+      "name": "I. Flight of the Navigator",
+      "ms": 344000
+     }
+    ]
+   },
+   {
+    "name": "Bando Stone and The New World",
+    "cover": ".cache/img/f1e0d8756fb737ac.jpg",
+    "tracks": [
+     {
+      "name": "Cruisin'",
+      "ms": 238000
+     },
+     {
+      "name": "In The Night",
+      "ms": 230000
+     },
+     {
+      "name": "Steps Beach",
+      "ms": 228000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Rage Against the Machine",
+  "genres": [
+   "rap metal"
+  ],
+  "image": ".cache/img/5a5843d82a86b75b.jpg",
+  "albums": [
+   {
+    "name": "Rage Against The Machine - XX",
+    "cover": ".cache/img/bbb83750f2a32e5a.jpg",
+    "tracks": [
+     {
+      "name": "Killing In The Name",
+      "ms": 313000
+     },
+     {
+      "name": "Bombtrack",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "Evil Empire",
+    "cover": ".cache/img/293171a6838899bf.jpg",
+    "tracks": [
+     {
+      "name": "Bulls On Parade",
+      "ms": 230000
+     },
+     {
+      "name": "Down Rodeo",
+      "ms": 319000
+     },
+     {
+      "name": "People of the Sun",
+      "ms": 150000
+     },
+     {
+      "name": "Vietnow",
+      "ms": 277000
+     },
+     {
+      "name": "Revolver",
+      "ms": 330000
+     },
+     {
+      "name": "Snakecharmer",
+      "ms": 231000
+     },
+     {
+      "name": "Without a Face",
+      "ms": 217000
+     },
+     {
+      "name": "Roll Right",
+      "ms": 261000
+     }
+    ]
+   },
+   {
+    "name": "The Battle Of Los Angeles",
+    "cover": ".cache/img/cd33ee8d4189fc3a.jpg",
+    "tracks": [
+     {
+      "name": "Guerrilla Radio",
+      "ms": 206000
+     },
+     {
+      "name": "Sleep Now In the Fire",
+      "ms": 206000
+     },
+     {
+      "name": "Testify",
+      "ms": 210000
+     },
+     {
+      "name": "Calm Like a Bomb",
+      "ms": 299000
+     },
+     {
+      "name": "Born of a Broken Man",
+      "ms": 281000
+     }
+    ]
+   },
+   {
+    "name": "Rage Against The Machine",
+    "cover": ".cache/img/46ee26259556ac79.jpg",
+    "tracks": [
+     {
+      "name": "Wake Up",
+      "ms": 364000
+     },
+     {
+      "name": "Take the Power Back",
+      "ms": 336000
+     },
+     {
+      "name": "Know Your Enemy",
+      "ms": 295000
+     },
+     {
+      "name": "Bullet In the Head",
+      "ms": 308000
+     },
+     {
+      "name": "Freedom",
+      "ms": 366000
+     },
+     {
+      "name": "Settle for Nothing",
+      "ms": 287000
+     },
+     {
+      "name": "Fistful of Steel",
+      "ms": 331000
+     },
+     {
+      "name": "Township Rebellion",
+      "ms": 324000
+     }
+    ]
+   },
+   {
+    "name": "Renegades",
+    "cover": ".cache/img/bd3b1d13423eaa64.jpg",
+    "tracks": [
+     {
+      "name": "Renegades Of Funk",
+      "ms": 275000
+     },
+     {
+      "name": "How I Could Just Kill a Man",
+      "ms": 244000
+     },
+     {
+      "name": "Maggie's Farm",
+      "ms": 395000
+     },
+     {
+      "name": "Microphone Fiend",
+      "ms": 301000
+     },
+     {
+      "name": "Pistol Grip Pump",
+      "ms": 197000
+     },
+     {
+      "name": "The Ghost of Tom Joad",
+      "ms": 338000
+     }
+    ]
+   },
+   {
+    "name": "The Crow Original Motion Picture Soundtrack",
+    "cover": ".cache/img/683df41e40c47042.jpg",
+    "tracks": [
+     {
+      "name": "Darkness",
+      "ms": 222000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Don Toliver",
+  "genres": [
+   "rap"
+  ],
+  "image": ".cache/img/c1ea3dee6f494bbe.jpg",
+  "albums": [
+   {
+    "name": "OCTANE",
+    "cover": ".cache/img/ebc21ea2dbc2b390.jpg",
+    "tracks": [
+     {
+      "name": "E85",
+      "ms": 153000
+     },
+     {
+      "name": "Body",
+      "ms": 155000
+     },
+     {
+      "name": "Secondhand",
+      "ms": 226000
+     },
+     {
+      "name": "Call Back",
+      "ms": 123000
+     },
+     {
+      "name": "ATM",
+      "ms": 180000
+     },
+     {
+      "name": "Excavator",
+      "ms": 211000
+     },
+     {
+      "name": "Gemstone",
+      "ms": 121000
+     },
+     {
+      "name": "Rendezvous",
+      "ms": 146000
+     },
+     {
+      "name": "TMU",
+      "ms": 180000
+     }
+    ]
+   },
+   {
+    "name": "HARDSTONE PSYCHO",
+    "cover": ".cache/img/cedbdaf30bbe7bde.jpg",
+    "tracks": [
+     {
+      "name": "NEW DROP",
+      "ms": 217000
+     },
+     {
+      "name": "TORE UP",
+      "ms": 126000
+     },
+     {
+      "name": "KRYPTONITE",
+      "ms": 182000
+     },
+     {
+      "name": "ICE AGE",
+      "ms": 218000
+     }
+    ]
+   },
+   {
+    "name": "Love Sick",
+    "cover": ".cache/img/9e2ba572856e9eb6.jpg",
+    "tracks": [
+     {
+      "name": "No Pole",
+      "ms": 187000
+     }
+    ]
+   },
+   {
+    "name": "Heaven Or Hell",
+    "cover": ".cache/img/6ce9e1115a9b5244.jpg",
+    "tracks": [
+     {
+      "name": "After Party",
+      "ms": 167000
+     }
+    ]
+   },
+   {
+    "name": "FWU",
+    "cover": ".cache/img/ae7310f3a1ef4a3b.jpg",
+    "tracks": [
+     {
+      "name": "FWU",
+      "ms": 171000
+     }
+    ]
+   },
+   {
+    "name": "Life of a DON",
+    "cover": ".cache/img/909e85cb35d606c5.jpg",
+    "tracks": [
+     {
+      "name": "You",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "No Idea",
+    "cover": ".cache/img/228f0b0f749fa324.jpg",
+    "tracks": [
+     {
+      "name": "No Idea",
+      "ms": 154000
+     }
+    ]
+   },
+   {
+    "name": "Tiramisu",
+    "cover": ".cache/img/7d6c2845e4d48609.jpg",
+    "tracks": [
+     {
+      "name": "Tiramisu",
+      "ms": 138000
+     }
+    ]
+   },
+   {
+    "name": "Bandit",
+    "cover": ".cache/img/822c3b8b13f9b7bd.jpg",
+    "tracks": [
+     {
+      "name": "BANDIT",
+      "ms": 147000
+     }
+    ]
+   },
+   {
+    "name": "Love Sick",
+    "cover": ".cache/img/b47349289b458cb3.jpg",
+    "tracks": [
+     {
+      "name": "Private Landing",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "JACKBOYS 2",
+    "cover": ".cache/img/7e4ce536c0d0bb98.jpg",
+    "tracks": [
+     {
+      "name": "NO COMMENTS",
+      "ms": 129000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Oasis",
+  "genres": [
+   "britpop",
+   "rock"
+  ],
+  "image": ".cache/img/1c22860e8b917d50.jpg",
+  "albums": [
+   {
+    "name": "(What's The Story) Morning Glory?",
+    "cover": ".cache/img/dfc846f8f1f6e3dc.jpg",
+    "tracks": [
+     {
+      "name": "Wonderwall",
+      "ms": 258000
+     },
+     {
+      "name": "Roll With It",
+      "ms": 239000
+     },
+     {
+      "name": "Morning Glory",
+      "ms": 303000
+     },
+     {
+      "name": "Cast No Shadow",
+      "ms": 294000
+     },
+     {
+      "name": "Hey Now!",
+      "ms": 341000
+     }
+    ]
+   },
+   {
+    "name": "Don't Look Back In Anger",
+    "cover": ".cache/img/de09f96fe3bdd4f1.jpg",
+    "tracks": [
+     {
+      "name": "Don't Look Back In Anger",
+      "ms": 287000
+     }
+    ]
+   },
+   {
+    "name": "Stop Crying Your Heart Out",
+    "cover": ".cache/img/4626289190f25384.jpg",
+    "tracks": [
+     {
+      "name": "Stop Crying Your Heart Out",
+      "ms": 303000
+     }
+    ]
+   },
+   {
+    "name": "Be Here Now",
+    "cover": ".cache/img/79512b68bf6587be.jpg",
+    "tracks": [
+     {
+      "name": "Stand By Me",
+      "ms": 356000
+     },
+     {
+      "name": "D'You Know What I Mean?",
+      "ms": 462000
+     },
+     {
+      "name": "Don't Go Away",
+      "ms": 288000
+     },
+     {
+      "name": "All Around The World",
+      "ms": 560000
+     }
+    ]
+   },
+   {
+    "name": "Stop The Clocks",
+    "cover": ".cache/img/a4284e6af3bff079.jpg",
+    "tracks": [
+     {
+      "name": "Champagne Supernova",
+      "ms": 449000
+     },
+     {
+      "name": "Half The World Away",
+      "ms": 255000
+     },
+     {
+      "name": "Cigarettes & Alcohol",
+      "ms": 288000
+     },
+     {
+      "name": "Songbird",
+      "ms": 125000
+     }
+    ]
+   },
+   {
+    "name": "Supersonic",
+    "cover": ".cache/img/1ce2e5858fcd4a84.jpg",
+    "tracks": [
+     {
+      "name": "Supersonic",
+      "ms": 283000
+     }
+    ]
+   },
+   {
+    "name": "Definitely Maybe",
+    "cover": ".cache/img/7dff2cde6007ef59.jpg",
+    "tracks": [
+     {
+      "name": "Slide Away",
+      "ms": 392000
+     },
+     {
+      "name": "Live Forever",
+      "ms": 276000
+     },
+     {
+      "name": "Married With Children",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Whatever",
+    "cover": ".cache/img/4a0533e6a02e4a3d.jpg",
+    "tracks": [
+     {
+      "name": "Whatever",
+      "ms": 381000
+     }
+    ]
+   },
+   {
+    "name": "(What's The Story) Morning Glory?",
+    "cover": ".cache/img/dfc846f8f1f6e3dc.jpg",
+    "tracks": [
+     {
+      "name": "She's Electric",
+      "ms": 220000
+     }
+    ]
+   },
+   {
+    "name": "Heathen Chemistry",
+    "cover": ".cache/img/bfcf8ba2a924bb4b.jpg",
+    "tracks": [
+     {
+      "name": "The Hindu Times",
+      "ms": 226000
+     }
+    ]
+   },
+   {
+    "name": "Little By Little / She Is Love",
+    "cover": ".cache/img/4149f2936075d64d.jpg",
+    "tracks": [
+     {
+      "name": "Little By Little",
+      "ms": 292000
+     }
+    ]
+   },
+   {
+    "name": "Sad Song (Mauldeth Road West Demo, Nov '92)",
+    "cover": ".cache/img/bdab835c9f93fbaa.jpg",
+    "tracks": [
+     {
+      "name": "Sad Song",
+      "ms": 274000
+     }
+    ]
+   },
+   {
+    "name": "Some Might Say",
+    "cover": ".cache/img/994bfe720c1fba96.jpg",
+    "tracks": [
+     {
+      "name": "Talk Tonight",
+      "ms": 261000
+     }
+    ]
+   },
+   {
+    "name": "Standing On The Shoulder Of Giants",
+    "cover": ".cache/img/0edeff8534eb941b.jpg",
+    "tracks": [
+     {
+      "name": "Go Let It Out",
+      "ms": 278000
+     }
+    ]
+   },
+   {
+    "name": "Definitely Maybe",
+    "cover": ".cache/img/302e0d7fcea37bac.jpg",
+    "tracks": [
+     {
+      "name": "Rock 'n' Roll Star",
+      "ms": 322000
+     }
+    ]
+   },
+   {
+    "name": "Bring It On Down",
+    "cover": ".cache/img/3b7d1782820e1d9c.jpg",
+    "tracks": [
+     {
+      "name": "Bring It On Down",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "Don't Believe The Truth",
+    "cover": ".cache/img/433fd1e47bedeca1.jpg",
+    "tracks": [
+     {
+      "name": "Let There Be Love",
+      "ms": 331000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Lil Baby",
+  "genres": [
+   "rap",
+   "trap"
+  ],
+  "image": ".cache/img/165cec3f072f5b67.jpg",
+  "albums": [
+   {
+    "name": "Dead Fresh",
+    "cover": ".cache/img/4c5c615a47f10914.jpg",
+    "tracks": [
+     {
+      "name": "Dead Fresh",
+      "ms": 157000
+     }
+    ]
+   },
+   {
+    "name": "Drip Harder",
+    "cover": ".cache/img/40aa497fac112bfe.jpg",
+    "tracks": [
+     {
+      "name": "Drip Too Hard",
+      "ms": 146000
+     },
+     {
+      "name": "Never Recover",
+      "ms": 194000
+     },
+     {
+      "name": "Close Friends",
+      "ms": 203000
+     }
+    ]
+   },
+   {
+    "name": "Harder Than Ever",
+    "cover": ".cache/img/1b0e03d007a6e3f2.jpg",
+    "tracks": [
+     {
+      "name": "Yes Indeed",
+      "ms": 142000
+     },
+     {
+      "name": "Life Goes On",
+      "ms": 247000
+     }
+    ]
+   },
+   {
+    "name": "Too Hard",
+    "cover": ".cache/img/91f817be3435d88c.jpg",
+    "tracks": [
+     {
+      "name": "Freestyle",
+      "ms": 162000
+     }
+    ]
+   },
+   {
+    "name": "The Leaks",
+    "cover": ".cache/img/f991f203c7e9f32c.jpg",
+    "tracks": [
+     {
+      "name": "Mrs. Trendsetter",
+      "ms": 148000
+     }
+    ]
+   },
+   {
+    "name": "Street Gossip",
+    "cover": ".cache/img/6bd58207ff065a0a.jpg",
+    "tracks": [
+     {
+      "name": "Pure Cocaine",
+      "ms": 154000
+     }
+    ]
+   },
+   {
+    "name": "My Turn",
+    "cover": ".cache/img/37508a58df136df4.jpg",
+    "tracks": [
+     {
+      "name": "We Paid",
+      "ms": 181000
+     },
+     {
+      "name": "Emotionally Scarred",
+      "ms": 198000
+     }
+    ]
+   },
+   {
+    "name": "In A Minute",
+    "cover": ".cache/img/6cecdfc5ea3f75de.jpg",
+    "tracks": [
+     {
+      "name": "In A Minute",
+      "ms": 200000
+     }
+    ]
+   },
+   {
+    "name": "Sum 2 Prove",
+    "cover": ".cache/img/811685611c30d930.jpg",
+    "tracks": [
+     {
+      "name": "Sum 2 Prove",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "Dum, Dumb, and Dumber",
+    "cover": ".cache/img/67f8fae39675acb2.jpg",
+    "tracks": [
+     {
+      "name": "Dum, Dumb, and Dumber",
+      "ms": 227000
+     }
+    ]
+   },
+   {
+    "name": "WHAM",
+    "cover": ".cache/img/6bbf5da9bb7eb458.jpg",
+    "tracks": [
+     {
+      "name": "Stuff",
+      "ms": 181000
+     }
+    ]
+   },
+   {
+    "name": "The Bigger Picture",
+    "cover": ".cache/img/f5053c6739b8026b.jpg",
+    "tracks": [
+     {
+      "name": "The Bigger Picture",
+      "ms": 252000
+     }
+    ]
+   },
+   {
+    "name": "It's Only Me",
+    "cover": ".cache/img/cc9d99ab74f3f936.jpg",
+    "tracks": [
+     {
+      "name": "Forever",
+      "ms": 168000
+     }
+    ]
+   },
+   {
+    "name": "My Turn",
+    "cover": ".cache/img/37508a58df136df4.jpg",
+    "tracks": [
+     {
+      "name": "Low Down",
+      "ms": 146000
+     }
+    ]
+   },
+   {
+    "name": "Woah",
+    "cover": ".cache/img/18f96aac4ff46ac0.jpg",
+    "tracks": [
+     {
+      "name": "Woah",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "All On Me",
+    "cover": ".cache/img/0fdd7551ec9af0ce.jpg",
+    "tracks": [
+     {
+      "name": "All On Me",
+      "ms": 219000
+     }
+    ]
+   },
+   {
+    "name": "My Turn",
+    "cover": ".cache/img/5bb4f0b084216de7.jpg",
+    "tracks": [
+     {
+      "name": "Heatin Up",
+      "ms": 177000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Kings of Leon",
+  "genres": [
+   "rock"
+  ],
+  "image": ".cache/img/2433f7c20254c227.jpg",
+  "albums": [
+   {
+    "name": "Only By The Night",
+    "cover": ".cache/img/71a5a7e51b0b298b.jpg",
+    "tracks": [
+     {
+      "name": "Sex on Fire",
+      "ms": 203000
+     },
+     {
+      "name": "Closer",
+      "ms": 237000
+     },
+     {
+      "name": "Revelry",
+      "ms": 202000
+     },
+     {
+      "name": "Manhattan",
+      "ms": 204000
+     },
+     {
+      "name": "Notion",
+      "ms": 181000
+     },
+     {
+      "name": "I Want You",
+      "ms": 307000
+     },
+     {
+      "name": "Crawl",
+      "ms": 246000
+     },
+     {
+      "name": "17",
+      "ms": 185000
+     },
+     {
+      "name": "Cold Desert",
+      "ms": 335000
+     },
+     {
+      "name": "Be Somebody",
+      "ms": 227000
+     }
+    ]
+   },
+   {
+    "name": "KOYSAR",
+    "cover": ".cache/img/3005938308628d21.jpg",
+    "tracks": [
+     {
+      "name": "KOYSAR",
+      "ms": 197000
+     },
+     {
+      "name": "My Whole World",
+      "ms": 247000
+     },
+     {
+      "name": "Cold Blue Dawn",
+      "ms": 275000
+     }
+    ]
+   },
+   {
+    "name": "Use Somebody",
+    "cover": ".cache/img/34b4aaa2b9831557.jpg",
+    "tracks": [
+     {
+      "name": "Use Somebody",
+      "ms": 231000
+     }
+    ]
+   },
+   {
+    "name": "Mechanical Bull",
+    "cover": ".cache/img/da92424e9057646b.jpg",
+    "tracks": [
+     {
+      "name": "Wait for Me",
+      "ms": 210000
+     },
+     {
+      "name": "Supersoaker",
+      "ms": 230000
+     }
+    ]
+   },
+   {
+    "name": "Come Around Sundown",
+    "cover": ".cache/img/fae9c19c024e4b1e.jpg",
+    "tracks": [
+     {
+      "name": "Pyro",
+      "ms": 250000
+     },
+     {
+      "name": "The End",
+      "ms": 264000
+     },
+     {
+      "name": "Back Down South",
+      "ms": 241000
+     },
+     {
+      "name": "Radioactive",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "We're Onto Something",
+    "cover": ".cache/img/b0e7b32c6a40e700.jpg",
+    "tracks": [
+     {
+      "name": "We're Onto Something",
+      "ms": 222000
+     }
+    ]
+   },
+   {
+    "name": "WALLS",
+    "cover": ".cache/img/3ae65abb320293ad.jpg",
+    "tracks": [
+     {
+      "name": "Find Me",
+      "ms": 245000
+     },
+     {
+      "name": "Waste A Moment",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "Youth And Young Manhood",
+    "cover": ".cache/img/e722c6be411d6677.jpg",
+    "tracks": [
+     {
+      "name": "Molly's Chambers",
+      "ms": 135000
+     },
+     {
+      "name": "Red Morning Light",
+      "ms": 179000
+     }
+    ]
+   },
+   {
+    "name": "Because Of The Times",
+    "cover": ".cache/img/e280d7cbd23b5db6.jpg",
+    "tracks": [
+     {
+      "name": "Arizona",
+      "ms": 290000
+     },
+     {
+      "name": "Knocked Up",
+      "ms": 430000
+     },
+     {
+      "name": "Fans",
+      "ms": 216000
+     }
+    ]
+   },
+   {
+    "name": "Aha Shake Heartbreak",
+    "cover": ".cache/img/607b6810ed53625e.jpg",
+    "tracks": [
+     {
+      "name": "The Bucket",
+      "ms": 175000
+     }
+    ]
+   },
+   {
+    "name": "EP #2",
+    "cover": ".cache/img/ab765f44e6e0586e.jpg",
+    "tracks": [
+     {
+      "name": "To Space",
+      "ms": 233000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Chris Stapleton",
+  "genres": [
+   "country"
+  ],
+  "image": ".cache/img/852d521dde5eb320.jpg",
+  "albums": [
+   {
+    "name": "Traveller",
+    "cover": ".cache/img/ef1833ffb108659c.jpg",
+    "tracks": [
+     {
+      "name": "Tennessee Whiskey",
+      "ms": 293000
+     },
+     {
+      "name": "Fire Away",
+      "ms": 242000
+     },
+     {
+      "name": "Parachute",
+      "ms": 253000
+     },
+     {
+      "name": "Traveller",
+      "ms": 222000
+     },
+     {
+      "name": "Nobody To Blame",
+      "ms": 244000
+     },
+     {
+      "name": "Outlaw State Of Mind",
+      "ms": 335000
+     }
+    ]
+   },
+   {
+    "name": "Starting Over",
+    "cover": ".cache/img/d059b04fdab43527.jpg",
+    "tracks": [
+     {
+      "name": "You Should Probably Leave",
+      "ms": 213000
+     },
+     {
+      "name": "Cold",
+      "ms": 310000
+     },
+     {
+      "name": "Joy Of My Life",
+      "ms": 275000
+     },
+     {
+      "name": "Devil Always Made Me Think Twice",
+      "ms": 232000
+     }
+    ]
+   },
+   {
+    "name": "Starting Over",
+    "cover": ".cache/img/d059b04fdab43527.jpg",
+    "tracks": [
+     {
+      "name": "Starting Over",
+      "ms": 240000
+     }
+    ]
+   },
+   {
+    "name": "White Horse",
+    "cover": ".cache/img/479aa6c5f99695e8.jpg",
+    "tracks": [
+     {
+      "name": "White Horse",
+      "ms": 268000
+     }
+    ]
+   },
+   {
+    "name": "Think I’m In Love With You",
+    "cover": ".cache/img/479aa6c5f99695e8.jpg",
+    "tracks": [
+     {
+      "name": "Think I'm In Love With You",
+      "ms": 223000
+     }
+    ]
+   },
+   {
+    "name": "From A Room: Volume 1",
+    "cover": ".cache/img/9f1627a925b730fe.jpg",
+    "tracks": [
+     {
+      "name": "Broken Halos",
+      "ms": 183000
+     },
+     {
+      "name": "I Was Wrong",
+      "ms": 193000
+     },
+     {
+      "name": "Death Row",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "From A Room: Volume 2",
+    "cover": ".cache/img/9b8ec3a8116cf1b8.jpg",
+    "tracks": [
+     {
+      "name": "Millionaire",
+      "ms": 211000
+     },
+     {
+      "name": "A Simple Song",
+      "ms": 217000
+     }
+    ]
+   },
+   {
+    "name": "Bad As I Used To Be (From F1® The Movie)",
+    "cover": ".cache/img/c582739506bd2418.jpg",
+    "tracks": [
+     {
+      "name": "Bad As I Used To Be",
+      "ms": 300000
+     }
+    ]
+   },
+   {
+    "name": "Higher",
+    "cover": ".cache/img/479aa6c5f99695e8.jpg",
+    "tracks": [
+     {
+      "name": "Higher",
+      "ms": 242000
+     },
+     {
+      "name": "Loving You On My Mind",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "What Are You Listening To?",
+    "cover": ".cache/img/caf4763c7c3baf5e.jpg",
+    "tracks": [
+     {
+      "name": "What Are You Listening To?",
+      "ms": 246000
+     }
+    ]
+   },
+   {
+    "name": "The Metallica Blacklist",
+    "cover": ".cache/img/d251f0a1a4166eea.jpg",
+    "tracks": [
+     {
+      "name": "Nothing Else Matters",
+      "ms": 494000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Gunna",
+  "genres": [
+   "rap",
+   "trap"
+  ],
+  "image": ".cache/img/8beb341cbd7a532f.jpg",
+  "albums": [
+   {
+    "name": "pop it",
+    "cover": ".cache/img/cb4a59df4ad7e97b.jpg",
+    "tracks": [
+     {
+      "name": "pop it",
+      "ms": 138000
+     }
+    ]
+   },
+   {
+    "name": "Drip or Drown 2",
+    "cover": ".cache/img/0a26f2a587c75c80.jpg",
+    "tracks": [
+     {
+      "name": "Who You Foolin",
+      "ms": 151000
+     }
+    ]
+   },
+   {
+    "name": "a Gift & a Curse",
+    "cover": ".cache/img/7b9dfaab59a29bbe.jpg",
+    "tracks": [
+     {
+      "name": "fukumean",
+      "ms": 125000
+     }
+    ]
+   },
+   {
+    "name": "The Last Wun",
+    "cover": ".cache/img/4ce852d9e13aadf2.jpg",
+    "tracks": [
+     {
+      "name": "wgft",
+      "ms": 184000
+     },
+     {
+      "name": "just say dat",
+      "ms": 123000
+     },
+     {
+      "name": "again",
+      "ms": 180000
+     },
+     {
+      "name": "endless",
+      "ms": 126000
+     },
+     {
+      "name": "at my purest",
+      "ms": 193000
+     }
+    ]
+   },
+   {
+    "name": "DS4EVER",
+    "cover": ".cache/img/b3ecea4b6e7ffc3d.jpg",
+    "tracks": [
+     {
+      "name": "P power",
+      "ms": 193000
+     },
+     {
+      "name": "pushin P",
+      "ms": 136000
+     },
+     {
+      "name": "south to west",
+      "ms": 122000
+     }
+    ]
+   },
+   {
+    "name": "won't stop",
+    "cover": ".cache/img/c00d9de160c7867a.jpg",
+    "tracks": [
+     {
+      "name": "won't stop",
+      "ms": 181000
+     }
+    ]
+   },
+   {
+    "name": "One of Wun",
+    "cover": ".cache/img/cd35b98c0d6e65e4.jpg",
+    "tracks": [
+     {
+      "name": "one of wun",
+      "ms": 144000
+     }
+    ]
+   },
+   {
+    "name": "him all along",
+    "cover": ".cache/img/d54264faeecc34b6.jpg",
+    "tracks": [
+     {
+      "name": "him all along",
+      "ms": 158000
+     }
+    ]
+   },
+   {
+    "name": "WUNNA",
+    "cover": ".cache/img/17f0326f73f2ff47.jpg",
+    "tracks": [
+     {
+      "name": "DOLLAZ ON MY HEAD",
+      "ms": 197000
+     }
+    ]
+   },
+   {
+    "name": "Sold Out Dates",
+    "cover": ".cache/img/1d54724b641a69c5.jpg",
+    "tracks": [
+     {
+      "name": "Sold Out Dates",
+      "ms": 166000
+     }
+    ]
+   },
+   {
+    "name": "GOT DAMN",
+    "cover": ".cache/img/6db07cab59fb8ae8.jpg",
+    "tracks": [
+     {
+      "name": "GOT DAMN",
+      "ms": 156000
+     }
+    ]
+   },
+   {
+    "name": "Banking On Me",
+    "cover": ".cache/img/b7a7ddde99ab6d12.jpg",
+    "tracks": [
+     {
+      "name": "Banking On Me",
+      "ms": 200000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "OutKast",
+  "genres": [
+   "hip hop"
+  ],
+  "image": ".cache/img/3b3d1487b44d5249.jpg",
+  "albums": [
+   {
+    "name": "Speakerboxxx/The Love Below",
+    "cover": ".cache/img/66222767202f5f44.jpg",
+    "tracks": [
+     {
+      "name": "Hey Ya!",
+      "ms": 235000
+     },
+     {
+      "name": "Roses",
+      "ms": 369000
+     },
+     {
+      "name": "The Way You Move",
+      "ms": 235000
+     },
+     {
+      "name": "Prototype",
+      "ms": 326000
+     },
+     {
+      "name": "Dracula's Wedding",
+      "ms": 152000
+     },
+     {
+      "name": "She Lives in My Lap",
+      "ms": 267000
+     },
+     {
+      "name": "GhettoMusick",
+      "ms": 236000
+     },
+     {
+      "name": "Tomb of the Boom",
+      "ms": 284000
+     }
+    ]
+   },
+   {
+    "name": "Stankonia",
+    "cover": ".cache/img/067ae6a542d92844.jpg",
+    "tracks": [
+     {
+      "name": "Ms. Jackson",
+      "ms": 272000
+     },
+     {
+      "name": "B.O.B.",
+      "ms": 304000
+     },
+     {
+      "name": "Gasoline Dreams",
+      "ms": 215000
+     },
+     {
+      "name": "Spaghetti Junction",
+      "ms": 237000
+     }
+    ]
+   },
+   {
+    "name": "Big Boi & Dre Present...OutKast",
+    "cover": ".cache/img/16946bb6c6307a75.jpg",
+    "tracks": [
+     {
+      "name": "So Fresh, So Clean",
+      "ms": 240000
+     },
+     {
+      "name": "The Whole World",
+      "ms": 297000
+     }
+    ]
+   },
+   {
+    "name": "ATLiens",
+    "cover": ".cache/img/eec4e11652da925b.jpg",
+    "tracks": [
+     {
+      "name": "ATLiens",
+      "ms": 230000
+     },
+     {
+      "name": "Elevators (Me & You)",
+      "ms": 262000
+     },
+     {
+      "name": "Jazzy Belle",
+      "ms": 252000
+     },
+     {
+      "name": "Two Dope Boyz (In a Cadillac)",
+      "ms": 162000
+     },
+     {
+      "name": "13th Floor/Growing Old",
+      "ms": 411000
+     }
+    ]
+   },
+   {
+    "name": "Aquemini",
+    "cover": ".cache/img/ef453a41e7904be6.jpg",
+    "tracks": [
+     {
+      "name": "Rosa Parks",
+      "ms": 324000
+     },
+     {
+      "name": "Da Art of Storytellin' (Pt. 1)",
+      "ms": 223000
+     },
+     {
+      "name": "SpottieOttieDopaliscious",
+      "ms": 427000
+     },
+     {
+      "name": "Aquemini",
+      "ms": 319000
+     },
+     {
+      "name": "Return of the \"G\"",
+      "ms": 289000
+     },
+     {
+      "name": "Skew It on the Bar-B",
+      "ms": 195000
+     },
+     {
+      "name": "West Savannah",
+      "ms": 243000
+     }
+    ]
+   },
+   {
+    "name": "Southernplayalisticadillacmuzik",
+    "cover": ".cache/img/77eb071993671c4b.jpg",
+    "tracks": [
+     {
+      "name": "Southernplayalisticadillacmuzik",
+      "ms": 318000
+     },
+     {
+      "name": "Git Up, Git Out",
+      "ms": 445000
+     },
+     {
+      "name": "Player's Ball",
+      "ms": 261000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Bad Bunny",
+  "genres": [
+   "reggaeton",
+   "latin trap"
+  ],
+  "image": ".cache/img/3fd09b17ce396aff.jpg",
+  "albums": [
+   {
+    "name": "DeBÍ TiRAR MáS FOToS",
+    "cover": ".cache/img/32e534f536e3cfd3.jpg",
+    "tracks": [
+     {
+      "name": "NUEVAYoL",
+      "ms": 183000
+     },
+     {
+      "name": "BAILE INoLVIDABLE",
+      "ms": 367000
+     },
+     {
+      "name": "DtMF",
+      "ms": 237000
+     },
+     {
+      "name": "EoO",
+      "ms": 204000
+     },
+     {
+      "name": "VOY A LLeVARTE PA PR",
+      "ms": 156000
+     },
+     {
+      "name": "WELTiTA",
+      "ms": 187000
+     },
+     {
+      "name": "VeLDÁ",
+      "ms": 235000
+     },
+     {
+      "name": "CAFé CON RON",
+      "ms": 228000
+     },
+     {
+      "name": "KLOuFRENS",
+      "ms": 199000
+     }
+    ]
+   },
+   {
+    "name": "Un Verano Sin Ti",
+    "cover": ".cache/img/72a567cd16b95d28.jpg",
+    "tracks": [
+     {
+      "name": "Tití Me Preguntó",
+      "ms": 243000
+     },
+     {
+      "name": "Me Porto Bonito",
+      "ms": 178000
+     },
+     {
+      "name": "Ojitos Lindos",
+      "ms": 258000
+     },
+     {
+      "name": "Moscow Mule",
+      "ms": 245000
+     }
+    ]
+   },
+   {
+    "name": "DÁKITI",
+    "cover": ".cache/img/77d1fc70f952bff7.jpg",
+    "tracks": [
+     {
+      "name": "DÁKITI",
+      "ms": 204000
+     }
+    ]
+   },
+   {
+    "name": "nadie sabe lo que va a pasar mañana",
+    "cover": ".cache/img/381e516a3f1fa66f.jpg",
+    "tracks": [
+     {
+      "name": "MONACO",
+      "ms": 267000
+     },
+     {
+      "name": "PERRO NEGRO",
+      "ms": 162000
+     }
+    ]
+   },
+   {
+    "name": "YHLQMDLG",
+    "cover": ".cache/img/7534bfd26f5339f9.jpg",
+    "tracks": [
+     {
+      "name": "Safaera",
+      "ms": 295000
+     },
+     {
+      "name": "Yo Perreo Sola",
+      "ms": 172000
+     }
+    ]
+   },
+   {
+    "name": "EL ÚLTIMO TOUR DEL MUNDO",
+    "cover": ".cache/img/2d4c6b53cbc10fff.jpg",
+    "tracks": [
+     {
+      "name": "LA NOCHE DE ANOCHE",
+      "ms": 203000
+     },
+     {
+      "name": "TE MUDASTE",
+      "ms": 130000
+     },
+     {
+      "name": "HOY COBRÉ",
+      "ms": 162000
+     },
+     {
+      "name": "EL MUNDO ES MÍO",
+      "ms": 165000
+     },
+     {
+      "name": "MALDITA POBREZA",
+      "ms": 213000
+     }
+    ]
+   },
+   {
+    "name": "Callaita",
+    "cover": ".cache/img/3c5fe0cb3a8e7099.jpg",
+    "tracks": [
+     {
+      "name": "Callaita",
+      "ms": 250000
+     }
+    ]
+   },
+   {
+    "name": "Diles",
+    "cover": ".cache/img/fc7dc44667c86cd3.jpg",
+    "tracks": [
+     {
+      "name": "Diles",
+      "ms": 286000
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Fisher",
+  "genres": [
+   "tech house"
+  ],
+  "image": ".cache/img/e6b387c7db85b14b.jpg",
+  "albums": [
+   {
+    "name": "Staring At The Sun",
+    "cover": ".cache/img/f741e2c03951166f.jpg",
+    "tracks": [
+     {
+      "name": "Staring At The Sun",
+      "ms": 201000
+     }
+    ]
+   },
+   {
+    "name": "What A Life",
+    "cover": ".cache/img/25212fbe729063a0.jpg",
+    "tracks": [
+     {
+      "name": "What A Life",
+      "ms": 189000
+     }
+    ]
+   },
+   {
+    "name": "Favour",
+    "cover": ".cache/img/d303a8e8085f2187.jpg",
+    "tracks": [
+     {
+      "name": "Favour",
+      "ms": 195000
+     }
+    ]
+   },
+   {
+    "name": "Rain",
+    "cover": ".cache/img/92d32ba1ee099105.jpg",
+    "tracks": [
+     {
+      "name": "Rain",
+      "ms": 209000
+     }
+    ]
+   },
+   {
+    "name": "Losing It",
+    "cover": ".cache/img/86b69c809a348413.jpg",
+    "tracks": [
+     {
+      "name": "Losing It",
+      "ms": 248000
+     }
+    ]
+   },
+   {
+    "name": "Atmosphere",
+    "cover": ".cache/img/f72a908dff96c0a2.jpg",
+    "tracks": [
+     {
+      "name": "Atmosphere",
+      "ms": 183000
+     }
+    ]
+   },
+   {
+    "name": "Blackberries",
+    "cover": ".cache/img/b9f049b429ae4994.jpg",
+    "tracks": [
+     {
+      "name": "Blackberries",
+      "ms": 122000
+     }
+    ]
+   },
+   {
+    "name": "TAKE IT OFF",
+    "cover": ".cache/img/a7da7bb3764d8fc1.jpg",
+    "tracks": [
+     {
+      "name": "TAKE IT OFF",
+      "ms": 194000
+     }
+    ]
+   },
+   {
+    "name": "Stay",
+    "cover": ".cache/img/07dc8c0d29f0ded4.jpg",
+    "tracks": [
+     {
+      "name": "Stay",
+      "ms": 166000
+     }
+    ]
+   },
+   {
+    "name": "Just Feels Tight",
+    "cover": ".cache/img/5d8358dcf684503e.jpg",
+    "tracks": [
+     {
+      "name": "Just Feels Tight",
+      "ms": 198000
+     }
+    ]
+   },
+   {
+    "name": "Freaks",
+    "cover": ".cache/img/bf3bf8e4b24cabec.jpg",
+    "tracks": [
+     {
+      "name": "Freaks",
+      "ms": 175000
+     }
+    ]
+   },
+   {
+    "name": "It's A Killa",
+    "cover": ".cache/img/a5235204dc51eea6.jpg",
+    "tracks": [
+     {
+      "name": "It's A Killa",
+      "ms": 200000
+     }
+    ]
+   },
+   {
+    "name": "Waiting For Tonight",
+    "cover": ".cache/img/de2bf933b3f7f14f.jpg",
+    "tracks": [
+     {
+      "name": "Waiting For Tonight",
+      "ms": 198000
+     }
+    ]
+   },
+   {
+    "name": "Oi Oi",
+    "cover": ".cache/img/ad2e359da81033a5.jpg",
+    "tracks": [
+     {
+      "name": "Ya Didn't",
+      "ms": 185000
+     },
+     {
+      "name": "Stop It",
+      "ms": 163000
+     }
+    ]
+   },
+   {
+    "name": "Yeah The Girls",
+    "cover": ".cache/img/0eb08c15df85aa42.jpg",
+    "tracks": [
+     {
+      "name": "Yeah The Girls",
+      "ms": 194000
+     }
+    ]
+   },
+   {
+    "name": "You Little Beauty",
+    "cover": ".cache/img/15f64c1708a76bba.jpg",
+    "tracks": [
+     {
+      "name": "You Little Beauty",
+      "ms": 206000
+     }
+    ]
+   },
+   {
+    "name": "Freaks (EP)",
+    "cover": ".cache/img/58c37f68bb695a2d.jpg",
+    "tracks": [
+     {
+      "name": "Wanna Go Dancin'",
+      "ms": 180000
+     }
+    ]
+   },
+   {
+    "name": "Ya Kidding",
+    "cover": ".cache/img/dd01ba50d59555ba.jpg",
+    "tracks": [
+     {
+      "name": "Ya Kidding",
+      "ms": 238000
+     }
+    ]
+   },
+   {
+    "name": "Boost Up",
+    "cover": ".cache/img/0ceceec3284642de.jpg",
+    "tracks": [
+     {
+      "name": "Boost Up",
+      "ms": 212000
+     }
+    ]
+   },
+   {
+    "name": "Ocean",
+    "cover": ".cache/img/74feab54ad2f660b.jpg",
+    "tracks": [
+     {
+      "name": "Ocean",
+      "ms": 197000
+     }
+    ]
+   }
+  ]
+ }
+]

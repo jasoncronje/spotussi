@@ -1,0 +1,57 @@
+{
+ "data": [
+  {
+   "id": 6160,
+   "name": "Rick Astley",
+   "picture": "https://api.deezer.com/artist/6160/image",
+   "picture_small": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/56x56-000000-80-0-0.jpg",
+   "picture_medium": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/250x250-000000-80-0-0.jpg",
+   "picture_big": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/500x500-000000-80-0-0.jpg",
+   "picture_xl": "https://cdn-images.dzcdn.net/images/artist/6759ecf77a12ffbd9b642ce4b2c53ef0/1000x1000-000000-80-0-0.jpg",
+   "nb_album": 60,
+   "nb_fan": 227816,
+   "radio": true,
+   "type": "artist"
+  },
+  {
+   "id": 413113291,
+   "name": "Rick Astley",
+   "picture": "https://api.deezer.com/artist/413113291/image",
+   "picture_small": "https://cdn-images.dzcdn.net/images/artist//56x56-000000-80-0-0.jpg",
+   "picture_medium": "https://cdn-images.dzcdn.net/images/artist//250x250-000000-80-0-0.jpg",
+   "picture_big": "https://cdn-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg",
+   "picture_xl": "https://cdn-images.dzcdn.net/images/artist//1000x1000-000000-80-0-0.jpg",
+   "nb_album": 0,
+   "nb_fan": 0,
+   "radio": true,
+   "type": "artist"
+  },
+  {
+   "id": 462676,
+   "name": "Karaoke - Rick Astley",
+   "picture": "https://api.deezer.com/artist/462676/image",
+   "picture_small": "https://cdn-images.dzcdn.net/images/artist//56x56-000000-80-0-0.jpg",
+   "picture_medium": "https://cdn-images.dzcdn.net/images/artist//250x250-000000-80-0-0.jpg",
+   "picture_big": "https://cdn-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg",
+   "picture_xl": "https://cdn-images.dzcdn.net/images/artist//1000x1000-000000-80-0-0.jpg",
+   "nb_album": 1,
+   "nb_fan": 103,
+   "radio": true,
+   "type": "artist"
+  },
+  {
+   "id": 1241878,
+   "name": "Rick Astley Tribute Band",
+   "picture": "https://api.deezer.com/artist/1241878/image",
+   "picture_small": "https://cdn-images.dzcdn.net/images/artist//56x56-000000-80-0-0.jpg",
+   "picture_medium": "https://cdn-images.dzcdn.net/images/artist//250x250-000000-80-0-0.jpg",
+   "picture_big": "https://cdn-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg",
+   "picture_xl": "https://cdn-images.dzcdn.net/images/artist//1000x1000-000000-80-0-0.jpg",
+   "nb_album": 0,
+   "nb_fan": 135,
+   "radio": true,
+   "type": "artist"
+  }
+ ],
+ "total": 4
+}

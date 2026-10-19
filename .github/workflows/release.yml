@@ -1,0 +1,151 @@
+name: release
+
+# A pushed tag v* (e.g. v0.1.0-beta.1, D28) publishes:
+#   - the multi-arch image (linux/amd64, linux/arm64) to
+#     ghcr.io/<owner>/<repo>:<version> (the repository's own name,
+#     lowercased), plus a moving :beta for beta pre-releases and :latest
+#     for final releases (D33);
+#   - static binaries for linux/darwin × amd64/arm64 (UI embedded) and
+#     SHA256SUMS on a GitHub Release, marked as a pre-release when the
+#     tag has a pre-release suffix (anything after a "-");
+#   - SLSA build provenance attestations for the image and every
+#     archive (verify with `gh attestation verify`). GitHub only offers
+#     attestations to private repositories on Enterprise Cloud, so they
+#     are skipped while the repository is private.
+# Release notes come from docs/project/release-notes/<tag>.md.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Lint and test the tagged commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - name: Tag format and release notes
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! [[ $TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::tag $TAG is not v<major>.<minor>.<patch>[-pre]"; exit 1
+          fi
+          test -f "docs/project/release-notes/$TAG.md" || { echo "::error::docs/project/release-notes/$TAG.md is missing"; exit 1; }
+      - run: go vet ./...
+      - run: go test ./...
+
+  image:
+    name: Multi-arch image
+    runs-on: ubuntu-latest
+    needs: check
+    permissions:
+      contents: read
+      packages: write
+      # Build provenance: OIDC token for Sigstore, attestation upload.
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - name: Image name and tags
+        id: tags
+        env:
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          image="ghcr.io/${REPO,,}"
+          tags="$image:${TAG#v}"
+          # Pre-releases never move :latest; beta pre-releases move :beta.
+          if [[ $TAG != *-* ]]; then tags="$tags,$image:latest"; fi
+          if [[ $TAG == *-beta.* ]]; then tags="$tags,$image:beta"; fi
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "tags=$tags" >> "$GITHUB_OUTPUT"
+      - name: Log in to ghcr.io
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: echo "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: VERSION=${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ github.ref_name }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=AGPL-3.0-only
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Smoke test the pushed image
+        env:
+          IMAGE: ${{ steps.tags.outputs.image }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          got=$(docker run --rm "$IMAGE:${TAG#v}" version)
+          test "$got" = "$TAG" || { echo "::error::image reports version $got, want $TAG"; exit 1; }
+      # actions/attest is what attest-build-provenance@v4 wraps; with no
+      # predicate it writes SLSA build provenance. The attestation is
+      # pushed next to the image and to the repository's attestations.
+      - name: Attest image provenance
+        if: ${{ !github.event.repository.private }}
+        uses: actions/attest@v4
+        with:
+          subject-name: ${{ steps.tags.outputs.image }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  binaries:
+    name: Binaries and GitHub Release
+    runs-on: ubuntu-latest
+    needs: [check, image]
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 12.14.0
+      - name: Build the web UI
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Build archives and checksums
+        run: scripts/release-binaries.sh "$GITHUB_REF_NAME" dist
+      - name: Smoke test the linux/amd64 binary
+        run: |
+          dir="spotussi_${GITHUB_REF_NAME#v}_linux_amd64"
+          tar -xzf "dist/$dir.tar.gz" -C "$RUNNER_TEMP"
+          got=$("$RUNNER_TEMP/$dir/spotussi" version)
+          test "$got" = "$GITHUB_REF_NAME" || { echo "::error::binary reports version $got, want $GITHUB_REF_NAME"; exit 1; }
+      - name: Attest archive provenance
+        if: ${{ !github.event.repository.private }}
+        uses: actions/attest@v4
+        with:
+          subject-checksums: dist/SHA256SUMS
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          pre=()
+          if [[ $TAG == *-* ]]; then pre=(--prerelease --latest=false); fi
+          gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS \
+            --verify-tag --title "$TAG" --notes-file "docs/project/release-notes/$TAG.md" "${pre[@]}"

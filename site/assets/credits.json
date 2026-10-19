@@ -1,0 +1,32 @@
+[
+  {
+    "path": "site/assets/covers/more-life.webp",
+    "what": "Album cover: Drake, More Life",
+    "source": "Deezer public API (api.deezer.com)",
+    "rights": "© the label and artist; shown as sample data, not licensed under AGPL-3.0"
+  },
+  {
+    "path": "site/assets/covers/am.webp",
+    "what": "Album cover: Arctic Monkeys, AM",
+    "source": "Deezer public API (api.deezer.com)",
+    "rights": "© the label and artist; shown as sample data, not licensed under AGPL-3.0"
+  },
+  {
+    "path": "site/assets/covers/metallica.webp",
+    "what": "Album cover: Metallica, Metallica",
+    "source": "Deezer public API (api.deezer.com)",
+    "rights": "© the label and artist; shown as sample data, not licensed under AGPL-3.0"
+  },
+  {
+    "path": "site/assets/hero-reel*.{mp4,webp}",
+    "what": "Hero reel: album covers and artist photos for the artists in motion/scripts/catalog.json, over spotussi's demo mode",
+    "source": "Deezer public API (api.deezer.com), via motion/scripts/fetch-catalog.mjs",
+    "rights": "Artwork © its labels, artists and photographers; shown as sample data, not licensed under AGPL-3.0"
+  },
+  {
+    "path": "motion/public/**/*.png",
+    "what": "Reel captures: the same artwork over spotussi's demo mode",
+    "source": "Deezer public API, via motion/scripts/capture.mjs",
+    "rights": "Artwork © its labels, artists and photographers; the interface is AGPL-3.0"
+  }
+]

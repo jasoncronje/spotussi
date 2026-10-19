@@ -1,0 +1,45 @@
+name: Bug report
+description: Something in spotussi doesn't work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please don't paste real listening history, Spotify tokens, API tokens or the instance key; mock mode (`spotussi serve --mock`) can usually show the problem. Security problems go through [private reporting](https://github.com/jasoncronje/spotussi/security/advisories/new) instead.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `spotussi version`, or the image tag.
+      placeholder: 0.1.0-beta.1
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How do you run it?
+      options:
+        - Docker / Compose
+        - Standalone binary
+        - From source
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Proxy and auth
+      description: Reverse proxy, if any, and `AUTH_MODE`.
+      placeholder: Traefik, AUTH_MODE=password
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Steps to reproduce, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant lines from `docker compose logs spotussi`, with tokens removed.
+      render: text

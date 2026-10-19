@@ -1,0 +1,2785 @@
+openapi: 3.1.0
+info:
+  title: spotussi API
+  version: 0.1.0-draft
+  summary: Read API for a self-hosted listening-stats instance (draft contract, M0).
+  description: |
+    Draft contract covering every v1 dashboard view (decision D14). The SPA consumes
+    only this API (D6); MCP tools (D16) wrap the same endpoints.
+
+    ## Conventions
+
+    - **Timestamps** are integer epoch milliseconds (UTC), in fields ending `_at`.
+    - **Durations** are integer milliseconds, in fields ending `_ms`.
+    - **Local dates** (display timezone, see Settings) are `YYYY-MM-DD` strings.
+    - **IDs** are opaque strings. Today they are Spotify base62 IDs; clients must not
+      parse them.
+    - **Entity references** share one shape per kind (`ArtistRef`, `AlbumRef`,
+      `TrackRef`, `GenreRef`, `ContextRef`): id, name and image URL (nullable while
+      the catalog is still being hydrated, D9).
+    - **Every measure carries both `plays` and `ms_played`**, so the Plays/Time toggle
+      (D7) never needs a second request for totals. The `metric` parameter only
+      decides how lists are *ranked* and which value per-series aggregates use.
+    - **Play rule (D7):** `plays` counts rows that pass the configured play rule
+      (every stream of at least 30 s by default). `ms_played` always sums every row, including rows
+      that are not plays. `skips` counts rows flagged as skipped.
+    - **Estimated time (D7):** plays known only from the `recently-played` endpoint
+      have their duration estimated as the full track length. Aggregates report the
+      estimated share in `ms_estimated`; individual plays carry `ms_estimated: true`.
+    - **Attribution:** a play is attributed to the local day/hour of its start time.
+      A play credits every artist on the track (features included); genres are the
+      union of the credited artists' genres, counted once per play.
+    - **Exclusions** (Settings) remove excluded artists/tracks from every endpoint,
+      including History.
+    - **Caching:** GET responses carry a weak `ETag`; send `If-None-Match` to receive
+      `304 Not Modified`. Responses are `Cache-Control: no-cache` (always revalidate).
+    - **Errors** use the `Error` schema with a machine-readable `code`.
+
+    ## Time ranges
+
+    Range-aware endpoints take `range` (a preset) or `from`/`to` (custom, inclusive
+    local dates). Presets are resolved in the display timezone at request time:
+
+    | preset | span |
+    |---|---|
+    | `today`, `this_week`, `this_month`, `this_year` | start of the current day/week/month/year through now |
+    | `last_7d`, `last_4w`, `last_6m`, `last_12m` | rolling window ending today (7 days, 28 days, 6 months, 12 months) |
+    | `prev_day`, `prev_week`, `prev_month`, `prev_year` | the previous complete day/week/month/year |
+    | `all` | first play through today |
+    | `custom` | `from`..`to` inclusive (implied when `from`/`to` are given) |
+
+    Every resolved range also has a **previous period** for deltas and rank movement:
+    the same span shifted back by one period (one day/week/month/year for calendar
+    presets, the window length for rolling and custom ranges), truncated to the same
+    elapsed time when the current range is still in progress. `all` has no previous
+    period (`previous: null`). Week boundaries follow the `week_start` setting.
+
+    Time series take `bucket` (`auto` by default). `auto` picks `hour` for spans up to
+    2 days, `day` up to 62 days, `week` up to 190 days and `month` beyond. Series
+    always include empty buckets, so charts can plot them directly.
+
+    ## Authentication (D13)
+
+    Every operation requires an identity unless it declares `security: []`. The
+    instance's `AUTH_MODE` decides how browsers authenticate (`/system/status`
+    reports it as `auth.mode`):
+
+    | mode | browser identity |
+    |---|---|
+    | `password` (default) | `spotussi_session` cookie from `/auth/setup` or `/auth/login` |
+    | `proxy` | forward-auth header (default `Remote-User`) set by a trusted reverse proxy |
+    | `none` | everyone is the owner (the UI shows a persistent warning) |
+
+    **API tokens** (`Authorization: Bearer spt_…`) work in every mode. They are
+    read-only: only `GET`/`HEAD` operations are allowed (`403 read_only_token`),
+    and never the `/auth/*` credential operations (`403 forbidden`). An invalid or
+    revoked token gets `401 invalid_token`.
+
+    **CSRF:** unsafe browser requests (`POST`/`PUT`/`PATCH`/`DELETE`) must send the
+    `csrf_token` from `/auth/session` in an `X-CSRF-Token` header in `password` and
+    `proxy` modes (`403 csrf_failed`). Cross-origin unsafe requests are rejected in
+    every mode (`403 cross_origin`). Signed-out requests get `401 unauthorized`.
+servers:
+  - url: /api/v1
+security:
+  - session: []
+  - bearer: []
+tags:
+  - name: auth
+  - name: spotify
+  - name: system
+  - name: imports
+  - name: overview
+  - name: top
+  - name: stats
+  - name: entities
+  - name: history
+  - name: sessions
+  - name: settings
+
+paths:
+  /health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      summary: Liveness and build info
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '503':
+          description: Degraded (the database is unreachable)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+
+  /system/status:
+    get:
+      tags: [system]
+      operationId: getSystemStatus
+      summary: Spotify connection, capture, imports and catalog hydration progress
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SystemStatus' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /system/backup:
+    get:
+      tags: [system]
+      operationId: downloadBackup
+      summary: Download a consistent snapshot of the database (D15, D28)
+      description: |
+        Writes a snapshot of the SQLite database while the server keeps running (the
+        same snapshot as `spotussi backup <file>`), checks it with `PRAGMA
+        integrity_check` and streams it as `spotussi-YYYYMMDD-HHMMSS.db` (UTC).
+
+        Needs a signed-in browser identity (session, proxy or none mode). API tokens
+        get `403 forbidden`: the file holds the owner password hash, API token hashes
+        and the encrypted Spotify refresh token. The instance key (`DATA_DIR/key`)
+        is not included; restoring on another machine needs that file too, or a
+        Spotify reconnect. One backup runs at a time (`409 backup_running`).
+      responses:
+        '200':
+          description: The database file
+          headers:
+            Content-Disposition:
+              description: '`attachment; filename="spotussi-YYYYMMDD-HHMMSS.db"`'
+              schema: { type: string }
+          content:
+            application/vnd.sqlite3:
+              schema: { type: string, format: binary }
+        '403': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /imports:
+    get:
+      tags: [imports]
+      operationId: listImports
+      summary: Import jobs, newest first
+      description: The 50 most recent import jobs (uploads and `spotussi import` runs).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportJobList' }
+        default: { $ref: '#/components/responses/Error' }
+    post:
+      tags: [imports]
+      operationId: createImport
+      summary: Upload an Extended Streaming History export (D10, D23)
+      description: |
+        The request body is the file itself: the export package (`my_spotify_data.zip`)
+        or one `Streaming_History_Audio_*.json` / `Streaming_History_Video_*.json` file.
+        The type is detected from the file's first bytes, falling back to
+        `Content-Type`. The upload is stored on disk and the import runs in the
+        background, one job at a time (later uploads queue). Poll
+        `GET /imports/{id}` (or `/system/status`) for progress.
+
+        Every row is kept in the raw layer. Rows already imported (same `ts`, URI and
+        `ms_played`) are skipped, so uploading the same or an overlapping export again
+        only adds what is new (`rows_new` / `rows_duplicate`).
+
+        Requires a signed-in owner session (with `X-CSRF-Token`); API tokens are
+        read-only (`403 read_only_token`). Errors: `415 unsupported_file` (not a zip or
+        JSON file), `413 too_large` (over the instance's `IMPORT_MAX_BYTES`, 2 GiB by
+        default), `400 bad_request` (empty body). Problems inside the file (no history
+        files, the basic Account Data export, malformed JSON) fail the job instead; see
+        `ImportJob.error_code`.
+      parameters:
+        - name: filename
+          in: query
+          description: Original file name, shown in the job list. Defaults to the `Content-Disposition` filename, then `upload.zip` / `upload.json`.
+          schema: { type: string, maxLength: 255 }
+      requestBody:
+        required: true
+        content:
+          application/zip:
+            schema: { type: string, format: binary }
+          application/json:
+            schema: { type: string, format: binary }
+          application/octet-stream:
+            schema: { type: string, format: binary }
+      responses:
+        '202':
+          description: Accepted; the job is queued
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportJob' }
+        '400': { $ref: '#/components/responses/Error' }
+        '413': { $ref: '#/components/responses/Error' }
+        '415': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /imports/{id}:
+    get:
+      tags: [imports]
+      operationId: getImport
+      summary: One import job (poll for progress)
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportJob' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/session:
+    get:
+      tags: [auth]
+      operationId: getAuthSession
+      summary: Who the caller is, the auth mode, and whether first-run setup is pending
+      description: |
+        Always answers 200, signed in or not, so the UI can route to setup, login or
+        the app. `csrf_token` is the value to send in `X-CSRF-Token` on unsafe requests.
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthSession' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/setup:
+    post:
+      tags: [auth]
+      operationId: setupOwnerPassword
+      summary: Set the owner password on first run and sign in (password mode only)
+      description: |
+        Only possible while no password exists (`409 setup_done` afterwards; `409
+        wrong_auth_mode` outside password mode). Requires the one-time
+        `setup_token` the server prints to its log at startup while setup is
+        pending (D21; e.g. `docker logs <container>`); a missing or wrong token
+        gets `401 invalid_setup_token`. The token changes on every server start
+        until setup completes. Sets the session cookie. Rate-limited like login.
+        To reset a forgotten password, run `spotussi reset-password` on the
+        server.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SetupInput' }
+      responses:
+        '200':
+          description: Signed in
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthSession' }
+        '401': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      operationId: login
+      summary: Sign in with the owner password (password mode only)
+      description: |
+        Sets the `spotussi_session` cookie (HttpOnly, SameSite=Lax, Secure over HTTPS).
+        Sessions expire after 30 days unused and 90 days at most. Attempts are
+        rate-limited per client and globally (`429 rate_limited` with `Retry-After`).
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordInput' }
+      responses:
+        '200':
+          description: Signed in
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthSession' }
+        '401': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      summary: End the current session (no-op in proxy and none modes)
+      responses:
+        '204': { description: Signed out; the session cookie is cleared }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/tokens:
+    get:
+      tags: [auth]
+      operationId: listApiTokens
+      summary: Read-only API tokens (newest first)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiTokenList' }
+        default: { $ref: '#/components/responses/Error' }
+    post:
+      tags: [auth]
+      operationId: createApiToken
+      summary: Create a named read-only API token
+      description: The `secret` is returned only in this response; only its hash is stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApiTokenInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiTokenCreated' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /auth/tokens/{id}:
+    delete:
+      tags: [auth]
+      operationId: revokeApiToken
+      summary: Revoke an API token (takes effect immediately)
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '204': { description: Revoked }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /spotify/connection:
+    get:
+      tags: [spotify]
+      operationId: getSpotifyConnection
+      summary: Connection state and the redirect URI to register (setup wizard)
+      description: |
+        `callback` tells the wizard which flow applies (D12, D21), derived from the URL
+        the page was opened on (or `BASE_URL`). Over HTTPS (including
+        `https://*.localhost` dev hosts) it is a `direct` callback to
+        `<origin>/oauth/spotify/callback`. Over plain HTTP the redirect URI is always
+        `http://127.0.0.1:<port>/oauth/spotify/callback` with an explicit port (the
+        port the page was opened on, else the server's `PORT`, or
+        `SPOTIFY_LOOPBACK_PORT`): Spotify's dashboard rejects loopback URIs without a
+        port. When the page is opened on exactly that `http://127.0.0.1:<port>` the
+        mode is `direct`; on any other plain-HTTP host (a LAN IP, `localhost`,
+        `[::1]`) it is `paste_back`: the browser lands on a dead 127.0.0.1 page and
+        the owner pastes its URL into `/spotify/paste-back`. `redirect_uri` is the
+        exact value to add in the Spotify app dashboard; it must match exactly,
+        including the port.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SpotifyConnection' }
+        default: { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [spotify]
+      operationId: disconnectSpotify
+      summary: Forget the connected account (keeps the Client ID)
+      responses:
+        '200':
+          description: The updated connection
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SpotifyConnection' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /spotify/client-id:
+    put:
+      tags: [spotify]
+      operationId: setSpotifyClientId
+      summary: Store the Client ID of the owner's Spotify app
+      description: Changing it drops an existing connection (refresh tokens belong to one app).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SpotifyClientIdInput' }
+      responses:
+        '200':
+          description: The updated connection
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SpotifyConnection' }
+        '400': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /spotify/authorize:
+    post:
+      tags: [spotify]
+      operationId: startSpotifyAuthorization
+      summary: Start connecting (Authorization Code with PKCE); returns the Spotify consent URL
+      description: |
+        Navigate the browser to `authorize_url`. In `direct` mode Spotify redirects to
+        `/oauth/spotify/callback`, which completes the connection and redirects to
+        `return_to` with `?spotify=connected` or `?spotify=error&spotify_error=<code>`.
+        In `paste_back` mode, post the resulting URL to `/spotify/paste-back`. The
+        authorization expires after 15 minutes. `409 client_id_required` without a
+        Client ID.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SpotifyAuthorizeInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SpotifyAuthorization' }
+        '409': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /spotify/paste-back:
+    post:
+      tags: [spotify]
+      operationId: completeSpotifyPasteBack
+      summary: Complete connecting with the URL Spotify redirected the browser to (plain-HTTP setups)
+      description: |
+        Error codes: `invalid_callback_url` (not a callback URL), `invalid_state`
+        (unknown, reused or expired; start again), `spotify_denied` (access not
+        approved), `spotify_error` (502, Spotify refused the exchange or `/me`, e.g. an
+        account not added to a Development Mode app).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SpotifyPasteBackInput' }
+      responses:
+        '200':
+          description: Connected
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SpotifyConnection' }
+        '400': { $ref: '#/components/responses/Error' }
+        '502': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /overview/summary:
+    get:
+      tags: [overview]
+      operationId: getOverviewSummary
+      summary: Summary cards for the range and its previous period
+      description: |
+        Time listened, plays, unique tracks/artists/albums, top artist and top track
+        (ranked by `metric`), each with the matching value for the previous period
+        so the UI can show deltas. Unique counts include only entities with at least
+        one counted play.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OverviewSummary' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /timeline:
+    get:
+      tags: [overview, stats, entities]
+      operationId: getTimeline
+      summary: Listening over time (plays, time, skips, different artists)
+      description: |
+        Used for "time listened over the period" (Overview), "time / plays /
+        different artists over time" (Stats) and "plays over time" on entity pages
+        (pass one of `artist_id`, `album_id`, `track_id`, `genre_id`).
+
+        With `compare=true` the response also carries the previous period
+        (`previous`) and its series (`previous_points`), bucketed with the same
+        bucket size and aligned by position: `previous_points[i]` is the i-th
+        bucket of the previous period, so both arrays have the same length
+        (a previous period with more buckets, e.g. August before September by
+        day, loses its trailing buckets).
+        As with summary deltas, the previous period is clipped to the same
+        elapsed time while the current range is in progress, so its later
+        buckets can be empty. `all` has no previous period (`previous: null`,
+        `previous_points: []`).
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Bucket'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/TrackScope'
+        - $ref: '#/components/parameters/GenreScope'
+        - name: compare
+          in: query
+          description: Also return the previous period's series (`previous`, `previous_points`).
+          schema: { type: boolean, default: false }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Timeline' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /clock:
+    get:
+      tags: [overview, entities]
+      operationId: getClock
+      summary: Listening clock (distribution over the 24 local hours)
+      description: Global, or for one entity when a scope parameter is given.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/TrackScope'
+        - $ref: '#/components/parameters/GenreScope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Clock' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /top/tracks:
+    get:
+      tags: [top, overview, entities]
+      operationId: getTopTracks
+      summary: Top tracks, with rank movement vs the previous period
+      description: |
+        Paginated with no cap. Scope with `artist_id` (an artist's most listened
+        tracks), `album_id` (most listened tracks on an album) or `genre_id`
+        (tracks by artists in the genre). Overview's top 5 is `limit=5`.
+
+        **Movement:** `prev_rank` is the item's rank in the previous period
+        (same metric, same scope); null means it had no ranked plays then
+        (show it as new). When the range has no previous period
+        (`previous: null`, e.g. `all`) every `prev_rank` is null and no
+        movement should be shown.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/GenreScope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopTracks' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /top/artists:
+    get:
+      tags: [top, overview]
+      operationId: getTopArtists
+      summary: Top artists, with rank movement vs the previous period
+      description: |
+        Scope with `album_id` to rank the artists credited on an album, or
+        `genre_id` for the artists in a genre. Movement (`prev_rank`) works as
+        in `/top/tracks`.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/GenreScope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopArtists' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /top/albums:
+    get:
+      tags: [top, overview, entities]
+      operationId: getTopAlbums
+      summary: Top albums, with rank movement vs the previous period
+      description: |
+        Scope with `artist_id` for an artist's most listened albums, or
+        `genre_id` for albums with tracks by artists in a genre. Movement
+        (`prev_rank`) works as in `/top/tracks`.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/GenreScope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopAlbums' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /top/genres:
+    get:
+      tags: [top, overview]
+      operationId: getTopGenres
+      summary: Top genres, with rank movement vs the previous period
+      description: Movement (`prev_rank`) works as in `/top/tracks`.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopGenres' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /now-playing:
+    get:
+      tags: [overview]
+      operationId: getNowPlaying
+      summary: What is playing right now (from the live poller)
+      description: Always 200; `track` is null when nothing is playing or capture is not connected.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NowPlaying' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /stats/hourly-top:
+    get:
+      tags: [stats]
+      operationId: getHourlyTop
+      summary: Top artist and top track for each local hour of the day
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HourlyTop' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /stats/artists-over-time:
+    get:
+      tags: [stats]
+      operationId: getArtistsOverTime
+      summary: Artist listening distribution over time
+      description: |
+        The top `series` artists of the whole range, with each one's value (by
+        `metric`) per bucket, plus everything else as `other`. Shares are
+        `values[i] / total`. Suits a stacked (percentage) area chart.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Bucket'
+        - $ref: '#/components/parameters/Series'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArtistsOverTime' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /stats/genres-over-time:
+    get:
+      tags: [stats]
+      operationId: getGenresOverTime
+      summary: Genre breakdown over time
+      description: Same shape as artists-over-time, for genres. A play with no known genre counts towards `other`.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Bucket'
+        - $ref: '#/components/parameters/Series'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GenresOverTime' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /stats/release-years:
+    get:
+      tags: [stats]
+      operationId: getReleaseYears
+      summary: Average album release year of what you listened to, over time
+      description: Average weighted by `metric`. Plays whose album release date is unknown are left out; `coverage` is the share of the bucket's metric that had one.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Bucket'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AverageSeries' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /stats/artists-per-track:
+    get:
+      tags: [stats]
+      operationId: getArtistsPerTrack
+      summary: Average number of credited artists per track (features), over time
+      description: Average weighted by `metric`. `coverage` is the share of the bucket's metric from tracks whose artist credits are known.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Bucket'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AverageSeries' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /artists/{id}:
+    get:
+      tags: [entities]
+      operationId: getArtist
+      summary: Artist page header and totals
+      description: |
+        Rank and totals in the selected range (rank by `metric`; null if not
+        listened in range), plus all-time totals and first/last play. Charts and
+        lists on the page use `/timeline`, `/clock`, `/top/tracks`, `/top/albums`
+        and `/contexts` with `artist_id`.
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArtistDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /albums/{id}:
+    get:
+      tags: [entities]
+      operationId: getAlbum
+      summary: Album page header and totals
+      description: Lists on the page use `/top/tracks` and `/top/artists` with `album_id`.
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AlbumDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /tracks/{id}:
+    get:
+      tags: [entities]
+      operationId: getTrack
+      summary: Track page header and totals
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TrackDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /genres/{id}:
+    get:
+      tags: [entities]
+      operationId: getGenre
+      summary: Genre page header and totals
+      description: |
+        Rank among genres and totals in the selected range (rank by `metric`;
+        null if not listened in range), plus all-time totals and first/last
+        play. A play counts for a genre when any credited artist has it, once
+        per play (D20). Lists and charts on the page use `/top/artists`,
+        `/top/tracks`, `/top/albums`, `/timeline` and `/clock` with
+        `genre_id`.
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GenreDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /contexts:
+    get:
+      tags: [entities]
+      operationId: getContexts
+      summary: Where you played from (playlists, albums, artists, Liked Songs)
+      description: |
+        Ranked play contexts. Context is only known for poller-captured plays
+        (D2/D8); everything else is summed in `unknown`. Optionally scoped to one
+        entity.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Metric'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/TrackScope'
+        - $ref: '#/components/parameters/GenreScope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Contexts' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /playlists/{id}/name:
+    put:
+      tags: [entities, settings]
+      operationId: setPlaylistName
+      summary: Name a playlist that cannot be resolved from Spotify (D17)
+      description: For Spotify-owned playlists (Discover Weekly, Daily Mix, ...). `name` null clears the manual name.
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlaylistNameInput' }
+      responses:
+        '200':
+          description: The updated context
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ContextRef' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /history:
+    get:
+      tags: [history, overview]
+      operationId: getHistory
+      summary: Chronological play log (newest first), cursor-paginated
+      description: |
+        Every row, including rows that are not counted as plays (filter with
+        `counted`). Overview's recent-plays strip is `limit=10`. With no range
+        parameters the whole history is searched.
+
+        Provisional on live instances until derivation (M5): rows are read
+        straight from the raw tables. Poller plays carry measured
+        `ms_played`; recently-played items no poller play accounts for are
+        listed with `sources: [recent]`, `ms_estimated: true` and a start placed
+        from `played_at` per the calibration. Imported export music rows (D23)
+        are listed with `sources: [export]`, starting `ms_played` before the
+        export's end time; an export row matching a live row (same track, ends
+        within a minute) is folded into the live row, which gains `export` in
+        `sources` and the export's `platform`. Until the catalog is hydrated
+        (M4), export rows' artists and albums have provisional IDs (keyed by
+        name) that work as `artist_id` / `album_id` filters but differ from the
+        IDs of live rows, and the play rule uses its unknown-duration fallback
+        (D7). Context names are unresolved; `genre_id` matches no export rows.
+      parameters:
+        - $ref: '#/components/parameters/HistoryRange'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/ArtistScope'
+        - $ref: '#/components/parameters/AlbumScope'
+        - $ref: '#/components/parameters/TrackScope'
+        - $ref: '#/components/parameters/GenreScope'
+        - name: skipped
+          in: query
+          schema: { type: boolean }
+        - name: shuffle
+          in: query
+          schema: { type: boolean }
+        - name: counted
+          in: query
+          description: Only rows that do (true) or do not (false) count as plays.
+          schema: { type: boolean }
+        - name: device
+          in: query
+          description: Exact device name (from `/devices`).
+          schema: { type: string }
+        - name: platform
+          in: query
+          description: Exact platform (from `/devices`).
+          schema: { type: string }
+        - name: cursor
+          in: query
+          description: Opaque `next_cursor` from the previous page.
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/History' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /devices:
+    get:
+      tags: [history]
+      operationId: getDevices
+      summary: Devices and platforms seen in the range (History filter options)
+      description: |
+        `devices` come from the live poller (named devices); `platforms` come from
+        the export (`ios`, `android`, ...). Each list is ordered by plays.
+      parameters:
+        - $ref: '#/components/parameters/HistoryRange'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Devices' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /sessions:
+    get:
+      tags: [sessions]
+      operationId: getSessions
+      summary: Longest listening sessions
+      description: |
+        Continuous listening runs, split where the gap between one row's end and
+        the next row's start exceeds the `session_gap_minutes` setting. Ordered by
+        duration (longest first). Sessions starting inside the range are included.
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Sessions' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /sessions/{id}:
+    get:
+      tags: [sessions]
+      operationId: getSession
+      summary: One session with its plays in order
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionDetail' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /search:
+    get:
+      tags: [entities]
+      operationId: search
+      summary: Find artists, albums and tracks by name (for filters and navigation)
+      description: Case-insensitive substring match, ordered by all-time plays.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 200 }
+        - name: limit
+          in: query
+          description: Maximum results per kind.
+          schema: { type: integer, minimum: 1, maximum: 50, default: 5 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResults' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /settings:
+    get:
+      tags: [settings]
+      operationId: getSettings
+      summary: Instance settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Settings' }
+        default: { $ref: '#/components/responses/Error' }
+    patch:
+      tags: [settings]
+      operationId: updateSettings
+      summary: Change settings (partial update)
+      description: |
+        Changing `play_rule`, `play_rule_threshold_ms`, `timezone` or
+        `session_gap_minutes` triggers a rebuild of derived data (D3); progress
+        shows in `/system/status`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SettingsPatch' }
+      responses:
+        '200':
+          description: The full updated settings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Settings' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /exclusions:
+    get:
+      tags: [settings]
+      operationId: getExclusions
+      summary: Artists and tracks hidden from all stats
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Exclusions' }
+        default: { $ref: '#/components/responses/Error' }
+
+  /exclusions/{kind}/{id}:
+    parameters:
+      - name: kind
+        in: path
+        required: true
+        schema: { type: string, enum: [artists, tracks] }
+      - $ref: '#/components/parameters/EntityId'
+    put:
+      tags: [settings]
+      operationId: addExclusion
+      summary: Exclude an artist or track (idempotent; triggers a rebuild)
+      responses:
+        '200':
+          description: The full updated exclusion list
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Exclusions' }
+        '404': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [settings]
+      operationId: removeExclusion
+      summary: Remove an exclusion (idempotent; triggers a rebuild)
+      responses:
+        '200':
+          description: The full updated exclusion list
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Exclusions' }
+        default: { $ref: '#/components/responses/Error' }
+
+components:
+  securitySchemes:
+    session:
+      type: apiKey
+      in: cookie
+      name: spotussi_session
+      description: |
+        Browser session (password mode), set by `/auth/setup` and `/auth/login`. In
+        proxy mode a trusted forward-auth header stands in for it; in none mode no
+        credential is needed. Unsafe requests also need `X-CSRF-Token`.
+    bearer:
+      type: http
+      scheme: bearer
+      description: Read-only API token (`spt_…`) from `/auth/tokens`; GET operations only.
+
+  parameters:
+    Range:
+      name: range
+      in: query
+      description: Range preset. Defaults to `last_4w`, or `custom` when `from`/`to` are given.
+      schema: { $ref: '#/components/schemas/RangePreset' }
+    HistoryRange:
+      name: range
+      in: query
+      description: Range preset. Defaults to `all`, or `custom` when `from`/`to` are given.
+      schema: { $ref: '#/components/schemas/RangePreset' }
+    From:
+      name: from
+      in: query
+      description: Custom range start, inclusive local date. Requires `to`.
+      schema: { type: string, format: date }
+    To:
+      name: to
+      in: query
+      description: Custom range end, inclusive local date. Requires `from`.
+      schema: { type: string, format: date }
+    Metric:
+      name: metric
+      in: query
+      description: Ranking measure; `plays` (counted plays) or `time` (ms played).
+      schema: { $ref: '#/components/schemas/Metric' }
+    Bucket:
+      name: bucket
+      in: query
+      description: Series bucket size. `auto` picks one from the range span. At most 10000 buckets.
+      schema:
+        type: string
+        enum: [auto, hour, day, week, month, year]
+        default: auto
+    Series:
+      name: series
+      in: query
+      description: Number of named series; the rest are summed into `other`.
+      schema: { type: integer, minimum: 1, maximum: 20, default: 8 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 500, default: 50 }
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
+    ArtistScope:
+      name: artist_id
+      in: query
+      description: Restrict to plays crediting this artist. At most one scope parameter per request.
+      schema: { type: string }
+    AlbumScope:
+      name: album_id
+      in: query
+      description: Restrict to plays of tracks on this album. At most one scope parameter per request.
+      schema: { type: string }
+    TrackScope:
+      name: track_id
+      in: query
+      description: Restrict to plays of this track. At most one scope parameter per request.
+      schema: { type: string }
+    GenreScope:
+      name: genre_id
+      in: query
+      description: Restrict to plays crediting an artist with this genre. At most one scope parameter per request.
+      schema: { type: string }
+    EntityId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    # ---------- shared primitives ----------
+    Error:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Machine-readable code, e.g. `bad_request`, `not_found`, `not_implemented`.
+            message: { type: string }
+
+    RangePreset:
+      type: string
+      enum:
+        - today
+        - this_week
+        - this_month
+        - this_year
+        - last_7d
+        - last_4w
+        - last_6m
+        - last_12m
+        - prev_day
+        - prev_week
+        - prev_month
+        - prev_year
+        - all
+        - custom
+
+    Metric:
+      type: string
+      enum: [plays, time]
+      default: plays
+
+    BucketSize:
+      type: string
+      enum: [hour, day, week, month, year]
+
+    LocalDate:
+      type: string
+      format: date
+      description: Local date in the display timezone (YYYY-MM-DD).
+
+    EpochMs:
+      type: integer
+      format: int64
+      description: Epoch milliseconds (UTC).
+
+    ResolvedRange:
+      type: object
+      additionalProperties: false
+      description: |
+        A resolved time range. `start_at`/`end_at` are the effective bounds
+        (`end_at` exclusive, capped at the current minute for ranges in progress).
+      required: [preset, from, to, start_at, end_at, timezone, first_play_date]
+      properties:
+        preset: { $ref: '#/components/schemas/RangePreset' }
+        from: { $ref: '#/components/schemas/LocalDate' }
+        to:
+          $ref: '#/components/schemas/LocalDate'
+          description: Inclusive last local date.
+        start_at: { $ref: '#/components/schemas/EpochMs' }
+        end_at: { $ref: '#/components/schemas/EpochMs' }
+        timezone:
+          type: string
+          description: IANA timezone the range was resolved in.
+        first_play_date:
+          description: |
+            Local date of the earliest play in the whole history (not just this
+            range); null when there are no plays. The earliest useful start of
+            a custom range.
+          oneOf:
+            - $ref: '#/components/schemas/LocalDate'
+            - type: 'null'
+
+    RangeContext:
+      type: object
+      additionalProperties: false
+      required: [range, previous]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          description: Previous period of equal length; null for `all`.
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+
+    Measure:
+      type: object
+      additionalProperties: false
+      required: [plays, ms_played]
+      properties:
+        plays: { type: integer, minimum: 0, description: Counted plays (play rule applied). }
+        ms_played: { type: integer, minimum: 0, description: All listening time, including rows that are not plays. }
+
+    EntityMetadata:
+      type: object
+      additionalProperties: false
+      required: [state, sources]
+      description: Where an entity's details (artwork, length, release, genres) come from (M7).
+      properties:
+        state:
+          type: string
+          enum: [spotify, fallback, pending]
+          description: |
+            `spotify`: looked up on Spotify, or carried by a live play's track object.
+            `fallback`: filled by the fallback sources while Spotify lookups wait (D27);
+            a later Spotify lookup replaces them. `pending`: known only by the names in
+            the export or a live play so far; details are still to be looked up.
+        sources:
+          type: array
+          description: Fallback sources that filled fields, in stage order; empty unless `state` is `fallback`.
+          items: { type: string, enum: [oembed, deezer, musicbrainz] }
+
+    SourceMix:
+      type: object
+      additionalProperties: false
+      required: [export, live, both]
+      description: |
+        Listening in the range by where the plays came from (D8). `export`: only the
+        Extended Streaming History export knows the play. `live`: only live capture
+        (the poller or the recently-played backstop) saw it. `both`: a live play the
+        export confirms.
+      properties:
+        export: { $ref: '#/components/schemas/Measure' }
+        live: { $ref: '#/components/schemas/Measure' }
+        both: { $ref: '#/components/schemas/Measure' }
+
+    CatalogMix:
+      type: object
+      additionalProperties: false
+      required: [spotify, fallback, pending]
+      description: Listening in the range by where its tracks' details come from (`EntityMetadata.state`).
+      properties:
+        spotify: { $ref: '#/components/schemas/Measure' }
+        fallback: { $ref: '#/components/schemas/Measure' }
+        pending: { $ref: '#/components/schemas/Measure' }
+
+    Page:
+      type: object
+      additionalProperties: false
+      required: [total, offset, limit]
+      properties:
+        total: { type: integer, minimum: 0, description: Total items available. }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+
+    # ---------- entity references ----------
+    ArtistLite:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    AlbumLite:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    ArtistRef:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url:
+          type: [string, 'null']
+          description: Null until the artist is hydrated (D9).
+
+    AlbumRef:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url, release_year, artists]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url: { type: [string, 'null'] }
+        release_year: { type: [integer, 'null'] }
+        artists:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistLite' }
+
+    TrackRef:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url, duration_ms, artists, album]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url:
+          type: [string, 'null']
+          description: Album artwork; null until hydrated.
+        duration_ms:
+          type: [integer, 'null']
+          description: Null until hydrated (the play rule then falls back to 30 s, D7).
+        artists:
+          type: array
+          description: Credited artists in credit order.
+          items: { $ref: '#/components/schemas/ArtistLite' }
+        album:
+          oneOf:
+            - $ref: '#/components/schemas/AlbumLite'
+            - type: 'null'
+
+    GenreRef:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { type: string, description: Stable slug. }
+        name: { type: string }
+
+    ContextRef:
+      type: object
+      additionalProperties: false
+      required: [uri, type, id, name, name_source, spotify_owned, image_url]
+      properties:
+        uri: { type: string, description: 'Spotify URI, e.g. spotify:playlist:37i9dQZEVXcJZyENOWUFo7.' }
+        type:
+          type: string
+          enum: [playlist, album, artist, collection, other]
+          description: '`collection` is Liked Songs.'
+        id: { type: string }
+        name:
+          type: [string, 'null']
+          description: Null when unresolved (e.g. a Spotify-owned playlist not yet named).
+        name_source:
+          type: string
+          enum: [api, catalog, manual, unresolved]
+        spotify_owned:
+          type: boolean
+          description: Spotify-made playlist that apps cannot read (D17); can be named manually.
+        image_url: { type: [string, 'null'] }
+
+    # ---------- system ----------
+    Health:
+      type: object
+      additionalProperties: false
+      required: [status, version, mode]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        version: { type: string }
+        mode:
+          type: string
+          enum: [live, mock]
+          description: '`mock` when serving the synthetic reference dataset.'
+
+    CaptureBackstop:
+      type: object
+      additionalProperties: false
+      description: The recently-played backstop (runs every ~20 minutes).
+      required: [last_run_at, last_error, items_stored]
+      properties:
+        last_run_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        last_error: { type: [string, 'null'] }
+        items_stored: { type: integer, minimum: 0, description: New recently-played items stored since the server started. }
+
+    RateLimitStatus:
+      type: object
+      additionalProperties: false
+      description: The single Spotify Web API rate limiter shared by every caller (D9).
+      required: [rate_per_sec, effective_rate_per_sec, burst, live_reserve, blocked_until, throttled, quota_exceeded, last_429_at, requests, quota_blocked]
+      properties:
+        rate_per_sec: { type: number, description: Configured sustained rate. }
+        effective_rate_per_sec: { type: number, description: Rate after recent 429s halved it. }
+        burst: { type: integer }
+        live_reserve: { type: integer, description: Tokens only live capture may use. }
+        blocked_until:
+          description: All requests are paused until then after a 429.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        throttled: { type: integer, minimum: 0, description: 429 responses since start. }
+        quota_exceeded: { type: integer, minimum: 0, description: 'Of which `QUOTA_EXCEEDED`.' }
+        last_429_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        requests:
+          type: object
+          description: Requests admitted since start, per priority lane (live, interactive, background).
+          additionalProperties: { type: integer, minimum: 0 }
+        quota_blocked:
+          type: object
+          description: |
+            Quota buckets paused after `QUOTA_EXCEEDED` (`catalog`: track, album and artist lookups;
+            `playlists`: playlist lookups; `user`: the player and account), with when each pause ends.
+            A spent quota pauses only its bucket.
+          additionalProperties: { $ref: '#/components/schemas/EpochMs' }
+
+    OffsetSummary:
+      type: object
+      additionalProperties: false
+      required: [median_ms, p10_ms, p90_ms, hit_rate]
+      properties:
+        median_ms: { type: integer }
+        p10_ms: { type: integer }
+        p90_ms: { type: integer }
+        hit_rate: { type: number, minimum: 0, maximum: 1, description: Share of discriminating samples within ±5 s. }
+
+    CaptureCalibration:
+      type: object
+      additionalProperties: false
+      description: |
+        played_at calibration spike (M2): each recently-played item matched to the
+        poller play of the same track gives `played_at - start` and
+        `played_at - end`. The anchor whose offsets cluster near zero is what
+        `played_at` means.
+      required: [samples, discriminating, verdict, start_offset, end_offset, updated_at]
+      properties:
+        samples: { type: integer, minimum: 0, description: Matched pairs (newest 2000 at most). }
+        discriminating: { type: integer, minimum: 0, description: 'Of which played at least 30 s (start and end are distinguishable).' }
+        verdict:
+          type: string
+          enum: [start, end, undetermined, insufficient_data]
+          description: '`insufficient_data` below 20 discriminating samples.'
+        start_offset: { $ref: '#/components/schemas/OffsetSummary' }
+        end_offset: { $ref: '#/components/schemas/OffsetSummary' }
+        updated_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    SystemStatus:
+      type: object
+      additionalProperties: false
+      required: [spotify, capture, imports, catalog, derive, data, auth]
+      properties:
+        auth:
+          type: object
+          additionalProperties: false
+          required: [mode]
+          properties:
+            mode:
+              type: string
+              enum: [password, proxy, none]
+              description: Instance access mode (D13). Show a persistent warning for `none`.
+        spotify:
+          type: object
+          additionalProperties: false
+          required: [state, account_name, connected_at]
+          properties:
+            state:
+              type: string
+              enum: [not_configured, connected, reconnect_required]
+            account_name: { type: [string, 'null'] }
+            connected_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+        capture:
+          type: object
+          additionalProperties: false
+          description: |
+            Live capture (M2). The diagnostics after `last_play_at` are null in mock
+            mode and while capture is not running.
+          required: [state, last_poll_at, last_play_at, poll_interval_ms, next_poll_at, last_error, last_error_at, backstop, rate_limit, calibration]
+          properties:
+            state:
+              type: string
+              enum: [stopped, idle, playing, backing_off]
+              description: '`stopped` also when Spotify is not connected or needs a reconnect (see `last_error`).'
+            last_poll_at:
+              description: Last successful player poll.
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            last_play_at:
+              description: End of the last play the poller completed.
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            poll_interval_ms: { type: [integer, 'null'], minimum: 0, description: Current delay between player polls. }
+            next_poll_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            last_error: { type: [string, 'null'], description: Last player poll error; null after a successful poll. }
+            last_error_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            backstop:
+              oneOf:
+                - $ref: '#/components/schemas/CaptureBackstop'
+                - type: 'null'
+            rate_limit:
+              oneOf:
+                - $ref: '#/components/schemas/RateLimitStatus'
+                - type: 'null'
+            calibration:
+              oneOf:
+                - $ref: '#/components/schemas/CaptureCalibration'
+                - type: 'null'
+        imports:
+          type: array
+          description: The 5 most recent import jobs, newest first (all of them at `/imports`).
+          items: { $ref: '#/components/schemas/ImportJob' }
+        catalog:
+          type: object
+          additionalProperties: false
+          description: |
+            Catalog hydration (M4, D9): metadata looked up from Spotify one entity at a
+            time, most-played first, in the background lane of the shared request budget.
+            Totals count what is known (export tracks by URI until hydrated); live plays
+            arrive hydrated.
+          required: [state, tracks_total, tracks_hydrated, albums_total, albums_hydrated, artists_total, artists_hydrated,
+            contexts_total, contexts_resolved, queue_length, queue, queue_failed, rate_per_sec, eta_at, resumes_at,
+            quota_lookups, last_error, last_error_at, last_hydrated_at, fallbacks]
+          properties:
+            state:
+              type: string
+              enum: [idle, hydrating, waiting, backing_off, quota_exceeded, disabled]
+              description: |
+                `waiting`: Spotify is not connected or needs a reconnect. `backing_off`: lookups are
+                failing and being retried (see `last_error`). `quota_exceeded`: Spotify's daily lookup
+                quota for the developer account is used up; lookups resume at `resumes_at` (live capture
+                is not affected). `disabled`: hydration is turned off (`HYDRATE_ENABLED=false`), or Spotify lookups are
+                (`HYDRATE_SPOTIFY_LOOKUPS=false`: seeding from live capture and the `fallbacks` still run).
+            tracks_total: { type: integer, minimum: 0 }
+            tracks_hydrated: { type: integer, minimum: 0 }
+            albums_total: { type: integer, minimum: 0 }
+            albums_hydrated: { type: integer, minimum: 0 }
+            artists_total: { type: integer, minimum: 0 }
+            artists_hydrated: { type: integer, minimum: 0, description: With images and genres. }
+            contexts_total: { type: integer, minimum: 0 }
+            contexts_resolved:
+              type: integer
+              minimum: 0
+              description: Contexts looked up, including ones that stay unnamed (Spotify-made playlists, D17).
+            queue_length: { type: integer, minimum: 0, description: Lookups still to do (the sum of `queue`). }
+            queue:
+              type: object
+              additionalProperties: false
+              required: [track, album, artist, context]
+              description: Lookups still to do per entity type, failures being retried included.
+              properties:
+                track: { type: integer, minimum: 0 }
+                album: { type: integer, minimum: 0 }
+                artist: { type: integer, minimum: 0 }
+                context: { type: integer, minimum: 0 }
+            queue_failed:
+              type: integer
+              minimum: 0
+              description: Lookups that failed for good (unknown to Spotify); retried after 30 days.
+            rate_per_sec:
+              type: [number, 'null']
+              minimum: 0
+              description: Measured lookups per second over the last few minutes; null until measured.
+            eta_at:
+              description: |
+                When the queue should be empty at the current rate, counting whole days of quota once
+                `quota_lookups` is known; null when idle or waiting.
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            resumes_at:
+              description: When a spent lookup quota resets (`quota_exceeded`); null otherwise.
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            quota_lookups:
+              type: [integer, 'null']
+              minimum: 0
+              description: Lookups one daily quota allowed, as last observed; null until a quota ran out.
+            last_error: { type: [string, 'null'] }
+            last_error_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            last_hydrated_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            fallbacks:
+              type: array
+              description: |
+                Fallback metadata sources (D27), in stage order: Spotify oEmbed (exact artwork and
+                titles by URI), Deezer (durations, ISRCs, artist pictures, album dates by name match)
+                and MusicBrainz (genres). They work through the same queue, most-played first, while
+                Spotify lookups are not making progress; a later Spotify lookup replaces what they
+                found. Counts cover queued tracks (artists for oEmbed too).
+              items:
+                type: object
+                additionalProperties: false
+                required: [source, state, matched, unmatched, pending, failed, artists_matched, albums_matched,
+                  requests, rate_per_sec, paused_until, last_error, last_error_at]
+                properties:
+                  source: { type: string, enum: [oembed, deezer, musicbrainz] }
+                  state:
+                    type: string
+                    enum: [idle, running, paused, backing_off, disabled]
+                    description: |
+                      `paused`: Spotify is hydrating, so the fallbacks wait their turn. `backing_off`: the
+                      source is rate limiting or failing. `disabled`: turned off (`METADATA_OEMBED`,
+                      `METADATA_DEEZER`, `METADATA_MUSICBRAINZ`), or hydration is off.
+                  matched: { type: integer, minimum: 0, description: Queued entries the source found. }
+                  unmatched:
+                    type: integer
+                    minimum: 0
+                    description: Queued entries the source looked up without a confident match.
+                  pending: { type: integer, minimum: 0, description: Queued entries still to look up. }
+                  failed: { type: integer, minimum: 0, description: Entries whose lookup failed and will be retried. }
+                  artists_matched:
+                    type: integer
+                    minimum: 0
+                    description: Artists the source found something for (export-only artists by name, plus queued Spotify artists for oEmbed).
+                  albums_matched: { type: integer, minimum: 0, description: Export-only albums the source found something for. }
+                  requests: { type: integer, minimum: 0, description: Requests sent since the server started. }
+                  rate_per_sec:
+                    type: [number, 'null']
+                    minimum: 0
+                    description: Measured entries per second over the last few minutes; null until measured.
+                  paused_until:
+                    description: End of a rate-limit pause the source asked for; null otherwise.
+                    oneOf:
+                      - $ref: '#/components/schemas/EpochMs'
+                      - type: 'null'
+                  last_error: { type: [string, 'null'] }
+                  last_error_at:
+                    oneOf:
+                      - $ref: '#/components/schemas/EpochMs'
+                      - type: 'null'
+        derive:
+          type: object
+          additionalProperties: false
+          required: [state, last_rebuild_at, last_rebuild_ms]
+          properties:
+            state: { type: string, enum: [idle, rebuilding] }
+            last_rebuild_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            last_rebuild_ms: { type: [integer, 'null'], description: Duration of the last full rebuild. }
+            progress:
+              type: number
+              minimum: 0
+              maximum: 1
+              description: Fraction of the running full rebuild done; present only while `state` is `rebuilding`.
+        data:
+          type: object
+          additionalProperties: false
+          required: [rows, plays, first_play_at, last_play_at]
+          properties:
+            rows: { type: integer, minimum: 0, description: Derived rows, including ones that are not plays. }
+            plays: { type: integer, minimum: 0 }
+            first_play_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+            last_play_at:
+              oneOf:
+                - $ref: '#/components/schemas/EpochMs'
+                - type: 'null'
+
+    # ---------- auth ----------
+    AuthSession:
+      type: object
+      additionalProperties: false
+      required: [mode, authenticated, setup_required, method, user, csrf_token, expires_at]
+      properties:
+        mode: { type: string, enum: [password, proxy, none] }
+        authenticated: { type: boolean }
+        setup_required:
+          type: boolean
+          description: Password mode with no owner password yet; show the first-run setup screen.
+        method:
+          type: [string, 'null']
+          enum: [session, proxy, none, token, null]
+        user:
+          type: [string, 'null']
+          description: '`owner` for a password session, the proxy user, or the API token name.'
+        csrf_token:
+          type: [string, 'null']
+          description: Send as `X-CSRF-Token` on unsafe requests (password and proxy modes).
+        expires_at:
+          description: Session expiry (password mode); extended while the session is used.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    PasswordInput:
+      type: object
+      additionalProperties: false
+      required: [password]
+      properties:
+        password: { type: string, minLength: 8, maxLength: 1024 }
+
+    SetupInput:
+      type: object
+      additionalProperties: false
+      required: [password, setup_token]
+      properties:
+        password: { type: string, minLength: 8, maxLength: 1024 }
+        setup_token:
+          type: string
+          description: |
+            One-time token from the server log, e.g. `7KQ2M-XW9PD-0RT4H-ZC3NB`. Case,
+            spaces and dashes are ignored.
+
+    ApiToken:
+      type: object
+      additionalProperties: false
+      required: [id, name, prefix, created_at, last_used_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        prefix: { type: string, description: 'First characters of the secret (e.g. `spt_Ab12Cd`), to tell tokens apart.' }
+        created_at: { $ref: '#/components/schemas/EpochMs' }
+        last_used_at:
+          description: Updated at most once a minute.
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    ApiTokenList:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/ApiToken' }
+
+    ApiTokenInput:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100, description: 'Which client uses it, e.g. "Claude Desktop".' }
+
+    ApiTokenCreated:
+      type: object
+      additionalProperties: false
+      required: [token, secret]
+      properties:
+        token: { $ref: '#/components/schemas/ApiToken' }
+        secret: { type: string, description: The bearer token. Shown once; store it now. }
+
+    # ---------- spotify ----------
+    SpotifyCallback:
+      type: object
+      additionalProperties: false
+      required: [mode, redirect_uri]
+      properties:
+        mode:
+          type: string
+          enum: [direct, paste_back]
+          description: '`direct` over HTTPS, or plain HTTP opened on exactly `http://127.0.0.1:<port>`; `paste_back` over other plain-HTTP hosts (D12, D21).'
+        redirect_uri:
+          type: string
+          description: |
+            Exact redirect URI to register in the Spotify app dashboard. It must match
+            exactly, including the port: plain-HTTP instances always use
+            `http://127.0.0.1:<port>/oauth/spotify/callback`.
+
+    SpotifyConnection:
+      type: object
+      additionalProperties: false
+      required: [state, client_id, account_id, account_name, connected_at, scopes, last_error, callback]
+      properties:
+        state:
+          type: string
+          enum: [not_configured, connected, reconnect_required]
+        client_id: { type: [string, 'null'] }
+        account_id: { type: [string, 'null'], description: Spotify user ID of the connected account. }
+        account_name: { type: [string, 'null'], description: Spotify display name (may be unset). }
+        connected_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        scopes:
+          type: array
+          items: { type: string }
+          description: Scopes Spotify granted.
+        last_error:
+          type: [string, 'null']
+          description: Why a reconnect is required.
+        callback: { $ref: '#/components/schemas/SpotifyCallback' }
+
+    SpotifyClientIdInput:
+      type: object
+      additionalProperties: false
+      required: [client_id]
+      properties:
+        client_id: { type: string, pattern: '^\s*[0-9A-Za-z]{32}\s*$' }
+
+    SpotifyAuthorizeInput:
+      type: object
+      additionalProperties: false
+      properties:
+        return_to:
+          type: string
+          default: /
+          description: Same-origin path to return to after a direct callback.
+
+    SpotifyAuthorization:
+      type: object
+      additionalProperties: false
+      required: [authorize_url, callback, expires_at]
+      properties:
+        authorize_url: { type: string, description: Spotify consent page; navigate the browser to it. }
+        callback: { $ref: '#/components/schemas/SpotifyCallback' }
+        expires_at: { $ref: '#/components/schemas/EpochMs' }
+
+    SpotifyPasteBackInput:
+      type: object
+      additionalProperties: false
+      required: [url]
+      properties:
+        url: { type: string, description: The full address the browser showed after approving. }
+
+    ImportJob:
+      type: object
+      additionalProperties: false
+      description: |
+        An import of Extended Streaming History rows (D23). Progress fields update while
+        `state` is `running`: `bytes_done` of `bytes_total` (uncompressed JSON) drives a
+        progress bar; `rows_*` count rows read, inserted and skipped as already
+        imported. Rows committed before a failure are kept.
+      required: [id, filename, origin, state, files, files_done, bytes_total, bytes_done, rows_total, rows_done, rows_new, rows_duplicate, started_at, finished_at, error_code, error]
+      properties:
+        id: { type: string }
+        filename: { type: string }
+        origin:
+          type: string
+          enum: [upload, cli]
+          description: '`upload` = `POST /imports`, `cli` = `spotussi import`.'
+        state: { type: string, enum: [queued, running, done, failed] }
+        files: { type: integer, minimum: 0, description: History files found (0 until the job starts). }
+        files_done: { type: integer, minimum: 0 }
+        bytes_total: { type: [integer, 'null'], minimum: 0, description: Uncompressed size of the history files; null until the job starts. }
+        bytes_done: { type: integer, minimum: 0 }
+        rows_total: { type: [integer, 'null'], minimum: 0, description: Rows in the export; null until the job is done. }
+        rows_done: { type: integer, minimum: 0, description: Rows read so far. }
+        rows_new: { type: integer, minimum: 0, description: Rows inserted. }
+        rows_duplicate: { type: integer, minimum: 0, description: Rows skipped because they were already imported. }
+        started_at:
+          $ref: '#/components/schemas/EpochMs'
+          description: When processing started; the upload time while queued.
+        finished_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        error_code:
+          type: [string, 'null']
+          enum: [no_history_files, basic_export, malformed_file, unsupported_file, interrupted, internal, null]
+          description: |
+            Why a failed job failed: `no_history_files` (no `Streaming_History_Audio_*.json`
+            / `Streaming_History_Video_*.json` in the zip), `basic_export` (the basic Account
+            Data export, which is not supported, D10), `malformed_file` (broken zip or JSON),
+            `unsupported_file`, `interrupted` (the server stopped; upload again to finish),
+            `internal`.
+        error: { type: [string, 'null'], description: Human-readable failure message. }
+
+    ImportJobList:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/ImportJob' }
+
+    # ---------- overview ----------
+    Summary:
+      type: object
+      additionalProperties: false
+      required: [plays, ms_played, ms_estimated, skips, tracks, artists, albums, top_artist, top_track]
+      properties:
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        ms_estimated: { type: integer, minimum: 0, description: Part of `ms_played` that is estimated (D7). }
+        skips: { type: integer, minimum: 0 }
+        tracks: { type: integer, minimum: 0, description: Unique tracks with at least one counted play. }
+        artists: { type: integer, minimum: 0 }
+        albums: { type: integer, minimum: 0 }
+        top_artist:
+          oneOf:
+            - $ref: '#/components/schemas/RankedArtist'
+            - type: 'null'
+        top_track:
+          oneOf:
+            - $ref: '#/components/schemas/RankedTrack'
+            - type: 'null'
+
+    OverviewSummary:
+      type: object
+      additionalProperties: false
+      required: [range, previous, metric, current, previous_summary, sources, catalog]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        current: { $ref: '#/components/schemas/Summary' }
+        previous_summary:
+          description: Same figures for the previous period; null for `all`.
+          oneOf:
+            - $ref: '#/components/schemas/Summary'
+            - type: 'null'
+        sources: { $ref: '#/components/schemas/SourceMix' }
+        catalog: { $ref: '#/components/schemas/CatalogMix' }
+
+    TimelinePoint:
+      type: object
+      additionalProperties: false
+      required: [key, start_at, plays, ms_played, ms_estimated, skips, artists]
+      properties:
+        key:
+          type: string
+          description: 'Bucket label in local time: hour `2026-10-17T13`, day `2026-10-17`, week `2026-10-12` (start date), month `2026-10`, year `2026`.'
+        start_at: { $ref: '#/components/schemas/EpochMs' }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        ms_estimated: { type: integer, minimum: 0 }
+        skips: { type: integer, minimum: 0 }
+        artists: { type: integer, minimum: 0, description: Different artists with at least one counted play in the bucket. }
+
+    Timeline:
+      type: object
+      additionalProperties: false
+      required: [range, bucket, points]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        bucket: { $ref: '#/components/schemas/BucketSize' }
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/TimelinePoint' }
+        previous:
+          description: Only with `compare=true`. The previous period; null for `all`.
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        previous_points:
+          type: array
+          description: |
+            Only with `compare=true`. The previous period's buckets, aligned by
+            position with `points` (same length); empty when `previous` is
+            null. `key` and `start_at` describe the previous period's own
+            bucket.
+          items: { $ref: '#/components/schemas/TimelinePoint' }
+
+    ClockHour:
+      type: object
+      additionalProperties: false
+      required: [hour, plays, ms_played]
+      properties:
+        hour: { type: integer, minimum: 0, maximum: 23 }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+
+    Clock:
+      type: object
+      additionalProperties: false
+      required: [range, hours]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        hours:
+          type: array
+          minItems: 24
+          maxItems: 24
+          items: { $ref: '#/components/schemas/ClockHour' }
+
+    NowPlaying:
+      type: object
+      additionalProperties: false
+      required: [is_playing, track, progress_ms, started_at, device, context, shuffle, observed_at]
+      properties:
+        is_playing: { type: boolean, description: False when paused or idle. }
+        track:
+          oneOf:
+            - $ref: '#/components/schemas/TrackRef'
+            - type: 'null'
+        progress_ms: { type: [integer, 'null'] }
+        started_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        device:
+          oneOf:
+            - $ref: '#/components/schemas/Device'
+            - type: 'null'
+        context:
+          oneOf:
+            - $ref: '#/components/schemas/ContextRef'
+            - type: 'null'
+        shuffle: { type: [boolean, 'null'] }
+        observed_at:
+          description: When the poller last saw the player (progress is as of this time).
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    # ---------- top lists ----------
+    RankedTrack:
+      type: object
+      additionalProperties: false
+      required: [rank, prev_rank, plays, ms_played, track]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        prev_rank:
+          type: [integer, 'null']
+          minimum: 1
+          description: Rank in the previous period (same metric and scope); null if unranked then, or if there is no previous period.
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        track: { $ref: '#/components/schemas/TrackRef' }
+
+    RankedArtist:
+      type: object
+      additionalProperties: false
+      required: [rank, prev_rank, plays, ms_played, artist]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        prev_rank:
+          type: [integer, 'null']
+          minimum: 1
+          description: Rank in the previous period (same metric and scope); null if unranked then, or if there is no previous period.
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        artist: { $ref: '#/components/schemas/ArtistRef' }
+
+    RankedAlbum:
+      type: object
+      additionalProperties: false
+      required: [rank, prev_rank, plays, ms_played, album]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        prev_rank:
+          type: [integer, 'null']
+          minimum: 1
+          description: Rank in the previous period (same metric and scope); null if unranked then, or if there is no previous period.
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        album: { $ref: '#/components/schemas/AlbumRef' }
+
+    RankedGenre:
+      type: object
+      additionalProperties: false
+      required: [rank, prev_rank, plays, ms_played, genre]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        prev_rank:
+          type: [integer, 'null']
+          minimum: 1
+          description: Rank in the previous period (same metric and scope); null if unranked then, or if there is no previous period.
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        genre: { $ref: '#/components/schemas/GenreRef' }
+
+    TopTracks:
+      type: object
+      additionalProperties: false
+      required: [range, previous, metric, total, offset, limit, items]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        total: { type: integer, minimum: 0, description: Ranked items (metric > 0). }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RankedTrack' }
+
+    TopArtists:
+      type: object
+      additionalProperties: false
+      required: [range, previous, metric, total, offset, limit, items]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RankedArtist' }
+
+    TopAlbums:
+      type: object
+      additionalProperties: false
+      required: [range, previous, metric, total, offset, limit, items]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RankedAlbum' }
+
+    TopGenres:
+      type: object
+      additionalProperties: false
+      required: [range, previous, metric, total, offset, limit, items]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RankedGenre' }
+
+    # ---------- stats ----------
+    HourTop:
+      type: object
+      additionalProperties: false
+      required: [hour, plays, ms_played, top_artist, top_track]
+      properties:
+        hour: { type: integer, minimum: 0, maximum: 23 }
+        plays: { type: integer, minimum: 0, description: Hour total. }
+        ms_played: { type: integer, minimum: 0, description: Hour total. }
+        top_artist:
+          oneOf:
+            - $ref: '#/components/schemas/HourTopArtist'
+            - type: 'null'
+        top_track:
+          oneOf:
+            - $ref: '#/components/schemas/HourTopTrack'
+            - type: 'null'
+
+    HourTopArtist:
+      type: object
+      additionalProperties: false
+      required: [plays, ms_played, artist]
+      properties:
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        artist: { $ref: '#/components/schemas/ArtistRef' }
+
+    HourTopTrack:
+      type: object
+      additionalProperties: false
+      required: [plays, ms_played, track]
+      properties:
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        track: { $ref: '#/components/schemas/TrackRef' }
+
+    HourlyTop:
+      type: object
+      additionalProperties: false
+      required: [range, metric, hours]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        metric: { $ref: '#/components/schemas/Metric' }
+        hours:
+          type: array
+          minItems: 24
+          maxItems: 24
+          items: { $ref: '#/components/schemas/HourTop' }
+
+    BreakdownPoint:
+      type: object
+      additionalProperties: false
+      required: [key, start_at, total, values, other]
+      properties:
+        key: { type: string }
+        start_at: { $ref: '#/components/schemas/EpochMs' }
+        total: { type: integer, minimum: 0, description: Bucket total by metric. }
+        values:
+          type: array
+          description: Value by metric for each entry of `series`, same order.
+          items: { type: integer, minimum: 0 }
+        other:
+          type: integer
+          minimum: 0
+          description: max(0, `total` - sum(`values`)). A play credits every artist on the track and each of their genres, so series values can overlap and `other` can reach 0.
+
+    ArtistsOverTime:
+      type: object
+      additionalProperties: false
+      required: [range, metric, bucket, series, points]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        metric: { $ref: '#/components/schemas/Metric' }
+        bucket: { $ref: '#/components/schemas/BucketSize' }
+        series:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistRef' }
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/BreakdownPoint' }
+
+    GenresOverTime:
+      type: object
+      additionalProperties: false
+      required: [range, metric, bucket, series, points]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        metric: { $ref: '#/components/schemas/Metric' }
+        bucket: { $ref: '#/components/schemas/BucketSize' }
+        series:
+          type: array
+          items: { $ref: '#/components/schemas/GenreRef' }
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/BreakdownPoint' }
+
+    AveragePoint:
+      type: object
+      additionalProperties: false
+      required: [key, start_at, value, coverage]
+      properties:
+        key: { type: string }
+        start_at: { $ref: '#/components/schemas/EpochMs' }
+        value:
+          type: [number, 'null']
+          description: Weighted average; null for an empty bucket.
+        coverage:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Share of the bucket's metric that had the attribute known.
+
+    AverageSeries:
+      type: object
+      additionalProperties: false
+      required: [range, metric, bucket, overall, points]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        metric: { $ref: '#/components/schemas/Metric' }
+        bucket: { $ref: '#/components/schemas/BucketSize' }
+        overall:
+          type: [number, 'null']
+          description: Weighted average over the whole range.
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/AveragePoint' }
+
+    # ---------- entity pages ----------
+    EntityStats:
+      type: object
+      additionalProperties: false
+      required: [rank, ranked_total, plays, ms_played, ms_estimated, skips]
+      properties:
+        rank:
+          type: [integer, 'null']
+          minimum: 1
+          description: Rank among entities of the same kind by `metric`; null if not listened in range.
+        ranked_total: { type: integer, minimum: 0, description: Number of ranked entities of this kind in range. }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        ms_estimated: { type: integer, minimum: 0 }
+        skips: { type: integer, minimum: 0 }
+
+    AllTimeStats:
+      type: object
+      additionalProperties: false
+      required: [plays, ms_played, skips, first_played_at, last_played_at]
+      properties:
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        skips: { type: integer, minimum: 0 }
+        first_played_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+        last_played_at:
+          oneOf:
+            - $ref: '#/components/schemas/EpochMs'
+            - type: 'null'
+
+    ArtistFull:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url, genres, metadata]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url: { type: [string, 'null'] }
+        genres:
+          type: array
+          items: { $ref: '#/components/schemas/GenreRef' }
+        metadata: { $ref: '#/components/schemas/EntityMetadata' }
+
+    AlbumFull:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url, album_type, release_date, release_year, total_tracks, artists, metadata]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url: { type: [string, 'null'] }
+        album_type: { type: [string, 'null'], enum: [album, single, compilation, null] }
+        release_date:
+          type: [string, 'null']
+          description: 'As precise as Spotify knows it: `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.'
+        release_year: { type: [integer, 'null'] }
+        total_tracks: { type: [integer, 'null'] }
+        artists:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistLite' }
+        metadata: { $ref: '#/components/schemas/EntityMetadata' }
+
+    TrackFull:
+      type: object
+      additionalProperties: false
+      required: [id, name, image_url, duration_ms, explicit, artists, album, metadata]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        image_url: { type: [string, 'null'] }
+        duration_ms: { type: [integer, 'null'] }
+        explicit: { type: [boolean, 'null'] }
+        artists:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistRef' }
+        album:
+          oneOf:
+            - $ref: '#/components/schemas/AlbumRef'
+            - type: 'null'
+        metadata: { $ref: '#/components/schemas/EntityMetadata' }
+
+    ArtistDetail:
+      type: object
+      additionalProperties: false
+      required: [artist, excluded, range, previous, metric, in_range, all_time]
+      properties:
+        artist: { $ref: '#/components/schemas/ArtistFull' }
+        excluded: { type: boolean }
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        in_range: { $ref: '#/components/schemas/EntityStats' }
+        all_time: { $ref: '#/components/schemas/AllTimeStats' }
+
+    AlbumDetail:
+      type: object
+      additionalProperties: false
+      required: [album, range, previous, metric, in_range, all_time]
+      properties:
+        album: { $ref: '#/components/schemas/AlbumFull' }
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        in_range: { $ref: '#/components/schemas/EntityStats' }
+        all_time: { $ref: '#/components/schemas/AllTimeStats' }
+
+    TrackDetail:
+      type: object
+      additionalProperties: false
+      required: [track, excluded, range, previous, metric, in_range, all_time]
+      properties:
+        track: { $ref: '#/components/schemas/TrackFull' }
+        excluded: { type: boolean }
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        in_range: { $ref: '#/components/schemas/EntityStats' }
+        all_time: { $ref: '#/components/schemas/AllTimeStats' }
+
+    GenreDetail:
+      type: object
+      additionalProperties: false
+      required: [genre, artists, range, previous, metric, in_range, all_time]
+      properties:
+        genre: { $ref: '#/components/schemas/GenreRef' }
+        artists:
+          type: integer
+          minimum: 0
+          description: Artists in the catalog with this genre (hydrated artists only, D9).
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        previous:
+          oneOf:
+            - $ref: '#/components/schemas/ResolvedRange'
+            - type: 'null'
+        metric: { $ref: '#/components/schemas/Metric' }
+        in_range: { $ref: '#/components/schemas/EntityStats' }
+        all_time: { $ref: '#/components/schemas/AllTimeStats' }
+
+    RankedContext:
+      type: object
+      additionalProperties: false
+      required: [rank, plays, ms_played, context]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+        context: { $ref: '#/components/schemas/ContextRef' }
+
+    Contexts:
+      type: object
+      additionalProperties: false
+      required: [range, metric, total, offset, limit, items, unknown]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        metric: { $ref: '#/components/schemas/Metric' }
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RankedContext' }
+        unknown:
+          $ref: '#/components/schemas/Measure'
+          description: Listening with no known context (export-only plays).
+
+    PlaylistNameInput:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: [string, 'null'], maxLength: 200 }
+
+    # ---------- history ----------
+    Device:
+      type: object
+      additionalProperties: false
+      required: [name, type]
+      properties:
+        name: { type: string }
+        type:
+          type: string
+          description: 'Spotify device type, e.g. Computer, Smartphone, Speaker, CastAudio, TV.'
+
+    PlaySource:
+      type: string
+      enum: [export, poller, recent]
+      description: '`export` = Extended Streaming History, `poller` = live player polling, `recent` = recently-played backstop.'
+
+    Play:
+      type: object
+      additionalProperties: false
+      required: [id, played_at, ended_at, ms_played, ms_estimated, counts_as_play, skipped, shuffle, platform, device, context, sources, contradicted, track]
+      properties:
+        id: { type: string }
+        played_at: { $ref: '#/components/schemas/EpochMs' }
+        ended_at: { $ref: '#/components/schemas/EpochMs' }
+        ms_played: { type: integer, minimum: 0 }
+        ms_estimated: { type: boolean, description: '`ms_played` is the track length, not measured (D7).' }
+        counts_as_play: { type: boolean, description: Passes the play rule. }
+        skipped: { type: boolean }
+        shuffle: { type: [boolean, 'null'] }
+        platform: { type: [string, 'null'], description: From the export. }
+        device:
+          description: From the poller.
+          oneOf:
+            - $ref: '#/components/schemas/Device'
+            - type: 'null'
+        context:
+          oneOf:
+            - $ref: '#/components/schemas/ContextRef'
+            - type: 'null'
+        sources:
+          type: array
+          minItems: 1
+          description: Provenance (D8).
+          items: { $ref: '#/components/schemas/PlaySource' }
+        contradicted:
+          type: boolean
+          description: A poller-only play that a later export does not confirm (D8).
+        track: { $ref: '#/components/schemas/TrackRef' }
+
+    History:
+      type: object
+      additionalProperties: false
+      required: [range, total, items, next_cursor]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        total: { type: integer, minimum: 0, description: Rows matching the filters. }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Play' }
+        next_cursor: { type: [string, 'null'] }
+
+    DeviceUsage:
+      type: object
+      additionalProperties: false
+      required: [name, type, plays, ms_played]
+      properties:
+        name: { type: string }
+        type: { type: string }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+
+    PlatformUsage:
+      type: object
+      additionalProperties: false
+      required: [name, plays, ms_played]
+      properties:
+        name: { type: string }
+        plays: { type: integer, minimum: 0 }
+        ms_played: { type: integer, minimum: 0 }
+
+    Devices:
+      type: object
+      additionalProperties: false
+      required: [range, devices, platforms]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        devices:
+          type: array
+          items: { $ref: '#/components/schemas/DeviceUsage' }
+        platforms:
+          type: array
+          items: { $ref: '#/components/schemas/PlatformUsage' }
+
+    # ---------- sessions ----------
+    Session:
+      type: object
+      additionalProperties: false
+      required: [id, started_at, ended_at, duration_ms, ms_played, rows, plays, skips, top_artists]
+      properties:
+        id: { type: string }
+        started_at: { $ref: '#/components/schemas/EpochMs' }
+        ended_at: { $ref: '#/components/schemas/EpochMs' }
+        duration_ms: { type: integer, minimum: 0, description: Wall-clock span from first start to last end. }
+        ms_played: { type: integer, minimum: 0 }
+        rows: { type: integer, minimum: 1, description: All rows in the session. }
+        plays: { type: integer, minimum: 0, description: Counted plays. }
+        skips: { type: integer, minimum: 0 }
+        top_artists:
+          type: array
+          maxItems: 3
+          description: Most played artists in the session (by ms played).
+          items: { $ref: '#/components/schemas/ArtistRef' }
+
+    Sessions:
+      type: object
+      additionalProperties: false
+      required: [range, gap_minutes, total, offset, limit, items]
+      properties:
+        range: { $ref: '#/components/schemas/ResolvedRange' }
+        gap_minutes: { type: integer, minimum: 1 }
+        total: { type: integer, minimum: 0 }
+        offset: { type: integer, minimum: 0 }
+        limit: { type: integer, minimum: 1 }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Session' }
+
+    SessionDetail:
+      type: object
+      additionalProperties: false
+      required: [session, plays]
+      properties:
+        session: { $ref: '#/components/schemas/Session' }
+        plays:
+          type: array
+          description: In chronological order.
+          items: { $ref: '#/components/schemas/Play' }
+
+    # ---------- search ----------
+    SearchResults:
+      type: object
+      additionalProperties: false
+      required: [artists, albums, tracks]
+      properties:
+        artists:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistRef' }
+        albums:
+          type: array
+          items: { $ref: '#/components/schemas/AlbumRef' }
+        tracks:
+          type: array
+          items: { $ref: '#/components/schemas/TrackRef' }
+
+    # ---------- settings ----------
+    PlayRule:
+      type: string
+      enum: [fixed, half_track]
+      description: '`fixed` (default, 30 s): played >= `play_rule_threshold_ms`. `half_track`: track > 30 s and played >= min(50 %, 4 min). The legacy name `lastfm` is accepted on PATCH as `half_track`.'
+
+    Settings:
+      type: object
+      additionalProperties: false
+      description: Instance settings. The colour theme is a per-browser preference kept by the UI, not a server setting (D22).
+      required: [play_rule, play_rule_threshold_ms, timezone, week_start, date_format, session_gap_minutes]
+      properties:
+        play_rule: { $ref: '#/components/schemas/PlayRule' }
+        play_rule_threshold_ms: { type: integer, minimum: 1000, maximum: 600000, description: Used by the `fixed` rule. }
+        timezone: { type: string, description: IANA timezone for day boundaries and display. }
+        week_start: { type: string, enum: [monday, sunday] }
+        date_format: { type: string, enum: [auto, ymd, dmy, mdy], description: '`auto` follows the browser locale.' }
+        session_gap_minutes: { type: integer, minimum: 1, maximum: 240 }
+
+    SettingsPatch:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        play_rule: { $ref: '#/components/schemas/PlayRule' }
+        play_rule_threshold_ms: { type: integer, minimum: 1000, maximum: 600000 }
+        timezone: { type: string }
+        week_start: { type: string, enum: [monday, sunday] }
+        date_format: { type: string, enum: [auto, ymd, dmy, mdy] }
+        session_gap_minutes: { type: integer, minimum: 1, maximum: 240 }
+
+    Exclusions:
+      type: object
+      additionalProperties: false
+      required: [artists, tracks]
+      properties:
+        artists:
+          type: array
+          items: { $ref: '#/components/schemas/ArtistRef' }
+        tracks:
+          type: array
+          items: { $ref: '#/components/schemas/TrackRef' }

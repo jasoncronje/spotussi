@@ -1,0 +1,462 @@
+{
+ "dpr": 2.5,
+ "tabbar": null,
+ "firstRow": {
+  "x": 40,
+  "y": 457,
+  "w": 1360,
+  "h": 73
+ },
+ "nav": [
+  {
+   "label": "spotussi",
+   "href": "/",
+   "fixed": false,
+   "x": 36,
+   "y": 11,
+   "w": 121.109375,
+   "h": 34
+  },
+  {
+   "label": "Overview",
+   "href": "/",
+   "fixed": false,
+   "x": 177.109375,
+   "y": 10,
+   "w": 96.453125,
+   "h": 36
+  },
+  {
+   "label": "Top",
+   "href": "/top",
+   "fixed": false,
+   "x": 277.5625,
+   "y": 10,
+   "w": 60.71875,
+   "h": 36
+  },
+  {
+   "label": "Stats",
+   "href": "/stats",
+   "fixed": false,
+   "x": 342.28125,
+   "y": 10,
+   "w": 69.96875,
+   "h": 36
+  },
+  {
+   "label": "History",
+   "href": "/history",
+   "fixed": false,
+   "x": 416.25,
+   "y": 10,
+   "w": 82.453125,
+   "h": 36
+  },
+  {
+   "label": "Sessions",
+   "href": "/sessions",
+   "fixed": false,
+   "x": 502.703125,
+   "y": 10,
+   "w": 95.6875,
+   "h": 36
+  },
+  {
+   "label": "Today",
+   "href": "/history?range=today",
+   "fixed": false,
+   "x": 43,
+   "y": 67,
+   "w": 66.875,
+   "h": 28
+  },
+  {
+   "label": "7 days",
+   "href": "/history?range=last_7d",
+   "fixed": false,
+   "x": 109.875,
+   "y": 67,
+   "w": 69.1875,
+   "h": 28
+  },
+  {
+   "label": "4 weeks",
+   "href": "/history",
+   "fixed": false,
+   "x": 179.0625,
+   "y": 67,
+   "w": 78.359375,
+   "h": 28
+  },
+  {
+   "label": "6 months",
+   "href": "/history?range=last_6m",
+   "fixed": false,
+   "x": 257.421875,
+   "y": 67,
+   "w": 85.578125,
+   "h": 28
+  },
+  {
+   "label": "12 months",
+   "href": "/history?range=last_12m",
+   "fixed": false,
+   "x": 343,
+   "y": 67,
+   "w": 92.640625,
+   "h": 28
+  },
+  {
+   "label": "All time",
+   "href": "/history?range=all",
+   "fixed": false,
+   "x": 435.640625,
+   "y": 67,
+   "w": 74.328125,
+   "h": 28
+  }
+ ],
+ "rangebar": null,
+ "page": {
+  "w": 1440,
+  "h": 1700
+ },
+ "figures": [],
+ "lamps": [
+  {
+   "x": 74,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 334.92,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 594.78,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 157.64,
+   "y": 384.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 393.3,
+   "y": 384.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 636.28,
+   "y": 384.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 490.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 490.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 563.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 563.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1279.86,
+   "y": 636.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 709.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 709.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1279.86,
+   "y": 782.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 855.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 855.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 928.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 928.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1001.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1001.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1074.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1074.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1147.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1147.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1220.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1220.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1293.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1293.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1279.86,
+   "y": 1366.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1439.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1439.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1512.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1512.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1302.55,
+   "y": 1586.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1251.75,
+   "y": 1660.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 1259.75,
+   "y": 1660.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  }
+ ],
+ "bars": [],
+ "clock": null,
+ "headings": {
+  "History": {
+   "heading": {
+    "x": 40,
+    "y": 146,
+    "w": 1360,
+    "h": 52
+   },
+   "panel": {
+    "x": 40,
+    "y": 146,
+    "w": 1360,
+    "h": 52
+   }
+  },
+  "Sunday, October 18, 2026": {
+   "heading": {
+    "x": 40,
+    "y": 428,
+    "w": 164.95,
+    "h": 20
+   },
+   "panel": {
+    "x": 40,
+    "y": 420,
+    "w": 1360,
+    "h": 6871
+   }
+  },
+  "Saturday, October 17, 2026": {
+   "heading": {
+    "x": 40,
+    "y": 7323,
+    "w": 172.2,
+    "h": 20
+   },
+   "panel": {
+    "x": 40,
+    "y": 7315,
+    "w": 1360,
+    "h": 549
+   }
+  }
+ }
+}

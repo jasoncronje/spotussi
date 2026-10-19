@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spotussi · Self-hosted Spotify listening stats</title>
+<meta name="description" content="Self-hosted listening stats for one Spotify account: live capture every 12 seconds, your full streaming history imported, and every play kept in one SQLite file on your own server. No subscription.">
+<link rel="canonical" href="https://spotussi.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="spotussi">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://spotussi.app/">
+<meta property="og:title" content="spotussi · Spotify Stats, Self-Hosted.">
+<meta property="og:description" content="Live capture, lifetime history, stats on every artist, album and track, and an MCP server for your AI.">
+<meta property="og:image" content="https://spotussi.app/og.png">
+<meta property="og:image:secure_url" content="https://spotussi.app/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The spotussi logo above the headline Spotify Stats, Self-Hosted, its supporting line and a row of amber level-meter lamps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="spotussi · Spotify Stats, Self-Hosted.">
+<meta name="twitter:description" content="Live capture, lifetime history, stats on every artist, album and track, and an MCP server for your AI.">
+<meta name="twitter:image" content="https://spotussi.app/og.png">
+<meta name="twitter:image:alt" content="The spotussi logo above the headline Spotify Stats, Self-Hosted, its supporting line and a row of amber level-meter lamps">
+<meta name="theme-color" content="#121317">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<div class="page">
+
+<!-- Hero: the app itself first, opening in its window -->
+<header class="hero" data-ink="#eceef2">
+  <nav class="bar" aria-label="Main">
+    <a class="brand" href="#top" aria-label="spotussi, top of page">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <g fill="currentColor" opacity=".28"><circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="24" r="5.5"/><circle cx="40" cy="8" r="5.5"/><circle cx="56" cy="8" r="5.5"/><circle cx="56" cy="24" r="5.5"/><circle cx="56" cy="40" r="5.5"/></g>
+        <g fill="#f2ab3e"><circle cx="8" cy="40" r="5.5"/><circle cx="8" cy="56" r="5.5"/><circle cx="24" cy="8" r="5.5"/><circle cx="24" cy="24" r="5.5"/><circle cx="24" cy="40" r="5.5"/><circle cx="24" cy="56" r="5.5"/><circle cx="40" cy="24" r="5.5"/><circle cx="40" cy="40" r="5.5"/><circle cx="40" cy="56" r="5.5"/><circle cx="56" cy="56" r="5.5"/></g>
+      </svg>
+      <span>spotussi</span>
+    </a>
+    <span class="bar-links">
+      <a class="link" href="#features">Features</a>
+      <a class="link" href="#stack">How</a>
+      <a class="link" href="#install">Setup</a>
+      <a class="link" href="#faq">FAQ</a>
+    </span>
+    <span class="bar-actions">
+      <a class="button-ghost" href="https://github.com/jasoncronje/spotussi" aria-label="spotussi on GitHub"><svg class="gh-mark" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a>
+      <a class="button button-small" href="#install">Install</a>
+    </span>
+  </nav>
+
+  <div class="hero-body" id="top">
+    <div class="hero-foot">
+      <h1 class="hero-title">Spotify Stats, Self-Hosted.</h1>
+      <div class="hero-side">
+        <p class="hero-line">Live capture, lifetime history, stats on every artist, album and track, and an MCP server for your AI.</p>
+        <div class="hero-actions">
+          <a class="button" href="#install">Install</a>
+          <a class="link" href="#cost">Compare</a>
+        </div>
+      </div>
+    </div>
+    <figure class="reel" aria-label="A tour of the spotussi app with sample data">
+      <div class="reel-frame">
+        <video class="reel-video" muted playsinline loop autoplay preload="auto" poster="assets/hero-reel-poster.webp" aria-label="spotussi in use, with sample data: a pointer clicks from the overview to top artists, the top artist's page, the play history, listening sessions and stats, each page lighting up as it opens">
+          <source media="(max-width: 760px), (max-aspect-ratio: 1/1)" src="assets/hero-reel-phone.mp4" type="video/mp4">
+          <source src="assets/hero-reel.mp4" type="video/mp4">
+        </video>
+      </div>
+      <figcaption class="reel-bar">
+        <p class="reel-caption" aria-live="polite">Time, plays, tracks and artists, each against the period before.</p>
+        <div class="reel-controls">
+          <div class="reel-dots" role="group" aria-label="Tour stops"></div>
+          <button class="reel-pause" type="button" aria-pressed="false" aria-label="Pause"><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.3-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7z"/></svg></button>
+        </div>
+      </figcaption>
+    </figure>
+
+  </div>
+</header>
+
+<main>
+
+<!-- Features: what it does, as a bento of the app's own screens -->
+<section class="does" id="features" aria-labelledby="does-title">
+  <div class="does-head">
+    <h2 id="does-title" class="does-title" data-reveal>Every Play Since Day One</h2>
+    <p class="does-lede" data-reveal style="--i:1">spotussi records what you play as you play it, imports your history back to day one, and charts all of it for any range you pick.</p>
+  </div>
+  <ul class="bento">
+    <li class="b b-8" data-reveal style="--i:1">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Top Lists</h3><p>Every track, artist, album and genre you have played, ranked for any range, with rank movement.</p></div>
+      <div class="b-art art-top" aria-hidden="true">
+        <div class="tl-win"><ol class="tl-track"><li><b>1</b><i class="mv up">▲1</i><span class="nm">Drake</span><span class="lamps" style="--v:1"></span><em>212</em></li><li><b>2</b><i class="mv dn">▼1</i><span class="nm">Kendrick Lamar</span><span class="lamps" style="--v:0.92"></span><em>196</em></li><li><b>3</b><i class="mv eq">=</i><span class="nm">Travis Scott</span><span class="lamps" style="--v:0.67"></span><em>141</em></li><li><b>4</b><i class="mv up">▲4</i><span class="nm">Fred again..</span><span class="lamps" style="--v:0.57"></span><em>120</em></li><li><b>5</b><i class="mv up">▲3</i><span class="nm">Arctic Monkeys</span><span class="lamps" style="--v:0.49"></span><em>104</em></li><li><b>6</b><i class="mv up">▲2</i><span class="nm">Metallica</span><span class="lamps" style="--v:0.43"></span><em>92</em></li><li><b>7</b><i class="mv dn">▼2</i><span class="nm">J. Cole</span><span class="lamps" style="--v:0.24"></span><em>51</em></li><li><b>8</b><i class="mv up">▲9</i><span class="nm">The Weeknd</span><span class="lamps" style="--v:0.22"></span><em>47</em></li><li class="tl-gap"><b>&middot;&middot;&middot;</b></li><li><b>248</b><i class="mv up">▲31</i><span class="nm">Burial</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li><b>249</b><i class="mv nw">new</i><span class="nm">Nick Drake</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li><b>250</b><i class="mv dn">▼6</i><span class="nm">Mobb Deep</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li class="tl-gap"><b>&middot;&middot;&middot;</b></li><li><b>1,586</b><i class="mv nw">new</i><span class="nm">Aphex Twin</span><span class="lamps" style="--v:0.005"></span><em>1</em></li><li><b>1,587</b><i class="mv nw">new</i><span class="nm">Black Sabbath</span><span class="lamps" style="--v:0.005"></span><em>1</em></li><li><b>1</b><i class="mv up">▲1</i><span class="nm">Drake</span><span class="lamps" style="--v:1"></span><em>212</em></li><li><b>2</b><i class="mv dn">▼1</i><span class="nm">Kendrick Lamar</span><span class="lamps" style="--v:0.92"></span><em>196</em></li><li><b>3</b><i class="mv eq">=</i><span class="nm">Travis Scott</span><span class="lamps" style="--v:0.67"></span><em>141</em></li><li><b>4</b><i class="mv up">▲4</i><span class="nm">Fred again..</span><span class="lamps" style="--v:0.57"></span><em>120</em></li><li><b>5</b><i class="mv up">▲3</i><span class="nm">Arctic Monkeys</span><span class="lamps" style="--v:0.49"></span><em>104</em></li><li><b>6</b><i class="mv up">▲2</i><span class="nm">Metallica</span><span class="lamps" style="--v:0.43"></span><em>92</em></li><li><b>7</b><i class="mv dn">▼2</i><span class="nm">J. Cole</span><span class="lamps" style="--v:0.24"></span><em>51</em></li><li><b>8</b><i class="mv up">▲9</i><span class="nm">The Weeknd</span><span class="lamps" style="--v:0.22"></span><em>47</em></li><li class="tl-gap"><b>&middot;&middot;&middot;</b></li><li><b>248</b><i class="mv up">▲31</i><span class="nm">Burial</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li><b>249</b><i class="mv nw">new</i><span class="nm">Nick Drake</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li><b>250</b><i class="mv dn">▼6</i><span class="nm">Mobb Deep</span><span class="lamps" style="--v:0.02"></span><em>4</em></li><li class="tl-gap"><b>&middot;&middot;&middot;</b></li><li><b>1,586</b><i class="mv nw">new</i><span class="nm">Aphex Twin</span><span class="lamps" style="--v:0.005"></span><em>1</em></li><li><b>1,587</b><i class="mv nw">new</i><span class="nm">Black Sabbath</span><span class="lamps" style="--v:0.005"></span><em>1</em></li></ol></div>
+      </div>
+    </li>
+    <li class="b b-4" data-reveal style="--i:2">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Listening Clock</h3><p>When in the day you listen, hour by hour, and which hour is your busiest.</p></div>
+      <div class="b-art art-clock" data-loop="6500" aria-hidden="true">
+        <svg class="clock" viewBox="0 0 200 200"></svg>
+        <p class="clock-mid"><span>Busiest hour</span><b>6 PM</b></p>
+      </div>
+    </li>
+    <li class="b b-4" data-reveal style="--i:1">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Lifetime History</h3><p>Import your lifetime streaming history from Spotify, back to your very first play.</p></div>
+      <div class="b-art art-years" data-loop="6500" aria-hidden="true">
+        <span class="zip">my_spotify_data.zip</span>
+        <div class="years"><span class="yr" style="--h:0.35;--i:0"></span><span class="yr" style="--h:0.5;--i:1"></span><span class="yr" style="--h:0.42;--i:2"></span><span class="yr" style="--h:0.6;--i:3"></span><span class="yr" style="--h:0.55;--i:4"></span><span class="yr" style="--h:0.7;--i:5"></span><span class="yr" style="--h:0.62;--i:6"></span><span class="yr" style="--h:0.8;--i:7"></span><span class="yr" style="--h:0.75;--i:8"></span><span class="yr" style="--h:0.92;--i:9"></span><span class="yr" style="--h:0.85;--i:10"></span><span class="yr" style="--h:1;--i:11"></span><span class="yr" style="--h:0.88;--i:12"></span><span class="yr" style="--h:0.95;--i:13"></span><span class="yr" style="--h:0.9;--i:14"></span><span class="yr yr-live" style="--h:.3"></span></div>
+        <p class="years-axis"><span>2011</span><span class="years-key"><i class="k-exp"></i>export <i class="k-live"></i>live</span><span>today</span></p>
+      </div>
+    </li>
+    <li class="b b-8" data-reveal style="--i:2">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Live Capture</h3><p>Your Spotify streams are read every 12 seconds, so it knows what you finished and what you skipped.</p></div>
+      <div class="b-art art-live" data-loop="7500" aria-hidden="true">
+        <p class="poll"><i></i>Reading your player every 12 s</p>
+        <div class="lane" style="--to:1;--t:4.6s">
+          <span class="cov" style="--a:#c2406a;--b:#d9770f">PA</span>
+          <p class="who"><b>Passionfruit</b><span>Drake &middot; iPhone</span></p>
+          <div class="track"><span class="pbar"></span><span class="lamps"></span></div>
+          <p class="end"><span class="end-a">playing</span><span class="end-b">4:59 of 4:59</span></p>
+        </div>
+        <div class="lane lane-skip" style="--to:.140;--t:.8s;--d:.6s">
+          <span class="cov" style="--a:#0c9ba8;--b:#8a5ccf">AR</span>
+          <p class="who"><b>Arabella</b><span>Arctic Monkeys &middot; from Late trains</span></p>
+          <div class="track"><span class="pbar"></span><span class="lamps"></span></div>
+          <p class="end"><span class="end-a">playing</span><span class="end-b">skipped at 0:29</span></p>
+        </div>
+      </div>
+    </li>
+    <li class="b b-6" data-reveal style="--i:1">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Stats Over Time</h3><p>How much you listen, and how much of it your top artists hold, day after day.</p></div>
+      <div class="b-art art-share" aria-hidden="true">
+        <div class="share-win"><div class="share-track"></div></div>
+        <p class="share-key"><span><i style="--c:#f2ab3e"></i>Drake</span><span><i style="--c:#5b8def"></i>Kendrick Lamar</span><span><i style="--c:#e0587a"></i>Travis Scott</span><span><i style="--c:#2bb3bf"></i>Fred again..</span></p>
+      </div>
+    </li>
+    <li class="b b-6" data-reveal style="--i:2">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Sessions</h3><p>Your longest listening runs, from Saturday&rsquo;s party to the Wednesday you should have slept.</p></div>
+      <div class="b-art art-sess" data-loop="6000" aria-hidden="true">
+        <div class="sess" style="--v:1;--i:0"><p><b>Saturday night</b><span>8:05 PM to 12:36 AM</span></p><span class="lamps"></span><em><b data-count="270" data-format="hm">4 h 30 min</b></em></div>
+        <div class="sess" style="--v:.84;--i:1"><p><b>Wednesday</b><span>11:35 PM to 3:24 AM</span></p><span class="lamps"></span><em><b data-count="228" data-format="hm">3 h 48 min</b></em></div>
+        <div class="sess" style="--v:.74;--i:2"><p><b>Thursday</b><span>12:02 AM to 3:21 AM</span></p><span class="lamps"></span><em><b data-count="199" data-format="hm">3 h 19 min</b></em></div>
+      </div>
+    </li>
+    <li class="b b-6" data-reveal style="--i:1">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>Artists, Albums, Tracks</h3><p>Open any one to see your rank, your first play and when you play it.</p></div>
+      <div class="b-art art-artist" data-loop="6500" aria-hidden="true">
+        <div class="ar-head"><span class="ar-av">ME</span><p><b>Metallica</b><span><i>metal</i><i>hard rock</i></span></p></div>
+        <div class="ar-stats">
+          <p><span>Rank by time</span><b>#<span data-count="3">3</span></b></p>
+          <p><span>Last 4 weeks</span><b data-count="559" data-format="hm">9 h 19 min</b></p>
+          <p><span>First played</span><b>Aug 2011</b></p>
+        </div>
+        <div class="ar-days"><span style="--h:0.2;--i:0"></span><span style="--h:0.45;--i:1"></span><span style="--h:0.1;--i:2"></span><span style="--h:0.6;--i:3"></span><span style="--h:0.35;--i:4"></span><span style="--h:0;--i:5"></span><span style="--h:0.8;--i:6"></span><span style="--h:0.3;--i:7"></span><span style="--h:0.55;--i:8"></span><span style="--h:1;--i:9"></span><span style="--h:0.25;--i:10"></span><span style="--h:0.4;--i:11"></span><span style="--h:0.7;--i:12"></span><span style="--h:0.5;--i:13"></span><span style="--h:0.15;--i:14"></span><span style="--h:0.65;--i:15"></span></div>
+      </div>
+    </li>
+    <li class="b b-6" data-reveal style="--i:2">
+      <div class="b-text"><h3><span class="lamp" aria-hidden="true"></span>API and MCP</h3><p>A documented API for your scripts, and an MCP server your AI assistant can ask.</p></div>
+      <div class="b-art art-chat" data-loop="8000" aria-hidden="true">
+        <p class="msg msg-you"><span>Who did I play most in the last four weeks?</span></p>
+        <p class="tool"><i></i>spotussi &middot; get_top(artists, last_4w)</p>
+        <p class="msg msg-ai"><span>Drake, with 212 plays. Kendrick Lamar is close behind on 196, and wins on hours.</span></p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- Cost: spotussi is free; hosted plans side by side -->
+<section class="cost" id="cost" aria-labelledby="cost-title">
+  <div class="cost-head">
+    <h2 id="cost-title" class="cost-title" data-reveal>Free Is Better.</h2>
+    <p class="cost-lede" data-reveal style="--i:1">Hosted stats apps charge a subscription and keep your plays on their servers. spotussi runs on your own machine, keeps every play in a file you own, and costs nothing.</p>
+  </div>
+  <div class="plans">
+    <article class="plan plan-own" data-reveal style="--i:2">
+      <h3>spotussi</h3>
+      <p class="plan-price">$0</p>
+      <p class="plan-per">free forever</p>
+      <ul>
+        <li>Plays stored on your own server</li>
+        <li>Your full Spotify history imported, free</li>
+        <li>Every top list ranked in full, for any range</li>
+      </ul>
+    </article>
+    <article class="plan" data-reveal style="--i:3">
+      <h3>Last.fm Pro</h3>
+      <p class="plan-price">$49.99</p>
+      <p class="plan-per">a year</p>
+      <ul>
+        <li>Plays stored on Last.fm&rsquo;s servers</li>
+        <li>Counts plays from the day you connect it</li>
+        <li>Advanced stats and reports need Pro</li>
+      </ul>
+    </article>
+    <article class="plan" data-reveal style="--i:4">
+      <h3>stats.fm Plus</h3>
+      <p class="plan-price">$6</p>
+      <p class="plan-per">for lifetime Plus</p>
+      <ul>
+        <li>Plays stored on stats.fm&rsquo;s servers</li>
+        <li>History import needs Plus</li>
+        <li>Free top lists stop at 50</li>
+      </ul>
+    </article>
+  </div>
+  <p class="cost-note">US prices as listed on 18 October 2026, from <a class="link" href="https://www.last.fm/pro">last.fm/pro</a>, <a class="link" href="https://stats.fm/plus">stats.fm/plus</a> and <a class="link" href="https://apps.apple.com/us/app/stats-fm-for-spotify-music-app/id1526912392">the stats.fm App Store listing</a>. Last.fm and stats.fm are trademarks of their owners; spotussi is not affiliated with either.</p>
+</section>
+
+<!-- Showcase: the switch every view turns on, pinned; scrolling flips it -->
+<section class="switch" id="switch" data-mode="plays" aria-labelledby="switch-title">
+  <div class="switch-stage">
+    <div class="switch-copy">
+      <h2 id="switch-title" class="switch-title">Rank by <span class="switch-word">plays</span>.</h2>
+      <p class="switch-text">Count plays and short songs win. Count hours and long ones do. Scroll on and Metallica climbs from sixth to third.</p>
+      <p class="switch-mode" aria-live="polite"><span data-for="plays">Plays: every start past 30 seconds.</span><span data-for="time">Time: minutes actually listened, not track length.</span></p>
+    </div>
+    <div class="switch-board">
+      <ol class="ranks" aria-live="polite">
+        <li><span class="r-name">Drake</span><span class="r-meter" style="--v:1"></span><span class="r-val">212</span></li>
+        <li><span class="r-name">Kendrick Lamar</span><span class="r-meter" style="--v:.925"></span><span class="r-val">196</span></li>
+        <li><span class="r-name">Travis Scott</span><span class="r-meter" style="--v:.665"></span><span class="r-val">141</span></li>
+        <li><span class="r-name">Fred again..</span><span class="r-meter" style="--v:.566"></span><span class="r-val">120</span></li>
+        <li><span class="r-name">Arctic Monkeys</span><span class="r-meter" style="--v:.491"></span><span class="r-val">104</span></li>
+      </ol>
+      <p class="switch-note">Top artists, last 4 weeks, sample data. Every chart and list in spotussi has this switch.</p>
+    </div>
+    <div class="seg" data-ui role="radiogroup" aria-label="Rank by">
+      <button type="button" role="radio" aria-checked="true" data-value="plays"><span class="lamp" aria-hidden="true"></span>Plays</button>
+      <button type="button" role="radio" aria-checked="false" data-value="time"><span class="lamp" aria-hidden="true"></span>Time</button>
+    </div>
+  </div>
+</section>
+
+<!-- History: one morning's three tracks, from the player they streamed in to
+     the dashboard and your assistant. The steps scroll past a pinned stage
+     that draws each one. -->
+<section class="flow" id="history" aria-labelledby="flow-title">
+  <div class="flow-head">
+    <h2 id="flow-title" class="flow-title" data-reveal>From Stream to Dashboard</h2>
+    <p class="flow-lede" data-reveal style="--i:1">Follow three tracks from the phone they played on to your dashboard and your assistant.</p>
+  </div>
+
+  <div class="flow-body">
+    <ol class="flow-steps">
+      <li class="flow-step" data-step="0">
+        <p class="flow-n"><span class="lamp" aria-hidden="true"></span>1 &middot; Stream</p>
+        <h3>Stream on Spotify</h3>
+        <p>Listen in Spotify on your phone, laptop or speaker. spotussi reads your player from your server every 12 seconds, so there is nothing to install where you listen.</p>
+      </li>
+      <li class="flow-step" data-step="1">
+        <p class="flow-n"><span class="lamp" aria-hidden="true"></span>2 &middot; Ingest</p>
+        <h3>Each Stream Is Ingested</h3>
+        <p>Every read brings in the track, your position, the device and the playlist. When the track changes, spotussi stores one play with the seconds you listened and whether you skipped. Your history export lands in the same table, matched so nothing counts twice.</p>
+      </li>
+      <li class="flow-step" data-step="2">
+        <p class="flow-n"><span class="lamp" aria-hidden="true"></span>3 &middot; Dashboard</p>
+        <h3>All Your Data, One Dashboard</h3>
+        <p>Overview, top lists and charts include the new play straight away, from today back to the first year you imported. A skip adds to your time listened and never to your plays.</p>
+      </li>
+      <li class="flow-step" data-step="3">
+        <p class="flow-n"><span class="lamp" aria-hidden="true"></span>4 &middot; Ask</p>
+        <h3>Ask Your Assistant</h3>
+        <p>The built-in MCP server lets an assistant answer from your own history, with the same numbers as the dashboard. Scripts get them from the API.</p>
+      </li>
+    </ol>
+
+    <div class="flow-stage" aria-hidden="true">
+      <svg width="0" height="0" class="sp-defs">
+        <symbol id="sp-prev" viewBox="0 0 24 24"><path fill="currentColor" d="M6 5h2.2v14H6zM19 5v14L9 12z"/></symbol>
+        <symbol id="sp-next" viewBox="0 0 24 24"><path fill="currentColor" d="M15.8 5H18v14h-2.2zM5 5v14l10-7z"/></symbol>
+        <symbol id="sp-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z"/></symbol>
+        <symbol id="sp-shuffle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 7h3.5l9 10H20M3 17h3.5l9-10H20M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></symbol>
+        <symbol id="sp-repeat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 11V9.5A2.5 2.5 0 0 1 6.5 7H19M16.5 4.5 19 7l-2.5 2.5M20 13v1.5a2.5 2.5 0 0 1-2.5 2.5H5M7.5 19.5 5 17l2.5-2.5"/></symbol>
+        <symbol id="sp-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+        <symbol id="sp-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="sp-dev" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M7 3h10v18H7z"/><circle cx="12" cy="17.5" r="1" fill="currentColor"/></symbol>
+      </svg>
+      <div class="flow-frame">
+        <div class="fs-bar">
+          <span class="fs-tabs"><i class="is-at">Stream</i><i>Ingest</i><i>Dashboard</i><i>Ask</i></span>
+          <span class="fs-note">Sample data, sped up</span>
+        </div>
+
+        <!-- 1 · Stream: a phone's now-playing screen runs through three tracks -->
+        <div class="fs-scene sc-stream" data-scene="0">
+          <div class="sp-phone">
+            <div class="sp-pane sp-a" style="--a:#7f5c46;--b:#7f5c46;--to:1.000;--fr:0.819">
+              <p class="sp-top"><svg><use href="#sp-down"/></svg><span><small>Playing from playlist</small><b>Late trains</b></span><i class="sp-dots"></i></p>
+              <img class="sp-art" src="assets/covers/more-life.webp" width="320" height="320" alt="">
+              <p class="sp-meta"><span><b>Passionfruit</b><small>Drake</small></span><svg><use href="#sp-heart"/></svg></p>
+              <div class="sp-bar"><span></span></div>
+              <p class="sp-time"><span data-count="299" data-from="245" data-format="ms" data-run="2200" data-ease="linear">4:59</span><span>4:59</span></p>
+              <p class="sp-ctl"><svg class="sp-on"><use href="#sp-shuffle"/></svg><svg><use href="#sp-prev"/></svg><span class="sp-play"><svg><use href="#sp-pause"/></svg></span><svg class="sp-next"><use href="#sp-next"/></svg><svg><use href="#sp-repeat"/></svg></p>
+              <p class="sp-dev"><svg><use href="#sp-dev"/></svg>iPhone</p>
+            </div>
+            <div class="sp-pane sp-b" style="--a:#4a5456;--b:#4a5456;--to:0.140;--fr:0">
+              <p class="sp-top"><svg><use href="#sp-down"/></svg><span><small>Playing from playlist</small><b>Late trains</b></span><i class="sp-dots"></i></p>
+              <img class="sp-art" src="assets/covers/am.webp" width="320" height="320" alt="">
+              <p class="sp-meta"><span><b>Arabella</b><small>Arctic Monkeys</small></span><svg><use href="#sp-heart"/></svg></p>
+              <div class="sp-bar"><span></span></div>
+              <p class="sp-time"><span data-count="29" data-from="0" data-format="ms" data-run="1400" data-ease="linear" data-delay="2400">0:29</span><span>3:27</span></p>
+              <p class="sp-ctl"><svg class="sp-on"><use href="#sp-shuffle"/></svg><svg><use href="#sp-prev"/></svg><span class="sp-play"><svg><use href="#sp-pause"/></svg></span><svg class="sp-next"><use href="#sp-next"/></svg><svg><use href="#sp-repeat"/></svg></p>
+              <p class="sp-dev"><svg><use href="#sp-dev"/></svg>iPhone</p>
+            </div>
+            <div class="sp-pane sp-c" style="--a:#3d3f44;--b:#3d3f44;--to:0.031;--fr:0">
+              <p class="sp-top"><svg><use href="#sp-down"/></svg><span><small>Playing from playlist</small><b>Late trains</b></span><i class="sp-dots"></i></p>
+              <img class="sp-art" src="assets/covers/metallica.webp" width="320" height="320" alt="">
+              <p class="sp-meta"><span><b>Nothing Else Matters</b><small>Metallica</small></span><svg><use href="#sp-heart"/></svg></p>
+              <div class="sp-bar"><span></span></div>
+              <p class="sp-time"><span data-count="12" data-from="0" data-format="ms" data-run="1200" data-ease="linear" data-delay="4100">0:12</span><span>6:28</span></p>
+              <p class="sp-ctl"><svg class="sp-on"><use href="#sp-shuffle"/></svg><svg><use href="#sp-prev"/></svg><span class="sp-play"><svg><use href="#sp-pause"/></svg></span><svg class="sp-next"><use href="#sp-next"/></svg><svg><use href="#sp-repeat"/></svg></p>
+              <p class="sp-dev"><svg><use href="#sp-dev"/></svg>iPhone</p>
+            </div>
+          </div>
+          <p class="sp-read"><i></i><span><b>spotussi</b> reads your player every 12 s</span></p>
+        </div>
+
+        <!-- 2 · Ingest: reads come in; when the track changes, one play is stored -->
+        <div class="fs-scene sc-ingest" data-scene="1">
+          <div class="in-cols">
+            <div class="in-reads">
+              <p class="in-cap"><i></i>Player reads, every 12 s</p>
+              <ol>
+                <li style="--i:0"><span>11:31:40</span><b>Arabella</b><span>0:01</span></li>
+                <li style="--i:1"><span>11:31:52</span><b>Arabella</b><span>0:13</span></li>
+                <li style="--i:2"><span>11:32:04</span><b>Arabella</b><span>0:25</span></li>
+                <li class="in-change" style="--i:3"><span>11:32:16</span><b>Nothing Else Matters</b><span>0:08</span></li>
+              </ol>
+              <p class="in-note">New track, so Arabella closes at 0:29</p>
+            </div>
+            <div class="in-rec">
+              <p class="in-cap">Stored play</p>
+              <dl>
+                <div style="--i:0"><dt>track</dt><dd>Arabella</dd></div>
+                <div style="--i:1"><dt>played_at</dt><dd>11:31:39</dd></div>
+                <div style="--i:2"><dt>ms_played</dt><dd>29000</dd></div>
+                <div style="--i:3"><dt>skipped</dt><dd class="in-amb">true</dd></div>
+                <div style="--i:4"><dt>counts_as_play</dt><dd>false</dd></div>
+                <div style="--i:5"><dt>device</dt><dd>iPhone</dd></div>
+                <div style="--i:6"><dt>context</dt><dd>Late trains</dd></div>
+                <div style="--i:7"><dt>sources</dt><dd>poller</dd></div>
+              </dl>
+            </div>
+          </div>
+          <p class="in-zip"><span>my_spotify_data.zip</span>Your export lands in the same table, every play back to 2011, matched so none counts twice.</p>
+        </div>
+
+        <!-- 3 · Dashboard: the cards count, 11 AM gains its lamps, the top list re-ranks -->
+        <div class="fs-scene sc-dash" data-scene="2">
+          <div class="db-cards">
+            <p><span>Plays today</span><b data-count="83" data-from="81" data-delay="300">83</b></p>
+            <p><span>Listened</span><b data-count="248" data-from="243" data-format="hm" data-delay="300">4 h 8 min</b></p>
+            <p><span>Skips</span><b data-count="12" data-from="11" data-delay="300">12</b></p>
+          </div>
+          <div class="db-low">
+            <div class="db-hours">
+              <p class="db-cap">Plays by hour</p>
+              <div class="db-cols"><span style="--h:.64"></span><span style="--h:.86"></span><span style="--h:.43"></span><span style="--h:0"></span><span style="--h:0"></span><span style="--h:0"></span><span style="--h:0"></span><span style="--h:.57"></span><span style="--h:1"></span><span style="--h:.71"></span><span style="--h:.93"></span><span class="db-now" style="--h:.79;--h0:.64"></span></div>
+              <p class="db-axis"><span>12 AM</span><span>11 AM</span></p>
+            </div>
+            <div class="db-top">
+              <p class="db-cap">Top artists today</p>
+              <div class="db-list"><span class="db-ranks"><b>1</b><b>2</b><b>3</b></span><ol>
+                <li class="db-a"><span class="nm">Drake</span><span class="lamps" style="--v:1"></span><em data-count="10" data-from="9" data-delay="600">10</em></li>
+                <li class="db-b"><span class="nm">Metallica <i class="mv up">&#9650;1</i></span><span class="lamps" style="--v:.6"></span><em data-count="6" data-from="5" data-delay="600">6</em></li>
+                <li class="db-c"><span class="nm">Kendrick Lamar <i class="mv dn">&#9660;1</i></span><span class="lamps" style="--v:.5"></span><em>5</em></li>
+              </ol></div>
+            </div>
+          </div>
+        </div>
+        <!-- 4 · Ask: an assistant answers from your history through the MCP server -->
+        <div class="fs-scene sc-ask" data-scene="3">
+          <div class="ch-log">
+            <p class="ch-you" style="--t:.2s"><span>What was the last track I skipped?</span></p>
+            <p class="ch-tool" style="--t:.9s"><i></i>Used spotussi &middot; get_history</p>
+            <div class="ch-ai" style="--t:1.2s"><span class="ty"><i></i><i></i><i></i></span><p>Arabella by Arctic Monkeys, at 0:29 on your iPhone. It was playing from Late trains.</p></div>
+            <p class="ch-you" style="--t:2.9s"><span>Who have I played most today?</span></p>
+            <p class="ch-tool" style="--t:3.6s"><i></i>Used spotussi &middot; get_top</p>
+            <div class="ch-ai" style="--t:3.9s"><span class="ty"><i></i><i></i><i></i></span><p>Drake, with 10 plays. Metallica just moved up to second with 6, ahead of Kendrick Lamar on 5.</p></div>
+          </div>
+          <p class="ch-input"><span>Ask about your listening</span><i></i></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stack: the nitty-gritty, for people who read the Dockerfile first -->
+<section class="stack" id="stack" aria-labelledby="stack-title">
+  <div class="stack-head">
+    <h2 id="stack-title" class="stack-title" data-reveal>The Nitty-Gritty</h2>
+    <p class="stack-lede" data-reveal style="--i:1">Built with Go, Svelte and SQLite.</p>
+  </div>
+  <figure class="rig" data-reveal style="--i:2">
+    <figcaption class="rig-plate">
+      <span class="rig-name"><i class="rig-lamp"></i>One Go Binary</span>
+      <span class="rig-spec">One process, one port. Pure-Go SQLite, no cgo. amd64 and arm64. 8.1 MB image.</span>
+    </figcaption>
+    <ol class="rig-path">
+      <li class="unit" style="--n:0">
+        <div class="u-art u-work" aria-hidden="true"><span><i></i>capture</span><span><i></i>import</span><span><i></i>catalog</span></div>
+        <h3>Workers</h3>
+        <p>Capture, import and catalog lookups. Goroutines in the same process.</p>
+      </li>
+      <li class="unit" style="--n:1">
+        <div class="u-art u-db" aria-hidden="true"><span class="u-file"><b>WAL</b></span><span>spotussi.db</span></div>
+        <h3>One SQLite File</h3>
+        <p>WAL, so writes never block reads. Live backups. Open it in sqlite3.</p>
+      </li>
+      <li class="unit" style="--n:2">
+        <div class="u-art u-mem" aria-hidden="true"><span class="u-cols"><i style="--d:5"></i><i style="--d:7"></i><i style="--d:4"></i><i style="--d:9"></i><i style="--d:6"></i><i style="--d:3"></i><i style="--d:7"></i><i style="--d:5"></i><i style="--d:8"></i></span></div>
+        <h3>In-Memory Index</h3>
+        <p>Every play, columnar. About 35 MB for a lifetime. Swapped in whole after each rebuild.</p>
+      </li>
+      <li class="unit" style="--n:3">
+        <div class="u-art u-api" aria-hidden="true"><span><b>GET</b> /top/artists</span><span><b>GET</b> /history</span><span><b>GET</b> /timeline</span></div>
+        <h3>Documented API</h3>
+        <p>OpenAPI docs at /api/docs. Revocable tokens. No private endpoints.</p>
+      </li>
+      <li class="unit" style="--n:4">
+        <div class="u-art u-out" aria-hidden="true"><span><i></i>Web UI</span><span><i></i>MCP</span></div>
+        <h3>UI and MCP</h3>
+        <p>Svelte 5, compiled into the binary. MCP on the same API.</p>
+      </li>
+    </ol>
+  </figure>
+</section>
+
+<!-- Stats: three figures on tiles that refuse to line up, each with one small sketch of its claim -->
+<section class="figures" id="stats" aria-labelledby="figures-title">
+  <div class="tile tile-a" data-reveal>
+    <p class="fig">&lt; 25 ms</p>
+    <div class="fx fx-range" aria-hidden="true">
+      <p class="rg-seg"><span>7 days</span><span>4 weeks</span><span class="is-on">All time</span></p>
+      <div class="rg-chart"><span style="--n:5"></span><span style="--n:7"></span><span style="--n:6"></span><span style="--n:7"></span><span style="--n:7"></span><span style="--n:8"></span><span style="--n:8"></span><span style="--n:10"></span><span style="--n:9"></span><span style="--n:11"></span><span style="--n:10"></span><span style="--n:12"></span><span style="--n:11"></span><span style="--n:10"></span><span style="--n:11"></span><span style="--n:9"></span><span style="--n:11"></span><span style="--n:8"></span><span style="--n:9"></span><span style="--n:8"></span><span style="--n:9"></span><span style="--n:7"></span><span style="--n:8"></span><span style="--n:6"></span></div>
+    </div>
+    <p class="cap">How long a dashboard takes with 500,000 plays loaded: quicker than a blink.</p>
+  </div>
+  <h2 id="figures-title" class="figures-title" data-reveal style="--i:1">Faster Than My Cat at 3 AM.</h2>
+  <div class="tile tile-b" data-reveal style="--i:2">
+    <p class="fig">12 s</p>
+    <div class="fx fx-sync" aria-hidden="true">
+      <svg class="sy-ring" viewBox="0 0 100 100"><circle cx="50.0" cy="10.0" r="5" class="lit"/><circle cx="70.0" cy="15.4" r="5" class="lit"/><circle cx="84.6" cy="30.0" r="5" class="lit"/><circle cx="90.0" cy="50.0" r="5"/><circle cx="84.6" cy="70.0" r="5"/><circle cx="70.0" cy="84.6" r="5"/><circle cx="50.0" cy="90.0" r="5"/><circle cx="30.0" cy="84.6" r="5"/><circle cx="15.4" cy="70.0" r="5"/><circle cx="10.0" cy="50.0" r="5"/><circle cx="15.4" cy="30.0" r="5"/><circle cx="30.0" cy="15.4" r="5"/></svg>
+      <dl class="sy-lines"><div><dt>Playing</dt><dd class="sy-play">Arabella</dd></div><div><dt>In spotussi</dt><dd class="sy-app">Arabella</dd></div></dl>
+    </div>
+    <p class="cap">Your listening is captured every 12&nbsp;s while music plays, and every 90&nbsp;s when idle.</p>
+  </div>
+  <div class="tile tile-c" data-reveal style="--i:3">
+    <p class="fig">29 MiB</p>
+    <svg class="fx board" viewBox="0 0 240 120" aria-hidden="true">
+      <rect class="b-line" x="1" y="1" width="206" height="118" rx="9"/>
+      <circle class="b-line" cx="12" cy="12" r="4"/><circle class="b-line" cx="196" cy="12" r="4"/><circle class="b-line" cx="12" cy="108" r="4"/><circle class="b-line" cx="196" cy="108" r="4"/>
+      <path class="b-pins" d="M28 12h144M28 20h144"/>
+      <rect class="b-line" x="30" y="44" width="52" height="52" rx="4"/><text x="56" y="74" text-anchor="middle">arm64</text>
+      <rect class="b-line" x="98" y="50" width="40" height="40" rx="3"/>
+      <rect class="b-line" x="190" y="34" width="48" height="24" rx="2"/><rect class="b-line" x="190" y="64" width="48" height="24" rx="2"/>
+      <circle class="b-lamp" cx="170" cy="100" r="5"/>
+    </svg>
+    <p class="cap">Memory in use at idle, little enough for a small arm64 board.</p>
+  </div>
+</section>
+
+<!-- Installation: dark to light, like a dial warming up. Each stage says what
+     happens in one or two lines, links its guide in docs/ and runs a small
+     sketch of the step; the site keeps no install guide of its own. -->
+<section class="setup" id="install" aria-labelledby="setup-title">
+  <div class="setup-intro">
+    <h2 id="setup-title" class="setup-title" data-reveal>Installation</h2>
+    <p data-reveal style="--i:1">Five steps, most of them in the setup wizard. You need Docker and a Spotify account with Premium. Each step links its guide in the <a class="link" href="https://github.com/jasoncronje/spotussi/tree/main/docs">documentation on GitHub</a>.</p>
+  </div>
+
+  <div class="stages" data-reveal style="--i:2">
+    <article class="stage is-open" style="--bg:#121317;--fg:#eceef2;--fg2:#a4a8b4">
+      <button class="stage-tab" type="button" aria-expanded="true" aria-controls="stage-run"><span>Run</span></button>
+      <div class="stage-body" id="stage-run">
+        <div class="stage-text">
+          <span class="stage-n" aria-hidden="true">1</span>
+          <h3 tabindex="-1">Run</h3>
+          <p>Save the compose file from the install guide and run <code>docker compose up -d</code>. One container, one data volume.</p>
+          <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/install.md">Install guide</a></p>
+        </div>
+        <div class="s-art art-run is-on" data-loop="6500" aria-hidden="true">
+          <div class="run-file">
+            <p class="s-label">compose.yaml</p>
+            <pre class="mono"><span style="--i:0"><em>services:</em></span><span style="--i:1"><em>  spotussi:</em></span><span style="--i:2"><em>    image:</em> ghcr.io/jasoncronje/spotussi:beta</span><span style="--i:3"><em>    ports:</em> ["8080:8080"]</span><span style="--i:4"><em>    volumes:</em> [spotussi-data:/data]</span></pre>
+          </div>
+          <div class="run-term mono">
+            <p><span class="ps">$</span> <span class="type" style="--n:20;--d:.9s">docker compose up -d</span><i class="caret"></i></p>
+            <p class="run-pull"><span class="lamps"></span><span class="sw"><span class="st-a">Pulling</span><span class="st-b">Started</span></span></p>
+            <p class="run-up"><i class="lamp"></i><b>spotussi</b><span>running</span></p>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="stage" style="--bg:#24262d;--fg:#eceef2;--fg2:#b2b6c1">
+      <button class="stage-tab" type="button" aria-expanded="false" aria-controls="stage-claim"><span>Claim</span></button>
+      <div class="stage-body" id="stage-claim">
+        <div class="stage-text">
+          <span class="stage-n" aria-hidden="true">2</span>
+          <h3 tabindex="-1">Claim</h3>
+          <p>Open spotussi in your browser, enter the setup token from the container log and choose an owner password. Single sign-on through a forward-auth proxy works too.</p>
+          <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/install.md#single-sign-on-forward-auth">Sign-in options</a></p>
+        </div>
+        <div class="s-art art-claim is-on" data-loop="7000" aria-hidden="true">
+          <div class="tuner" style="--at:0"><i class="tn-needle"></i><ol><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ol></div>
+          <p class="s-h">Claim this instance</p>
+          <div class="fields">
+            <p class="s-label">Setup token</p>
+            <p class="field mono"><span class="type" style="--n:23;--d:.5s">H4KQ7-M2PZX-9TFRW-C3NDE</span></p>
+            <p class="s-label">Owner password</p>
+            <p class="field mono"><span class="type" style="--n:12;--d:2.2s">••••••••••••</span></p>
+          </div>
+          <p class="s-btn">Next</p>
+        </div>
+      </div>
+    </article>
+    <article class="stage" style="--bg:#454955;--fg:#f4f5f7;--fg2:#d5d8de">
+      <button class="stage-tab" type="button" aria-expanded="false" aria-controls="stage-connect"><span>Connect</span></button>
+      <div class="stage-body" id="stage-connect">
+        <div class="stage-text">
+          <span class="stage-n" aria-hidden="true">3</span>
+          <h3 tabindex="-1">Connect</h3>
+          <p>Create your own Spotify app, paste its Client ID and approve read-only access. The wizard shows every value to copy.</p>
+          <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/spotify.md">Spotify guide</a></p>
+        </div>
+        <div class="s-art art-connect is-on" data-loop="7500" aria-hidden="true">
+          <div class="tuner" style="--at:3"><i class="tn-needle"></i><ol><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ol></div>
+          <div class="cn-rows">
+            <div class="cn-row cn-1">
+              <p class="s-label">Redirect URI</p>
+              <p class="field mono"><span class="cn-uri">https://stats.example.com/oauth/spotify/callback</span><span class="chip sw"><span class="st-a">Copy</span><span class="st-b">Copied</span></span></p>
+            </div>
+            <div class="cn-row cn-2">
+              <p class="s-label">Client ID</p>
+              <p class="field mono"><span class="type" style="--n:32;--d:1.9s">3f9c2a71d04e4b8f9a6e15c07b2d8e44</span></p>
+            </div>
+            <div class="cn-row cn-3">
+              <p class="cn-status"><i class="lamp"></i><span class="sw"><span class="st-a">Waiting for approval</span><span class="st-b">Connected, read-only</span></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="stage" style="--bg:#b3b7c0;--fg:#121317;--fg2:#2c2f37">
+      <button class="stage-tab" type="button" aria-expanded="false" aria-controls="stage-import"><span>Import</span></button>
+      <div class="stage-body" id="stage-import">
+        <div class="stage-text">
+          <span class="stage-n" aria-hidden="true">4</span>
+          <h3 tabindex="-1">Import</h3>
+          <p>Request your Extended Streaming History from Spotify. It can take up to 30 days. Drop the zip in when it arrives.</p>
+          <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/import.md">Import guide</a></p>
+        </div>
+        <div class="s-art art-import is-on" data-loop="7000" aria-hidden="true">
+          <div class="drop">
+            <span class="drop-zip mono">my_spotify_data.zip</span>
+            <p class="drop-hint">Drop your export here</p>
+          </div>
+          <div class="im-meter">
+            <span class="lamps"></span>
+            <p class="im-count"><b data-count="148213" data-delay="1200" data-dur="2400">148,213</b> plays <span class="sw"><span class="st-a">importing</span><span class="st-b">imported</span></span></p>
+          </div>
+          <div class="im-years"><i style="--h:.35;--i:0"></i><i style="--h:.5;--i:1"></i><i style="--h:.42;--i:2"></i><i style="--h:.6;--i:3"></i><i style="--h:.55;--i:4"></i><i style="--h:.7;--i:5"></i><i style="--h:.62;--i:6"></i><i style="--h:.8;--i:7"></i><i style="--h:.75;--i:8"></i><i style="--h:.92;--i:9"></i><i style="--h:.85;--i:10"></i><i style="--h:1;--i:11"></i><i style="--h:.88;--i:12"></i><i style="--h:.95;--i:13"></i></div>
+          <p class="im-axis"><span>2011</span><span>today</span></p>
+        </div>
+      </div>
+    </article>
+    <article class="stage" style="--bg:#e1e3e7;--fg:#121317;--fg2:#3a3d46">
+      <button class="stage-tab" type="button" aria-expanded="false" aria-controls="stage-listen"><span>Listen</span></button>
+      <div class="stage-body" id="stage-listen">
+        <div class="stage-text">
+          <span class="stage-n" aria-hidden="true">5</span>
+          <h3 tabindex="-1">Listen</h3>
+          <p>Play music as normal. spotussi checks your player about every 12 seconds, so each play lands as you hear it.</p>
+          <p class="stage-more"><a href="https://github.com/jasoncronje/spotussi/blob/main/docs/spotify.md#live-capture">Live capture</a></p>
+        </div>
+        <div class="s-art art-listen is-on" data-loop="7000" aria-hidden="true">
+          <p class="poll"><i></i>Reading your player every 12 s</p>
+          <div class="ls-now">
+            <span class="cov" style="--a:#d9770f;--b:#3a6bc4">NE</span>
+            <p class="who"><b>Nothing Else Matters</b><span>Metallica</span></p>
+            <span class="pbar" style="--to:1;--t:2.6s;--d:.4s"></span>
+          </div>
+          <ol class="ls-list">
+            <li class="ls-new"><span class="cov" style="--a:#d9770f;--b:#3a6bc4">NE</span><p class="who"><b>Nothing Else Matters</b><span>Metallica</span></p><em>just now</em></li>
+            <li><span class="cov" style="--a:#0c9ba8;--b:#8a5ccf">AR</span><p class="who"><b>Arabella</b><span>Arctic Monkeys</span></p><em>11:31 AM</em></li>
+            <li><span class="cov" style="--a:#c2406a;--b:#d9770f">PA</span><p class="who"><b>Passionfruit</b><span>Drake</span></p><em>11:26 AM</em></li>
+          </ol>
+          <p class="ls-foot"><span class="sw"><span class="st-a">83</span><span class="st-b">84</span></span> plays today</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- FAQ: cards filed in a drawer -->
+<section class="drawer" id="faq" aria-labelledby="faq-title">
+  <h2 id="faq-title" class="drawer-title" data-reveal>FAQ</h2>
+  <div class="cards" data-reveal style="--i:1">
+    <div class="card is-open" style="--x:0;--c:var(--amber);--cf:var(--ink)">
+      <span class="card-tab">Premium</span>
+      <button class="card-q" type="button" aria-expanded="true" aria-controls="a1">Do I need Spotify Premium?</button>
+      <div class="card-a" id="a1"><p>Yes. Spotify only lets Premium accounts create the developer app spotussi connects through. Every instance uses its own app, and the wizard walks you through making it.</p></div>
+    </div>
+    <div class="card" style="--x:1;--c:var(--alu);--cf:var(--ink)">
+      <span class="card-tab">Privacy</span>
+      <button class="card-q" type="button" aria-expanded="false" aria-controls="a2">Where does my listening data go?</button>
+      <div class="card-a" id="a2"><p>Into one SQLite file on your server. spotussi asks Spotify for read-only access only, and the free public catalog sources it uses for artwork and genres can each be switched off.</p></div>
+    </div>
+    <div class="card" style="--x:2;--c:var(--graphite-3);--cf:var(--on-dark)">
+      <span class="card-tab">History</span>
+      <button class="card-q" type="button" aria-expanded="false" aria-controls="a3">What about the years before I install it?</button>
+      <div class="card-a" id="a3"><p>Request the Extended Streaming History on Spotify's privacy page and import the zip when it arrives. Raw rows are kept forever, so a rule change applies to all of it.</p></div>
+    </div>
+    <div class="card" style="--x:3;--c:var(--amber);--cf:var(--ink)">
+      <span class="card-tab">Artwork</span>
+      <button class="card-q" type="button" aria-expanded="false" aria-controls="a4">Why does artwork fill in gradually?</button>
+      <div class="card-a" id="a4"><p>Spotify allows apps like this about 150 catalog lookups a day. Public sources fill the gaps meanwhile, so a lifetime export has its artwork, durations and genres in about six to seven hours.</p></div>
+    </div>
+    <div class="card" style="--x:4;--c:var(--alu);--cf:var(--ink)">
+      <span class="card-tab">Assistants</span>
+      <button class="card-q" type="button" aria-expanded="false" aria-controls="a5">Can I ask an AI about my listening?</button>
+      <div class="card-a" id="a5"><p>Yes. The built-in MCP server answers assistants that hold an API token, using the same documented API the dashboard runs on.</p></div>
+    </div>
+    <div class="card" style="--x:5;--c:var(--graphite-3);--cf:var(--on-dark)">
+      <span class="card-tab">Cost</span>
+      <button class="card-q" type="button" aria-expanded="false" aria-controls="a6">What does it cost to run?</button>
+      <div class="card-a" id="a6"><p>There is nothing to buy and no subscription. It runs on any amd64 or arm64 machine with Docker, or as a static binary on Linux and macOS, and you can back it up while it runs with one command.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA: the word is the button -->
+<a class="cta" href="https://github.com/jasoncronje/spotussi">
+  <span class="cta-line">The compose file, the guides and every release are on GitHub.</span>
+  <svg class="cta-arrow" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 36 36 12M16 12h20v20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/></svg>
+  <span class="cta-word">Install</span>
+</a>
+
+</main>
+</div>
+
+<footer class="foot">
+  <div class="foot-cols">
+    <div>
+      <p class="f-first">0.1.0 beta 1</p>
+      <p>Docker for linux/amd64 and arm64</p>
+      <p>Binaries for Linux and macOS</p>
+      <p><a class="link" href="https://github.com/jasoncronje/spotussi/releases">Release notes</a></p>
+    </div>
+    <nav aria-label="Documentation">
+      <p class="f-first">Guides</p>
+      <p><a class="link" href="https://github.com/jasoncronje/spotussi/blob/main/docs/install.md">Install and update</a></p>
+      <p><a class="link" href="https://github.com/jasoncronje/spotussi/blob/main/docs/import.md">Import your history</a></p>
+      <p><a class="link" href="https://github.com/jasoncronje/spotussi/blob/main/docs/backup.md">Backup and restore</a></p>
+      <p><a class="link" href="https://github.com/jasoncronje/spotussi/blob/main/docs/mcp.md">API and MCP</a></p>
+    </nav>
+    <div>
+      <p class="f-first">Credits</p>
+      <p>Interface images from spotussi&rsquo;s demo mode. Album covers and artist photos are &copy; their owners, from Deezer&rsquo;s public API, and shown only as sample data.</p>
+    </div>
+  </div>
+  <p class="legal">An independent project, not affiliated with or endorsed by Spotify. Spotify is a trademark of Spotify AB.</p>
+</footer>
+
+<script src="main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest a change or a new feature.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        spotussi has one maintainer, so a short issue before a large pull request saves everyone time. Check [docs/project/decisions.md](https://github.com/jasoncronje/spotussi/blob/main/docs/project/decisions.md) first: some ideas were already considered and turned down, with the reasons.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The question you want answered or the task you're stuck on, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: How you imagine it working, and anything you've tried.

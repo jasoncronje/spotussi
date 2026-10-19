@@ -1,0 +1,59 @@
+# Weekly dependency updates (D33). Minor and patch updates arrive as one
+# grouped pull request per ecosystem; majors come one at a time so each
+# can be read on its own. Toolchain versions (Go, Node, pnpm) are pinned
+# in mise.toml, the Dockerfile and the workflows, and are bumped by hand.
+version: 2
+
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build(deps)
+    groups:
+      go-minor-patch:
+        update-types: [minor, patch]
+
+  # The SvelteKit UI (pnpm lockfile; Dependabot's npm ecosystem reads it).
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build(deps)
+    groups:
+      web-minor-patch:
+        update-types: [minor, patch]
+
+  # The Remotion project for the site's hero video.
+  - package-ecosystem: npm
+    directory: /motion
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build(deps)
+    groups:
+      motion-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci(deps)
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
+
+  # Base images in the Dockerfile (node, golang, distroless).
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build(deps)
+    groups:
+      docker-minor-patch:
+        update-types: [minor, patch]

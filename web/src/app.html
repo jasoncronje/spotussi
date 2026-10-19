@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="text-scale" content="scale" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="theme-color" content="#eeeff1" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#121317" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.ico" sizes="32x32" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />
+		<script>
+			// Apply the theme before first paint (no flash). "system" follows the OS.
+			(function () {
+				var t = 'system';
+				try {
+					t = localStorage.getItem('spotussi:theme') || 'system';
+				} catch (e) {}
+				var dark =
+					t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+				document.documentElement.classList.toggle('dark', dark);
+			})();
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-code="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

@@ -1,0 +1,61 @@
+name: site
+
+# Deploys the marketing page in site/ to Cloudflare (D35): a static-assets
+# Worker configured in wrangler.jsonc, on its own and only when the page
+# changes (D33). Pushes to main deploy production at spotussi.app; pull
+# requests upload a version with a preview link at
+# <branch>-spotussi.<subdomain>.workers.dev, shown in the job summary.
+# Runs from forks and Dependabot have no secrets and skip the deploy.
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', 'wrangler.jsonc', '.github/workflows/site.yml']
+  pull_request:
+    paths: ['site/**', 'wrangler.jsonc', '.github/workflows/site.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Bumped by hand, like the other toolchain pins (dependabot.yml).
+  WRANGLER: wrangler@4.147.0
+
+jobs:
+  deploy:
+    name: Deploy site to Cloudflare
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check for Cloudflare credentials
+        id: creds
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No Cloudflare secrets in this run (fork, Dependabot or not set up yet); skipping the deploy."
+          fi
+      # The custom domain isn't in wrangler.jsonc, so deploys leave it as
+      # attached and the token needs no zone permissions.
+      - name: Deploy production
+        if: steps.creds.outputs.ok && github.event_name != 'pull_request'
+        run: npx --yes "$WRANGLER" deploy --message "$GITHUB_SHA"
+      # Aliases must be DNS labels: lower case, letters, digits and dashes,
+      # short enough that "<alias>-spotussi" fits in 63 characters.
+      - name: Upload preview
+        if: steps.creds.outputs.ok && github.event_name == 'pull_request'
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          alias=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '-' | sed -E 's/-+/-/g; s/^-//' | cut -c1-40 | sed -E 's/-$//')
+          npx --yes "$WRANGLER" versions upload --preview-alias "$alias" --message "$GITHUB_SHA" | tee "$RUNNER_TEMP/upload.txt"
+          url=$(grep -o 'https://[^ ]*' "$RUNNER_TEMP/upload.txt" | grep "^https://$alias-" | head -1)
+          echo "Preview: ${url:-see the log above}" >> "$GITHUB_STEP_SUMMARY"

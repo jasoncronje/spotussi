@@ -1,0 +1,13 @@
+{
+ "iframe_url": "https://open.spotify.com/embed/artist/0gxyHStUsqpMadRV0Di1Qt?utm_source=oembed",
+ "width": 456,
+ "height": 352,
+ "version": "1.0",
+ "provider_name": "Spotify",
+ "provider_url": "https://spotify.com",
+ "type": "rich",
+ "title": "Rick Astley",
+ "thumbnail_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616100005174854861dff9a24a1ed3dfdc7d",
+ "thumbnail_width": 320,
+ "thumbnail_height": 320
+}
