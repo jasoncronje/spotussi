@@ -811,6 +811,19 @@ img.sp-art { display: block; height: auto; object-fit: cover; }
 .cap { position: relative; font-size: var(--s-body); max-width: 34ch; }
 .tile-a { grid-column: 1 / 7; grid-row: 1 / 5; min-height: 70vh; background: var(--amber); color: var(--ink); }
 .figures-title { grid-column: 7 / 13; grid-row: 1; align-self: center; padding-left: 20px; font-size: var(--s-head); line-height: 1.1; letter-spacing: -0.02em; }
+/* A small running cat beside the figures title: two leg frames and a bob. */
+.cat { display: inline-block; height: 0.9em; width: auto; margin-left: 0.35em; vertical-align: -0.08em; overflow: visible; color: #df7b0c; fill: currentColor; stroke: currentColor; }
+.cat-body path:not(.cat-tail) { stroke: none; }
+.cat-body ellipse, .cat-body circle { stroke: none; }
+.cat-eye { fill: var(--alu); }
+.cat-b { opacity: 0; }
+.cat-a { animation: cat-a 0.3s steps(1) infinite; }
+.cat-b { animation: cat-b 0.3s steps(1) infinite; }
+.cat-body { animation: cat-bob 0.3s steps(1) infinite; }
+@keyframes cat-a { 50% { opacity: 0; } }
+@keyframes cat-b { 50% { opacity: 1; } }
+@keyframes cat-bob { 50% { transform: translateY(-1.5px); } }
+@media (prefers-reduced-motion: reduce) { .cat-a, .cat-b, .cat-body { animation: none; } }
 .tile-b { grid-column: 7 / 10; grid-row: 2 / 4; margin-top: 2vh; background: var(--graphite); color: var(--on-dark); }
 .tile-b .cap { color: var(--on-dark-muted); }
 /* The narrow tiles' figures size to the tile, not the screen, so "29 MiB"
