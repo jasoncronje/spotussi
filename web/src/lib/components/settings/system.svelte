@@ -56,7 +56,8 @@
 	const SOURCE = {
 		oembed: 'Spotify embeds',
 		deezer: 'Music catalog',
-		musicbrainz: 'Open music database'
+		listenbrainz: 'Open music database, in batches',
+		musicbrainz: 'Open music database, one by one'
 	} as const;
 	const FALLBACK_STATE = {
 		idle: 'Idle',
@@ -68,18 +69,26 @@
 
 	const pct = (a: number, b: number) => (b ? Math.min(100, (a / b) * 100) : 0);
 
-	/** Best match count across sources, capped at what Spotify hasn't covered. */
+	/**
+	 * Best match count across sources, capped at what Spotify hasn't covered.
+	 * The two open-database stages split the artists between them (D37), so
+	 * their artist counts add up.
+	 */
 	function provisional(kind: 'tracks' | 'artists') {
 		if (!data) return 0;
 		const c = data.catalog;
 		const left =
 			kind === 'tracks' ? c.tracks_total - c.tracks_hydrated : c.artists_total - c.artists_hydrated;
-		const best = Math.max(
-			0,
-			...c.fallbacks.map((f) =>
-				kind === 'tracks' ? (f.source === 'musicbrainz' ? 0 : f.matched) : f.artists_matched
-			)
-		);
+		const genreStage = (f: (typeof c.fallbacks)[number]) =>
+			f.source === 'listenbrainz' || f.source === 'musicbrainz';
+		const best =
+			kind === 'tracks'
+				? Math.max(0, ...c.fallbacks.filter((f) => !genreStage(f)).map((f) => f.matched))
+				: Math.max(
+						0,
+						...c.fallbacks.filter((f) => !genreStage(f)).map((f) => f.artists_matched),
+						c.fallbacks.filter(genreStage).reduce((n, f) => n + f.artists_matched, 0)
+					);
 		return Math.max(0, Math.min(left, best));
 	}
 	const meters = $derived(

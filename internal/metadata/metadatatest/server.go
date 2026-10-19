@@ -1,6 +1,6 @@
 // Package metadatatest is a fake of the fallback metadata sources (Spotify
-// oEmbed, Deezer, MusicBrainz) for tests: one httptest server answering
-// all three APIs' paths with responses recorded from the real services in
+// oEmbed, Deezer, ListenBrainz, MusicBrainz) for tests: one httptest
+// server answering all four APIs' paths with responses recorded from the real services in
 // Oct 2026 (public catalog data for one well-known track, "Never Gonna
 // Give You Up" by Rick Astley; previews and signed URLs stripped).
 // Everything else is "not found" in each API's own way.
@@ -27,6 +27,8 @@ const (
 	ArtistID = "0gxyHStUsqpMadRV0Di1Qt" // Spotify artist (oEmbed)
 	ISRC     = "GBARL9300135"
 	MBID     = "db92a151-1ac2-438b-bc43-b82e149ddd50"
+	// RecordingMBID is the recording ListenBrainz finds for the track.
+	RecordingMBID = "8f3471b5-7e6a-48da-86a9-c1c07a0f47ae"
 	// Names as an export spells them.
 	Track  = "Never Gonna Give You Up"
 	Artist = "Rick Astley"
@@ -57,7 +59,7 @@ func New(t testing.TB) *Server {
 }
 
 // Hits reports how many requests a source received ("oembed", "deezer",
-// "musicbrainz").
+// "listenbrainz", "musicbrainz").
 func (s *Server) Hits(source string) int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -71,6 +73,12 @@ func (s *Server) Clients() (*metadata.OEmbed, *metadata.Deezer, *metadata.MusicB
 	return metadata.NewOEmbed(s.URL, ua, s.Client(), metadata.NewLimiter(1000, 100)),
 		metadata.NewDeezer(s.URL, ua, s.Client(), metadata.NewLimiter(1000, 100)),
 		metadata.NewMusicBrainz(s.URL, ua, s.Client(), metadata.NewLimiter(1000, 100))
+}
+
+// ListenBrainz returns a ListenBrainz client pointed at the fake (both
+// hosts), with a fast limiter.
+func (s *Server) ListenBrainz() *metadata.ListenBrainz {
+	return metadata.NewListenBrainz(s.URL, s.URL, metadata.UserAgent("test", ""), s.Client(), metadata.NewLimiter(1000, 100))
 }
 
 func fixture(name string) []byte {
@@ -87,6 +95,8 @@ func sourceOf(path string) string {
 		return metadata.SourceOEmbed
 	case strings.HasPrefix(path, "/ws/2/"):
 		return metadata.SourceMusicBrainz
+	case strings.HasSuffix(path, "-lookup/json"), path == "/spotify-id-from-mbid/json", strings.HasPrefix(path, "/1/metadata/"):
+		return metadata.SourceListenBrainz
 	}
 	return metadata.SourceDeezer
 }
@@ -158,6 +168,26 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		_ = json.Unmarshal(fixture("deezer_album.json"), &a)
 		a["id"] = json.Number(strings.TrimPrefix(p, "/album/"))
 		_ = json.NewEncoder(w).Encode(a)
+	case p == "/acrr-lookup/json" || p == "/acr-lookup/json":
+		s.lbLookup(w, r)
+	case p == "/spotify-id-from-mbid/json":
+		var items []map[string]string
+		_ = json.NewDecoder(r.Body).Decode(&items)
+		out := []json.RawMessage{}
+		for _, it := range items {
+			if it["recording_mbid"] == RecordingMBID {
+				var rows []json.RawMessage
+				_ = json.Unmarshal(fixture("lb_spotify_ids.json"), &rows)
+				out = append(out, rows...)
+			}
+		}
+		_ = json.NewEncoder(w).Encode(out)
+	case p == "/1/metadata/recording/":
+		if strings.Contains(r.URL.Query().Get("recording_mbids"), RecordingMBID) {
+			_, _ = w.Write(fixture("lb_metadata_recording.json"))
+		} else {
+			_, _ = w.Write([]byte(`{}`))
+		}
 	case p == "/ws/2/isrc/"+ISRC:
 		_, _ = w.Write(fixture("mb_isrc.json"))
 	case p == "/ws/2/artist/"+MBID:
@@ -171,4 +201,26 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	default:
 		notFound()
 	}
+}
+
+// lbLookup answers a labs name lookup: a hit for items naming the
+// recorded track by the recorded artist (and album, when given).
+func (s *Server) lbLookup(w http.ResponseWriter, r *http.Request) {
+	var items []map[string]string
+	_ = json.NewDecoder(r.Body).Decode(&items)
+	out := []map[string]any{}
+	for i, it := range items {
+		if metadata.Fold(it["artist_credit_name"]) != metadata.Fold(Artist) ||
+			metadata.Fold(it["recording_name"]) != metadata.Fold(Track) {
+			continue
+		}
+		if rel, ok := it["release_name"]; ok && metadata.Fold(rel) != metadata.Fold(Album) {
+			continue
+		}
+		var hit map[string]any
+		_ = json.Unmarshal(fixture("lb_lookup_hit.json"), &hit)
+		hit["index"] = i
+		out = append(out, hit)
+	}
+	_ = json.NewEncoder(w).Encode(out)
 }

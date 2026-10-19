@@ -1026,7 +1026,7 @@ export interface components {
 			 */
 			state: 'spotify' | 'fallback' | 'pending';
 			/** @description Fallback sources that filled fields, in stage order; empty unless `state` is `fallback`. */
-			sources: ('oembed' | 'deezer' | 'musicbrainz')[];
+			sources: ('oembed' | 'deezer' | 'listenbrainz' | 'musicbrainz')[];
 		};
 		/**
 		 * @description Listening in the range by where the plays came from (D8). `export`: only the
@@ -1272,17 +1272,20 @@ export interface components {
 				/**
 				 * @description Fallback metadata sources (D27), in stage order: Spotify oEmbed (exact artwork and
 				 *     titles by URI), Deezer (durations, ISRCs, artist pictures, album dates by name match)
-				 *     and MusicBrainz (genres). They work through the same queue, most-played first, while
-				 *     Spotify lookups are not making progress; a later Spotify lookup replaces what they
-				 *     found. Counts cover queued tracks (artists for oEmbed too).
+				 *     ListenBrainz (artist MusicBrainz IDs and genres, by batch name lookups; D37) and
+				 *     MusicBrainz (genres of the artists ListenBrainz didn't find). They work through the
+				 *     same queue, most-played first, while Spotify lookups are not making progress; a later
+				 *     Spotify lookup replaces what they found. Counts cover queued tracks (artists for
+				 *     oEmbed too); ListenBrainz and MusicBrainz count a track as matched when its artist is
+				 *     (MusicBrainz includes the artists ListenBrainz found, without a request).
 				 */
 				fallbacks: {
 					/** @enum {string} */
-					source: 'oembed' | 'deezer' | 'musicbrainz';
+					source: 'oembed' | 'deezer' | 'listenbrainz' | 'musicbrainz';
 					/**
 					 * @description `paused`: Spotify is hydrating, so the fallbacks wait their turn. `backing_off`: the
 					 *     source is rate limiting or failing. `disabled`: turned off (`METADATA_OEMBED`,
-					 *     `METADATA_DEEZER`, `METADATA_MUSICBRAINZ`), or hydration is off.
+					 *     `METADATA_DEEZER`, `METADATA_LISTENBRAINZ`, `METADATA_MUSICBRAINZ`), or hydration is off.
 					 * @enum {string}
 					 */
 					state: 'idle' | 'running' | 'paused' | 'backing_off' | 'disabled';

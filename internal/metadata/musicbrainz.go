@@ -72,6 +72,48 @@ type MBArtist struct {
 	Score          int       `json:"score"` // search only, 0-100
 	Disambiguation string    `json:"disambiguation"`
 	Genres         []MBGenre `json:"genres"` // lookup with inc=genres
+	// Relations are the artist's URL links (lookup with inc=url-rels).
+	Relations []struct {
+		Type string `json:"type"`
+		URL  struct {
+			Resource string `json:"resource"`
+		} `json:"url"`
+	} `json:"relations"`
+}
+
+// SpotifyArtistID is the Spotify artist ID of the artist's one
+// open.spotify.com/artist/ link ("": none, or several). Stored, not used
+// (D37).
+func (a *MBArtist) SpotifyArtistID() string {
+	id := ""
+	for _, r := range a.Relations {
+		u, err := url.Parse(r.URL.Resource)
+		if err != nil || u.Host != "open.spotify.com" {
+			continue
+		}
+		rest, ok := strings.CutPrefix(u.Path, "/artist/")
+		if !ok || !spotifyID(rest) {
+			continue
+		}
+		if id != "" && id != rest {
+			return ""
+		}
+		id = rest
+	}
+	return id
+}
+
+// spotifyID reports whether s looks like a Spotify ID (22 base62 chars).
+func spotifyID(s string) bool {
+	if len(s) != 22 {
+		return false
+	}
+	for _, c := range s {
+		if !(c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+			return false
+		}
+	}
+	return true
 }
 
 // MBGenre is a curated genre with its vote count.
@@ -92,10 +134,10 @@ func (m *MusicBrainz) SearchArtists(ctx context.Context, name string, limit int)
 	return r.Artists, nil
 }
 
-// Artist looks up an artist with its genres.
+// Artist looks up an artist with its genres and URL links.
 func (m *MusicBrainz) Artist(ctx context.Context, mbid string) (*MBArtist, error) {
 	var a MBArtist
-	if err := m.get(ctx, "/ws/2/artist/"+url.PathEscape(mbid)+"?inc=genres&fmt=json", mbLimited,
+	if err := m.get(ctx, "/ws/2/artist/"+url.PathEscape(mbid)+"?inc=genres+url-rels&fmt=json", mbLimited,
 		decodeJSON(m.source, &a)); err != nil {
 		return nil, err
 	}

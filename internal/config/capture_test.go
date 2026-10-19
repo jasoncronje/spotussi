@@ -37,12 +37,12 @@ func TestCaptureAndRateSettings(t *testing.T) {
 
 func TestMetadataSettings(t *testing.T) {
 	cfg, err := FromLookup(lookup(nil))
-	if err != nil || !cfg.HydrateSpotifyLookups || !cfg.MetadataOEmbed || !cfg.MetadataDeezer || !cfg.MetadataMusicBrainz || cfg.MetadataContact != "" {
+	if err != nil || !cfg.HydrateSpotifyLookups || !cfg.MetadataOEmbed || !cfg.MetadataDeezer || !cfg.MetadataListenBrainz || !cfg.MetadataMusicBrainz || cfg.MetadataContact != "" {
 		t.Fatalf("defaults: %+v %v", cfg, err)
 	}
 	cfg, err = FromLookup(lookup(map[string]string{"HYDRATE_SPOTIFY_LOOKUPS": "false", "METADATA_DEEZER": "false", "METADATA_MUSICBRAINZ": "0",
-		"METADATA_CONTACT": " https://example.org/ "}))
-	if err != nil || cfg.HydrateSpotifyLookups || !cfg.MetadataOEmbed || cfg.MetadataDeezer || cfg.MetadataMusicBrainz ||
+		"METADATA_LISTENBRAINZ": "false", "METADATA_CONTACT": " https://example.org/ "}))
+	if err != nil || cfg.HydrateSpotifyLookups || !cfg.MetadataOEmbed || cfg.MetadataDeezer || cfg.MetadataListenBrainz || cfg.MetadataMusicBrainz ||
 		cfg.MetadataContact != "https://example.org/" {
 		t.Fatalf("values: %+v %v", cfg, err)
 	}

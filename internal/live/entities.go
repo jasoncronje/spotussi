@@ -438,10 +438,10 @@ func (b *Backend) metadata(ctx context.Context, entityType, id string, m derive.
 	// 'borrowed' fields (copied from a same-name provisional artist, D27)
 	// name no source of their own: they're left out, so an artist with only
 	// borrowed details reports no sources (the UI says "public music
-	// catalogs") and the API's source enum stays oembed/deezer/musicbrainz.
+	// catalogs") and the API's source enum stays the four stage names.
 	rs, err := b.db.Read.QueryContext(ctx, `SELECT DISTINCT source FROM catalog_provenance WHERE entity_type = ? AND entity_id = ?
 		AND source != 'borrowed'
-		ORDER BY CASE source WHEN 'oembed' THEN 0 WHEN 'deezer' THEN 1 ELSE 2 END`, entityType, id)
+		ORDER BY CASE source WHEN 'oembed' THEN 0 WHEN 'deezer' THEN 1 WHEN 'listenbrainz' THEN 2 ELSE 3 END`, entityType, id)
 	if err != nil {
 		return out, err
 	}

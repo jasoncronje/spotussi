@@ -23,6 +23,7 @@ Artwork, genres and durations are looked up in the background, most-played track
 |---|---|---|
 | Spotify oEmbed | Artwork, titles | Exact Spotify URI |
 | Deezer | Durations, release dates, pictures, ISRCs | Name, artist, album and duration |
-| MusicBrainz | Artist genres | Name (1 request/s, as MusicBrainz asks) |
+| ListenBrainz | Artist genres (MusicBrainz's), in batches of 100 tracks | Name, artist, album and duration |
+| MusicBrainz | Genres of the artists ListenBrainz didn't find | Name (1 request/s, as MusicBrainz asks) |
 
-A large export's whole catalog fills in about 6 to 7 hours this way. Low-confidence matches are rejected, and Spotify's data replaces fallback data as its quota allows. Pages show what's known and mark provisional details. Each source can be turned off with its `METADATA_*` variable, and `HYDRATE_SPOTIFY_LOOKUPS=false` leaves Spotify's quota untouched.
+A large export's whole catalog fills in about 3 to 5 hours this way (MusicBrainz is the slow step; ListenBrainz takes most of its artists off it). Low-confidence matches are rejected, and Spotify's data replaces fallback data as its quota allows. Pages show what's known and mark provisional details. Each source can be turned off with its `METADATA_*` variable, and `HYDRATE_SPOTIFY_LOOKUPS=false` leaves Spotify's quota untouched.

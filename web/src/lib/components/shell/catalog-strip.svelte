@@ -39,7 +39,9 @@
 			Math.max(0, total - spotify),
 			Math.max(
 				0,
-				...catalog.fallbacks.filter((f) => f.source !== 'musicbrainz').map((f) => f.matched)
+				...catalog.fallbacks
+					.filter((f) => f.source !== 'musicbrainz' && f.source !== 'listenbrainz')
+					.map((f) => f.matched)
 			)
 		)
 	);

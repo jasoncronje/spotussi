@@ -1,6 +1,7 @@
 // Package metadata holds the clients of the free public metadata sources
 // that fill catalog gaps while Spotify's lookup quota is spent (D27):
-// Spotify oEmbed (exact, by URI), Deezer's public API (name search) and
+// Spotify oEmbed (exact, by URI), Deezer's public API (name search),
+// ListenBrainz (batch name lookups of MusicBrainz data, D37) and
 // MusicBrainz (genres). None needs an API key or sends credentials.
 //
 // Every client has its own Limiter, independent of the Spotify limiter
@@ -10,6 +11,7 @@
 package metadata
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -23,9 +25,10 @@ import (
 
 // Source names, as stored in fallback_state and catalog_provenance.
 const (
-	SourceOEmbed      = "oembed"
-	SourceDeezer      = "deezer"
-	SourceMusicBrainz = "musicbrainz"
+	SourceOEmbed       = "oembed"
+	SourceDeezer       = "deezer"
+	SourceListenBrainz = "listenbrainz"
+	SourceMusicBrainz  = "musicbrainz"
 )
 
 // ErrNotFound is returned when a source has no such entity.
@@ -106,17 +109,30 @@ func (e errLimited) Error() string { return "rate limited" }
 // get sends GET path (with query) and decodes a JSON body with decode.
 // 404 is ErrNotFound. Rate limits pause the limiter and are retried.
 func (b *base) get(ctx context.Context, path string, limited limitedFunc, decode func([]byte) error) error {
+	return b.send(ctx, http.MethodGet, b.baseURL+path, nil, limited, decode)
+}
+
+// send is get for any method and absolute URL; a non-nil body is sent
+// as JSON.
+func (b *base) send(ctx context.Context, method, url string, body []byte, limited limitedFunc, decode func([]byte) error) error {
 	var last time.Duration
 	for attempt := 0; ; attempt++ {
 		if err := b.lim.Wait(ctx); err != nil {
 			return err
 		}
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, b.baseURL+path, nil)
+		var rd io.Reader
+		if body != nil {
+			rd = bytes.NewReader(body)
+		}
+		req, err := http.NewRequestWithContext(ctx, method, url, rd)
 		if err != nil {
 			return err
 		}
 		req.Header.Set("User-Agent", b.ua)
 		req.Header.Set("Accept", "application/json")
+		if body != nil {
+			req.Header.Set("Content-Type", "application/json")
+		}
 		b.requests.add(1)
 		resp, err := b.http.Do(req)
 		if err != nil {

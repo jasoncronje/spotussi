@@ -1,0 +1,395 @@
+{
+    "8f3471b5-7e6a-48da-86a9-c1c07a0f47ae": {
+        "artist": {
+            "artist_credit_id": 32667,
+            "artists": [
+                {
+                    "area": "United Kingdom",
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "begin_year": 1966,
+                    "gender": "Male",
+                    "join_phrase": "",
+                    "name": "Rick Astley",
+                    "rels": {
+                        "free streaming": "https://www.deezer.com/artist/6160",
+                        "lyrics": "https://www.musixmatch.com/artist/Rick-Astley",
+                        "official homepage": "http://www.rickastley.co.uk/",
+                        "purchase for download": "https://www.qobuz.com/gb-en/interpreter/rick-astley/122665",
+                        "purchase for mail-order": "https://www.cdjapan.co.jp/person/700168954",
+                        "social network": "https://www.tiktok.com/@rickastleyofficial",
+                        "streaming": "https://www.qobuz.com/gb-en/interpreter/rick-astley/122665",
+                        "wikidata": "https://www.wikidata.org/wiki/Q219237",
+                        "youtube": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+                    },
+                    "type": "Person"
+                }
+            ],
+            "name": "Rick Astley"
+        },
+        "recording": {
+            "first_release_date": "1987-07-27",
+            "isrcs": [
+                "GBARL0600789",
+                "GBARL0401372",
+                "USAT21601138",
+                "GBARL0600786",
+                "GB5KW2103369",
+                "GB5KW2202504",
+                "GBARL9300135",
+                "GBARL8700052"
+            ],
+            "length": 212960,
+            "name": "Never Gonna Give You Up",
+            "rels": [
+                {
+                    "artist_mbid": "bee69828-6833-449a-940c-05c3b633faa6",
+                    "artist_name": "Matt Aitken",
+                    "instrument": "keyboard",
+                    "type": "instrument"
+                },
+                {
+                    "artist_mbid": "1b6a6f14-4e1d-43a0-ad3f-fd3763922a9f",
+                    "artist_name": "Shirley Lewis",
+                    "instrument": "background vocals",
+                    "type": "vocal"
+                },
+                {
+                    "artist_mbid": "6f987c2e-d1a5-42ee-b41d-1be174e5ddda",
+                    "artist_name": "Dee Lewis",
+                    "instrument": "background vocals",
+                    "type": "vocal"
+                },
+                {
+                    "artist_mbid": "8c7a904f-7afa-4c44-8ecc-dc50fb821172",
+                    "artist_name": "Mae McKenna",
+                    "instrument": "background vocals",
+                    "type": "vocal"
+                },
+                {
+                    "artist_mbid": "b4413e7c-3f49-4911-9844-d9d0379ccd49",
+                    "artist_name": "Mike Stock",
+                    "instrument": "keyboard",
+                    "type": "instrument"
+                },
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "artist_name": "Rick Astley",
+                    "instrument": "lead vocals",
+                    "type": "vocal"
+                },
+                {
+                    "artist_mbid": "5636ce3a-2076-4151-b221-e4157e8e7a1c",
+                    "artist_name": "A. Linn",
+                    "instrument": "drums (drum set)",
+                    "type": "instrument"
+                },
+                {
+                    "artist_mbid": "bee69828-6833-449a-940c-05c3b633faa6",
+                    "artist_name": "Matt Aitken",
+                    "instrument": "guitar",
+                    "type": "instrument"
+                },
+                {
+                    "artist_mbid": "03bfef40-5b20-4b43-b01e-be9af93ae331",
+                    "artist_name": "Suzanne Rhatigan",
+                    "instrument": "background vocals",
+                    "type": "vocal"
+                }
+            ],
+            "url_rels": [
+                {
+                    "type": "streaming",
+                    "url": "https://music.apple.com/gb/song/1624945512"
+                },
+                {
+                    "type": "free streaming",
+                    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                },
+                {
+                    "type": "free streaming",
+                    "url": "https://open.spotify.com/track/6JEK0CvvjDjjMUBFoXShNZ"
+                },
+                {
+                    "type": "purchase for download",
+                    "url": "https://music.apple.com/gb/song/1624945512"
+                },
+                {
+                    "type": "free streaming",
+                    "url": "https://open.spotify.com/track/1Ojc3QD0dfJ5HG8uzLsfTg"
+                },
+                {
+                    "type": "streaming",
+                    "url": "https://music.apple.com/gb/song/1438556832"
+                },
+                {
+                    "type": "free streaming",
+                    "url": "https://music.youtube.com/watch?v=Om61naQC8is"
+                }
+            ]
+        },
+        "tag": {
+            "artist": [
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "count": 4,
+                    "genre_mbid": "b739a895-85ed-4ad3-8717-4e9ef5387dd8",
+                    "tag": "dance-pop"
+                },
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "count": 4,
+                    "genre_mbid": "650bda08-20ca-4012-b873-3b68c5768bdf",
+                    "tag": "blue-eyed soul"
+                },
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "count": 4,
+                    "genre_mbid": "911c7bbb-172d-4df8-9478-dbff4296e791",
+                    "tag": "pop"
+                },
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "count": 1,
+                    "tag": "adult contemporary"
+                },
+                {
+                    "artist_mbid": "db92a151-1ac2-438b-bc43-b82e149ddd50",
+                    "count": 1,
+                    "tag": "synthpop"
+                }
+            ],
+            "recording": [
+                {
+                    "count": 1,
+                    "tag": "energetic"
+                },
+                {
+                    "count": 1,
+                    "tag": "meme dance"
+                },
+                {
+                    "count": 1,
+                    "tag": "rick-roll"
+                },
+                {
+                    "count": 1,
+                    "tag": "remark/well-known"
+                },
+                {
+                    "count": 1,
+                    "tag": "remark/catchy"
+                },
+                {
+                    "count": 1,
+                    "tag": "meme"
+                },
+                {
+                    "count": 2,
+                    "tag": "club/dance"
+                },
+                {
+                    "count": 1,
+                    "tag": "pop/rock"
+                },
+                {
+                    "count": 1,
+                    "tag": "groovy"
+                },
+                {
+                    "count": 1,
+                    "tag": "euro-dance"
+                },
+                {
+                    "count": 1,
+                    "tag": "sing along"
+                },
+                {
+                    "count": 1,
+                    "tag": "hanging out"
+                },
+                {
+                    "count": 1,
+                    "tag": "dinner"
+                },
+                {
+                    "count": 1,
+                    "tag": "emotional"
+                },
+                {
+                    "count": 1,
+                    "tag": "upbeat"
+                },
+                {
+                    "count": 1,
+                    "tag": "party"
+                },
+                {
+                    "count": 1,
+                    "tag": "dreamy"
+                },
+                {
+                    "count": 1,
+                    "tag": "beach"
+                },
+                {
+                    "count": 1,
+                    "tag": "romantic"
+                },
+                {
+                    "count": 4,
+                    "genre_mbid": "650bda08-20ca-4012-b873-3b68c5768bdf",
+                    "tag": "blue-eyed soul"
+                },
+                {
+                    "count": 2,
+                    "genre_mbid": "797e2e85-5ffd-495c-a757-8b4079052f0e",
+                    "tag": "pop rock"
+                },
+                {
+                    "count": 2,
+                    "tag": "adult contemporary"
+                },
+                {
+                    "count": 13,
+                    "genre_mbid": "b739a895-85ed-4ad3-8717-4e9ef5387dd8",
+                    "tag": "dance-pop"
+                },
+                {
+                    "count": 2,
+                    "genre_mbid": "7d0c6a6b-5d56-4b1e-a8c7-e32194f246b9",
+                    "tag": "soft rock"
+                },
+                {
+                    "count": 2,
+                    "genre_mbid": "a04d680b-b5c5-4f6a-87a3-f9f1ff98e3ea",
+                    "tag": "disco"
+                },
+                {
+                    "count": 6,
+                    "genre_mbid": "988e91a3-3341-416d-b7f8-7dbef6848dac",
+                    "tag": "synth-pop"
+                },
+                {
+                    "count": 1,
+                    "tag": "mellow"
+                },
+                {
+                    "count": 2,
+                    "genre_mbid": "e5bba957-8c91-496a-a675-c6d0c6b51c33",
+                    "tag": "dance"
+                },
+                {
+                    "count": 15,
+                    "genre_mbid": "911c7bbb-172d-4df8-9478-dbff4296e791",
+                    "tag": "pop"
+                },
+                {
+                    "count": 1,
+                    "genre_mbid": "89255676-1f14-4dd8-bbad-fca839d6aff4",
+                    "tag": "electronic"
+                }
+            ],
+            "release_group": [
+                {
+                    "count": 1,
+                    "genre_mbid": "89255676-1f14-4dd8-bbad-fca839d6aff4",
+                    "tag": "electronic"
+                },
+                {
+                    "count": 5,
+                    "genre_mbid": "911c7bbb-172d-4df8-9478-dbff4296e791",
+                    "tag": "pop"
+                },
+                {
+                    "count": 1,
+                    "tag": "uplifting"
+                },
+                {
+                    "count": 1,
+                    "tag": "melodic"
+                },
+                {
+                    "count": 2,
+                    "genre_mbid": "988e91a3-3341-416d-b7f8-7dbef6848dac",
+                    "tag": "synth-pop"
+                },
+                {
+                    "count": 4,
+                    "genre_mbid": "7d0c6a6b-5d56-4b1e-a8c7-e32194f246b9",
+                    "tag": "soft rock"
+                },
+                {
+                    "count": 5,
+                    "genre_mbid": "b739a895-85ed-4ad3-8717-4e9ef5387dd8",
+                    "tag": "dance-pop"
+                },
+                {
+                    "count": 5,
+                    "tag": "adult contemporary"
+                },
+                {
+                    "count": 1,
+                    "genre_mbid": "797e2e85-5ffd-495c-a757-8b4079052f0e",
+                    "tag": "pop rock"
+                },
+                {
+                    "count": 1,
+                    "genre_mbid": "650bda08-20ca-4012-b873-3b68c5768bdf",
+                    "tag": "blue-eyed soul"
+                },
+                {
+                    "count": 1,
+                    "tag": "romantic"
+                },
+                {
+                    "count": 1,
+                    "tag": "love"
+                },
+                {
+                    "count": 1,
+                    "tag": "energetic"
+                },
+                {
+                    "count": 1,
+                    "tag": "male vocalist"
+                },
+                {
+                    "count": 1,
+                    "tag": "playful"
+                },
+                {
+                    "count": 1,
+                    "tag": "bittersweet"
+                },
+                {
+                    "count": 1,
+                    "tag": "euro-dance"
+                },
+                {
+                    "count": 1,
+                    "tag": "passionate"
+                },
+                {
+                    "count": 1,
+                    "tag": "sentimental"
+                },
+                {
+                    "count": 1,
+                    "tag": "warm"
+                },
+                {
+                    "count": 2,
+                    "tag": "club/dance"
+                },
+                {
+                    "count": 1,
+                    "tag": "rhythmic"
+                },
+                {
+                    "count": 1,
+                    "tag": "longing"
+                }
+            ]
+        }
+    }
+}

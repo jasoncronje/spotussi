@@ -23,8 +23,10 @@ import (
 //   - Deezer (name search, scored): a track's duration, ISRC and explicit
 //     flag; its artist's picture; its album's release date, type, track
 //     count and cover.
-//   - MusicBrainz: the artist's genres, by the Deezer ISRC or else an
-//     exact-name artist search.
+//   - ListenBrainz (D37, listenbrainz.go): the artist's MusicBrainz ID
+//     and genres, by batch name lookups of the track (100 at a time).
+//   - MusicBrainz: the genres of artists ListenBrainz didn't find, by the
+//     Deezer ISRC or else an exact-name artist search.
 //
 // Each source walks the Spotify queue (hydration_queue) most-played
 // first, with its own limiter, and records its outcome per entity in
@@ -43,9 +45,10 @@ import (
 
 // Fallbacks are the fallback sources (a nil client is off).
 type Fallbacks struct {
-	OEmbed      *metadata.OEmbed
-	Deezer      *metadata.Deezer
-	MusicBrainz *metadata.MusicBrainz
+	OEmbed       *metadata.OEmbed
+	Deezer       *metadata.Deezer
+	ListenBrainz *metadata.ListenBrainz
+	MusicBrainz  *metadata.MusicBrainz
 	// BatchSize is how many queue entries a stage takes at a time
 	// (default 24).
 	BatchSize int
@@ -60,6 +63,8 @@ func (f Fallbacks) enabled(src string) bool {
 		return f.OEmbed != nil
 	case metadata.SourceDeezer:
 		return f.Deezer != nil
+	case metadata.SourceListenBrainz:
+		return f.ListenBrainz != nil
 	case metadata.SourceMusicBrainz:
 		return f.MusicBrainz != nil
 	}
@@ -67,7 +72,8 @@ func (f Fallbacks) enabled(src string) bool {
 }
 
 // FallbackSources lists the sources in stage order.
-var FallbackSources = []string{metadata.SourceOEmbed, metadata.SourceDeezer, metadata.SourceMusicBrainz}
+var FallbackSources = []string{metadata.SourceOEmbed, metadata.SourceDeezer, metadata.SourceListenBrainz,
+	metadata.SourceMusicBrainz}
 
 // Fallback stage states reported in system status.
 const (
@@ -141,6 +147,8 @@ func (h *Hydrator) fbClient(src string) interface {
 		return f.OEmbed
 	case src == metadata.SourceDeezer && f.Deezer != nil:
 		return f.Deezer
+	case src == metadata.SourceListenBrainz && f.ListenBrainz != nil:
+		return f.ListenBrainz
 	case src == metadata.SourceMusicBrainz && f.MusicBrainz != nil:
 		return f.MusicBrainz
 	}
@@ -186,7 +194,7 @@ func (h *Hydrator) runFallback(ctx context.Context, src string) {
 				backoff = time.Minute
 				h.maybeBorrow(ctx)
 				h.announce(false)
-				h.wakeFallbacks() // MusicBrainz waits for Deezer's ISRCs
+				h.wakeFallbacks() // MusicBrainz waits for Deezer and ListenBrainz
 				continue
 			}
 		}
@@ -216,9 +224,10 @@ type fbItem struct {
 
 // fbTypes are the queue entity types each source handles.
 var fbTypes = map[string]string{
-	metadata.SourceOEmbed:      `'track', 'artist'`,
-	metadata.SourceDeezer:      `'track'`,
-	metadata.SourceMusicBrainz: `'track'`,
+	metadata.SourceOEmbed:       `'track', 'artist'`,
+	metadata.SourceDeezer:       `'track'`,
+	metadata.SourceListenBrainz: `'track'`,
+	metadata.SourceMusicBrainz:  `'track'`,
 }
 
 // FallbackStep runs one batch of a source's stage and reports how many
@@ -230,6 +239,9 @@ func (h *Hydrator) FallbackStep(ctx context.Context, src string) (int, error) {
 	items, err := h.fbCandidates(ctx, src)
 	if err != nil || len(items) == 0 {
 		return 0, err
+	}
+	if src == metadata.SourceListenBrainz {
+		return h.fbListenBrainz(ctx, items) // batch lookups
 	}
 	workers := 3
 	if src == metadata.SourceMusicBrainz {
@@ -272,17 +284,26 @@ func (h *Hydrator) FallbackStep(ctx context.Context, src string) (int, error) {
 }
 
 // fbCandidates lists the most-played queue entries the source has not
-// settled. MusicBrainz waits for Deezer (its ISRC is the exact route) when
-// Deezer is on.
+// settled. MusicBrainz waits for Deezer (its ISRC is the exact route) and
+// ListenBrainz (artists it finds need no MusicBrainz request) when they
+// are on, until they settle the entry or have failed it 3 times.
 func (h *Hydrator) fbCandidates(ctx context.Context, src string) ([]fbItem, error) {
 	batch := h.o.Fallbacks.BatchSize
 	if batch <= 0 {
 		batch = 24
 	}
+	if src == metadata.SourceListenBrainz {
+		batch = metadata.LBMetadataBatch // one metadata request per batch
+	}
 	extra := ""
-	if src == metadata.SourceMusicBrainz && h.o.Fallbacks.Deezer != nil {
-		extra = `AND EXISTS (SELECT 1 FROM fallback_state d WHERE d.source = 'deezer' AND d.entity_type = q.entity_type
-			AND d.id = q.id AND (d.status <> 'failed' OR d.attempts >= 3))`
+	if src == metadata.SourceMusicBrainz {
+		for _, before := range []string{metadata.SourceDeezer, metadata.SourceListenBrainz} {
+			if h.o.Fallbacks.enabled(before) {
+				extra += `AND EXISTS (SELECT 1 FROM fallback_state d WHERE d.source = '` + before + `'
+					AND d.entity_type = q.entity_type AND d.id = q.id AND (d.status <> 'failed' OR d.attempts >= 3))
+				`
+			}
+		}
 	}
 	rs, err := h.db.Read.QueryContext(ctx, `SELECT q.entity_type, q.id, q.priority, COALESCE(f.attempts, 0)
 		FROM hydration_queue q
@@ -330,20 +351,7 @@ func (h *Hydrator) fbOne(ctx context.Context, src string, it fbItem) error {
 	}
 	now := h.now()
 	if err != nil {
-		h.fbFail(src, err)
-		var rl *metadata.RateLimitedError
-		next := now.Add(min(time.Minute<<min(it.attempts, 20), fbMaxBackoff))
-		if errors.As(err, &rl) {
-			next = now.Add(max(rl.Backoff, time.Minute))
-			h.setFBState(src, FallbackBackingOff)
-		}
-		msg := err.Error()
-		if len(msg) > 300 {
-			msg = msg[:300]
-		}
-		return h.tx(ctx, func(tx *sql.Tx) error {
-			return setFBState(ctx, tx, src, it.typ, it.id, "failed", "", 0, it.attempts+1, next.UnixMilli(), msg, now.UnixMilli())
-		})
+		return h.fbFailed(ctx, src, err, it)
 	}
 	h.fbDone(src)
 	status := "no_match"
@@ -352,6 +360,35 @@ func (h *Hydrator) fbOne(ctx context.Context, src string, it fbItem) error {
 	}
 	return h.tx(ctx, func(tx *sql.Tx) error {
 		return setFBState(ctx, tx, src, it.typ, it.id, status, res.externalID, res.conf, it.attempts, 0, "", now.UnixMilli())
+	})
+}
+
+// fbFailed records a transient failure on entries: each backs off
+// (longer on every attempt, or for the source's rate limit).
+func (h *Hydrator) fbFailed(ctx context.Context, src string, err error, items ...fbItem) error {
+	now := h.now()
+	h.fbFail(src, err)
+	var rl *metadata.RateLimitedError
+	limited := errors.As(err, &rl)
+	if limited {
+		h.setFBState(src, FallbackBackingOff)
+	}
+	msg := err.Error()
+	if len(msg) > 300 {
+		msg = msg[:300]
+	}
+	return h.tx(ctx, func(tx *sql.Tx) error {
+		for _, it := range items {
+			next := now.Add(min(time.Minute<<min(it.attempts, 20), fbMaxBackoff))
+			if limited {
+				next = now.Add(max(rl.Backoff, time.Minute))
+			}
+			if err := setFBState(ctx, tx, src, it.typ, it.id, "failed", "", 0, it.attempts+1, next.UnixMilli(), msg,
+				now.UnixMilli()); err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 }
 
@@ -891,6 +928,11 @@ func (h *Hydrator) fbMusicBrainz(ctx context.Context, it fbItem) (fbResult, erro
 	if status, ext, conf, done, err := h.fbFinal(ctx, metadata.SourceMusicBrainz, "artist", artistID); err != nil || done {
 		return fbResult{matched: status == "matched", externalID: ext, conf: conf}, err
 	}
+	// ListenBrainz found the artist and its genres: no request (D37).
+	if status, ext, conf, done, err := h.fbFinal(ctx, metadata.SourceListenBrainz, "artist", artistID); err != nil ||
+		(done && status == "matched") {
+		return fbResult{matched: done, externalID: ext, conf: conf}, err
+	}
 	var mbid string
 	var conf float64
 	// Exact route: the ISRC (Deezer's, or Spotify's) to the recording's
@@ -966,7 +1008,8 @@ func (h *Hydrator) fbMusicBrainz(ctx context.Context, it fbItem) (fbResult, erro
 		if err := fbArtistRow(ctx, tx, artistID, e.artist, now); err != nil {
 			return err
 		}
-		if _, err := tx.ExecContext(ctx, `UPDATE fallback_artists SET mbid = ? WHERE id = ?`, mbid, artistID); err != nil {
+		if _, err := tx.ExecContext(ctx, `UPDATE fallback_artists SET mbid = ?, spotify_id = COALESCE(?, spotify_id) WHERE id = ?`,
+			mbid, nullStr(a.SpotifyArtistID()), artistID); err != nil {
 			return err
 		}
 		if len(genres) > 0 {
