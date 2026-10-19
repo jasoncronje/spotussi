@@ -2,6 +2,7 @@
 	import SectionError from '#lib/components/common/section-error.svelte';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import Preferences from '#lib/components/settings/preferences.svelte';
+	import Account from '#lib/components/settings/account.svelte';
 	import { Resource } from '#lib/data/resource.svelte.js';
 	import { settingsQuery } from '#lib/data/queries.js';
 
@@ -15,3 +16,5 @@
 {:else}
 	<Skeleton class="h-[34rem] w-full rounded-xl" />
 {/if}
+
+<Account />
