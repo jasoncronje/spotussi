@@ -526,6 +526,7 @@ All read-only, answered from the library tables plus the derive snapshot's per-t
 - **Config:** `LIBRARY_SYNC_ENABLED` (default `true`), `LIBRARY_SYNC_INTERVAL` (default `1h`, 10 m–24 h).
 - **UI:** the Library page opens on the never-played filter; the save-lag mix uses the shared mix meter; song rows show five rotation lamps (one per counted play up to heavy rotation) and a ring for `maybe_played`. With the scope missing, the empty state points to Settings → Spotify (setup from scratch, no reconnect button). Settings → Spotify has a Library Sync panel (state, last sync, next check, per-list counts, Sync now). Checked with axe (WCAG 2.2 AA) in phone and desktop, light and dark.
 - **MCP `get_library`** also takes `sort`, `relation` and `offset`; at most 50 items per call.
+- **Never-played pages open (2026-10-19).** An album, song or artist the catalog has but no play does (saved, never played) has a page with zero stats instead of "Not in your library": the detail falls back to the catalog row, and a scope on its ID matches no play, so the page's lists are empty rather than `404`. Before this, every saved album never played linked from the Library page to a `404`.
 
 **Measured on the owner's account (2026-10-18).** A local spike server on a fresh database with the owner's export imported (capture and Spotify lookups off), connected once with the new scope; `internal/library/spike_test.go` (build tag `spike`) made the direct requests.
 
