@@ -39,6 +39,6 @@ spotussi health                     exit 0 if the local server is healthy (conta
 spotussi version
 ```
 
-`spotussi serve --mock` serves a synthetic history instead of your data, with no login and no state: `docker run --rm -p 8080:8080 ghcr.io/jasoncronje/spotussi:0.1.0-beta.1 serve --mock` shows the UI without connecting anything.
+`spotussi serve --mock` serves a synthetic history instead of your data, with no login and no state: `docker run --rm -p 8080:8080 ghcr.io/jasoncronje/spotussi:0.1.0-beta.2 serve --mock` shows the UI without connecting anything.
 
 **Forgot the owner password?** Run `docker exec spotussi spotussi reset-password`, then set a new one in the UI with the setup token from the log (restart the container if it has scrolled away).

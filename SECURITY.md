@@ -30,6 +30,6 @@ Out of scope: problems that need an attacker who already controls the host, the 
 Release archives come with `SHA256SUMS`. Images and archives carry GitHub build provenance attestations, which you can check with the GitHub CLI:
 
 ```sh
-gh attestation verify oci://ghcr.io/jasoncronje/spotussi:0.1.0-beta.1 --repo jasoncronje/spotussi
-gh attestation verify spotussi_0.1.0-beta.1_linux_amd64.tar.gz --repo jasoncronje/spotussi
+gh attestation verify oci://ghcr.io/jasoncronje/spotussi:0.1.0-beta.2 --repo jasoncronje/spotussi
+gh attestation verify spotussi_0.1.0-beta.2_linux_amd64.tar.gz --repo jasoncronje/spotussi
 ```
