@@ -6,6 +6,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import SettingsPanel from './settings-panel.svelte';
+	import { settingsHref } from './tabs.js';
 	import Lamp from '#lib/components/shell/lamp.svelte';
 	import type { Schemas } from '#lib/api/client.js';
 	import { syncLibrary } from '#lib/data/queries.js';
@@ -57,6 +58,7 @@
 			: []
 	);
 	const btn = 'inline-flex h-9 items-center rounded-lg px-3.5 text-sm font-medium';
+	const reconnectHref = `${resolve('/welcome')}?step=connect&reconnect=1&next=${encodeURIComponent(settingsHref('spotify'))}`;
 	const canSync = $derived(data && data.state !== 'disabled' && data.state !== 'not_connected');
 </script>
 
@@ -109,13 +111,21 @@
 					<dd class="text-destructive">{data.last_error}</dd>
 				{/if}
 			</dl>
-			{#if data.lists.tracks.state === 'needs_scope'}
+			{@const needsScope =
+				data.lists.tracks.state === 'needs_scope' || data.lists.albums.state === 'needs_scope'}
+			{#if needsScope}
 				<p class="mt-4 max-w-[60ch] text-sm text-muted-foreground">
-					Reading saved songs and albums needs the library permission. Reconnect Spotify above to
-					grant it.
+					Reading saved songs and albums needs the library permission, which this connection doesn't
+					have yet. Reconnect once and approve the consent page to grant it.
 				</p>
 			{/if}
 			<div class="mt-5 flex flex-wrap items-center gap-3">
+				{#if needsScope}
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+					<a href={reconnectHref} class="{btn} bg-primary text-primary-foreground"
+						>Reconnect to grant library access</a
+					>
+				{/if}
 				<button
 					type="button"
 					onclick={syncNow}

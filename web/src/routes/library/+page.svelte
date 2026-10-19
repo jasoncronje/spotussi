@@ -7,6 +7,7 @@
 -->
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import SectionError from '#lib/components/common/section-error.svelte';
 	import Segmented from '#lib/components/common/segmented.svelte';
@@ -133,6 +134,15 @@
 		return 'nothing';
 	});
 
+	// Playlists sync without user-library-read, so the page can have rows and
+	// still be missing saved songs and albums (D36).
+	const needsScope = $derived(
+		lib?.lists.tracks.state === 'needs_scope' || lib?.lists.albums.state === 'needs_scope'
+	);
+	const reconnectHref = $derived(
+		`${resolve('/welcome')}?step=connect&reconnect=1&next=${encodeURIComponent(resolve('/library'))}`
+	);
+
 	function choose(changes: Record<string, string | null>) {
 		setParams({ ...changes, page: null }, { replace: true });
 	}
@@ -169,6 +179,15 @@
 				<Skeleton class="inline-block h-4 w-72 align-middle" />
 			{/if}
 		</p>
+		{#if needsScope && emptyReason !== 'needs_scope'}
+			<p class="mt-2 text-sm text-muted-foreground">
+				Saved songs and albums need one more Spotify permission.
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+				<a href={reconnectHref} class="inline-link hit font-medium"
+					>Reconnect to grant library access</a
+				>.
+			</p>
+		{/if}
 	</header>
 
 	{#if summary.error && !s}
@@ -184,13 +203,14 @@
 			{:else if emptyReason === 'needs_scope'}
 				<h2 class="text-lg font-semibold">Spotify hasn't shared your saved songs</h2>
 				<p class="mt-1 max-w-[60ch] text-muted-foreground">
-					Reading them needs a permission this connection doesn't have. Connect Spotify again to
-					grant it.
+					Reading them needs a permission this connection doesn't have. Reconnect Spotify once and
+					approve the consent page to grant it.
 				</p>
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a
-					href={settingsHref('spotify')}
-					class="mt-4 inline-flex h-9 items-center rounded-lg border bg-card px-3.5 text-sm font-medium hover:bg-muted"
-					>Open Spotify settings</a
+					href={reconnectHref}
+					class="mt-4 inline-flex h-9 items-center rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground"
+					>Reconnect to grant library access</a
 				>
 			{:else if emptyReason === 'not_connected'}
 				<h2 class="text-lg font-semibold">Connect Spotify to read your library</h2>

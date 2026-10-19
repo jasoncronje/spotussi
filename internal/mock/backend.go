@@ -21,6 +21,7 @@ import (
 	"spotussi/internal/derive"
 	"spotussi/internal/query"
 	"spotussi/internal/refdata"
+	"spotussi/internal/spotify"
 )
 
 // ImagePath is where generated placeholder artwork is served.
@@ -516,6 +517,11 @@ func (b *Backend) SystemStatus(ctx context.Context) (*api.SystemStatus, error) {
 		st.Spotify.State, st.Capture.State = "reconnect_required", "stopped"
 		st.Capture.LastError, st.Capture.LastErrorAt = ptr("Spotify revoked access (invalid_grant)."), ptr(now-3_600_000)
 		st.Catalog.State = "waiting"
+	case "needs_scope":
+		st.Spotify.Scopes = slices.DeleteFunc(st.Spotify.Scopes, func(s string) bool { return s == spotify.ScopeLibrary })
+		missing := api.LibraryListStatus{State: "needs_scope"}
+		st.Library.Lists.Tracks, st.Library.Lists.Albums = missing, missing
+		st.Library.SavedTracks, st.Library.SavedAlbums = 0, 0
 	case "not_configured":
 		st.Spotify = api.SpotifyStatus{State: "not_configured"}
 		st.Capture.State, st.Capture.LastPollAt = "stopped", nil

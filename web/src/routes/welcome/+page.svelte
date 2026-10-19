@@ -71,6 +71,8 @@
 	}
 
 	const connected = $derived(c?.state === 'connected');
+	// Granted later than the rest (D36); older connections lack it.
+	const REQUIRED_SCOPES = ['user-library-read'];
 
 	// Reconnect (M8): the shell's banner links here with ?reconnect=1 and the
 	// page you were on; once connected again you go straight back to it.
@@ -82,10 +84,21 @@
 	const connectReturn = $derived(
 		reconnect ? `${href('connect')}&reconnect=1&next=${encodeURIComponent(next)}` : href('connect')
 	);
+	// A reconnect always offers consent again, even while connected: that's
+	// how an account picks up a new permission (user-library-read, D36). The
+	// connected panel shows once Spotify sends you back, or the paste-back lands.
+	const returned = $derived(page.url.searchParams.get('spotify'));
+	let pastedBack = $state(false);
+	const showConnected = $derived(
+		connected && (!reconnect || returned === 'connected' || pastedBack)
+	);
+	const missingScopes = $derived(
+		connected ? REQUIRED_SCOPES.filter((s) => !c?.scopes.includes(s)) : []
+	);
 	let cleared = false;
 	$effect(() => {
 		// The status cached before the reconnect still says it's needed.
-		if (reconnect && connected && !cleared) {
+		if (reconnect && showConnected && !cleared) {
 			cleared = true;
 			refreshAll();
 		}
@@ -145,7 +158,6 @@
 	}
 
 	// ---------- connect ----------
-	const returned = $derived(page.url.searchParams.get('spotify'));
 	function errorText(code: string | undefined | null): string | undefined {
 		switch (code) {
 			case 'invalid_callback_url':
@@ -202,6 +214,7 @@
 			await unwrap(api.POST('/spotify/paste-back', { body: { url } }));
 			pasted = '';
 			authorizeUrl = null;
+			pastedBack = true;
 			conn.refresh();
 		} catch (err) {
 			connectError = errorText((err as { code?: string }).code) ?? (err as Error).message;
@@ -313,7 +326,7 @@
 					class="animate-in duration-300 fade-in slide-in-from-bottom-1"
 				>
 					<h1 id="step-h" class="headline text-2xl sm:text-3xl">
-						{reconnect && step === 'connect' && !connected ? 'Reconnect Spotify' : TITLES[step]}
+						{reconnect && step === 'connect' && !showConnected ? 'Reconnect Spotify' : TITLES[step]}
 					</h1>
 
 					{#if step === 'app'}
@@ -388,7 +401,7 @@
 							</div>
 						</form>
 					{:else if step === 'connect'}
-						{#if connected}
+						{#if showConnected}
 							<div role="status" class="mt-8 grid gap-6">
 								<div class="flex items-center gap-4">
 									<span
@@ -443,6 +456,20 @@
 								>
 									{returnedError}
 								</p>{/if}
+							{#if connected}
+								<p class="mt-6 rounded-xl border bg-card px-4 py-3 text-sm">
+									{#if missingScopes.length}
+										<span class="font-medium">This connection is missing a permission.</span>
+										Approve again to grant
+										<code class="font-mono text-xs">{missingScopes.join(', ')}</code>. Live capture
+										keeps running meanwhile.
+									{:else}
+										<span class="font-medium"
+											>Connected as {c.account_name ?? c.account_id ?? 'Spotify'}.</span
+										> Approve again to refresh the sign-in. Live capture keeps running meanwhile.
+									{/if}
+								</p>
+							{/if}
 							{#if c.state === 'reconnect_required'}
 								<p
 									class="mt-6 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm"
