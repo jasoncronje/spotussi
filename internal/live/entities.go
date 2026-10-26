@@ -65,7 +65,7 @@ func (b *Backend) Artist(ctx context.Context, id string, spec query.Spec, metric
 	}
 	a, ok := x.e.ArtistByID[id]
 	if !ok {
-		return nil, fmt.Errorf("%w: artist %q", api.ErrNotFound, id)
+		return b.unplayedArtist(ctx, x, id, spec, metric)
 	}
 	cur, prev, es, at, err := x.entityStats(spec, metric, kArtist, a, api.Scope{ArtistID: id})
 	if err != nil {
@@ -90,7 +90,7 @@ func (b *Backend) Album(ctx context.Context, id string, spec query.Spec, metric 
 	}
 	al, ok := x.e.AlbumByID[id]
 	if !ok {
-		return nil, fmt.Errorf("%w: album %q", api.ErrNotFound, id)
+		return b.unplayedAlbum(ctx, x, id, spec, metric)
 	}
 	cur, prev, es, at, err := x.entityStats(spec, metric, kAlbum, al, api.Scope{AlbumID: id})
 	if err != nil {
@@ -118,7 +118,7 @@ func (b *Backend) Track(ctx context.Context, id string, spec query.Spec, metric 
 	}
 	t, ok := x.e.TrackByID[id]
 	if !ok {
-		return nil, fmt.Errorf("%w: track %q", api.ErrNotFound, id)
+		return b.unplayedTrack(ctx, x, id, spec, metric)
 	}
 	cur, prev, es, at, err := x.entityStats(spec, metric, kTrack, t, api.Scope{TrackID: id})
 	if err != nil {

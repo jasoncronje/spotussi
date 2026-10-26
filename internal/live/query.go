@@ -3,9 +3,11 @@ package live
 import (
 	"cmp"
 	"context"
+	"database/sql"
 	"fmt"
 	"slices"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -20,6 +22,9 @@ type q struct {
 	*derive.Snapshot
 	e   *derive.Entities
 	env query.Env
+	// inCatalog reports whether the catalog table has a row with id: an
+	// entity the snapshot lacks because it was saved but never played.
+	inCatalog func(table, id string) (bool, error)
 }
 
 // snapshotWait bounds how long a request waits for the first snapshot
@@ -27,13 +32,13 @@ type q struct {
 const snapshotWait = 30 * time.Second
 
 func (b *Backend) q(ctx context.Context) (*q, error) {
-	ctx, cancel := context.WithTimeout(ctx, snapshotWait)
+	wctx, cancel := context.WithTimeout(ctx, snapshotWait)
 	defer cancel()
-	s, err := b.engine.Snapshot(ctx)
+	s, err := b.engine.Snapshot(wctx)
 	if err != nil {
 		return nil, err
 	}
-	set, err := b.loadSettings(ctx)
+	set, err := b.loadSettings(wctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +46,15 @@ func (b *Backend) q(ctx context.Context) (*q, error) {
 	if set.WeekStart == "sunday" {
 		ws = time.Sunday
 	}
-	x := &q{Snapshot: s, e: s.Ent, env: query.Env{Now: b.now(), Loc: s.Settings.Loc, WeekStart: ws}}
+	x := &q{Snapshot: s, e: s.Ent, env: query.Env{Now: b.now(), Loc: s.Settings.Loc, WeekStart: ws},
+		inCatalog: func(table, id string) (bool, error) {
+			var one int
+			err := b.db.Read.QueryRowContext(ctx, `SELECT 1 FROM `+table+` WHERE id = ?`, id).Scan(&one)
+			if err == sql.ErrNoRows {
+				return false, nil
+			}
+			return err == nil, err
+		}}
 	if len(s.Vis) > 0 {
 		x.env.FirstPlay = time.UnixMilli(s.Start[s.Vis[0]])
 	}
@@ -101,7 +114,7 @@ func (x *q) scope(s api.Scope) (scope, error) {
 	case s.TrackID != "":
 		t, ok := e.TrackByID[s.TrackID]
 		if !ok {
-			return nil, fmt.Errorf("%w: track %q", api.ErrNotFound, s.TrackID)
+			return x.unplayed("tracks", s.TrackID)
 		}
 		m := make(scope, len(e.Tracks))
 		m[t] = true
@@ -109,7 +122,7 @@ func (x *q) scope(s api.Scope) (scope, error) {
 	case s.AlbumID != "":
 		al, ok := e.AlbumByID[s.AlbumID]
 		if !ok {
-			return nil, fmt.Errorf("%w: album %q", api.ErrNotFound, s.AlbumID)
+			return x.unplayed("albums", s.AlbumID)
 		}
 		return mask(func(t *derive.Track) bool { return t.Album == al }), nil
 	case s.GenreID != "":
@@ -121,11 +134,24 @@ func (x *q) scope(s api.Scope) (scope, error) {
 	case s.ArtistID != "":
 		a, ok := e.ArtistByID[s.ArtistID]
 		if !ok {
-			return nil, fmt.Errorf("%w: artist %q", api.ErrNotFound, s.ArtistID)
+			return x.unplayed("artists", s.ArtistID)
 		}
 		return mask(func(t *derive.Track) bool { return slices.Contains(t.Artists, a) }), nil
 	}
 	return nil, nil
+}
+
+// unplayed resolves a scope on an entity the snapshot lacks: one the
+// catalog has (saved, never played) matches no play, others are not found.
+func (x *q) unplayed(table, id string) (scope, error) {
+	ok, err := x.inCatalog(table, id)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return nil, fmt.Errorf("%w: %s %q", api.ErrNotFound, strings.TrimSuffix(table, "s"), id)
+	}
+	return make(scope, len(x.e.Tracks)), nil
 }
 
 func (x *q) filter(plays []int32, s scope) []int32 {

@@ -3,6 +3,7 @@ package live_test
 import (
 	"context"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -71,4 +72,57 @@ func TestLibraryMatchesReleases(t *testing.T) {
 			t.Errorf("%s: status %v plays %v, want played %v", id, m["status"], m["plays"], want)
 		}
 	}
+}
+
+// TestUnplayedEntityPages checks that an album, song and artist saved but
+// never played open with zero stats, scoped lists included, instead of
+// "not in your library".
+func TestUnplayedEntityPages(t *testing.T) {
+	end := time.Date(2026, 10, 17, 18, 0, 0, 0, time.UTC)
+	ds := refdata.Generate(refdata.Config{Size: refdata.Tiny, Seed: 3, End: end})
+	d := openDB(t, t.TempDir())
+	loadRefdata(t, d, ds)
+	ctx := context.Background()
+	for _, q := range []string{
+		`INSERT INTO artists (id, name, image_url) VALUES ('unplayedArtist0000000', 'Nobody Heard', 'https://img/a.jpg')`,
+		`INSERT INTO albums (id, name, album_type, release_date, total_tracks, image_url)
+			VALUES ('unplayedAlbum00000000', 'Revolver, 2026', 'album', '2026-05-01', 14, 'https://img/al.jpg')`,
+		`INSERT INTO album_artists (album_id, artist_id, position) VALUES ('unplayedAlbum00000000', 'unplayedArtist0000000', 0)`,
+		`INSERT INTO tracks (id, name, duration_ms, explicit, album_id, source, hydrated_at)
+			VALUES ('unplayedTrack00000000', 'Taxman, 2026', 150000, 0, 'unplayedAlbum00000000', 'library', 1)`,
+		`INSERT INTO track_artists (track_id, artist_id, position) VALUES ('unplayedTrack00000000', 'unplayedArtist0000000', 0)`,
+	} {
+		if _, err := d.Write.ExecContext(ctx, q); err != nil {
+			t.Fatal(err)
+		}
+	}
+	h := newHarness(t, d, live.Options{DefaultTimezone: ds.Timezone, Now: func() time.Time { return end }})
+	const q = "?range=all&metric=plays"
+	al := h.call("GET", "/albums/{id}", "/albums/unplayedAlbum00000000"+q, nil, 200)
+	if a := al["album"].(map[string]any); a["name"] != "Revolver, 2026" || a["total_tracks"] != 14.0 ||
+		a["artists"].([]any)[0].(map[string]any)["name"] != "Nobody Heard" {
+		t.Errorf("album = %v", a)
+	}
+	if al["all_time"].(map[string]any)["plays"] != 0.0 || al["in_range"].(map[string]any)["rank"] != nil {
+		t.Errorf("album stats = %v %v", al["all_time"], al["in_range"])
+	}
+	tr := h.call("GET", "/tracks/{id}", "/tracks/unplayedTrack00000000"+q, nil, 200)
+	if x := tr["track"].(map[string]any); x["name"] != "Taxman, 2026" || x["album"].(map[string]any)["name"] != "Revolver, 2026" {
+		t.Errorf("track = %v", x)
+	}
+	ar := h.call("GET", "/artists/{id}", "/artists/unplayedArtist0000000"+q, nil, 200)
+	if ar["artist"].(map[string]any)["name"] != "Nobody Heard" || ar["all_time"].(map[string]any)["plays"] != 0.0 {
+		t.Errorf("artist = %v", ar)
+	}
+	for _, s := range []string{"album_id=unplayedAlbum00000000", "track_id=unplayedTrack00000000", "artist_id=unplayedArtist0000000"} {
+		top := h.call("GET", "/top/tracks", "/top/tracks"+q+"&"+s, nil, 200)
+		if n := len(top["items"].([]any)); n != 0 && !strings.HasPrefix(s, "track_id") {
+			t.Errorf("%s: %d top tracks, want 0", s, n)
+		}
+		h.call("GET", "/timeline", "/timeline"+q+"&"+s, nil, 200)
+		h.call("GET", "/clock", "/clock"+q+"&"+s, nil, 200)
+		h.call("GET", "/history", "/history?range=all&"+s, nil, 200)
+		h.call("GET", "/contexts", "/contexts"+q+"&"+s, nil, 200)
+	}
+	h.call("GET", "/albums/{id}", "/albums/nosuchAlbum0000000000"+q, nil, 404)
 }
