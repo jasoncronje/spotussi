@@ -11,7 +11,7 @@
 /*
  * Visual direction: "level meter". The app is an instrument that meters your
  * listening, in the spirit of 70s/80s hi-fi faceplates: a cool aluminium
- * panel by day, a graphite console by night, and one warm amber signal (the
+ * panel by day, a graphite console by night, and one green signal (the
  * colour of a lit meter) for data. Chrome stays neutral so album artwork
  * carries the rest of the colour.
  *
@@ -41,27 +41,27 @@
 	--destructive: oklch(0.55 0.2 27);
 	--border: oklch(0.885 0.005 265);
 	--input: oklch(0.86 0.006 265);
-	--ring: oklch(0.66 0.16 58);
+	--ring: oklch(0.607 0.166 149);
 	--grille: oklch(0.86 0.005 265);
 
-	--signal: oklch(0.68 0.16 58);
-	--signal-soft: oklch(0.68 0.16 58 / 0.16);
-	--signal-dim: oklch(0.68 0.16 58 / 0.38);
-	--signal-ink: oklch(0.52 0.13 55);
+	--signal: oklch(0.607 0.166 149);
+	--signal-soft: oklch(0.607 0.166 149 / 0.16);
+	--signal-dim: oklch(0.607 0.166 149 / 0.38);
+	--signal-ink: oklch(0.508 0.138 149);
 
 	/* Onboarding tuner scale: graphite glass set into the panel, lit with
-	   the night-mode amber in both themes, like a receiver's dial. */
+	   the night-mode green in both themes, like a receiver's dial. */
 	--window: oklch(0.215 0.008 265);
 	--window-edge: oklch(0.82 0.005 265);
 	--window-lip: oklch(1 0 0 / 0.7);
 	--scale-tick: oklch(0.38 0.01 265);
 	--scale-off-ink: oklch(0.7 0.01 265);
 	--scale-on: oklch(0.9 0.006 265);
-	--scale-lit: oklch(0.8 0.145 70);
-	--scale-glow: oklch(0.8 0.145 70 / 0.5);
+	--scale-lit: oklch(0.689 0.187 149);
+	--scale-glow: oklch(0.689 0.187 149 / 0.5);
 
 	/* Categorical series, fixed order (validated: light surface #FBFBFC). */
-	--chart-1: #d9770f;
+	--chart-1: #169c45;
 	--chart-2: #3a6bc4;
 	--chart-3: #c2406a;
 	--chart-4: #0c9ba8;
@@ -95,13 +95,13 @@
 	--destructive: oklch(0.7 0.17 25);
 	--border: oklch(0.3 0.008 265);
 	--input: oklch(0.34 0.008 265);
-	--ring: oklch(0.8 0.14 70);
+	--ring: oklch(0.689 0.187 149);
 	--grille: oklch(0.31 0.008 265);
 
-	--signal: oklch(0.8 0.145 70);
-	--signal-soft: oklch(0.8 0.145 70 / 0.18);
-	--signal-dim: oklch(0.8 0.145 70 / 0.38);
-	--signal-ink: oklch(0.83 0.13 72);
+	--signal: oklch(0.689 0.187 149);
+	--signal-soft: oklch(0.689 0.187 149 / 0.18);
+	--signal-dim: oklch(0.689 0.187 149 / 0.38);
+	--signal-ink: oklch(0.77 0.212 149);
 
 	--window: oklch(0.135 0.005 265);
 	--window-edge: oklch(0.29 0.008 265);
@@ -110,7 +110,7 @@
 	--scale-off-ink: oklch(0.66 0.01 265);
 
 	/* Validated against the dark panel #1A1C21. */
-	--chart-1: #c97e1a;
+	--chart-1: #1db954;
 	--chart-2: #5683d6;
 	--chart-3: #d9577f;
 	--chart-4: #1a9aa8;

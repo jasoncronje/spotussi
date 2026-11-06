@@ -1,7 +1,7 @@
 <!--
 	Setup progress as the station scale of a tuner: a graphite glass window
 	with one station per step, printed like frequencies, minor ticks between,
-	and an amber needle on the current step. The scale behind the needle is
+	and a green needle on the current step. The scale behind the needle is
 	lit. Changing step glides the needle there with a dial-cord overshoot;
 	nothing else moves. The lamp is the receiver's "tuned" light, lit once
 	Spotify is connected.
