@@ -21,50 +21,68 @@
    "label": "Overview",
    "href": "/",
    "fixed": false,
-   "x": 177.109375,
+   "x": 381.84375,
    "y": 10,
-   "w": 96.453125,
+   "w": 107.453125,
    "h": 36
   },
   {
    "label": "Top",
    "href": "/top",
    "fixed": false,
-   "x": 277.5625,
+   "x": 493.296875,
    "y": 10,
-   "w": 60.71875,
+   "w": 71.71875,
    "h": 36
   },
   {
    "label": "Stats",
    "href": "/stats",
    "fixed": false,
-   "x": 342.28125,
+   "x": 569.015625,
    "y": 10,
-   "w": 69.96875,
+   "w": 80.96875,
    "h": 36
   },
   {
    "label": "History",
    "href": "/history",
    "fixed": false,
-   "x": 416.25,
+   "x": 653.984375,
    "y": 10,
-   "w": 82.453125,
+   "w": 93.453125,
    "h": 36
   },
   {
    "label": "Sessions",
    "href": "/sessions",
    "fixed": false,
-   "x": 502.703125,
+   "x": 751.4375,
    "y": 10,
-   "w": 95.6875,
+   "w": 106.6875,
+   "h": 36
+  },
+  {
+   "label": "Library",
+   "href": "/library",
+   "fixed": false,
+   "x": 862.125,
+   "y": 10,
+   "w": 91.640625,
+   "h": 36
+  },
+  {
+   "label": "Settings",
+   "href": "/settings/general",
+   "fixed": false,
+   "x": 957.765625,
+   "y": 10,
+   "w": 100.390625,
    "h": 36
   },
   {
    "label": "Today",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw?range=today",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8?range=today",
    "fixed": false,
    "x": 43,
    "y": 67,
@@ -73,7 +91,7 @@
   },
   {
    "label": "7 days",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw?range=last_7d",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8?range=last_7d",
    "fixed": false,
    "x": 109.875,
    "y": 67,
@@ -82,7 +100,7 @@
   },
   {
    "label": "4 weeks",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8",
    "fixed": false,
    "x": 179.0625,
    "y": 67,
@@ -91,7 +109,7 @@
   },
   {
    "label": "6 months",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw?range=last_6m",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8?range=last_6m",
    "fixed": false,
    "x": 257.421875,
    "y": 67,
@@ -100,7 +118,7 @@
   },
   {
    "label": "12 months",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw?range=last_12m",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8?range=last_12m",
    "fixed": false,
    "x": 343,
    "y": 67,
@@ -109,7 +127,7 @@
   },
   {
    "label": "All time",
-   "href": "/artists/P8yYLhta2CmLeyozvTBlrw?range=all",
+   "href": "/artists/eyUT8kk6o92qQJYk4JGjU8?range=all",
    "fixed": false,
    "x": 435.640625,
    "y": 67,
@@ -117,35 +135,35 @@
    "h": 28
   },
   {
-   "label": "hip hop",
-   "href": "/genres/hip-hop",
+   "label": "rap",
+   "href": "/genres/nu-indie",
    "fixed": false,
    "x": 192,
-   "y": 237,
-   "w": 58.4375,
-   "h": 24
-  },
-  {
-   "label": "rap",
-   "href": "/genres/rap",
-   "fixed": false,
-   "x": 256.4375,
    "y": 237,
    "w": 34.640625,
    "h": 24
   },
   {
-   "label": "canadian hip hop",
-   "href": "/genres/canadian-hip-hop",
+   "label": "hip hop",
+   "href": "/genres/experimental-indie",
+   "fixed": false,
+   "x": 232.640625,
+   "y": 237,
+   "w": 58.4375,
+   "h": 24
+  },
+  {
+   "label": "west coast hip hop",
+   "href": "/genres/brazilian-indie",
    "fixed": false,
    "x": 297.078125,
    "y": 237,
-   "w": 114.0625,
+   "w": 122.53125,
    "h": 24
   },
   {
    "label": "Plays in History",
-   "href": "/history?artist_id=P8yYLhta2CmLeyozvTBlrw",
+   "href": "/history?artist_id=eyUT8kk6o92qQJYk4JGjU8",
    "fixed": false,
    "x": 1095.6875,
    "y": 238,
@@ -153,8 +171,8 @@
    "h": 36
   },
   {
-   "label": "All 16tracks",
-   "href": "/top/tracks?artist_id=P8yYLhta2CmLeyozvTBlrw",
+   "label": "All 23tracks",
+   "href": "/top/tracks?artist_id=eyUT8kk6o92qQJYk4JGjU8",
    "fixed": false,
    "x": 434.421875,
    "y": 940,
@@ -162,8 +180,8 @@
    "h": 30
   },
   {
-   "label": "All 2albums",
-   "href": "/top/albums?artist_id=P8yYLhta2CmLeyozvTBlrw",
+   "label": "All 7albums",
+   "href": "/top/albums?artist_id=eyUT8kk6o92qQJYk4JGjU8",
    "fixed": false,
    "x": 908.484375,
    "y": 940,
@@ -174,7 +192,7 @@
  "rangebar": null,
  "page": {
   "w": 1440,
-  "h": 1569
+  "h": 1606
  },
  "figures": [
   {
@@ -216,7 +234,7 @@
    "h": 52,
    "spans": [
     {
-     "text": "196",
+     "text": "42",
      "size": "52px",
      "weight": "640",
      "color": "oklch(0.94 0.004 265)",
@@ -240,7 +258,7 @@
    "h": 52,
    "spans": [
     {
-     "text": "196",
+     "text": "11,293",
      "size": "52px",
      "weight": "640",
      "color": "oklch(0.94 0.004 265)",
@@ -276,14 +294,6 @@
    "clock": true
   },
   {
-   "x": 1204.91,
-   "y": 632.53,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
    "x": 1219.95,
    "y": 642.81,
    "w": 6.17,
@@ -292,8 +302,96 @@
    "clock": true
   },
   {
-   "x": 1233.96,
-   "y": 648.61,
+   "x": 1222.1,
+   "y": 634.79,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1224.24,
+   "y": 626.78,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1226.39,
+   "y": 618.76,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1228.54,
+   "y": 610.74,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1230.69,
+   "y": 602.73,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1232.83,
+   "y": 594.71,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1234.98,
+   "y": 586.7,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1245.99,
+   "y": 657.84,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1251.86,
+   "y": 651.97,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1263,
+   "y": 698.91,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1255.22,
+   "y": 727.96,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1262.41,
+   "y": 732.11,
    "w": 6.17,
    "h": 6.17,
    "kind": "dot",
@@ -302,6 +400,22 @@
   {
    "x": 1245.99,
    "y": 739.99,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1233.96,
+   "y": 749.22,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1238.11,
+   "y": 756.41,
    "w": 6.17,
    "h": 6.17,
    "kind": "dot",
@@ -332,96 +446,8 @@
    "clock": true
   },
   {
-   "x": 1204.91,
-   "y": 781.9,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1189.88,
-   "y": 755.02,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1187.73,
-   "y": 763.04,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1175.87,
-   "y": 749.22,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1171.72,
-   "y": 756.41,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1167.57,
-   "y": 763.59,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1163.42,
-   "y": 770.78,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1159.27,
-   "y": 777.96,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1155.13,
-   "y": 785.15,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
    "x": 1163.84,
    "y": 739.99,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1157.97,
-   "y": 745.86,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1152.11,
-   "y": 751.72,
    "w": 6.17,
    "h": 6.17,
    "kind": "dot",
@@ -436,40 +462,32 @@
    "clock": true
   },
   {
+   "x": 1147.42,
+   "y": 732.11,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1140.24,
+   "y": 736.26,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
+   "x": 1133.05,
+   "y": 740.4,
+   "w": 6.17,
+   "h": 6.17,
+   "kind": "dot",
+   "clock": true
+  },
+  {
    "x": 1148.81,
    "y": 713.95,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1140.79,
-   "y": 716.1,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1132.78,
-   "y": 718.24,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1124.76,
-   "y": 720.39,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1116.74,
-   "y": 722.54,
    "w": 6.17,
    "h": 6.17,
    "kind": "dot",
@@ -492,56 +510,8 @@
    "clock": true
   },
   {
-   "x": 1130.23,
-   "y": 698.91,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1121.93,
-   "y": 698.91,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1113.63,
-   "y": 698.91,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
    "x": 1148.81,
    "y": 683.88,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1140.79,
-   "y": 681.73,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1132.78,
-   "y": 679.58,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1124.76,
-   "y": 677.44,
    "w": 6.17,
    "h": 6.17,
    "kind": "dot",
@@ -580,38 +550,6 @@
    "clock": true
   },
   {
-   "x": 1125.86,
-   "y": 653.27,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1118.68,
-   "y": 649.13,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1111.49,
-   "y": 644.98,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1104.3,
-   "y": 640.83,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
    "x": 1163.84,
    "y": 657.84,
    "w": 6.17,
@@ -636,57 +574,9 @@
    "clock": true
   },
   {
-   "x": 1175.87,
-   "y": 648.61,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1171.72,
-   "y": 641.42,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1167.57,
-   "y": 634.24,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1189.88,
-   "y": 642.81,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1187.73,
-   "y": 634.79,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
-   "x": 1185.58,
-   "y": 626.78,
-   "w": 6.17,
-   "h": 6.17,
-   "kind": "dot",
-   "clock": true
-  },
-  {
    "x": 124,
    "y": 1037,
-   "w": 297.81,
+   "w": 307.19,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -694,7 +584,7 @@
   {
    "x": 124,
    "y": 1100,
-   "w": 283.63,
+   "w": 300.36,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -702,7 +592,7 @@
   {
    "x": 124,
    "y": 1163,
-   "w": 269.44,
+   "w": 223.36,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -710,7 +600,7 @@
   {
    "x": 124,
    "y": 1226,
-   "w": 269.44,
+   "w": 225.27,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -718,7 +608,7 @@
   {
    "x": 124,
    "y": 1289,
-   "w": 212.72,
+   "w": 153.59,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -726,7 +616,7 @@
   {
    "x": 124,
    "y": 1352,
-   "w": 184.36,
+   "w": 153.59,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -734,7 +624,7 @@
   {
    "x": 124,
    "y": 1415,
-   "w": 155.98,
+   "w": 153.59,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -742,7 +632,7 @@
   {
    "x": 124,
    "y": 1478,
-   "w": 155.98,
+   "w": 153.59,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -750,7 +640,7 @@
   {
    "x": 590.66,
    "y": 1037,
-   "w": 297.83,
+   "w": 306.61,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -758,23 +648,95 @@
   {
    "x": 590.66,
    "y": 1100,
-   "w": 64.73,
+   "w": 259.44,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 590.66,
+   "y": 1163,
+   "w": 165.41,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 590.66,
+   "y": 1226,
+   "w": 94.52,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 590.66,
+   "y": 1289,
+   "w": 70.89,
    "h": 3,
    "kind": "bar",
    "clock": false
   },
   {
    "x": 1057.33,
-   "y": 1037,
-   "w": 298.56,
+   "y": 1024.5,
+   "w": 306.59,
    "h": 3,
    "kind": "bar",
    "clock": false
   },
   {
    "x": 1057.33,
-   "y": 1087.5,
-   "w": 174.14,
+   "y": 1093,
+   "w": 111.03,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1156,
+   "w": 74.02,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1219,
+   "w": 18.5,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1282,
+   "w": 18.5,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1345,
+   "w": 18.5,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1408,
+   "w": 18.5,
+   "h": 3,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 1057.33,
+   "y": 1471,
+   "w": 18.5,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -782,51 +744,107 @@
  ],
  "bars": [
   {
-   "x": 389.97,
-   "base": 861,
-   "top": 850.67,
-   "w": 17.05,
-   "pitch": 6
-  },
-  {
-   "x": 730.99,
-   "base": 861,
-   "top": 556.17,
-   "w": 17.05,
-   "pitch": 6
-  },
-  {
-   "x": 761.99,
-   "base": 861,
-   "top": 757.67,
-   "w": 17.05,
-   "pitch": 6
-  },
-  {
-   "x": 792.99,
+   "x": 110.95,
    "base": 861,
    "top": 799,
    "w": 17.05,
    "pitch": 6
   },
   {
-   "x": 885.99,
+   "x": 141.95,
    "base": 861,
-   "top": 649.17,
+   "top": 613,
    "w": 17.05,
    "pitch": 6
   },
   {
-   "x": 917,
+   "x": 172.95,
    "base": 861,
-   "top": 685.33,
+   "top": 799,
    "w": 17.05,
    "pitch": 6
   },
   {
-   "x": 948,
+   "x": 203.96,
    "base": 861,
-   "top": 716.33,
+   "top": 799,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 265.96,
+   "base": 861,
+   "top": 830,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 296.96,
+   "base": 861,
+   "top": 768,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 358.96,
+   "base": 861,
+   "top": 768,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 389.97,
+   "base": 861,
+   "top": 706,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 420.97,
+   "base": 861,
+   "top": 830,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 482.97,
+   "base": 861,
+   "top": 799,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 513.97,
+   "base": 861,
+   "top": 799,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 544.98,
+   "base": 861,
+   "top": 706,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 606.98,
+   "base": 861,
+   "top": 768,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 637.98,
+   "base": 861,
+   "top": 830,
+   "w": 17.05,
+   "pitch": 6
+  },
+  {
+   "x": 761.99,
+   "base": 861,
+   "top": 799,
    "w": 17.05,
    "pitch": 6
   }
@@ -842,13 +860,13 @@
    "heading": {
     "x": 192,
     "y": 179,
-    "w": 219.14,
+    "w": 227.61,
     "h": 52
    },
    "panel": {
     "x": 192,
     "y": 179,
-    "w": 219.14,
+    "w": 227.61,
     "h": 52
    }
   },
@@ -905,7 +923,7 @@
     "x": 506.66,
     "y": 942,
     "w": 426.67,
-    "h": 169
+    "h": 358
    }
   },
   "Played from": {
@@ -919,7 +937,7 @@
     "x": 973.33,
     "y": 942,
     "w": 426.66,
-    "h": 162
+    "h": 596
    }
   },
   "Name this playlist": {

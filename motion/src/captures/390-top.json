@@ -73,43 +73,61 @@
    "fixed": true,
    "x": 0,
    "y": 780,
-   "w": 78,
+   "w": 55.703125,
    "h": 64
   },
   {
    "label": "Top",
    "href": "/top",
    "fixed": true,
-   "x": 78,
+   "x": 55.703125,
    "y": 780,
-   "w": 78,
+   "w": 55.71875,
    "h": 64
   },
   {
    "label": "Stats",
    "href": "/stats",
    "fixed": true,
-   "x": 156,
+   "x": 111.421875,
    "y": 780,
-   "w": 78,
+   "w": 55.71875,
    "h": 64
   },
   {
    "label": "History",
    "href": "/history",
    "fixed": true,
-   "x": 234,
+   "x": 167.140625,
    "y": 780,
-   "w": 78,
+   "w": 55.703125,
    "h": 64
   },
   {
    "label": "Sessions",
    "href": "/sessions",
    "fixed": true,
-   "x": 312,
+   "x": 222.84375,
    "y": 780,
-   "w": 78,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "Library",
+   "href": "/library",
+   "fixed": true,
+   "x": 278.5625,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "Settings",
+   "href": "/settings/general",
+   "fixed": true,
+   "x": 334.28125,
+   "y": 780,
+   "w": 55.71875,
    "h": 64
   }
  ],
@@ -152,7 +170,7 @@
   {
    "x": 157,
    "y": 446.5,
-   "w": 18.06,
+   "w": 86.66,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -160,7 +178,7 @@
   {
    "x": 157,
    "y": 507.5,
-   "w": 9.47,
+   "w": 54.81,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -168,7 +186,7 @@
   {
    "x": 157,
    "y": 568.5,
-   "w": 9.16,
+   "w": 51.66,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -176,7 +194,7 @@
   {
    "x": 157,
    "y": 629.5,
-   "w": 11.38,
+   "w": 60.06,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -184,55 +202,55 @@
   {
    "x": 157,
    "y": 690.5,
-   "w": 6.06,
+   "w": 35.09,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 751.5,
-   "w": 4.73,
+   "w": 25.31,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 812.5,
-   "w": 8.42,
+   "w": 43.09,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 873.5,
-   "w": 8.63,
+   "w": 40.27,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 934.5,
-   "w": 4.42,
+   "w": 19.66,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 995.5,
-   "w": 8.42,
+   "w": 37.45,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1056.5,
-   "w": 10.08,
+   "w": 49.52,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -240,23 +258,23 @@
   {
    "x": 157,
    "y": 1117.5,
-   "w": 8.64,
+   "w": 38.2,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1178.5,
-   "w": 5.69,
+   "w": 25.06,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1239.5,
-   "w": 9.02,
+   "w": 39.61,
    "h": 3,
    "kind": "bar",
    "clock": false
@@ -264,97 +282,97 @@
   {
    "x": 157,
    "y": 1300.5,
-   "w": 6.89,
+   "w": 30.27,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1361.5,
-   "w": 5.73,
+   "w": 25.22,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1422.5,
-   "w": 5.91,
+   "w": 25.86,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1483.5,
-   "w": 5.23,
+   "w": 21.42,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1544.5,
-   "w": 5.34,
+   "w": 23.27,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1605.5,
-   "w": 4.02,
+   "w": 17.53,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1666.5,
-   "w": 5.03,
+   "w": 20.36,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1727.5,
-   "w": 4.08,
+   "w": 16.52,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1788.5,
-   "w": 3.38,
+   "w": 13.67,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1849.5,
-   "w": 5.75,
+   "w": 24.97,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1910.5,
-   "w": 3.48,
+   "w": 15.13,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   },
   {
    "x": 157,
    "y": 1971.5,
-   "w": 5.83,
+   "w": 25.3,
    "h": 3,
-   "kind": "dot",
+   "kind": "bar",
    "clock": false
   }
  ],

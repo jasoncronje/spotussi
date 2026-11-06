@@ -6,8 +6,8 @@
 A fast, self-hosted listening-stats dashboard for one Spotify account: live capture of what you play, your whole history from Spotify's export, and dashboards that answer in milliseconds at any history size. One Go binary with the web UI built in, one SQLite file, one container, no required settings. A read-only API and an MCP server let scripts and AI assistants ask the same questions.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/project/screenshots/u1/overview-desktop-dark.png">
-  <img alt="The Overview page: time listened, plays, top artists and tracks, plays by day and the listening clock, shown with mock data." src="docs/project/screenshots/u1/overview-desktop-light.png" width="880">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/project/screenshots/readme/overview-desktop-dark.png">
+  <img alt="The Overview page: time listened, plays, top artists and tracks, plays by day and the listening clock, shown with mock data." src="docs/project/screenshots/readme/overview-desktop-light.png" width="880">
 </picture>
 
 > **0.1 beta.** The data model and the API can still change between 0.x releases; read the [release notes](https://github.com/jasoncronje/spotussi/releases) and back up before upgrading.
