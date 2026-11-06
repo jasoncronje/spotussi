@@ -223,7 +223,7 @@ code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.92em
 .tl-track li { display: grid; grid-template-columns: 3.25rem 2.5rem minmax(0, 11rem) minmax(0, 1fr) 2.5rem; align-items: center; gap: 0.75rem; height: 2.6rem; border-bottom: 1px solid rgba(236, 238, 242, 0.06); }
 .tl-track b { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
 .tl-track .mv { font-style: normal; font-size: 0.6875rem; color: var(--on-dark-muted); }
-.tl-track .up { color: #6fcf8a; } .tl-track .dn { color: #e0587a; } .tl-track .nw { color: var(--green); }
+.tl-track .up { color: var(--on-dark-muted); } .tl-track .dn { color: #e0587a; } .tl-track .nw { color: var(--green); }
 .tl-track .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tl-track em { font-style: normal; text-align: right; color: var(--on-dark-muted); font-variant-numeric: tabular-nums; }
 .tl-track .tl-gap { display: block; height: 2rem; border: 0; color: var(--on-dark-muted); }
@@ -699,7 +699,7 @@ img.sp-art { display: block; height: auto; object-fit: cover; }
 .db-list .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .db-list em { font-style: normal; text-align: right; color: var(--on-dark-muted); font-variant-numeric: tabular-nums; }
 .db-list .mv { font-style: normal; font-size: var(--tiny); font-weight: 500; margin-left: 0.3rem; }
-.db-list .up { color: #6fcf8a; } .db-list .dn { color: #e0587a; }
+.db-list .up { color: var(--on-dark-muted); } .db-list .dn { color: #e0587a; }
 
 /* 4 · Ask: a conversation with an assistant that calls the MCP server. */
 .sc-ask { grid-template-rows: 1fr auto; align-content: stretch; }
