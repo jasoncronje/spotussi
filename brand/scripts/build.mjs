@@ -26,13 +26,13 @@ export const C = {
 	console: '#121317', // dark ground (the app's dark theme-color)
 	graphite: '#1A1C21', // the plate and dark panels
 	grille: '#3A3D46', // unlit lamps on graphite
-	lamp: '#F2AB3E', // the amber lamp, on dark grounds
+	lamp: '#1DB954', // the green lamp, on dark grounds
 	paper: '#ECEEF1', // type on dark grounds
 	mist: '#A1A5AC', // secondary type on dark grounds
 	aluminium: '#EDEEF0', // light ground
 	ink: '#16171B', // type on light grounds
 	slate: '#5B5F68', // secondary type on light grounds
-	ember: '#DF7B0C', // the lamp on light grounds (day amber)
+	leaf: '#169C45', // the lamp on light grounds (day green)
 	grilleDay: '#CFD1D4' // unlit lamps on light grounds
 };
 
@@ -69,7 +69,7 @@ const TIGHT = `${R} ${R} ${32 - 2 * R} ${32 - 2 * R}`; // the lamps' own bounds
 
 const grounds = {
 	dark: { lit: C.lamp, unlit: C.grille, type: C.paper },
-	light: { lit: C.ember, unlit: C.grilleDay, type: C.ink },
+	light: { lit: C.leaf, unlit: C.grilleDay, type: C.ink },
 	'mono-black': { lit: '#000', unlit: '#000', type: '#000', ring: true },
 	'mono-white': { lit: '#FFF', unlit: '#FFF', type: '#FFF', ring: true }
 };

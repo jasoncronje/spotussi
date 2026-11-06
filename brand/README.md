@@ -1,6 +1,6 @@
 # spotussi brand kit
 
-The mark is the app's own level meter: a 4×4 grille of lamps, lit from the bottom to heights 2·4·3·1, in the app's amber on graphite. It is drawn from straight columns of dots, with no circles, waves or green, so it can't be mistaken for a streaming service's logo.
+The mark is the app's own level meter: a 4×4 grille of lamps, lit from the bottom to heights 2·4·3·1, in Spotify Green on graphite. It is drawn from straight columns of dots, with no circles or waves, so it can't be mistaken for a streaming service's logo.
 
 ![The kit: lockups, marks, icons, social images](previews/sheet.png)
 
@@ -33,14 +33,14 @@ Every file comes from `scripts/build.mjs`. The wordmark is outlined from Archivo
 | Console | `#121317` | Dark ground, `theme-color` | `--background` (dark) |
 | Graphite | `#1A1C21` | The plate, dark panels | `--card` (dark) |
 | Grille | `#3A3D46` | Unlit lamps on dark grounds | `--grille` (dark) |
-| Lamp | `#F2AB3E` | Lit lamps on dark grounds | `--signal` (dark) |
+| Lamp | `#1DB954` | Lit lamps on dark grounds | `--signal` (dark) |
 | Aluminium | `#EDEEF0` | Light ground | `--background` (light) |
 | Grille, day | `#CFD1D4` | Unlit lamps on light grounds | `--grille` (light) |
-| Ember | `#DF7B0C` | Lit lamps on light grounds | `--signal` (light) |
+| Leaf | `#169C45` | Lit lamps on light grounds | `--signal` (light) |
 | Ink | `#16171B` | Type on light grounds | `--foreground` (light) |
 | Paper | `#ECEEF1` | Type on dark grounds | `--foreground` (dark) |
 
-Amber is the only colour. It marks something lit: a lamp, a value. Everything else is graphite, aluminium and their greys.
+Green is the only colour. It marks something lit: a lamp, a value. Everything else is graphite, aluminium and their greys.
 
 ## Type
 
@@ -49,13 +49,13 @@ Archivo, one family, using its width axis. The wordmark is Archivo at 125% width
 ## Do
 
 - Use `mark.svg` when you don't control the ground. The plate keeps it legible on white, black and photos.
-- Use the `-light` files on light grounds and the `-dark` files on dark grounds. The amber shifts from lamp to ember so the lit lamps keep their contrast.
+- Use the `-light` files on light grounds and the `-dark` files on dark grounds. The green shifts from lamp to leaf so the lit lamps keep their contrast.
 - Carry the grille on as a meter strip (see the social images) when a layout needs a graphic. Keep the mark's lamp pitch and rows, and use made-up heights, never real listening data.
 
 ## Don't
 
 - Change the lit pattern, the number of lamps, or the lamps' shape.
-- Recolour the lamps, add a second accent, or put the mark on green.
+- Recolour the lamps, add a second accent, or put the mark on a green ground.
 - Set "spotussi" in another typeface, in capitals, or with the first letter capitalised.
 - Stretch, rotate, outline, shadow or add a glow to the mark.
 - Pair the mark with a third party's logo, or imply an affiliation with Spotify.
