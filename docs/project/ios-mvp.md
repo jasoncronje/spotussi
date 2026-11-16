@@ -1,8 +1,8 @@
 # iPhone app: MVP scope
 
-A proposal. The owner has settled how it ships (TestFlight only, 2026-11-16); once the remaining open decisions at the end are settled, they move into [decisions.md](decisions.md) and the milestones into [plan.md](plan.md).
+A proposal. The owner settled four of its five decisions on 2026-11-16 (see the end); once the minimum iOS version is settled too, they move into [decisions.md](decisions.md) and the milestones into [plan.md](plan.md).
 
-![Six mockup screens: Connect, Overview, Top, Artist, History, Stats](ios/mockups.png)
+![Seven mockup screens: Connect, Overview, Top, Artist, History, Stats, Library](ios/mockups.png)
 
 The mockups are HTML sketches of layout and hierarchy ([ios/mockups.html](ios/mockups.html), built by `python3 docs/project/ios/build_mockups.py <out.html>`). They use the mock server's sample music, not real listening. The real glass, type and controls come from SwiftUI's system components.
 
@@ -19,15 +19,16 @@ API tokens are read-only and work in every auth mode, including behind forward a
 | Pairing: scan a QR code from Settings → Tokens, or type the address and token | Sign-in with the owner password; several instances |
 | Overview: summary cards with change, plays by day, top 5 lists, recent plays | Home Screen and Lock Screen widgets |
 | Now playing, in the tab bar's accessory | A Live Activity (needs push from the server) |
-| Top tracks, artists, albums, genres, with rank movement and endless paging | Library and playlists (D36) |
-| Stats: the six D14 charts and the listening clock | Year in Review, period comparison (DF8) |
-| Artist, album, track and genre pages | Share cards |
-| History with filters, and Longest sessions | Editing settings, exclusions, playlist names |
-| Search (catalog search, `/search`) | Import and Spotify connect (web only) |
-| Range picker (all D14 presets and custom) and the Plays/Time switch | iPad and Mac layouts beyond what resizing gives for free |
-| Instance status: reconnect-Spotify and catalog-progress notices, read-only | Notifications |
-| Demo mode on bundled sample data (also what App Review would use) | "Ask your stats" with on-device models |
-| Last-seen data when the server can't be reached | A full offline database |
+| Top tracks, artists, albums, genres, with rank movement and endless paging | Year in Review, period comparison (DF8) |
+| Stats: the six D14 charts and the listening clock | Share cards |
+| Artist, album, track and genre pages | Editing settings, exclusions, playlist names |
+| History with filters, and Longest sessions | Import, Spotify connect and library sync (web only) |
+| Library (D36): saved songs, albums and playlists, the rotation figures, playlist pages | iPad and Mac layouts beyond what resizing gives for free |
+| Search (catalog search, `/search`) | Notifications |
+| Range picker (all D14 presets and custom) and the Plays/Time switch | "Ask your stats" with on-device models |
+| Instance status: reconnect-Spotify and catalog-progress notices, read-only | A full offline database |
+| Demo mode on bundled sample data (also what App Review would use) | |
+| Last-seen data when the server can't be reached | |
 
 ## What the server and web app need
 
@@ -41,9 +42,9 @@ The app keeps the level-meter direction (D19, D34, D40): graphite and aluminium,
 
 - **Glass is the navigation layer only:** the tab bar, toolbar buttons, the now-playing accessory, sheets and menus. Cards, lists and charts stay on solid panels. Never glass on glass, and one tinted (green) control per screen at most.
 - **Use the system's glass, not an imitation.** `TabView`, `NavigationStack`, toolbars, sheets, menus and pickers get the material, its morphing and its accessibility behaviour for free. `glassEffect` is used only for the pairing screen's second button.
-- **Four tabs and search:** Overview, Top, Stats, History, with search as its own `Tab(role: .search)`. Sessions sits inside History (a segmented switch); Settings opens as a sheet from the toolbar. Web has seven sections (D38); a phone tab bar reads best with five or fewer.
+- **Five tabs and search:** Overview, Top, Stats, History, Library, with search as its own `Tab(role: .search)`. Sessions sits inside History (a segmented switch); Settings opens as a sheet from the toolbar. Web has seven sections (D38); five is the most a phone tab bar holds, so the labels are checked at the largest text sizes on a device in I1.
 - **Now playing** rides in `tabViewBottomAccessory`, and the bar shrinks on scroll (`tabBarMinimizeBehavior(.onScrollDown)`).
-- **Range and Plays/Time** are toolbar controls on every tab that uses them, shared across tabs like the web app's.
+- **Range and Plays/Time** are toolbar controls on every tab that uses them, shared across tabs like the web app's. Library has neither: saves carry their own dates (D36).
 - **Entity pages** let the artwork run under the bar (`backgroundExtensionEffect`) and open with a zoom from the row.
 - **iOS 27 specifics:** glass has firmer edges and is lighter in dark mode, so the selected tab is the darker one; users can set glass opacity system-wide, so every screen is checked at both ends of that slider; the top scroll edge is the hard style by default; iPhone apps are resizable, so layouts use size classes and `ViewThatFits`, never screen widths.
 - **Type:** SF Pro, with the expanded width for figures and titles (the role Archivo's wide cut plays on the web), so Dynamic Type and the system's weights work everywhere. The wordmark stays the outlined Archivo asset from `brand/`.
@@ -54,10 +55,10 @@ The app keeps the level-meter direction (D19, D34, D40): graphite and aluminium,
 
 | Area | Choice | Why, and what was set aside |
 |---|---|---|
-| Platform | iPhone, iOS 27 minimum, Xcode 27, Swift 6 language mode | The owner asked for the latest. A new app with self-hosting users needs no back-compat branches |
+| Platform | iPhone, Xcode 27, Swift 6 language mode, designed and tuned on iOS 27. Minimum version open (decision 1) | The owner asked for the latest |
 | UI | SwiftUI only | No UIKit navigation to mix with glass; the QR scanner is the one wrapped UIKit view |
 | App structure | `@Observable` models per screen, plain views, dependencies through `@Environment` | Under ten screens of read-only data. The Composable Architecture was considered and set aside: its reducers and exhaustive tests pay off with heavy shared mutable state, which this app doesn't have |
-| Layout | `ios/` in this repo: a small app target plus a local Swift package `SpotussiKit` (client, models, formatting) with its own tests | The package builds and tests with `swift test`, without the simulator |
+| Layout | `ios/` in this repo (owner, 2026-11-16): a small app target plus a local Swift package `SpotussiKit` (client, models, formatting) with its own tests | The package builds and tests with `swift test`, without the simulator |
 | API client | Generated from `api/openapi.yaml` with Swift OpenAPI Generator over `URLSession` | The contract already drives the web client; drift becomes a compile error. Fallback if the generator trips on the 3.1 spec: hand-written `Codable` types for the ~25 GET operations |
 | Networking | `URLSession` with async/await | It is HTTP only; Network.framework is for custom protocols |
 | Caching | `URLCache` on disk. Every GET already carries an ETag and `no-cache`, so the system revalidates and a 304 costs no body. With no connection, the last response is shown with a "last updated" line | SQLite (SQLiteData, GRDB) was considered and set aside: the server owns the data and answers in milliseconds, so a second database on the phone would only add sync problems |
@@ -84,9 +85,10 @@ Sizes are counted in agent tool calls and looked up against this machine's own h
 | I2 | Overview and now playing | Matches the web Overview's numbers on the same instance | 60–110 | 25 / 48 min |
 | I3 | Top lists, search, the four entity pages | Every row opens its page; paging has no cap | 70–120 | 26 / 47 min |
 | I4 | Stats, History with filters, Sessions | D14 parity for the views in scope | 70–120 | 26 / 47 min |
-| I5 | Accessibility pass, offline and error states, demo mode polish, app icon, TestFlight build | Clean VoiceOver and largest-text walk on a device; build installed from TestFlight | 60–110 | 25 / 48 min |
+| I5 | Library: summary, songs, albums, playlists and playlist pages, the needs-permission and syncing states | Matches the web Library on the same instance | 40–70 | 16 / 31 min |
+| I6 | Accessibility pass, offline and error states, demo mode polish, app icon, TestFlight build | Clean VoiceOver and largest-text walk on a device; build installed from TestFlight | 60–110 | 25 / 48 min |
 
-In total about 370–660 tool calls: roughly **3 hours of agent work, up to 7** (extrapolated; this machine has no single past run that large). Each milestone is a separate, reviewable PR.
+In total about 410–730 tool calls: roughly **3 hours of agent work, up to 7** (extrapolated; this machine has no single past run that large). Each milestone is a separate, reviewable PR.
 
 **The owner's part:** an Apple Developer Program membership and signing set up in Xcode (about 10 minutes if the account exists), about 10 minutes on a real iPhone after each milestone (glass and haptics can't be judged in the simulator), and the decisions below.
 
@@ -103,10 +105,15 @@ In total about 370–660 tool calls: roughly **3 hours of agent work, up to 7** 
 | Generator trouble with the OpenAPI 3.1 spec | I0 takes longer | The hand-written fallback above |
 | iOS 27 glass details differ from the sketches | Small visual drift | System components only, reviewed on a device each milestone |
 
-## Open decisions
+## Decisions
 
-1. ~~**How it ships.**~~ Settled by the owner, 2026-11-16: TestFlight only for now. The App Store, and the review risk in the table above, wait until that changes.
-2. **Minimum iOS:** 27 only (recommended), or 26 as well for people who haven't updated.
-3. **Library tab (D36):** after the MVP (recommended), or in it.
-4. **Type:** SF Pro with the expanded width (recommended), or bundle Archivo for figures and titles.
-5. **Where the code lives:** `ios/` in this repo under the same licence (recommended), or a separate repository.
+Settled by the owner on 2026-11-16:
+
+- **How it ships:** TestFlight only for now. The App Store, and the review risk in the table above, wait until that changes.
+- **Library (D36):** in the MVP, as the fifth tab.
+- **Type:** SF Pro with the expanded width; the wordmark stays the Archivo asset.
+- **Where the code lives:** `ios/` in this repo, under the same licence.
+
+Open:
+
+1. **Minimum iOS: 26 or 27.** Liquid Glass arrived in iOS 26, and every API named in the mockups (`Tab(role: .search)`, `tabViewBottomAccessory`, `tabBarMinimizeBehavior`, `backgroundExtensionEffect`, `glassEffect`) is an iOS 26 API. iOS 27 changes the glass's look (firmer edges, lighter in dark mode, the user's opacity setting), which the system applies by itself. So supporting 26 costs little code: its own image cache session in place of iOS 27's `AsyncImage` caching, no iOS 27-only conveniences, and a second OS to walk through on a device each milestone. Recommended: minimum iOS 26, designed and tuned on 27.
