@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SectionError from '#lib/components/common/section-error.svelte';
 	import Endpoints from '#lib/components/settings/endpoints.svelte';
+	import PairPhone from '#lib/components/settings/pair-phone.svelte';
 	import Tokens from '#lib/components/settings/tokens.svelte';
 	import { Resource } from '#lib/data/resource.svelte.js';
 	import { tokensQuery } from '#lib/data/queries.js';
@@ -13,5 +14,7 @@
 {:else}
 	<Tokens tokens={tokens.current?.items} onchange={() => tokens.refresh()} />
 {/if}
+
+<PairPhone onchange={() => tokens.refresh()} />
 
 <Endpoints />

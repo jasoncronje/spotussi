@@ -180,7 +180,7 @@ A read-only native app for one instance, scoped in [ios-mvp.md](ios-mvp.md). Min
 
 | # | Milestone | Done when | Tool calls | Typical / slow |
 |---|---|---|---|---|
-| W1 | Pair iPhone in Settings → Tokens (web) | The QR code pairs the demo build | 20–40 | 8 / 19 min |
+| W1 | Pair iPhone in Settings → Tokens (web) | The QR code pairs the demo build. 🟡 Built 2026-11-16: the panel creates a token named iPhone and shows `spotussi://pair?url=…&token=…` as a QR code (decoded in Chrome and matched to the link), as an "Open in the app" link, and as an address and token to copy; a note appears on loopback addresses. The QR encoder (`uqr`) loads only when a code is drawn. Pairing a real build waits for I1 | 20–40 | 8 / 19 min |
 | I0 | Project, package, generated client, recorded fixtures, tokens for colour and type, CI job for `ios/` | `swift test` passes; the app launches into demo mode | 40–70 | 16 / 31 min |
 | I1 | Pairing, Keychain, tab shell, range and measure controls, status notices, Settings sheet | A paired phone shows live status from a real instance | 50–90 | 19 / 41 min |
 | I2 | Overview and now playing | Matches the web Overview's numbers on the same instance | 60–110 | 25 / 48 min |
