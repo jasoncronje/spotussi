@@ -1,6 +1,6 @@
 # iPhone app: MVP scope
 
-A proposal. The owner settled four of its five decisions on 2026-11-16 (see the end); once the minimum iOS version is settled too, they move into [decisions.md](decisions.md) and the milestones into [plan.md](plan.md).
+The scope for the iPhone app. The owner settled its decisions on 2026-11-16: they are recorded as D41 in [decisions.md](decisions.md), and the milestones are in [plan.md](plan.md).
 
 ![Seven mockup screens: Connect, Overview, Top, Artist, History, Stats, Library](ios/mockups.png)
 
@@ -55,14 +55,14 @@ The app keeps the level-meter direction (D19, D34, D40): graphite and aluminium,
 
 | Area | Choice | Why, and what was set aside |
 |---|---|---|
-| Platform | iPhone, Xcode 27, Swift 6 language mode, designed and tuned on iOS 27. Minimum version open (decision 1) | The owner asked for the latest |
+| Platform | iPhone, Xcode 27, Swift 6 language mode, minimum iOS 26, designed and tuned on iOS 27 (D41) | The owner asked for the latest; every Liquid Glass API used is an iOS 26 API |
 | UI | SwiftUI only | No UIKit navigation to mix with glass; the QR scanner is the one wrapped UIKit view |
 | App structure | `@Observable` models per screen, plain views, dependencies through `@Environment` | Under ten screens of read-only data. The Composable Architecture was considered and set aside: its reducers and exhaustive tests pay off with heavy shared mutable state, which this app doesn't have |
 | Layout | `ios/` in this repo (owner, 2026-11-16): a small app target plus a local Swift package `SpotussiKit` (client, models, formatting) with its own tests | The package builds and tests with `swift test`, without the simulator |
 | API client | Generated from `api/openapi.yaml` with Swift OpenAPI Generator over `URLSession` | The contract already drives the web client; drift becomes a compile error. Fallback if the generator trips on the 3.1 spec: hand-written `Codable` types for the ~25 GET operations |
 | Networking | `URLSession` with async/await | It is HTTP only; Network.framework is for custom protocols |
 | Caching | `URLCache` on disk. Every GET already carries an ETag and `no-cache`, so the system revalidates and a 304 costs no body. With no connection, the last response is shown with a "last updated" line | SQLite (SQLiteData, GRDB) was considered and set aside: the server owns the data and answers in milliseconds, so a second database on the phone would only add sync problems |
-| Images | `AsyncImage` with a shared `URLSession` (it honours HTTP caching in the iOS 27 SDK) | No image library needed |
+| Images | A small image view over a shared `URLSession` with its own `URLCache` (`AsyncImage` honours HTTP caching only from iOS 27) | No image library needed, and the same behaviour on iOS 26 and 27 |
 | Concurrency | Main-actor isolation by default for the app target; the client is `Sendable` and non-isolated; responses are value types; `.task` and `.refreshable` own every request so leaving a screen cancels it | Strict checking from the first commit is cheaper than a migration |
 | Navigation | One `NavigationStack` per tab with a typed route (artist, album, track, genre, session); `spotussi://` links for pairing and entities | Keeps each tab's place when switching |
 | Charts | Swift Charts for series; `Canvas` for the lamp-grid day chart and listening clock | The lamp grid is the brand; Canvas draws hundreds of dots cheaply |
@@ -90,7 +90,7 @@ Sizes are counted in agent tool calls and looked up against this machine's own h
 
 In total about 410–730 tool calls: roughly **3 hours of agent work, up to 7** (extrapolated; this machine has no single past run that large). Each milestone is a separate, reviewable PR.
 
-**The owner's part:** an Apple Developer Program membership and signing set up in Xcode (about 10 minutes if the account exists), about 10 minutes on a real iPhone after each milestone (glass and haptics can't be judged in the simulator), and the decisions below.
+**The owner's part:** an Apple Developer Program membership and signing set up in Xcode (about 10 minutes if the account exists), about 10 minutes on a real iPhone after each milestone (glass and haptics can't be judged in the simulator).
 
 **Waiting on others:** TestFlight processing, usually 10–30 minutes per build; Apple's review for outside testers, about a day for the first build; App Store review, usually 1–2 days, if it goes public.
 
@@ -103,7 +103,7 @@ In total about 410–730 tool calls: roughly **3 hours of agent work, up to 7** 
 | Plain-HTTP instances on a LAN or Tailscale | Pairing fails | Allow local networking and explain the Local Network prompt; test with an IP address, a `.local` name and a Tailscale address in I1 |
 | Instances reachable only at home | The app looks broken away from home | Last-seen data with a clear "can't reach your server" notice, the same wording as the web banner |
 | Generator trouble with the OpenAPI 3.1 spec | I0 takes longer | The hand-written fallback above |
-| iOS 27 glass details differ from the sketches | Small visual drift | System components only, reviewed on a device each milestone |
+| Glass details differ from the sketches, and between iOS 26 and 27 | Small visual drift | System components only, reviewed each milestone on a device running iOS 27 and in the iOS 26 simulator |
 
 ## Decisions
 
@@ -113,7 +113,4 @@ Settled by the owner on 2026-11-16:
 - **Library (D36):** in the MVP, as the fifth tab.
 - **Type:** SF Pro with the expanded width; the wordmark stays the Archivo asset.
 - **Where the code lives:** `ios/` in this repo, under the same licence.
-
-Open:
-
-1. **Minimum iOS: 26 or 27.** Liquid Glass arrived in iOS 26, and every API named in the mockups (`Tab(role: .search)`, `tabViewBottomAccessory`, `tabBarMinimizeBehavior`, `backgroundExtensionEffect`, `glassEffect`) is an iOS 26 API. iOS 27 changes the glass's look (firmer edges, lighter in dark mode, the user's opacity setting), which the system applies by itself. So supporting 26 costs little code: its own image cache session in place of iOS 27's `AsyncImage` caching, no iOS 27-only conveniences, and a second OS to walk through on a device each milestone. Recommended: minimum iOS 26, designed and tuned on 27.
+- **Minimum iOS:** 26, designed and tuned on 27. Liquid Glass arrived in iOS 26, and every API named in the mockups (`Tab(role: .search)`, `tabViewBottomAccessory`, `tabBarMinimizeBehavior`, `backgroundExtensionEffect`, `glassEffect`) is an iOS 26 API. iOS 27 changes the glass's look (firmer edges, lighter in dark mode, the user's opacity setting), which the system applies by itself. The cost of iOS 26: the app's own image cache in place of iOS 27's `AsyncImage` caching, no iOS 27-only conveniences, and a second OS to walk through each milestone.

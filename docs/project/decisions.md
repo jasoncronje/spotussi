@@ -584,6 +584,18 @@ Pages twitched when they first loaded: text reflowed when Archivo replaced the f
 - **Reel and README:** the hero reel was recaptured from the mock and re-rendered (`motion/`). The 45 album and artist images the committed `catalog.json` names, but no longer in the local cache, were fetched again from Deezer, so the reel's music is unchanged. The README's Overview screenshots now live in `docs/project/screenshots/readme/` (light and dark, 1440 px, with the open-access banner removed). The milestone folders (`u0`, `u1`, `m3-import`, `m7`, `ui-pass-1`) stay amber as records of those milestones.
 - **Risk accepted (owner):** Spotify's developer branding guidelines discourage third-party apps from using Spotify's colours or look. The owner chose the exact Spotify Green knowing that. The mark still avoids circles and waves, and the footer still says the project is independent and not affiliated with Spotify.
 
+### D41. A native iPhone app: scope and platform (owner, 2026-11-16)
+
+- **What:** a read-only SwiftUI iPhone app for one Spotussi instance, scoped in [ios-mvp.md](ios-mvp.md) with mockups in [ios/](ios/). It reads `/api/v1` with a read-only API token (D13), so it needs no sign-in, cookies or CSRF and works in every `AUTH_MODE`, including behind forward auth.
+- **Pairing:** Settings → Tokens on the web gets "Pair iPhone", which creates a token and shows a QR code for `spotussi://pair?url=<base URL>&token=<spt_…>`. This is the only server or web change the MVP needs.
+- **In the MVP:** Overview with now playing, Top lists, Stats, History with filters, Longest sessions, search, the artist, album, track, genre and playlist pages, Library (D36) as the fifth tab, read-only instance status, a demo mode on bundled sample data, and last-seen data when the server can't be reached. Left for later: sign-in with the owner password, several instances, import, Spotify connect, editing settings, widgets, a Live Activity, notifications, Year in Review, share cards, and iPad and Mac layouts.
+- **How it ships:** TestFlight only for now. The App Store, and the review risk of Spotify's green and name (D40), wait until that changes.
+- **Platform:** minimum iOS 26, designed and tuned on iOS 27, built with Xcode 27 in Swift 6 language mode. Every Liquid Glass API the design uses is an iOS 26 API; iOS 27 changes how the system draws the glass. The cost of iOS 26 is the app's own image cache and a second OS to check each milestone.
+- **Design:** Liquid Glass on the navigation layer only (tab bar, toolbars, the now-playing accessory), never on content. The level-meter brand carries over: graphite and aluminium grounds, one highlight colour (D40), dot-matrix charts.
+- **Type:** SF Pro with the expanded width for readouts. The wordmark stays the Archivo asset.
+- **Where the code lives:** `ios/` in this repo, under the same licence: an app target plus a local Swift package, `SpotussiKit`.
+- **Architecture:** SwiftUI only, `@Observable` models per screen (TCA rejected as more structure than a read-only app needs), a client generated from `api/openapi.yaml` over `URLSession`, `URLCache` with the API's ETags instead of a local database, the token in the Keychain, Swift Testing against fixtures recorded from `serve --mock`.
+
 ## Deferred
 
 ### DF1. DuckDB analytics engine
