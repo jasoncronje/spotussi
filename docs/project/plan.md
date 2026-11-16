@@ -174,6 +174,23 @@ Ordering: M0 runs first (everything depends on the scaffold and contract). Then 
 5. **DF7** Podcasts and audiobooks.
 6. **DF5**, **DF3**, remaining DF8 items (sharing, write-scope actions), **DF4** as needed.
 
+### iPhone app (D41)
+
+A read-only native app for one instance, scoped in [ios-mvp.md](ios-mvp.md). Minimum iOS 26, tuned on iOS 27, TestFlight only. Sizes are agent tool calls looked up against this machine's own history, with typical and slow agent working time; not started.
+
+| # | Milestone | Done when | Tool calls | Typical / slow |
+|---|---|---|---|---|
+| W1 | Pair iPhone in Settings → Tokens (web) | The QR code pairs the demo build | 20–40 | 8 / 19 min |
+| I0 | Project, package, generated client, recorded fixtures, tokens for colour and type, CI job for `ios/` | `swift test` passes; the app launches into demo mode | 40–70 | 16 / 31 min |
+| I1 | Pairing, Keychain, tab shell, range and measure controls, status notices, Settings sheet | A paired phone shows live status from a real instance | 50–90 | 19 / 41 min |
+| I2 | Overview and now playing | Matches the web Overview's numbers on the same instance | 60–110 | 25 / 48 min |
+| I3 | Top lists, search, the four entity pages | Every row opens its page; paging has no cap | 70–120 | 26 / 47 min |
+| I4 | Stats, History with filters, Sessions | D14 parity for the views in scope | 70–120 | 26 / 47 min |
+| I5 | Library: summary, songs, albums, playlists and playlist pages, the needs-permission and syncing states | Matches the web Library on the same instance | 40–70 | 16 / 31 min |
+| I6 | Accessibility pass, offline and error states, demo mode polish, app icon, TestFlight build | Clean VoiceOver and largest-text walk on a device; build installed from TestFlight | 60–110 | 25 / 48 min |
+
+In total about 410–730 tool calls: roughly 3 hours of agent work, up to 7 (extrapolated). Each milestone is its own PR. The owner's part is signing in Xcode (about 10 minutes) and about 10 minutes on a real iPhone after each milestone. TestFlight processing adds 10–30 minutes per build.
+
 ## Risks and items to verify
 
 | Risk / unknown | Impact | Mitigation |
