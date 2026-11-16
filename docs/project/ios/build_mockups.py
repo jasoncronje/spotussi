@@ -28,6 +28,7 @@ ICONS = {
     "chev": '<path d="M7 10l5 5 5-5"/>',
     "qr": '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h2v2h-2zM18 14h2v2M14 18h2v2M18 18h2v2"/>',
     "filter": '<path d="M4 7h16M7 12h10M10 17h4"/>',
+    "lib": '<path d="M5 4v16M10 4v16"/><path d="M14.5 5.5l4.5 14"/>',
     "share": '<path d="M12 15V4M8 8l4-4 4 4"/><path d="M6 12v7h12v-7"/>',
 }
 
@@ -49,7 +50,7 @@ def status_bar():
 
 
 def tabbar(active, accessory=True):
-    tabs = [("gauge", "Overview"), ("list", "Top"), ("chart", "Stats"), ("clock", "History")]
+    tabs = [("gauge", "Overview"), ("list", "Top"), ("chart", "Stats"), ("clock", "History"), ("lib", "Library")]
     items = "".join(
         f'<span class="tab{" on" if label == active else ""}">{icon(ic, 23)}<em>{label}</em></span>'
         for ic, label in tabs
@@ -322,7 +323,7 @@ def screen_history():
         [
             "Day-sectioned <code>List</code>, cursor paging from <code>/history</code>",
             "Filters in a toolbar <code>Menu</code>; active ones as chips",
-            "Sessions share the tab (segmented), so the bar stays at four",
+            "Sessions share the tab (segmented), so the bar stays at five",
             "<code>.refreshable</code>; a lit lamp marks a counted play",
         ],
     )
@@ -375,6 +376,53 @@ def screen_stats():
             "Time series in Swift Charts with <code>chartXSelection</code> scrubbing",
             "Charts carry <code>accessibilityChartDescriptor</code> for VoiceOver",
             "Five chart colours from the web palette, checked for colour vision",
+        ],
+    )
+
+
+def screen_library():
+    def lamps(n):
+        return '<u class="rot">' + "".join(f'<s class="{"l" if i < n else ""}"></s>' for i in range(5)) + "</u>"
+
+    songs = [
+        ("GH", 40, "Glasshouse", "Luca Nyvi", "Saved Oct 14", "7", 5),
+        ("NM", 150, "Neon Meadow", "The Salty Thunders", "Saved Oct 11", "3", 3),
+        ("QS", 215, "Quiet Signal", "Lena Bena", "Saved Oct 9", "0", 0),
+        ("PL", 20, "Paper Lanterns", "Luca Nyvi", "Saved Oct 2", "11", 5),
+        ("HR", 300, "Harbour Lights", "Atlas Lighthouse", "Saved Sep 28", "1", 1),
+        ("SM", 95, "Small Hours", "The Midnight Gardens", "Saved Sep 21", "0", 0),
+    ]
+    rows = "".join(
+        f'<div class="row">{art(i, h, 44, 9)}<span class="t"><b>{t}</b><i>{a} · {d}</i></span>'
+        f'<span class="val"><b>{p}</b>{lamps(n)}</span></div>'
+        for i, h, t, a, d, p, n in songs
+    )
+    mix = [("g0", 18), ("m1", 14), ("m2", 12), ("m3", 9), ("m4", 21), ("m5", 26)]
+    bar = "".join(f'<i class="{c}" style="flex:{w}"></i>' for c, w in mix)
+    body = (
+        '<div class="scroll">'
+        '<div class="large"><h1>Library</h1><span>All time · synced 2 hr ago</span></div>'
+        '<div class="grid2">'
+        '<div class="card stat"><span class="k">Saved, never played</span><span class="v">212</span><span class="d">of 1,284 songs</span></div>'
+        '<div class="card stat"><span class="k">To heavy rotation</span><span class="v">9<small> days</small></span><span class="d">median of 388 songs</span></div>'
+        "</div>"
+        f'<div class="card"><div class="ch"><b>When saved songs reached rotation</b></div><div class="mix">{bar}</div>'
+        '<div class="axis"><span>Before saving</span><span>Within a month</span><span>Not yet</span></div></div>'
+        '<div class="picker"><b class="on">Songs 1,284</b><b>Albums 96</b><b>Playlists 41</b></div>'
+        f'<div class="card list">{rows}</div></div>'
+        + status_bar()
+        + toolbar('<span class="pill glass">Recently saved' + icon("chev", 14, 2.4) + "</span>", circle("gear"))
+        + tabbar("Library", accessory=False)
+    )
+    return phone(
+        "dark",
+        body,
+        "7 · Library",
+        [
+            "No range control: saves carry their own dates (D36)",
+            "Sort in a toolbar <code>Menu</code>; Songs, Albums, Playlists in a <code>Picker</code>",
+            "Five lamps per song: plays towards heavy rotation",
+            "Read-only; sync and the Spotify permission stay on the web",
         ],
     )
 
@@ -496,6 +544,11 @@ code{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ptext);op
 .legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:11px;font-size:12px;color:var(--muted)}
 .legend span{display:flex;align-items:center;gap:5px}.legend i{width:8px;height:8px;border-radius:2px}
 
+.rot{display:flex;gap:3px;text-decoration:none}.rot s{width:6px;height:6px;border-radius:50%;background:var(--grille)}.rot s.l{background:var(--signal)}
+.mix{display:flex;gap:2px;height:14px}.mix i{border-radius:3px;background:var(--grille)}.mix .g0{background:var(--signal)}
+.mix .m1{background:color-mix(in srgb,var(--signal) 78%,var(--card))}.mix .m2{background:color-mix(in srgb,var(--signal) 56%,var(--card))}
+.mix .m3{background:color-mix(in srgb,var(--signal) 36%,var(--card))}.mix .m4{background:color-mix(in srgb,var(--fg) 40%,var(--card))}.mix .m5{background:var(--grille)}
+.tab em{white-space:nowrap}
 .connect{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px 40px;text-align:center;
  background:radial-gradient(70% 40% at 50% 28%,rgba(29,185,84,.16),transparent 70%)}
 .mark{display:flex;gap:9px;padding:22px;border-radius:30px;background:#1a1c21;border:.5px solid #2c2f37;margin-bottom:16px}
@@ -521,7 +574,7 @@ figcaption{width:300px}
 
 
 def build(render=False):
-    screens = [screen_connect(), screen_overview(), screen_top(), screen_artist(), screen_history(), screen_stats()]
+    screens = [screen_connect(), screen_overview(), screen_top(), screen_artist(), screen_history(), screen_stats(), screen_library()]
     notes = [
         "<b>Glass</b> only on the navigation layer: tab bar, toolbar, now-playing accessory",
         "<b>Content</b> stays on solid graphite and aluminium panels",
@@ -534,7 +587,7 @@ def build(render=False):
         "<title>spotussi iPhone mockups</title>"
         f"<style>{CSS}{RENDER_CSS if render else ''}</style></head><body>"
         "<header>" + ("" if render else "<h1>spotussi for iPhone: MVP mockups</h1>") +
-        "<p>Six screens of the read-only companion app, drawn for iOS 27 with Liquid Glass. "
+        "<p>Seven screens of the read-only companion app, drawn for iOS 27 with Liquid Glass. "
         "These are HTML sketches of layout and hierarchy; the real glass, type and controls come from SwiftUI's system components.</p>"
         f'<div class="notes">{"".join(f"<span>{n}</span>" for n in notes)}</div></header>'
         f'<main>{"".join(screens)}</main></body></html>'
