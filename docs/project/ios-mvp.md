@@ -34,7 +34,13 @@ API tokens are read-only and work in every auth mode, including behind forward a
 
 One addition: **Pair iPhone** in Settings → Tokens. It creates a token named for the phone and shows a QR code holding `spotussi://pair?url=<base URL>&token=<spt_…>`, once, like any new token. Everything else the app needs is already in the contract.
 
-To check during the first milestone: whether entity responses carry enough to build an "Open in Spotify" link (the spec says clients must not parse IDs), and how plain-HTTP LAN and Tailscale addresses behave under App Transport Security.
+Checked during I0:
+
+- **"Open in Spotify" needs a spec addition.** Only playlists and play contexts carry a Spotify `uri`. Tracks, artists and albums have an opaque `id` that clients must not parse, so I3 adds a `uri` (or link) field to them before the app can offer the link.
+- **Plain http works for IP addresses and local names only.** The app sets `NSAllowsLocalNetworking`, which covers `http://192.168.1.20:8080`, a Tailscale IP and `.local` names, and declares why it uses the local network. A public name, including a `ts.net` name, needs https. Allowing plain http everywhere would need a justification at App Review, so it is left out. To confirm on a phone in I1.
+- **The spec's "this or null" fields need a rewrite before generating.** Swift OpenAPI Generator drops a property written as `oneOf: [X, {type: 'null'}]`, and the response then fails to decode. `ios/scripts/swiftspec` turns each one into an optional `X` on the way into the generator; the spec itself is unchanged.
+- **The generated client is checked in,** like the web's `schema.d.ts`, instead of running the generator as a build plugin. Builds stay light and need no plugin approval; CI fails when the client doesn't match the spec.
+- **Demo artwork:** the mock's image addresses are SVGs served by the mock server, which the app can't show, so demo mode uses placeholder artwork until I6 decides on bundled images.
 
 ## Design
 
@@ -59,7 +65,7 @@ The app keeps the level-meter direction (D19, D34, D40): graphite and aluminium,
 | UI | SwiftUI only | No UIKit navigation to mix with glass; the QR scanner is the one wrapped UIKit view |
 | App structure | `@Observable` models per screen, plain views, dependencies through `@Environment` | Under ten screens of read-only data. The Composable Architecture was considered and set aside: its reducers and exhaustive tests pay off with heavy shared mutable state, which this app doesn't have |
 | Layout | `ios/` in this repo (owner, 2026-11-16): a small app target plus a local Swift package `SpotussiKit` (client, models, formatting) with its own tests | The package builds and tests with `swift test`, without the simulator |
-| API client | Generated from `api/openapi.yaml` with Swift OpenAPI Generator over `URLSession` | The contract already drives the web client; drift becomes a compile error. Fallback if the generator trips on the 3.1 spec: hand-written `Codable` types for the ~25 GET operations |
+| API client | Generated from `api/openapi.yaml` with Swift OpenAPI Generator over `URLSession` | The contract already drives the web client; drift becomes a compile error. The generator handles the 3.1 spec once its nullable fields are rewritten (see "Checked during I0"), so the hand-written fallback isn't needed |
 | Networking | `URLSession` with async/await | It is HTTP only; Network.framework is for custom protocols |
 | Caching | `URLCache` on disk. Every GET already carries an ETag and `no-cache`, so the system revalidates and a 304 costs no body. With no connection, the last response is shown with a "last updated" line | SQLite (SQLiteData, GRDB) was considered and set aside: the server owns the data and answers in milliseconds, so a second database on the phone would only add sync problems |
 | Images | A small image view over a shared `URLSession` with its own `URLCache` (`AsyncImage` honours HTTP caching only from iOS 27) | No image library needed, and the same behaviour on iOS 26 and 27 |

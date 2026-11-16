@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   # Which parts of the tree changed, so a site- or docs-only change skips
-  # the Go, web and image jobs. Skipped jobs count as passing for the
+  # the Go, web, image and iOS jobs. Skipped jobs count as passing for the
   # required checks on main. Shared inputs (mise.toml, this file) run
   # everything, and so does any push without a usable base.
   changes:
@@ -24,6 +24,7 @@ jobs:
       go: ${{ steps.diff.outputs.go }}
       web: ${{ steps.diff.outputs.web }}
       image: ${{ steps.diff.outputs.image }}
+      ios: ${{ steps.diff.outputs.ios }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,12 +42,13 @@ jobs:
           printf '%s\n' "$files"
           any() { [ "$files" = ALL ] || printf '%s\n' "$files" | grep -qE "$1"; }
           shared='^(mise\.toml|\.github/workflows/ci\.yml)$'
-          go=false; web=false; image=false
-          any "$shared|^(cmd|internal|api)/|^web/embed\.go$|^go\.(mod|sum)$|^Makefile$" && go=true
+          go=false; web=false; image=false; ios=false
+          any "$shared|^(cmd|internal|api)/|^web/embed\.go$|^ios/scripts/.*\.go$|^go\.(mod|sum)$|^Makefile$" && go=true
           any "$shared|^web/|^api/openapi\.yaml$" && web=true
           { [ $go = true ] || [ $web = true ] || any '^(Dockerfile|\.dockerignore)$'; } && image=true
-          echo "go=$go web=$web image=$image" | tee -a "$GITHUB_STEP_SUMMARY"
-          { echo "go=$go"; echo "web=$web"; echo "image=$image"; } >> "$GITHUB_OUTPUT"
+          any "$shared|^ios/|^api/openapi\.yaml$" && ios=true
+          echo "go=$go web=$web image=$image ios=$ios" | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo "go=$go"; echo "web=$web"; echo "image=$image"; echo "ios=$ios"; } >> "$GITHUB_OUTPUT"
 
   go:
     name: Go vet and test
@@ -59,7 +61,7 @@ jobs:
       - uses: jdx/mise-action@v5
       - name: gofmt
         run: |
-          out=$(gofmt -l cmd internal web/embed.go)
+          out=$(gofmt -l cmd internal web/embed.go ios/scripts)
           if [ -n "$out" ]; then echo "gofmt needed:"; echo "$out"; exit 1; fi
       - run: go vet ./...
       # Contract tests validate mock responses against api/openapi.yaml.
@@ -138,3 +140,34 @@ jobs:
           build-args: VERSION=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # The iPhone app (D41): the package's tests run on the macOS host, then
+  # the app is built for the simulator without signing.
+  ios:
+    name: iOS package tests and app build
+    runs-on: macos-26
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      # Go, for the spec rewrite in ios/scripts/gen-api.sh.
+      - uses: jdx/mise-action@v5
+      - name: Toolchain
+        run: xcodebuild -version && swift --version
+      # The generator takes minutes to build, so it is kept between runs.
+      - uses: actions/cache@v5
+        with:
+          path: ~/Library/Caches/spotussi-tools
+          key: swift-openapi-generator-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('ios/scripts/gen-api.sh') }}
+      - name: Generated API client is up to date
+        run: |
+          ios/scripts/gen-api.sh
+          git diff --exit-code -- ios/SpotussiKit/Sources/SpotussiAPI
+      - name: Package tests
+        run: swift test --package-path ios/SpotussiKit
+      - name: App build
+        run: >-
+          xcodebuild build -project ios/Spotussi.xcodeproj -scheme Spotussi
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation

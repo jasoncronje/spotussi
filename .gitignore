@@ -15,3 +15,10 @@
 
 # Wrangler cache from site deploys (D35)
 /.wrangler/
+
+# iPhone app (ios/): SwiftPM and Xcode working files
+.build/
+.swiftpm/
+xcuserdata/
+DerivedData/
+*.xcuserstate
