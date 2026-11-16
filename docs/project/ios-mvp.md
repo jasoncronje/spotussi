@@ -1,6 +1,6 @@
 # iPhone app: MVP scope
 
-A proposal, not yet decided. Once the owner settles the open decisions at the end, they move into [decisions.md](decisions.md) and the milestones into [plan.md](plan.md).
+A proposal. The owner has settled how it ships (TestFlight only, 2026-11-16); once the remaining open decisions at the end are settled, they move into [decisions.md](decisions.md) and the milestones into [plan.md](plan.md).
 
 ![Six mockup screens: Connect, Overview, Top, Artist, History, Stats](ios/mockups.png)
 
@@ -105,7 +105,7 @@ In total about 370–660 tool calls: roughly **3 hours of agent work, up to 7** 
 
 ## Open decisions
 
-1. **How it ships:** TestFlight only for now (recommended), or aim for the App Store from the start.
+1. ~~**How it ships.**~~ Settled by the owner, 2026-11-16: TestFlight only for now. The App Store, and the review risk in the table above, wait until that changes.
 2. **Minimum iOS:** 27 only (recommended), or 26 as well for people who haven't updated.
 3. **Library tab (D36):** after the MVP (recommended), or in it.
 4. **Type:** SF Pro with the expanded width (recommended), or bundle Archivo for figures and titles.
