@@ -1,0 +1,43 @@
+# Swift OpenAPI Generator settings for the iPhone app (ios/scripts/gen-api.sh).
+# Only the read operations the app calls are generated: an API token can't
+# use anything else.
+generate:
+  - types
+  - client
+accessModifier: public
+namingStrategy: idiomatic
+filter:
+  operations:
+    - getHealth
+    - getSystemStatus
+    - getSpotifyConnection
+    - getOverviewSummary
+    - getTimeline
+    - getClock
+    - getTopTracks
+    - getTopArtists
+    - getTopAlbums
+    - getTopGenres
+    - getNowPlaying
+    - getHourlyTop
+    - getArtistsOverTime
+    - getGenresOverTime
+    - getReleaseYears
+    - getArtistsPerTrack
+    - getArtist
+    - getAlbum
+    - getTrack
+    - getGenre
+    - getContexts
+    - getHistory
+    - getDevices
+    - getSessions
+    - getSession
+    - getLibrarySummary
+    - getLibraryTracks
+    - getLibraryAlbums
+    - getLibraryPlaylists
+    - getLibraryPlaylist
+    - getLibraryTimeline
+    - search
+    - getSettings

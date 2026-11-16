@@ -1,0 +1,72 @@
+# XcodeGen spec for the iPhone app (D41). Spotussi.xcodeproj is generated
+# from this file and checked in, so building needs only Xcode:
+#
+#   cd ios && xcodegen generate
+#
+# Sources under Spotussi/ are picked up as a folder, so adding a file
+# doesn't need a regenerate.
+name: Spotussi
+options:
+  bundleIdPrefix: app.spotussi
+  deploymentTarget:
+    iOS: '26.0'
+  createIntermediateGroups: true
+  defaultSourceDirectoryType: syncedFolder
+settings:
+  base:
+    SWIFT_VERSION: '6.0'
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+packages:
+  SpotussiKit:
+    path: SpotussiKit
+targets:
+  Spotussi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Spotussi
+    dependencies:
+      - package: SpotussiKit
+        product: SpotussiKit
+      - package: SpotussiKit
+        product: SpotussiAPI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.spotussi.ios
+        TARGETED_DEVICE_FAMILY: '1'
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+    info:
+      path: Spotussi/Info.plist
+      properties:
+        CFBundleDisplayName: Spotussi
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        # The pairing link from Settings → API & MCP on the web.
+        CFBundleURLTypes:
+          - CFBundleURLName: app.spotussi.ios.pair
+            CFBundleURLSchemes: [spotussi]
+        ITSAppUsesNonExemptEncryption: false
+        # A self-hosted server is often plain http on the home network or a
+        # VPN. This allows http to IP addresses and local names only; public
+        # names still need https.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSLocalNetworkUsageDescription: Spotussi connects to your own Spotussi server when it is on your home network.
+schemes:
+  Spotussi:
+    build:
+      targets:
+        Spotussi: all
+    run:
+      config: Debug
