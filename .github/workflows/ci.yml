@@ -168,6 +168,6 @@ jobs:
         run: swift test --package-path ios/SpotussiKit
       - name: App build
         run: >-
-          xcodebuild build -project ios/Spotussi.xcodeproj -scheme Spotussi
+          xcodebuild build -project ios/Spotussi.xcodeproj -scheme Spotussi -configuration Release
           -destination 'generic/platform=iOS Simulator'
           CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation
