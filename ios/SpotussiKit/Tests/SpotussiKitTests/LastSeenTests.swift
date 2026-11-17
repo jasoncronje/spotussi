@@ -81,6 +81,27 @@ import Testing
         #expect(answered == status)
     }
 
+    @Test(arguments: [502, 503, 504])
+    func aGatewayAnswerIsAnsweredFromStorage(_ status: Int) async throws {
+        let base = HeaderStub { _, operationID in Reply.tagged(operationID, etag: "\"v1\"") }
+        let client = client(base)
+        let fresh = try await client.getSystemStatus().ok.body.json
+
+        base.answer { _, _ in Reply.apiError(status, code: "bad_gateway") }
+        let kept = try await client.getSystemStatus().ok.body.json
+        #expect(kept == fresh)
+    }
+
+    @Test func aGatewayAnswerWithNothingKeptPassesThrough() async throws {
+        let base = HeaderStub { _, _ in Reply.apiError(503, code: "unavailable") }
+        let output = try await client(base).getSystemStatus()
+        guard case .default(let answered, _) = output else {
+            Issue.record("served \(output)")
+            return
+        }
+        #expect(answered == 503)
+    }
+
     @Test func aTLSFailureIsNotAnsweredFromStorage() async throws {
         let base = HeaderStub { _, operationID in Reply.tagged(operationID, etag: "\"v1\"") }
         let client = client(base)

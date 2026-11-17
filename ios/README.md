@@ -66,7 +66,7 @@ spotussi://genre/<id>     spotussi://playlist/<id>?name=<name>
 
 ## Offline
 
-The app keeps the last answer to every request in `Caches/api` (kept out of backups, readable once the phone has been unlocked after a restart) and asks again with its ETag. When the server can't be reached (no connection, or no answer in time), screens show what they last saw and a notice says when that was. A refused token or a server error is never answered from there. Unpairing empties it.
+The app keeps the last answer to every request in `Caches/api` (kept out of backups, readable once the phone has been unlocked after a restart) and asks again with its ETag. When the server can’t be reached (no connection, no answer in time, or a proxy answering 502, 503 or 504 for it), screens show what they last saw and a notice says when that was. A refused token or a server error is never answered from there. Unpairing empties it.
 
 ## App icon
 

@@ -64,6 +64,12 @@ public struct LastSeenTransport: ClientTransport {
             let data = try await Data(collecting: responseBody ?? HTTPBody(), upTo: Self.maximumBody)
             store(data, response: response, for: key)
             return (response, HTTPBody(data))
+        case 502, 503, 504:
+            // A proxy in front of a stopped server answers for it, which is
+            // the same thing to the owner as no answer at all.
+            guard let stored else { return (response, responseBody) }
+            LastSeen.observer?.record(Self.storedAt(stored))
+            return Self.reply(from: stored)
         default:
             return (response, responseBody)
         }
