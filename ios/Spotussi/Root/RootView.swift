@@ -84,17 +84,20 @@ struct RootView: View {
     }
 }
 
-/// Owns the status model for one connection, so it is made once per
-/// instance rather than on every redraw.
+/// Owns the status and now-playing models for one connection, so they are
+/// made once per instance rather than on every redraw.
 private struct ConnectedRoot: View {
     @State private var status: InstanceStatus
+    @State private var nowPlaying: NowPlayingModel
 
     init(client: Client) {
         _status = State(initialValue: InstanceStatus(client: client))
+        _nowPlaying = State(initialValue: NowPlayingModel(client: client))
     }
 
     var body: some View {
         ShellView()
             .environment(status)
+            .environment(nowPlaying)
     }
 }

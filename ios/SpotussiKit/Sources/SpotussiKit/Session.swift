@@ -20,7 +20,10 @@ public final class Session {
     @ObservationIgnored private let tokens: any TokenStore
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let urlCache: URLCache?
+    @ObservationIgnored private let artworkCache: URLCache?
     @ObservationIgnored private let makeClient: (Instance, String) -> Client
+    /// The paired instance's token, for artwork the instance serves itself.
+    @ObservationIgnored private var token: String?
 
     private static let addressKey = "instance.address"
 
@@ -29,19 +32,21 @@ public final class Session {
     /// Restores the paired instance from the stored address and token.
     ///
     /// - Parameters:
-    ///   - urlCache: emptied on unpairing, so nothing of the old instance
-    ///     stays on the phone.
+    ///   - urlCache, artworkCache: emptied on unpairing, so nothing of the
+    ///     old instance stays on the phone.
     ///   - makeClient: builds the client for an instance and token; tests
     ///     pass one over a stub transport.
     public init(
         tokens: any TokenStore = KeychainTokenStore(),
         defaults: UserDefaults = .standard,
         urlCache: URLCache? = URLSession.spotussi.configuration.urlCache,
+        artworkCache: URLCache? = URLSession.artwork.configuration.urlCache,
         makeClient: @escaping (Instance, String) -> Client = { Client.live($0, token: $1) }
     ) {
         self.tokens = tokens
         self.defaults = defaults
         self.urlCache = urlCache
+        self.artworkCache = artworkCache
         self.makeClient = makeClient
         restore()
     }
@@ -90,6 +95,8 @@ public final class Session {
         }
         defaults.set(instance.baseURL.absoluteString, forKey: Self.addressKey)
         urlCache?.removeAllCachedResponses()
+        artworkCache?.removeAllCachedResponses()
+        token = link.token
         state = .paired(instance, client)
     }
 
@@ -105,7 +112,25 @@ public final class Session {
         try? tokens.delete()
         defaults.removeObject(forKey: Self.addressKey)
         urlCache?.removeAllCachedResponses()
+        artworkCache?.removeAllCachedResponses()
+        token = nil
         state = .notPaired
+    }
+
+    /// The request for an `image_url` from the API: resolved against the
+    /// instance when it is relative, and carrying the token only when it
+    /// goes to the instance itself, never to another host. Nil in demo
+    /// mode, whose artwork the app can't draw, and for anything but http(s).
+    public func artworkRequest(for imageURL: String) -> URLRequest? {
+        guard case .paired(let instance, _) = state,
+            let url = URL(string: imageURL, relativeTo: instance.baseURL)?.absoluteURL,
+            let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http"
+        else { return nil }
+        var request = URLRequest(url: url)
+        if let token, url.hasSameOrigin(as: instance.baseURL) {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        return request
     }
 
     // MARK: - Private
@@ -115,6 +140,7 @@ public final class Session {
             let instance = Instance(address: address),
             let token = try? tokens.token()
         else { return }
+        self.token = token
         state = .paired(instance, makeClient(instance, token))
     }
 

@@ -284,31 +284,6 @@ public struct CatalogProgress: Hashable, Sendable {
     }
 }
 
-// MARK: - Formatting
-
-/// "3 min ago", "yesterday", or a date for anything more than a week away,
-/// like `ago()` in web/src/lib/format.ts.
-enum RelativeTime {
-    static func ago(_ date: Date, now: Date) -> String {
-        let seconds = date.timeIntervalSince(now).rounded()
-        let magnitude = abs(seconds)
-        if magnitude < 45 { return String(localized: "just now", bundle: .module) }
-        if magnitude >= 7 * 86_400 { return date.formatted(date: .abbreviated, time: .omitted) }
-        let formatter = RelativeDateTimeFormatter()
-        formatter.dateTimeStyle = .named
-        formatter.unitsStyle = .short
-        let components =
-            if magnitude < 3600 {
-                DateComponents(minute: Int((seconds / 60).rounded()))
-            } else if magnitude < 86_400 {
-                DateComponents(hour: Int((seconds / 3600).rounded()))
-            } else {
-                DateComponents(day: Int((seconds / 86_400).rounded()))
-            }
-        return formatter.localizedString(from: components)
-    }
-}
-
 private func date(_ epochMilliseconds: Components.Schemas.EpochMs) -> Date {
     Date(timeIntervalSince1970: Double(epochMilliseconds) / 1000)
 }
