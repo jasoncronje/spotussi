@@ -37,7 +37,6 @@ struct TabPage<Content: View>: View {
             }
             .background(.ground)
             .navigationTitle(title)
-            .modifier(Subtitle(text: subtitle))
             .tabToolbar(controls)
             .routeDestinations()
             .task { await status.refresh() }
@@ -51,6 +50,14 @@ struct TabPage<Content: View>: View {
     private var scroll: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                // In the page, not the bar: a bar subtitle also shows under
+                // the centred Plays/Time switch and pushes it up.
+                if let subtitle {
+                    subtitle
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, -12)
+                }
                 StatusNotices()
                 content
             }
@@ -89,17 +96,5 @@ struct TabControls {
     static let rangeOnly = TabControls(range: true)
     static func rangeAndMeasure(_ screen: ViewOptions.Screen) -> TabControls {
         TabControls(range: true, measure: screen)
-    }
-}
-
-private struct Subtitle: ViewModifier {
-    let text: Text?
-
-    func body(content: Content) -> some View {
-        if let text {
-            content.navigationSubtitle(text)
-        } else {
-            content
-        }
     }
 }

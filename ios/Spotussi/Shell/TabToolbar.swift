@@ -23,10 +23,13 @@ private struct TabToolbar: ViewModifier {
                     }
                 }
                 if let screen = controls.measure {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    // Centred in the bar, between the range and the buttons.
+                    ToolbarItem(placement: .principal) {
                         MeasurePicker(screen: screen)
                     }
-                    ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                    // The segmented control draws its own glass; the toolbar's
+                    // pill around it showed as a second outline.
+                    .sharedBackgroundVisibility(.hidden)
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
