@@ -6,11 +6,13 @@ import PackageDescription
 // SpotussiAPI is the client generated from api/openapi.yaml and checked in
 // (ios/scripts/gen-api.sh), so a build needs no generator plugin.
 // SpotussiKit holds what the screens share: pairing, the client set-up, the
-// bundled demo data and the brand's colours and type.
+// bundled demo data and the brand's colours and type, the range and
+// status models, and its strings (Localizable.xcstrings, English only).
 //
 // macOS is listed so `swift test` runs on the host without a simulator.
 let package = Package(
     name: "SpotussiKit",
+    defaultLocalization: "en",
     platforms: [.iOS(.v26), .macOS(.v26)],
     products: [
         .library(name: "SpotussiKit", targets: ["SpotussiKit"]),
@@ -34,7 +36,7 @@ let package = Package(
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
             ],
-            resources: [.copy("Fixtures")]
+            resources: [.copy("Fixtures"), .process("Localizable.xcstrings")]
         ),
         .testTarget(
             name: "SpotussiKitTests",
