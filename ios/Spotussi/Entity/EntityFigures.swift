@@ -43,7 +43,8 @@ struct EntityFigures: View {
         let first = detail?.firstPlayed
         return Readout(
             label: "First played",
-            value: first.map { $0.formatted(date: .abbreviated, time: .omitted) } ?? "–",
+            // Month and year: a full date is clipped in the card's wide figures.
+            value: first.map { $0.formatted(.dateTime.month(.abbreviated).year()) } ?? "–",
             detail: detail.map { detail -> String in
                 guard let last = detail.lastPlayed else { return String(localized: "Never played") }
                 return String(localized: "Last: \(RelativeTime.ago(last, now: .now))")
