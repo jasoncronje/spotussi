@@ -14,6 +14,14 @@ nonisolated enum Route: Hashable {
     case history(EntityLink)
     /// One listening session and its plays in order.
     case session(SessionLink)
+    /// A playlist in the library and its songs in order.
+    case playlist(PlaylistLink)
+}
+
+/// A playlist to open, with its name to title the page until it loads.
+nonisolated struct PlaylistLink: Hashable {
+    let id: String
+    let name: String
 }
 
 /// A session to open, with its start to title the page until it loads.
@@ -63,6 +71,8 @@ private struct RouteDestination: View {
             ScopedHistoryPage(scope: entity)
         case .session(let link):
             SessionPage(link: link)
+        case .playlist(let link):
+            PlaylistPage(link: link)
         }
     }
 }
