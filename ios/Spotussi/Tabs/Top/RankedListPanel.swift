@@ -72,7 +72,7 @@ struct RankedListPanel: View {
                 TopRow(entry: TopEntry.placeholder(kind: model.kind, rank: rank), measure: query.measure, share: 1 - Double(rank) / 12)
             }
         }
-        .redacted(reason: .placeholder)
+        .placeholder()
     }
 
     private var client: Client {

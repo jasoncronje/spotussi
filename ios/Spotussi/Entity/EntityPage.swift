@@ -26,7 +26,7 @@ struct EntityPage: View {
         let query = self.query
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                EntityHeader(link: link, detail: model.detail.value)
+                EntityHeader(link: link, name: name, detail: model.detail.value)
                 sections(query)
                     .padding(.horizontal, 16)
             }
@@ -36,7 +36,7 @@ struct EntityPage: View {
         // The soft edge lets the artwork show through under the bar, where
         // iOS 27's default hard edge would cover it.
         .scrollEdgeEffectStyle(.soft, for: .top)
-        .navigationTitle(model.detail.value?.name ?? link.name)
+        .navigationTitle(name)
         .navigationBarTitleDisplayMode(.inline)
         // The bar holds back, range, Plays/Time and Open in Spotify: a title
         // there is clipped to a letter, and the name leads the page anyway.
@@ -135,7 +135,19 @@ struct EntityPage: View {
 
     /// The entity as loaded, for the "All" pages' subtitles.
     private var entity: EntityLink {
-        model.detail.value?.link ?? link
+        guard let loaded = model.detail.value?.link, !isDemoNamed else { return link }
+        return loaded
+    }
+
+    /// The entity's name. The demo answers every id with the same entity,
+    /// so there the name of the row that was tapped stays.
+    private var name: String {
+        if isDemoNamed { return link.name }
+        return model.detail.value?.name ?? link.name
+    }
+
+    private var isDemoNamed: Bool {
+        session.isDemo && !link.name.isEmpty
     }
 
     private var query: StatsQuery {
@@ -183,6 +195,7 @@ private struct NotPlayedPanel: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Not played in this range")
                 .font(.headline)
+                .accessibilityAddTraits(.isHeader)
             if hasPlays {
                 Button("Show all time") {
                     options.range = .preset(.all)

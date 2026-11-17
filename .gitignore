@@ -21,4 +21,6 @@
 .swiftpm/
 xcuserdata/
 DerivedData/
+# Archives and exports for TestFlight (ios/README.md)
+ios/build/
 *.xcuserstate

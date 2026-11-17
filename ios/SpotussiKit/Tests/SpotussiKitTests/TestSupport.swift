@@ -92,3 +92,9 @@ func fixtureStatus() throws -> Components.Schemas.SystemStatus {
     try JSONDecoder().decode(
         Components.Schemas.SystemStatus.self, from: Fixtures.data(for: "getSystemStatus")!)
 }
+
+/// A client answering every request with its recorded fixture as it is,
+/// whatever the parameters: a server that ignores offsets and cursors.
+func fixtureClient() -> Client {
+    StubTransport { Reply.fixture($0) }.apiClient
+}

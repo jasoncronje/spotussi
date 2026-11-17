@@ -23,6 +23,8 @@ settings:
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
     MARKETING_VERSION: 0.1.0
+    # The build number. Each TestFlight upload needs a higher one:
+    # xcodebuild archive ... CURRENT_PROJECT_VERSION=2
     CURRENT_PROJECT_VERSION: 1
 packages:
   SpotussiKit:
@@ -66,9 +68,9 @@ targets:
         # names still need https.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
-        NSLocalNetworkUsageDescription: Spotussi connects to your own Spotussi server when it is on your home network.
+        NSLocalNetworkUsageDescription: Connects to your Spotussi server on your network.
         # Pairing scans the QR code from Settings → API & MCP on the web.
-        NSCameraUsageDescription: Spotussi uses the camera to scan the pairing code shown in your server's settings.
+        NSCameraUsageDescription: Scans the pairing code from your Spotussi server.
 schemes:
   Spotussi:
     build:

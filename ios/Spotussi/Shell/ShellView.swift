@@ -4,32 +4,29 @@ import SwiftUI
 /// Five tabs, each with its own navigation stack. Search opens from the
 /// toolbar: a sixth tab would push Library and Search under "More".
 struct ShellView: View {
-    nonisolated enum Destination: Hashable {
-        case overview, top, stats, history, library
-    }
-
+    @Environment(Navigator.self) private var navigator
     @Environment(InstanceStatus.self) private var status
     @Environment(NowPlayingModel.self) private var nowPlaying
     @Environment(ViewOptions.self) private var options
     @Environment(\.scenePhase) private var scenePhase
-    @State private var selection = Destination.overview
 
     var body: some View {
-        TabView(selection: $selection) {
+        @Bindable var navigator = navigator
+        TabView(selection: $navigator.selection) {
             Tab("Overview", systemImage: "gauge.with.dots.needle.33percent", value: .overview) {
-                OverviewTab()
+                OverviewTab().environment(\.tab, .overview)
             }
             Tab("Top", systemImage: "list.number", value: .top) {
-                TopTab()
+                TopTab().environment(\.tab, .top)
             }
             Tab("Stats", systemImage: "chart.bar.xaxis", value: .stats) {
-                StatsTab()
+                StatsTab().environment(\.tab, .stats)
             }
             Tab("History", systemImage: "clock.arrow.circlepath", value: .history) {
-                HistoryTab()
+                HistoryTab().environment(\.tab, .history)
             }
             Tab("Library", systemImage: "books.vertical", value: .library) {
-                LibraryTab()
+                LibraryTab().environment(\.tab, .library)
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)

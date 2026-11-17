@@ -41,8 +41,9 @@ struct Loaded<Value> {
     }
 }
 
-/// A section with its latest answer: placeholders until the first one,
-/// dimmed while the next range loads, one quiet line if it failed.
+/// A section with its latest answer: placeholders until the first one
+/// (hidden from VoiceOver), dimmed while the next range loads, one quiet
+/// line if it failed.
 struct LoadedSection<Value, Content: View>: View {
     let loaded: Loaded<Value>
     let query: StatsQuery
@@ -61,7 +62,7 @@ struct LoadedSection<Value, Content: View>: View {
         let isFailed = loaded.hasFailed(for: query)
         let isStale = loaded.isStale(for: query) && !isFailed
         content(isFailed ? nil : loaded.value, isFailed)
-            .redacted(reason: loaded.value == nil && !isFailed ? .placeholder : [])
+            .placeholder(loaded.value == nil && !isFailed)
             .opacity(isStale ? 0.55 : 1)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: isStale)
     }

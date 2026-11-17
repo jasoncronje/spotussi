@@ -27,22 +27,27 @@ struct PlaysByDayPanel: View {
                     accessory
                 }
             }
-            if choice != nil {
-                peak
+            // The grid is one element with its own words and audio graph;
+            // the title and the Stats menu stay their own, so VoiceOver and
+            // Voice Control reach the menu.
+            VStack(alignment: .leading, spacing: 12) {
+                if choice != nil {
+                    peak
+                }
+                if isFailed {
+                    SectionFailure()
+                } else {
+                    LampGrid(series: series)
+                    axis
+                }
             }
-            if isFailed {
-                SectionFailure()
-            } else {
-                LampGrid(series: series)
-                axis
-            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(titleText)
+            .accessibilityValue(isFailed ? failure : spokenSummary)
+            .chartSummary(chartSummary)
+            .modifier(QuantityAdjustment(choice: choice))
         }
         .panel()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(titleText)
-        .accessibilityValue(isFailed ? failure : spokenSummary)
-        .chartSummary(chartSummary)
-        .modifier(QuantityAdjustment(choice: choice))
     }
 
     private var quantity: ListeningSeries.Quantity {
@@ -62,17 +67,11 @@ struct PlaysByDayPanel: View {
     /// The quantity menu on Stats, the peak elsewhere.
     @ViewBuilder private var accessory: some View {
         if let choice {
-            Picker("Count", selection: choice) {
-                Text("Plays").tag(ListeningSeries.Quantity.plays)
-                Text("Time").tag(ListeningSeries.Quantity.time)
-                Text("Artists").tag(ListeningSeries.Quantity.artists)
-            }
-            .pickerStyle(.menu)
-            .tint(.primary)
-            .fixedSize()
-            .frame(minHeight: 44)
+            QuantityMenu(choice: choice)
         } else {
             peak
+                // Part of the grid's summary.
+                .accessibilityHidden(true)
         }
     }
 
@@ -84,19 +83,29 @@ struct PlaysByDayPanel: View {
         }
     }
 
-    /// First, middle and last bucket under the grid.
+    /// First, middle and last bucket under the grid; first and last when
+    /// three don't fit.
     @ViewBuilder private var axis: some View {
         let columns = series?.columns ?? []
-        HStack {
-            ForEach(Array(tickIndices(columns.count).enumerated()), id: \.element) { position, index in
-                if position > 0 { Spacer(minLength: 8) }
-                Text(series?.tick(columns[index].key) ?? "")
-            }
+        let ticks = tickIndices(columns.count)
+        ViewThatFits(in: .horizontal) {
+            ticksRow(ticks, columns)
+            ticksRow(ticks.count == 3 ? [ticks[0], ticks[2]] : ticks, columns)
+            ticksRow(Array(ticks.prefix(1)), columns)
         }
         .font(.caption2.monospacedDigit())
         .foregroundStyle(.secondary)
-        .lineLimit(1)
         .frame(minHeight: 14)
+    }
+
+    private func ticksRow(_ indices: [Int], _ columns: [ListeningSeries.Column]) -> some View {
+        HStack {
+            ForEach(Array(indices.enumerated()), id: \.element) { position, index in
+                if position > 0 { Spacer(minLength: 8) }
+                Text(series?.tick(columns[index].key) ?? "")
+                    .fixedSize()
+            }
+        }
     }
 
     private func tickIndices(_ count: Int) -> [Int] {
@@ -177,6 +186,38 @@ struct PlaysByDayPanel: View {
             title: titleText, summary: spokenSummary, xTitle: bucket.axisTitle, yTitle: quantity.label,
             categories: series.columns.map { spokenBucket($0.key, in: series) }, series: lines,
             range: 0...Double(max(1, series.scale)), format: quantity == .time ? .duration : .count)
+    }
+}
+
+/// What the grid counts on Stats: a menu whose label says the choice, at
+/// least 44 points tall.
+private struct QuantityMenu: View {
+    let choice: Binding<ListeningSeries.Quantity>
+
+    var body: some View {
+        Menu {
+            Picker("Count", selection: choice) {
+                ForEach(ListeningSeries.Quantity.allCases, id: \.self) { quantity in
+                    Text(quantity.label).tag(quantity)
+                }
+            }
+            .pickerStyle(.inline)
+        } label: {
+            HStack(spacing: 4) {
+                Text(choice.wrappedValue.label)
+                Image(systemName: "chevron.up.chevron.down")
+                    .imageScale(.small)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline.weight(.medium))
+            .frame(minHeight: 44)
+            .contentShape(.rect)
+        }
+        .tint(.primary)
+        .fixedSize()
+        .accessibilityLabel("Count")
+        .accessibilityValue(choice.wrappedValue.label)
+        .accessibilityInputLabels([Text("Count"), Text(choice.wrappedValue.label)])
     }
 }
 

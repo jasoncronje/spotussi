@@ -39,9 +39,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Spotussi uses the camera to scan the pairing code shown in your server's settings.</string>
+	<string>Scans the pairing code from your Spotussi server.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Spotussi connects to your own Spotussi server when it is on your home network.</string>
+	<string>Connects to your Spotussi server on your network.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

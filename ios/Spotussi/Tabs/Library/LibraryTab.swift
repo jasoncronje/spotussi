@@ -11,7 +11,12 @@ struct LibraryTab: View {
     @Environment(Session.self) private var session
     @Environment(InstanceStatus.self) private var status
     @State private var model = LibraryModel()
+    /// The list switch has scrolled up past the top.
+    @State private var listsAreAbove = false
+    @State private var scrollTarget: ScrollTarget?
     @Namespace private var zoom
+
+    private static let listsID = "library.lists"
 
     /// How often an empty library asks again while its first sync runs.
     private static let syncPoll = Duration.seconds(10)
@@ -19,7 +24,7 @@ struct LibraryTab: View {
     var body: some View {
         let condition = condition
         TabPage(
-            title: "Library", subtitle: subtitle, controls: .settingsOnly,
+            title: "Library", subtitle: subtitle, controls: .settingsOnly, scrollTarget: scrollTarget,
             refresh: { [model, client] in
                 await model.load(client: client)
                 await model.loadPart(client: client, force: true)
@@ -29,6 +34,12 @@ struct LibraryTab: View {
         }
         .task { await model.load(client: client) }
         .task(id: model.shown) { await model.loadPart(client: client) }
+        // Another list, sort or filter starts at its top, under the switch,
+        // rather than wherever the old list was scrolled to.
+        .onChange(of: model.shown) {
+            guard listsAreAbove else { return }
+            scrollTarget = ScrollTarget(id: Self.listsID, request: (scrollTarget?.request ?? 0) + 1)
+        }
         .task(id: condition?.empty == .firstSync) {
             guard condition?.empty == .firstSync else { return }
             while !Task.isCancelled {
@@ -50,13 +61,17 @@ struct LibraryTab: View {
                 LibraryScopeNotice()
             }
             LibraryFigures(summary: model.summary)
-                .redacted(reason: model.summary == nil ? .placeholder : [])
+                .placeholder(model.summary == nil)
             RotationMixPanel(
                 mix: model.summary.map { RotationMix($0.rotationMix) },
                 rotationPlays: model.summary?.rotationPlays ?? SavedSong.rotationPlays)
             SavesPanel(timeline: model.timeline, isFailed: model.timelineFailed && model.timeline == nil)
             LibraryPartPicker(selection: $model.part)
                 .padding(.top, 8)
+                .id(Self.listsID)
+                .onGeometryChange(for: Bool.self) { $0.frame(in: .scrollView).minY < 0 } action: {
+                    listsAreAbove = $0
+                }
             LibraryListBar(model: model)
             list
         }

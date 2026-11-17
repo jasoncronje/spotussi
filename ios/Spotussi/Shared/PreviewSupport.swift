@@ -22,6 +22,7 @@ struct PreviewHost<Content: View>: View {
     @State private var options: ViewOptions
     @State private var status = InstanceStatus(client: .demo)
     @State private var nowPlaying = NowPlayingModel(client: .demo)
+    @State private var navigator = Navigator()
 
     init(
         _ mode: Mode, pairing phase: PairingModel.Phase = .idle,
@@ -45,6 +46,7 @@ struct PreviewHost<Content: View>: View {
             .environment(options)
             .environment(status)
             .environment(nowPlaying)
+            .environment(navigator)
             .task {
                 guard mode == .paired,
                     let link = try? PairingLink(address: "https://stats.example.com", token: "spt_preview")

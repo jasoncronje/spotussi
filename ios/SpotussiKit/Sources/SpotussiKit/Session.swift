@@ -39,7 +39,7 @@ public final class Session {
     public init(
         tokens: any TokenStore = KeychainTokenStore(),
         defaults: UserDefaults = .standard,
-        urlCache: URLCache? = URLSession.spotussi.configuration.urlCache,
+        urlCache: URLCache? = .spotussiAPI,
         artworkCache: URLCache? = URLSession.artwork.configuration.urlCache,
         makeClient: @escaping (Instance, String) -> Client = { Client.live($0, token: $1) }
     ) {

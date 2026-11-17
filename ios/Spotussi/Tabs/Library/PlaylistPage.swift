@@ -33,7 +33,7 @@ struct PlaylistPage: View {
                 } else {
                     header
                     figures
-                        .redacted(reason: model.playlist == nil ? .placeholder : [])
+                        .placeholder(model.playlist == nil)
                     songs
                 }
             }
@@ -42,7 +42,7 @@ struct PlaylistPage: View {
             .padding(.bottom, 32)
         }
         .background(.ground)
-        .navigationTitle(model.playlist?.name ?? link.name)
+        .navigationTitle(name)
         .navigationBarTitleDisplayMode(.inline)
         // The name leads the page; in the bar it would only repeat it.
         .toolbar(removing: .title)
@@ -63,6 +63,13 @@ struct PlaylistPage: View {
         }
     }
 
+    /// The playlist's name. The demo answers every playlist with the same
+    /// one, so there the name of the row that was tapped stays.
+    private var name: String {
+        if session.isDemo, !link.name.isEmpty { return link.name }
+        return model.playlist?.name ?? link.name
+    }
+
     // MARK: - Head
 
     private var header: some View {
@@ -79,7 +86,7 @@ struct PlaylistPage: View {
                         .textCase(.uppercase)
                         .foregroundStyle(.secondary)
                 }
-                Text(model.playlist?.name ?? link.name)
+                Text(name)
                     .font(.system(.title, weight: .bold).width(.expanded))
                     .fixedSize(horizontal: false, vertical: true)
             }

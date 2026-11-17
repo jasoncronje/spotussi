@@ -16,6 +16,7 @@ struct HistoryTab: View {
     @State private var filter = HistoryFilter()
     @State private var history = HistoryModel()
     @State private var sessions = SessionsModel()
+    @State private var isPickingScope = false
 
     var body: some View {
         let query = HistoryQuery(range: options.range, filter: filter)
@@ -37,7 +38,8 @@ struct HistoryTab: View {
                 .toolbar {
                     if part == .plays {
                         ToolbarItem(placement: .topBarTrailing) {
-                            HistoryFilterMenu(filter: $filter, devices: history.devices)
+                            HistoryFilterMenu(
+                                filter: $filter, devices: history.devices, pickScope: { isPickingScope = true })
                         }
                         ToolbarSpacer(.fixed, placement: .topBarTrailing)
                     }
@@ -45,8 +47,8 @@ struct HistoryTab: View {
             count
             switch part {
             case .plays:
-                ActiveFilters(filter: $filter)
-                HistoryList(model: history, query: query, clear: { filter = filter.cleared })
+                ActiveFilters(filter: $filter, scopeIsFilter: true)
+                HistoryList(model: history, query: query, scopeIsFilter: true, clear: { filter = HistoryFilter() })
             case .sessions:
                 SessionsList(model: sessions, range: range)
             }
@@ -58,6 +60,9 @@ struct HistoryTab: View {
             }
         }
         .task(id: range) { await history.loadDevices(range, client: client) }
+        .sheet(isPresented: $isPickingScope) {
+            HistoryScopePicker { filter.scope = $0 }
+        }
     }
 
     /// "2,348 plays", "102 sessions · 15 min gap", once they answer the

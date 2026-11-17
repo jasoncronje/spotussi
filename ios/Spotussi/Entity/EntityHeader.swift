@@ -4,10 +4,10 @@ import SwiftUI
 /// The head of an entity page: the artwork, running up under the bar, with
 /// what the entity is and its name over it; then its links (an artist's
 /// genres, an album's or track's artists and album) and details. A genre
-/// has lamps instead of artwork. Shows the route's name until the page
-/// loads.
+/// has lamps instead of artwork.
 struct EntityHeader: View {
     let link: EntityLink
+    let name: String
     let detail: EntityDetail?
 
     var body: some View {
@@ -59,7 +59,7 @@ struct EntityHeader: View {
                 .font(.caption.weight(.semibold).width(.expanded))
                 .textCase(.uppercase)
                 .opacity(0.8)
-            Text(detail?.name ?? link.name)
+            Text(name)
                 .font(.system(.largeTitle, weight: .bold).width(.expanded))
                 .fixedSize(horizontal: false, vertical: true)
         }

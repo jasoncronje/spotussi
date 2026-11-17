@@ -3,7 +3,8 @@ import Observation
 import SpotussiAPI
 import SpotussiKit
 
-/// The Overview's sections for the shared range and its measure. Each
+/// The Overview's sections for the shared range and its measure: the
+/// summary, listening by day and around the clock, and the top fives. Each
 /// section loads on its own, all at once, like the web's Overview; what
 /// loaded last stays on screen (dimmed) while the next range loads.
 @Observable
@@ -12,6 +13,7 @@ final class OverviewModel {
 
     private(set) var summary = Loaded<Components.Schemas.OverviewSummary>()
     private(set) var series = Loaded<ListeningSeries>()
+    private(set) var clock = Loaded<HourlyListening>()
     private var tops: [TopEntry.Kind: Loaded<[TopEntry]>] = [:]
 
     /// The latest plays, whatever the range, as the web's recent strip.
@@ -47,6 +49,12 @@ final class OverviewModel {
                     query: .init(range: range.range, from: range.from, to: range.to, compare: true)
                 ).ok.body.json
                 return .series(timeline.map { ListeningSeries($0, measure: query.measure) })
+            }
+            group.addTask {
+                let clock = try? await client.getClock(
+                    query: .init(range: range.range, from: range.from, to: range.to)
+                ).ok.body.json
+                return .clock(clock.map { HourlyListening($0, measure: query.measure) })
             }
             group.addTask {
                 let top = try? await client.getTopArtists(
@@ -96,6 +104,7 @@ final class OverviewModel {
     private nonisolated enum Part: Sendable {
         case summary(Components.Schemas.OverviewSummary?)
         case series(ListeningSeries?)
+        case clock(HourlyListening?)
         case top(TopEntry.Kind, [TopEntry]?)
     }
 
@@ -103,6 +112,7 @@ final class OverviewModel {
         switch part {
         case .summary(let value): summary.finish(value, for: query)
         case .series(let value): series.finish(value, for: query)
+        case .clock(let value): clock.finish(value, for: query)
         case .top(let kind, let value): tops[kind, default: Loaded()].finish(value, for: query)
         }
     }
