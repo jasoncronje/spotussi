@@ -121,6 +121,10 @@ extension Components {
             public var releaseYear: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/AlbumFull/total_tracks`.
             public var totalTracks: Swift.Int?
+            /// Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).
+            ///
+            /// - Remark: Generated from `#/components/schemas/AlbumFull/uri`.
+            public var uri: Swift.String?
             /// Creates a new `AlbumFull`.
             ///
             /// - Parameters:
@@ -133,6 +137,7 @@ extension Components {
             ///   - releaseDate: As precise as Spotify knows it: `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.
             ///   - releaseYear:
             ///   - totalTracks:
+            ///   - uri: Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).
             public init(
                 albumType: Components.Schemas.AlbumFull.AlbumTypePayload? = nil,
                 artists: [Components.Schemas.ArtistLite],
@@ -142,7 +147,8 @@ extension Components {
                 name: Swift.String,
                 releaseDate: Swift.String? = nil,
                 releaseYear: Swift.Int? = nil,
-                totalTracks: Swift.Int? = nil
+                totalTracks: Swift.Int? = nil,
+                uri: Swift.String? = nil
             ) {
                 self.albumType = albumType
                 self.artists = artists
@@ -153,6 +159,7 @@ extension Components {
                 self.releaseDate = releaseDate
                 self.releaseYear = releaseYear
                 self.totalTracks = totalTracks
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case albumType = "album_type"
@@ -164,6 +171,7 @@ extension Components {
                 case releaseDate = "release_date"
                 case releaseYear = "release_year"
                 case totalTracks = "total_tracks"
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -203,6 +211,10 @@ extension Components {
                     Swift.Int.self,
                     forKey: .totalTracks
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "album_type",
                     "artists",
@@ -212,7 +224,8 @@ extension Components {
                     "name",
                     "release_date",
                     "release_year",
-                    "total_tracks"
+                    "total_tracks",
+                    "uri"
                 ])
             }
         }
@@ -266,6 +279,10 @@ extension Components {
             public var name: Swift.String
             /// - Remark: Generated from `#/components/schemas/AlbumRef/release_year`.
             public var releaseYear: Swift.Int?
+            /// Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).
+            ///
+            /// - Remark: Generated from `#/components/schemas/AlbumRef/uri`.
+            public var uri: Swift.String?
             /// Creates a new `AlbumRef`.
             ///
             /// - Parameters:
@@ -274,18 +291,21 @@ extension Components {
             ///   - imageUrl:
             ///   - name:
             ///   - releaseYear:
+            ///   - uri: Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).
             public init(
                 artists: [Components.Schemas.ArtistLite],
                 id: Swift.String,
                 imageUrl: Swift.String? = nil,
                 name: Swift.String,
-                releaseYear: Swift.Int? = nil
+                releaseYear: Swift.Int? = nil,
+                uri: Swift.String? = nil
             ) {
                 self.artists = artists
                 self.id = id
                 self.imageUrl = imageUrl
                 self.name = name
                 self.releaseYear = releaseYear
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case artists
@@ -293,6 +313,7 @@ extension Components {
                 case imageUrl = "image_url"
                 case name
                 case releaseYear = "release_year"
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -316,12 +337,17 @@ extension Components {
                     Swift.Int.self,
                     forKey: .releaseYear
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "artists",
                     "id",
                     "image_url",
                     "name",
-                    "release_year"
+                    "release_year",
+                    "uri"
                 ])
             }
         }
@@ -501,6 +527,10 @@ extension Components {
             public var metadata: Components.Schemas.EntityMetadata
             /// - Remark: Generated from `#/components/schemas/ArtistFull/name`.
             public var name: Swift.String
+            /// Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).
+            ///
+            /// - Remark: Generated from `#/components/schemas/ArtistFull/uri`.
+            public var uri: Swift.String?
             /// Creates a new `ArtistFull`.
             ///
             /// - Parameters:
@@ -509,18 +539,21 @@ extension Components {
             ///   - imageUrl:
             ///   - metadata:
             ///   - name:
+            ///   - uri: Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).
             public init(
                 genres: [Components.Schemas.GenreRef],
                 id: Swift.String,
                 imageUrl: Swift.String? = nil,
                 metadata: Components.Schemas.EntityMetadata,
-                name: Swift.String
+                name: Swift.String,
+                uri: Swift.String? = nil
             ) {
                 self.genres = genres
                 self.id = id
                 self.imageUrl = imageUrl
                 self.metadata = metadata
                 self.name = name
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case genres
@@ -528,6 +561,7 @@ extension Components {
                 case imageUrl = "image_url"
                 case metadata
                 case name
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -551,12 +585,17 @@ extension Components {
                     Swift.String.self,
                     forKey: .name
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "genres",
                     "id",
                     "image_url",
                     "metadata",
-                    "name"
+                    "name",
+                    "uri"
                 ])
             }
         }
@@ -608,25 +647,33 @@ extension Components {
             public var imageUrl: Swift.String?
             /// - Remark: Generated from `#/components/schemas/ArtistRef/name`.
             public var name: Swift.String
+            /// Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).
+            ///
+            /// - Remark: Generated from `#/components/schemas/ArtistRef/uri`.
+            public var uri: Swift.String?
             /// Creates a new `ArtistRef`.
             ///
             /// - Parameters:
             ///   - id:
             ///   - imageUrl: Null until the artist is hydrated (D9).
             ///   - name:
+            ///   - uri: Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).
             public init(
                 id: Swift.String,
                 imageUrl: Swift.String? = nil,
-                name: Swift.String
+                name: Swift.String,
+                uri: Swift.String? = nil
             ) {
                 self.id = id
                 self.imageUrl = imageUrl
                 self.name = name
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case id
                 case imageUrl = "image_url"
                 case name
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -642,10 +689,15 @@ extension Components {
                     Swift.String.self,
                     forKey: .name
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "id",
                     "image_url",
-                    "name"
+                    "name",
+                    "uri"
                 ])
             }
         }
@@ -7909,6 +7961,10 @@ extension Components {
             public var metadata: Components.Schemas.EntityMetadata
             /// - Remark: Generated from `#/components/schemas/TrackFull/name`.
             public var name: Swift.String
+            /// Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/TrackFull/uri`.
+            public var uri: Swift.String?
             /// Creates a new `TrackFull`.
             ///
             /// - Parameters:
@@ -7920,6 +7976,7 @@ extension Components {
             ///   - imageUrl:
             ///   - metadata:
             ///   - name:
+            ///   - uri: Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.
             public init(
                 album: Components.Schemas.AlbumRef? = nil,
                 artists: [Components.Schemas.ArtistRef],
@@ -7928,7 +7985,8 @@ extension Components {
                 id: Swift.String,
                 imageUrl: Swift.String? = nil,
                 metadata: Components.Schemas.EntityMetadata,
-                name: Swift.String
+                name: Swift.String,
+                uri: Swift.String? = nil
             ) {
                 self.album = album
                 self.artists = artists
@@ -7938,6 +7996,7 @@ extension Components {
                 self.imageUrl = imageUrl
                 self.metadata = metadata
                 self.name = name
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case album
@@ -7948,6 +8007,7 @@ extension Components {
                 case imageUrl = "image_url"
                 case metadata
                 case name
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -7983,6 +8043,10 @@ extension Components {
                     Swift.String.self,
                     forKey: .name
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "album",
                     "artists",
@@ -7991,7 +8055,8 @@ extension Components {
                     "id",
                     "image_url",
                     "metadata",
-                    "name"
+                    "name",
+                    "uri"
                 ])
             }
         }
@@ -8015,6 +8080,10 @@ extension Components {
             public var imageUrl: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TrackRef/name`.
             public var name: Swift.String
+            /// Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/TrackRef/uri`.
+            public var uri: Swift.String?
             /// Creates a new `TrackRef`.
             ///
             /// - Parameters:
@@ -8024,13 +8093,15 @@ extension Components {
             ///   - id:
             ///   - imageUrl: Album artwork; null until hydrated.
             ///   - name:
+            ///   - uri: Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.
             public init(
                 album: Components.Schemas.AlbumLite? = nil,
                 artists: [Components.Schemas.ArtistLite],
                 durationMs: Swift.Int? = nil,
                 id: Swift.String,
                 imageUrl: Swift.String? = nil,
-                name: Swift.String
+                name: Swift.String,
+                uri: Swift.String? = nil
             ) {
                 self.album = album
                 self.artists = artists
@@ -8038,6 +8109,7 @@ extension Components {
                 self.id = id
                 self.imageUrl = imageUrl
                 self.name = name
+                self.uri = uri
             }
             public enum CodingKeys: String, CodingKey {
                 case album
@@ -8046,6 +8118,7 @@ extension Components {
                 case id
                 case imageUrl = "image_url"
                 case name
+                case uri
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -8073,13 +8146,18 @@ extension Components {
                     Swift.String.self,
                     forKey: .name
                 )
+                self.uri = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .uri
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "album",
                     "artists",
                     "duration_ms",
                     "id",
                     "image_url",
-                    "name"
+                    "name",
+                    "uri"
                 ])
             }
         }

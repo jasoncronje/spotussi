@@ -87,6 +87,19 @@ func TestHistoryWithExportRows(t *testing.T) {
 		album["id"] == dig(e2, "track", "album", "id") {
 		t.Fatalf("provisional entities: %v / %v", e1["track"], e2["track"])
 	}
+	// The track links out to Spotify; the provisional artist and album
+	// have no Spotify ID, so their URI is null (but present).
+	if dig(e1, "track", "uri") != "spotify:track:e1" {
+		t.Fatalf("track uri: %v", e1["track"])
+	}
+	al := h.call("GET", "/albums/{id}", "/albums/"+album["id"].(string), nil, 200)
+	ar := h.call("GET", "/artists/{id}", "/artists/"+artist["id"].(string), nil, 200)
+	if v, ok := dig(al, "album").(map[string]any)["uri"]; !ok || v != nil {
+		t.Fatalf("provisional album uri: %v", al["album"])
+	}
+	if v, ok := dig(ar, "artist").(map[string]any)["uri"]; !ok || v != nil {
+		t.Fatalf("provisional artist uri: %v", ar["artist"])
+	}
 
 	for q, want := range map[string]int{
 		"platform=android": 2, "platform=ios": 1, "counted=true": 4, "counted=false": 2, "skipped=true": 2,

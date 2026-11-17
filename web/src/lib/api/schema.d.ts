@@ -1226,12 +1226,16 @@ export interface components {
 		};
 		ArtistRef: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20). */
+			uri: string | null;
 			name: string;
 			/** @description Null until the artist is hydrated (D9). */
 			image_url: string | null;
 		};
 		AlbumRef: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20). */
+			uri: string | null;
 			name: string;
 			image_url: string | null;
 			release_year: number | null;
@@ -1239,6 +1243,8 @@ export interface components {
 		};
 		TrackRef: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file. */
+			uri: string | null;
 			name: string;
 			/** @description Album artwork; null until hydrated. */
 			image_url: string | null;
@@ -2059,6 +2065,8 @@ export interface components {
 		};
 		ArtistFull: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20). */
+			uri: string | null;
 			name: string;
 			image_url: string | null;
 			genres: components['schemas']['GenreRef'][];
@@ -2066,6 +2074,8 @@ export interface components {
 		};
 		AlbumFull: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20). */
+			uri: string | null;
 			name: string;
 			image_url: string | null;
 			/** @enum {string|null} */
@@ -2079,6 +2089,8 @@ export interface components {
 		};
 		TrackFull: {
 			id: string;
+			/** @description Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file. */
+			uri: string | null;
 			name: string;
 			image_url: string | null;
 			duration_ms: number | null;

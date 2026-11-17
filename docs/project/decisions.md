@@ -252,7 +252,7 @@ v1 mirrors the single-user features of Your Spotify (surveyed from its client so
 
 Open questions raised by the M0 build, resolved with defaults (all changeable via rebuild, D3):
 
-- **Unhydrated export rows:** exports carry track URIs but no artist/album IDs. Until a track is hydrated, its artist and album are provisional entities keyed by normalized name (as given in the export row); hydration replaces them with real Spotify entities on the next rebuild. Entity IDs stay opaque in the API so this is invisible to clients. Lets top artists/albums appear immediately after import.
+- **Unhydrated export rows:** exports carry track URIs but no artist/album IDs. Until a track is hydrated, its artist and album are provisional entities keyed by normalized name (as given in the export row); hydration replaces them with real Spotify entities on the next rebuild. Entity IDs stay opaque in the API so this is invisible to clients; the only trace is a null Spotify `uri` (the field clients link out with, D41) until hydration. Lets top artists/albums appear immediately after import.
 - **Attribution:** a play counts for every artist credited on the track (so artist totals can exceed total plays), and for each genre of those artists once per play (no double counting when two artists share a genre).
 - **Default timezone:** set from the browser's timezone (`Intl` API) during the setup wizard; falls back to the `TZ` env var, then UTC. Changeable in settings (D14).
 - **Overview round trips:** keep granular endpoints (reused by entity pages, API, MCP). UI track U0 measures Overview load; add a composite endpoint only if the waterfall is noticeable.
