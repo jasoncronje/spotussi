@@ -5,9 +5,11 @@ import SwiftUI
 struct Readout: View {
     let label: LocalizedStringKey
     let value: String
-    /// Whole percent against the period before; nil when there is nothing
-    /// to compare with.
-    var change: Int?
+    /// What VoiceOver reads for `value` when the short form doesn't speak
+    /// well ("3h 12m").
+    var spokenValue: String?
+    /// Nil when there is nothing to compare with.
+    var change: Change?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -19,8 +21,9 @@ struct Readout: View {
                 .contentTransition(.numericText())
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
+                .accessibilityLabel(spokenValue ?? value)
             if let change {
-                ChangeLine(percent: change)
+                ChangeLine(change: change)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -29,33 +32,49 @@ struct Readout: View {
     }
 }
 
-/// "▲ 37%": the arrow's direction and the sign say which way, the colour
+/// "▲ 37%": the arrow's direction and the words say which way; the colour
 /// only underlines a rise.
 private struct ChangeLine: View {
-    let percent: Int
+    let change: Change
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(systemName: symbol)
-                .imageScale(.small)
-            Text(percent.formatted(.percent.sign(strategy: .always(includingZero: false))))
-                .monospacedDigit()
+            switch change {
+            case .new:
+                Text("New")
+            case .same:
+                Image(systemName: "equal")
+                    .imageScale(.small)
+                Text(Change.Percent(value: 0, fractionDigits: 0).formatted())
+            case .rise(let percent):
+                Image(systemName: "arrowtriangle.up.fill")
+                    .imageScale(.small)
+                Text(percent.formatted())
+            case .fall(let percent):
+                Image(systemName: "arrowtriangle.down.fill")
+                    .imageScale(.small)
+                Text(percent.formatted())
+            }
         }
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(percent > 0 ? AnyShapeStyle(.lampInk) : AnyShapeStyle(.secondary))
+        .font(.caption.weight(.semibold).monospacedDigit())
+        .foregroundStyle(isLit ? AnyShapeStyle(.lampInk) : AnyShapeStyle(.secondary))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
     }
 
-    private var symbol: String {
-        if percent > 0 { "arrowtriangle.up.fill" }
-        else if percent < 0 { "arrowtriangle.down.fill" }
-        else { "equal" }
+    private var isLit: Bool {
+        switch change {
+        case .new, .rise: true
+        case .same, .fall: false
+        }
     }
 
-    private var accessibilityText: String {
-        if percent > 0 { String(localized: "Up \(percent.formatted(.percent))") }
-        else if percent < 0 { String(localized: "Down \(abs(percent).formatted(.percent))") }
-        else { String(localized: "No change") }
+    private var accessibilityText: Text {
+        switch change {
+        case .new: Text("New")
+        case .same: Text("No change")
+        case .rise(let percent): Text("Up \(percent.formatted())")
+        case .fall(let percent): Text("Down \(percent.formatted())")
+        }
     }
 }

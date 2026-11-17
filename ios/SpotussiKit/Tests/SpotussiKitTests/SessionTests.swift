@@ -7,11 +7,12 @@ import Testing
     let store = InMemoryTokenStore()
     let suite = TestDefaults()
     let cache = URLCache(memoryCapacity: 1 << 20, diskCapacity: 0)
+    let artworkCache = URLCache(memoryCapacity: 1 << 20, diskCapacity: 0)
     let link = try! PairingLink(address: "https://stats.example.com", token: "spt_abcdef12")
 
     func session(_ transport: StubTransport) -> Session {
         Session(
-            tokens: store, defaults: suite.defaults, urlCache: cache,
+            tokens: store, defaults: suite.defaults, urlCache: cache, artworkCache: artworkCache,
             makeClient: { transport.client($0, token: $1) })
     }
 
@@ -166,6 +167,52 @@ import Testing
         #expect(
             suite.defaults.string(forKey: "instance.address") == nil,
             sourceLocation: sourceLocation)
+    }
+
+    // MARK: - Artwork
+
+    @Test func artworkFromTheInstanceCarriesTheToken() async throws {
+        let session = session(StubTransport(Self.healthy))
+        try await session.pair(link)
+
+        let relative = try #require(session.artworkRequest(for: "/_mock/img/album/a.svg"))
+        #expect(relative.url?.absoluteString == "https://stats.example.com/_mock/img/album/a.svg")
+        #expect(relative.value(forHTTPHeaderField: "Authorization") == "Bearer spt_abcdef12")
+
+        let absolute = try #require(session.artworkRequest(for: "https://STATS.example.com:443/img/b.jpg"))
+        #expect(absolute.value(forHTTPHeaderField: "Authorization") == "Bearer spt_abcdef12")
+    }
+
+    @Test(arguments: [
+        "https://i.scdn.co/image/ab67616d0000b273",
+        "//i.scdn.co/image/ab67616d0000b273",
+        "http://stats.example.com/img/b.jpg",
+        "https://stats.example.com:8443/img/b.jpg",
+    ])
+    func artworkElsewhereGoesWithoutTheToken(_ address: String) async throws {
+        let session = session(StubTransport(Self.healthy))
+        try await session.pair(link)
+        let request = try #require(session.artworkRequest(for: address))
+        #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
+    }
+
+    @Test func noArtworkWithoutAnInstance() async throws {
+        let session = session(StubTransport(Self.healthy))
+        #expect(session.artworkRequest(for: "/img/a.jpg") == nil)
+        session.startDemo()
+        #expect(session.artworkRequest(for: "/img/a.jpg") == nil)
+        try await session.pair(link)
+        #expect(session.artworkRequest(for: "data:image/png;base64,AAAA") == nil)
+
+        let request = URLRequest(url: URL(string: "https://stats.example.com/img/a.jpg")!)
+        artworkCache.storeCachedResponse(
+            CachedURLResponse(
+                response: HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!,
+                data: Data(repeating: 1, count: 64)),
+            for: request)
+        session.unpair()
+        #expect(session.artworkRequest(for: "/img/a.jpg") == nil)
+        #expect(artworkCache.cachedResponse(for: request) == nil)
     }
 
     private static let cachedRequest = URLRequest(

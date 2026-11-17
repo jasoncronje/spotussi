@@ -25,12 +25,26 @@
         }
       }
     },
+    "%lld. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld. %2$@"
+          }
+        }
+      }
+    },
     "About" : {},
     "Address" : {},
     "Address and token" : {},
     "Allow the camera in Settings, or type the address and token." : {},
-    "Artist" : {},
     "Artists" : {},
+    "Average %@ a day." : {},
+    "Average %@ a month." : {},
+    "Average %@ a week." : {},
+    "Average %@ a year." : {},
+    "Average %@ an hour." : {},
     "Both days count, in your server’s time zone." : {},
     "Camera access is off" : {},
     "Cancel" : {},
@@ -49,6 +63,7 @@
     "Count by" : {},
     "Custom range" : {},
     "Custom…" : {},
+    "Day" : {},
     "Demo data" : {},
     "Down %@" : {},
     "Enter address and token" : {},
@@ -58,18 +73,24 @@
     "From" : {},
     "From Settings, API & MCP on the web." : {},
     "History" : {},
+    "Hour" : {},
     "Last play" : {},
     "Leave demo" : {},
     "Library" : {},
     "Loading…" : {},
     "Make a new one in Settings, API & MCP." : {},
-    "Most listened to" : {},
-    "Most played" : {},
+    "Month" : {},
     "Needs reconnecting on the web" : {},
+    "New" : {},
     "No camera to scan with" : {},
     "No change" : {},
+    "No genres yet." : {},
+    "No plays in this range." : {},
+    "No plays yet." : {},
     "Not affiliated with Spotify." : {},
     "Not connected" : {},
+    "Nothing playing" : {},
+    "Now playing" : {},
     "OK" : {},
     "Open Settings" : {},
     "Overview" : {},
@@ -77,12 +98,39 @@
     "Pairing cancelled." : {},
     "Pairing didn’t finish (error %lld)." : {},
     "Pairing didn’t finish." : {},
+    "Paused" : {},
+    "Peak %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Peak %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Peak %@, %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Peak %1$@, %2$@."
+          }
+        }
+      }
+    },
+    "Period before" : {},
     "Plain http needs an IP address or .local name." : {},
     "Playing now" : {},
     "Plays" : {},
-    "Plays by day, top fives and recent plays" : {},
+    "Plays by day" : {},
+    "Plays by hour" : {},
+    "Plays by month" : {},
+    "Plays by week" : {},
+    "Plays by year" : {},
     "Point at the code in Settings, API & MCP on the web." : {},
     "Range" : {},
+    "Recently played" : {},
     "Replace the paired server?" : {},
     "Retrying after errors" : {},
     "Returns to pairing." : {},
@@ -120,14 +168,22 @@
       }
     },
     "This iPhone will use the new token for %@." : {},
+    "Time by day" : {},
+    "Time by hour" : {},
+    "Time by month" : {},
+    "Time by week" : {},
+    "Time by year" : {},
     "Time listened" : {},
     "To" : {},
     "Token" : {},
     "Token not accepted." : {},
     "Tokens start with spt_. Copy it again." : {},
     "Top" : {},
+    "Top albums" : {},
+    "Top artists" : {},
+    "Top genres" : {},
+    "Top tracks" : {},
     "Top tracks, artists, albums and genres" : {},
-    "Track" : {},
     "Tracks" : {},
     "Tracks, artists, albums" : {},
     "Try again any time." : {},
@@ -144,9 +200,39 @@
     "Use the address from your browser." : {},
     "Version" : {},
     "Waiting for the next play" : {},
+    "Week" : {},
+    "Year" : {},
+    "about %@" : {},
+    "down %lld from rank %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "down %1$lld from rank %2$lld"
+          }
+        }
+      }
+    },
     "iOS allows plain http only on your own network." : {},
+    "new" : {},
+    "new this period" : {},
+    "not counted" : {},
+    "same rank as before" : {},
+    "skipped at %@" : {},
     "spt_…" : {},
-    "stats.example.com" : {}
+    "stats.example.com" : {},
+    "up %lld from rank %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "up %1$lld from rank %2$lld"
+          }
+        }
+      }
+    },
+    "week of %@" : {},
+    "≈ %@" : {}
   },
   "version" : "1.0"
 }

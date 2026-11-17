@@ -7,7 +7,7 @@ A read-only native app for one Spotussi instance. Scope and decisions: [docs/pro
 | Path | What it is |
 |---|---|
 | `Spotussi/` | The app target: screens and the app entry point |
-| `SpotussiKit/` | A local Swift package. `SpotussiAPI` is the client generated from `api/openapi.yaml`. `SpotussiKit` holds pairing, the client set-up, the demo data and the brand's colours and type |
+| `SpotussiKit/` | A local Swift package. `SpotussiAPI` is the client generated from `api/openapi.yaml`. `SpotussiKit` holds pairing, the client set-up, the demo data, the brand's colours and type, number and date formatting, the screens' view data and artwork loading |
 | `project.yml` | The XcodeGen spec that `Spotussi.xcodeproj` is generated from |
 | `openapi-generator-config.yaml` | Which API operations the client includes |
 | `scripts/` | Regenerating the client and re-recording the demo data |

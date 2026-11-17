@@ -21,13 +21,14 @@ struct PreviewHost<Content: View>: View {
     @State private var pairing: PairingModel
     @State private var options: ViewOptions
     @State private var status = InstanceStatus(client: .demo)
+    @State private var nowPlaying = NowPlayingModel(client: .demo)
 
     init(
         _ mode: Mode, pairing phase: PairingModel.Phase = .idle,
         @ViewBuilder content: () -> Content
     ) {
         let session = Session(
-            tokens: InMemoryTokenStore(), defaults: Self.defaults, urlCache: nil,
+            tokens: InMemoryTokenStore(), defaults: Self.defaults, urlCache: nil, artworkCache: nil,
             makeClient: { _, _ in .demo })
         if mode == .demo { session.startDemo() }
         self.mode = mode
@@ -43,6 +44,7 @@ struct PreviewHost<Content: View>: View {
             .environment(pairing)
             .environment(options)
             .environment(status)
+            .environment(nowPlaying)
             .task {
                 guard mode == .paired,
                     let link = try? PairingLink(address: "https://stats.example.com", token: "spt_preview")

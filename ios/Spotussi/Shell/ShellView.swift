@@ -9,6 +9,7 @@ struct ShellView: View {
     }
 
     @Environment(InstanceStatus.self) private var status
+    @Environment(NowPlayingModel.self) private var nowPlaying
     @Environment(ViewOptions.self) private var options
     @Environment(\.scenePhase) private var scenePhase
     @State private var selection = Destination.overview
@@ -32,6 +33,12 @@ struct ShellView: View {
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
+        .nowPlayingAccessory(nowPlaying)
+        // Polls only while the app is in front; leaving cancels it.
+        .task(id: scenePhase == .active) {
+            guard scenePhase == .active else { return }
+            await nowPlaying.poll()
+        }
         // Here rather than on each tab, which stay alive in the background
         // and would each give a tick.
         .sensoryFeedback(.selection, trigger: options.range)
