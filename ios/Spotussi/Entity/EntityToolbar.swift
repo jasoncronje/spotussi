@@ -24,6 +24,9 @@ private struct EntityToolbar: ViewModifier {
                 ToolbarItem(placement: .topBarTrailing) {
                     MeasurePicker(screen: screen)
                 }
+                // The segmented control draws its own glass; the toolbar's
+                // pill around it showed as a second outline.
+                .sharedBackgroundVisibility(.hidden)
                 if let spotifyURL {
                     ToolbarSpacer(.fixed, placement: .topBarTrailing)
                     ToolbarItem(placement: .topBarTrailing) {
