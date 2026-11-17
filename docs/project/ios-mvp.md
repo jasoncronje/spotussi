@@ -36,7 +36,7 @@ One addition: **Pair iPhone** in Settings → Tokens. It creates a token named f
 
 Checked during I0:
 
-- **"Open in Spotify" needs a spec addition.** Only playlists and play contexts carry a Spotify `uri`. Tracks, artists and albums have an opaque `id` that clients must not parse, so I3 adds a `uri` (or link) field to them before the app can offer the link.
+- **"Open in Spotify" has its spec addition.** Tracks, artists and albums (refs and entity pages) now carry a nullable Spotify `uri` next to their opaque `id`, null for provisional export-only artists and albums and for local files, so I3 links out with it.
 - **Plain http works for IP addresses and local names only.** The app sets `NSAllowsLocalNetworking`, which covers `http://192.168.1.20:8080`, a Tailscale IP and `.local` names, and declares why it uses the local network. A public name, including a `ts.net` name, needs https. Allowing plain http everywhere would need a justification at App Review, so it is left out. To confirm on a phone in I1.
 - **The spec's "this or null" fields need a rewrite before generating.** Swift OpenAPI Generator drops a property written as `oneOf: [X, {type: 'null'}]`, and the response then fails to decode. `ios/scripts/swiftspec` turns each one into an optional `X` on the way into the generator; the spec itself is unchanged.
 - **The generated client is checked in,** like the web's `schema.d.ts`, instead of running the generator as a build plugin. Builds stay light and need no plugin approval; CI fails when the client doesn't match the spec.

@@ -13,10 +13,12 @@ info:
     - **Durations** are integer milliseconds, in fields ending `_ms`.
     - **Local dates** (display timezone, see Settings) are `YYYY-MM-DD` strings.
     - **IDs** are opaque strings. Today they are Spotify base62 IDs; clients must not
-      parse them.
+      parse them. To link out to Spotify, use the `uri` that tracks, artists, albums,
+      playlists and contexts carry (null when the entity has no Spotify ID).
     - **Entity references** share one shape per kind (`ArtistRef`, `AlbumRef`,
       `TrackRef`, `GenreRef`, `ContextRef`): id, name and image URL (nullable while
-      the catalog is still being hydrated, D9).
+      the catalog is still being hydrated, D9). Artist, album and track refs also
+      carry their Spotify `uri`.
     - **Every measure carries both `plays` and `ms_played`**, so the Plays/Time toggle
       (D7) never needs a second request for totals. The `metric` parameter only
       decides how lists are *ranked* and which value per-series aggregates use.
@@ -1580,9 +1582,12 @@ components:
     ArtistRef:
       type: object
       additionalProperties: false
-      required: [id, name, image_url]
+      required: [id, uri, name, image_url]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).'
         name: { type: string }
         image_url:
           type: [string, 'null']
@@ -1591,9 +1596,12 @@ components:
     AlbumRef:
       type: object
       additionalProperties: false
-      required: [id, name, image_url, release_year, artists]
+      required: [id, uri, name, image_url, release_year, artists]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).'
         name: { type: string }
         image_url: { type: [string, 'null'] }
         release_year: { type: [integer, 'null'] }
@@ -1604,9 +1612,12 @@ components:
     TrackRef:
       type: object
       additionalProperties: false
-      required: [id, name, image_url, duration_ms, artists, album]
+      required: [id, uri, name, image_url, duration_ms, artists, album]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.'
         name: { type: string }
         image_url:
           type: [string, 'null']
@@ -2916,9 +2927,12 @@ components:
     ArtistFull:
       type: object
       additionalProperties: false
-      required: [id, name, image_url, genres, metadata]
+      required: [id, uri, name, image_url, genres, metadata]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:artist:0OdUWJ0sBjDrqHygGUXeCF, for linking out to Spotify. Null when the artist has no Spotify ID: known only by name from an imported export (provisional, D20).'
         name: { type: string }
         image_url: { type: [string, 'null'] }
         genres:
@@ -2929,9 +2943,12 @@ components:
     AlbumFull:
       type: object
       additionalProperties: false
-      required: [id, name, image_url, album_type, release_date, release_year, total_tracks, artists, metadata]
+      required: [id, uri, name, image_url, album_type, release_date, release_year, total_tracks, artists, metadata]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:album:4aawyAB9vmqN3uQ7FjRGTy, for linking out to Spotify. Null when the album has no Spotify ID: known only by name from an imported export (provisional, D20).'
         name: { type: string }
         image_url: { type: [string, 'null'] }
         album_type: { type: [string, 'null'], enum: [album, single, compilation, null] }
@@ -2948,9 +2965,12 @@ components:
     TrackFull:
       type: object
       additionalProperties: false
-      required: [id, name, image_url, duration_ms, explicit, artists, album, metadata]
+      required: [id, uri, name, image_url, duration_ms, explicit, artists, album, metadata]
       properties:
         id: { type: string }
+        uri:
+          type: [string, 'null']
+          description: 'Spotify URI, e.g. spotify:track:11dFghVXANMlKmJXsNCbNl, for linking out to Spotify. Null when the track has no Spotify ID: a local file.'
         name: { type: string }
         image_url: { type: [string, 'null'] }
         duration_ms: { type: [integer, 'null'] }

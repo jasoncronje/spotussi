@@ -1,1 +1,1 @@
-{"account_id":null,"account_name":null,"callback":{"mode":"direct","redirect_uri":"http://127.0.0.1:54236/oauth/spotify/callback"},"client_id":null,"connected_at":null,"last_error":null,"scopes":[],"state":"not_configured"}
+{"account_id":null,"account_name":null,"callback":{"mode":"direct","redirect_uri":"http://127.0.0.1:55563/oauth/spotify/callback"},"client_id":null,"connected_at":null,"last_error":null,"scopes":[],"state":"not_configured"}

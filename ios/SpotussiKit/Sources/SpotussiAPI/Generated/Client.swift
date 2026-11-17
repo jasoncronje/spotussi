@@ -17,10 +17,12 @@ import HTTPTypes
 /// - **Durations** are integer milliseconds, in fields ending `_ms`.
 /// - **Local dates** (display timezone, see Settings) are `YYYY-MM-DD` strings.
 /// - **IDs** are opaque strings. Today they are Spotify base62 IDs; clients must not
-///   parse them.
+///   parse them. To link out to Spotify, use the `uri` that tracks, artists, albums,
+///   playlists and contexts carry (null when the entity has no Spotify ID).
 /// - **Entity references** share one shape per kind (`ArtistRef`, `AlbumRef`,
 ///   `TrackRef`, `GenreRef`, `ContextRef`): id, name and image URL (nullable while
-///   the catalog is still being hydrated, D9).
+///   the catalog is still being hydrated, D9). Artist, album and track refs also
+///   carry their Spotify `uri`.
 /// - **Every measure carries both `plays` and `ms_played`**, so the Plays/Time toggle
 ///   (D7) never needs a second request for totals. The `metric` parameter only
 ///   decides how lists are *ranked* and which value per-series aggregates use.

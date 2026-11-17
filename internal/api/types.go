@@ -99,6 +99,52 @@ type TrackRef struct {
 	Album      *AlbumLite   `json:"album"`
 }
 
+// SpotifyURI is the Spotify URI (spotify:<kind>:<id>) of an entity ID,
+// or nil when the ID is not a Spotify ID: provisional artists and albums
+// known only by name from an export (D20, `ar_`/`al_` IDs) and local files
+// (keyed by their own URI). IDs stay opaque to clients; `uri` is how they
+// link out to Spotify.
+func SpotifyURI(kind, id string) *string {
+	if id == "" {
+		return nil
+	}
+	for i := 0; i < len(id); i++ {
+		c := id[i]
+		if !('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z') {
+			return nil
+		}
+	}
+	u := "spotify:" + kind + ":" + id
+	return &u
+}
+
+// The MarshalJSON methods below add `uri`, derived from the ID, so every
+// place that builds a ref or entity emits it the same way.
+
+func (r ArtistRef) MarshalJSON() ([]byte, error) {
+	type plain ArtistRef
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("artist", r.ID)})
+}
+
+func (r AlbumRef) MarshalJSON() ([]byte, error) {
+	type plain AlbumRef
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("album", r.ID)})
+}
+
+func (r TrackRef) MarshalJSON() ([]byte, error) {
+	type plain TrackRef
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("track", r.ID)})
+}
+
 type GenreRef struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -538,6 +584,30 @@ type TrackFull struct {
 	Artists    []ArtistRef    `json:"artists"`
 	Album      *AlbumRef      `json:"album"`
 	Metadata   EntityMetadata `json:"metadata"`
+}
+
+func (r ArtistFull) MarshalJSON() ([]byte, error) {
+	type plain ArtistFull
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("artist", r.ID)})
+}
+
+func (r AlbumFull) MarshalJSON() ([]byte, error) {
+	type plain AlbumFull
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("album", r.ID)})
+}
+
+func (r TrackFull) MarshalJSON() ([]byte, error) {
+	type plain TrackFull
+	return json.Marshal(struct {
+		plain
+		URI *string `json:"uri"`
+	}{plain(r), SpotifyURI("track", r.ID)})
 }
 
 type ArtistDetail struct {
