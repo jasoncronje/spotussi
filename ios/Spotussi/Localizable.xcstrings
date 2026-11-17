@@ -1,0 +1,152 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ · by plays" : {},
+    "%@ · by time" : {},
+    "%lld plays" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld play"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld plays"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "About" : {},
+    "Address" : {},
+    "Address and token" : {},
+    "Allow the camera in Settings, or type the address and token." : {},
+    "Artist" : {},
+    "Artists" : {},
+    "Both days count, in your server’s time zone." : {},
+    "Camera access is off" : {},
+    "Cancel" : {},
+    "Can’t reach that address." : {},
+    "Can’t reach the server right now." : {},
+    "Capture" : {},
+    "Charts and the listening clock" : {},
+    "Check the address, and that you’re on the same network or VPN." : {},
+    "Coming soon." : {},
+    "Connect" : {},
+    "Connect to your server" : {},
+    "Connected" : {},
+    "Connected as %@" : {},
+    "Connecting to %@…" : {},
+    "Couldn’t load. Pull down to retry." : {},
+    "Count by" : {},
+    "Custom range" : {},
+    "Custom…" : {},
+    "Demo data" : {},
+    "Down %@" : {},
+    "Enter address and token" : {},
+    "Every play, newest first" : {},
+    "Find the code in **Settings**, **API & MCP** on the web." : {},
+    "Free software, AGPL-3.0." : {},
+    "From" : {},
+    "From Settings, API & MCP on the web." : {},
+    "History" : {},
+    "Last play" : {},
+    "Leave demo" : {},
+    "Library" : {},
+    "Loading…" : {},
+    "Make a new one in Settings, API & MCP." : {},
+    "Most listened to" : {},
+    "Most played" : {},
+    "Needs reconnecting on the web" : {},
+    "No camera to scan with" : {},
+    "No change" : {},
+    "Not affiliated with Spotify." : {},
+    "Not connected" : {},
+    "OK" : {},
+    "Open Settings" : {},
+    "Overview" : {},
+    "Pair with %@" : {},
+    "Pairing cancelled." : {},
+    "Pairing didn’t finish (error %lld)." : {},
+    "Pairing didn’t finish." : {},
+    "Plain http needs an IP address or .local name." : {},
+    "Playing now" : {},
+    "Plays" : {},
+    "Plays by day, top fives and recent plays" : {},
+    "Point at the code in Settings, API & MCP on the web." : {},
+    "Range" : {},
+    "Replace the paired server?" : {},
+    "Retrying after errors" : {},
+    "Returns to pairing." : {},
+    "Same as in your browser." : {},
+    "Sample listening, not real history." : {},
+    "Saved songs, albums and playlists" : {},
+    "Scan QR code" : {},
+    "Scan pairing code" : {},
+    "Scan the code from Settings, API & MCP." : {},
+    "Search" : {},
+    "Search what you’ve played" : {},
+    "Server" : {},
+    "Server version" : {},
+    "Settings" : {},
+    "Show this range" : {},
+    "Shows sample data." : {},
+    "Spotify" : {},
+    "Stats" : {},
+    "Status" : {},
+    "Stopped" : {},
+    "That address can’t be used." : {},
+    "That doesn’t look like a Spotussi token." : {},
+    "That isn’t a Spotussi pairing code." : {},
+    "That isn’t a Spotussi server." : {},
+    "The token stays valid until you revoke it on the web." : {},
+    "This device can’t scan. Type the address and token." : {},
+    "This iPhone will read from %@ instead of %@. The old token stays valid until you revoke it on the web." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This iPhone will read from %1$@ instead of %2$@. The old token stays valid until you revoke it on the web."
+          }
+        }
+      }
+    },
+    "This iPhone will use the new token for %@." : {},
+    "Time listened" : {},
+    "To" : {},
+    "Token" : {},
+    "Token not accepted." : {},
+    "Tokens start with spt_. Copy it again." : {},
+    "Top" : {},
+    "Top tracks, artists, albums and genres" : {},
+    "Track" : {},
+    "Tracks" : {},
+    "Tracks, artists, albums" : {},
+    "Try again any time." : {},
+    "Try again. If it keeps failing, check the server’s logs." : {},
+    "Try the demo" : {},
+    "Unknown" : {},
+    "Unpair" : {},
+    "Unpair this iPhone" : {},
+    "Unpair this iPhone?" : {},
+    "Up %@" : {},
+    "Updated %@." : {},
+    "Use https, or the server’s IP address." : {},
+    "Use the address from your browser, like stats.example.com." : {},
+    "Use the address from your browser." : {},
+    "Version" : {},
+    "Waiting for the next play" : {},
+    "iOS allows plain http only on your own network." : {},
+    "spt_…" : {},
+    "stats.example.com" : {}
+  },
+  "version" : "1.0"
+}
