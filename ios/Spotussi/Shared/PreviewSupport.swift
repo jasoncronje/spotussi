@@ -1,4 +1,3 @@
-#if DEBUG
 import Foundation
 import SpotussiAPI
 import SpotussiKit
@@ -59,4 +58,3 @@ struct PreviewHost<Content: View>: View {
         UserDefaults(suiteName: "app.spotussi.ios.previews") ?? .standard
     }
 }
-#endif
