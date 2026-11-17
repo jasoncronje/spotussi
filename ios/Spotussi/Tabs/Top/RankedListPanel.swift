@@ -60,32 +60,10 @@ struct RankedListPanel: View {
         }
     }
 
-    /// Loading the next page, or one row to ask again when it failed.
-    @ViewBuilder private var footer: some View {
-        if model.moreFailed {
-            Button {
-                model.retryMore(client: client)
-            } label: {
-                HStack(spacing: 8) {
-                    Text("Couldn’t load more.")
-                        .foregroundStyle(.secondary)
-                    Spacer(minLength: 8)
-                    Label("Retry", systemImage: "arrow.clockwise")
-                        .fontWeight(.medium)
-                }
-                .font(.subheadline)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .contentShape(.rect)
-            }
-            .buttonStyle(.plain)
-        } else {
-            ProgressView()
-                .frame(maxWidth: .infinity, minHeight: 44)
-                // Reaching the end without the trigger row having asked
-                // (a short page, a fast fling) asks here.
-                .onAppear { model.loadMore(client: client) }
-                .accessibilityLabel("Loading more")
-        }
+    private var footer: some View {
+        PagingFooter(
+            isFailed: model.moreFailed, loadMore: { model.loadMore(client: client) },
+            retry: { model.retryMore(client: client) })
     }
 
     private var placeholders: some View {

@@ -4,8 +4,9 @@ import SwiftUI
 
 /// An artist, album, track or genre page (D14), the same layout for all
 /// four, as the web's entity view: who or what it is, where it ranks in the
-/// range, its totals, listening over the range, what inside it was played
-/// most, and where it was played from. Everything below the head is
+/// range, its totals, a link to its plays in History, listening over the
+/// range and around the clock, what inside it was played most, and where
+/// it was played from. Everything below the head is
 /// narrowed to the entity, for the shared range and this kind of page's
 /// measure.
 struct EntityPage: View {
@@ -66,6 +67,7 @@ struct EntityPage: View {
                     EntityFigures(kind: link.kind, detail: detail, measure: query.measure)
                 }
             }
+            HistoryLink(entity: entity)
             if let detail = model.detail.current(for: query), !detail.isListened {
                 NotPlayedPanel(hasPlays: detail.allTime.plays > 0)
             } else {
@@ -77,6 +79,9 @@ struct EntityPage: View {
     @ViewBuilder private func listening(_ query: StatsQuery) -> some View {
         LoadedSection(model.series, for: query) { series, isFailed in
             PlaysByDayPanel(series: series, isFailed: isFailed, screen: link.kind.screen)
+        }
+        LoadedSection(model.clock, for: query) { hours, isFailed in
+            ListeningClockPanel(hours: hours, isFailed: isFailed, measure: query.measure)
         }
         ForEach(model.listed, id: \.self) { listed in
             LoadedSection(model.list(listed.kind), for: query) { page, isFailed in
@@ -139,6 +144,32 @@ struct EntityPage: View {
 
     private var client: Client {
         session.client ?? .demo
+    }
+}
+
+/// The entity's plays in the log, as the web's "Plays in History".
+private struct HistoryLink: View {
+    let entity: EntityLink
+
+    var body: some View {
+        NavigationLink(value: Route.history(entity)) {
+            HStack(spacing: 12) {
+                Image(systemName: "clock.arrow.circlepath")
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+                Text("Plays in History")
+                    .font(.body.weight(.medium))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.forward")
+                    .imageScale(.small)
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+            .frame(minHeight: 44)
+            .panel(padding: 12)
+            .contentShape(.rect(cornerRadius: 20))
+        }
+        .buttonStyle(.plain)
     }
 }
 

@@ -1,15 +1,17 @@
-import Accessibility
 import SpotussiKit
 import SwiftUI
 
-/// Plays (or time) per bucket of the range on the lamp grid, with the peak
-/// above it and dates below. VoiceOver reads a summary and can play the
-/// series as an audio graph.
+/// Plays, time or different artists per bucket of the range on the lamp
+/// grid, with the peak above it and dates below. VoiceOver reads a summary
+/// and can play the series as an audio graph.
 struct PlaysByDayPanel: View {
     let series: ListeningSeries?
     let isFailed: Bool
     /// Whose Plays/Time choice titles the panel before the series is in.
     let screen: ViewOptions.Screen
+    /// What the grid counts, chosen on the panel (Stats); nil follows the
+    /// screen's measure.
+    var choice: Binding<ListeningSeries.Quantity>?
     @Environment(ViewOptions.self) private var options
 
     var body: some View {
@@ -18,12 +20,15 @@ struct PlaysByDayPanel: View {
                 HStack(alignment: .firstTextBaseline) {
                     title
                     Spacer(minLength: 12)
-                    peak
+                    accessory
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     title
-                    peak
+                    accessory
                 }
+            }
+            if choice != nil {
+                peak
             }
             if isFailed {
                 SectionFailure()
@@ -35,17 +40,40 @@ struct PlaysByDayPanel: View {
         .panel()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(titleText)
-        .accessibilityValue(isFailed ? Text("Couldn’t load. Pull down to retry.") : Text(spokenSummary))
-        .modifier(ChartDescription(descriptor: descriptor))
+        .accessibilityValue(isFailed ? failure : spokenSummary)
+        .chartSummary(chartSummary)
+        .modifier(QuantityAdjustment(choice: choice))
     }
 
-    private var measure: Measure { series?.measure ?? options.measure(for: screen) }
+    private var quantity: ListeningSeries.Quantity {
+        series?.quantity ?? choice?.wrappedValue ?? .init(options.measure(for: screen))
+    }
+
     private var bucket: ListeningSeries.Bucket { series?.bucket ?? .day }
+
+    private var failure: String { String(localized: "Couldn’t load. Pull down to retry.") }
 
     private var title: some View {
         Text(titleText)
             .font(.headline)
             .accessibilityAddTraits(.isHeader)
+    }
+
+    /// The quantity menu on Stats, the peak elsewhere.
+    @ViewBuilder private var accessory: some View {
+        if let choice {
+            Picker("Count", selection: choice) {
+                Text("Plays").tag(ListeningSeries.Quantity.plays)
+                Text("Time").tag(ListeningSeries.Quantity.time)
+                Text("Artists").tag(ListeningSeries.Quantity.artists)
+            }
+            .pickerStyle(.menu)
+            .tint(.primary)
+            .fixedSize()
+            .frame(minHeight: 44)
+        } else {
+            peak
+        }
     }
 
     @ViewBuilder private var peak: some View {
@@ -81,13 +109,21 @@ struct PlaysByDayPanel: View {
     }
 
     private func figure(_ value: Int) -> String {
-        measure == .plays ? Figures.count(value) : Figures.duration(milliseconds: value)
+        quantity == .time ? Figures.duration(milliseconds: value) : Figures.count(value)
+    }
+
+    private func spoken(_ value: Int) -> String {
+        switch quantity {
+        case .plays: Spoken.plays(value)
+        case .time: Figures.duration(milliseconds: value, width: .wide)
+        case .artists: String(localized: "\(value) artists")
+        }
     }
 
     // MARK: - Words
 
     private var titleText: String {
-        switch (measure, bucket) {
+        switch (quantity, bucket) {
         case (.plays, .hour): String(localized: "Plays by hour")
         case (.plays, .day): String(localized: "Plays by day")
         case (.plays, .week): String(localized: "Plays by week")
@@ -98,6 +134,11 @@ struct PlaysByDayPanel: View {
         case (.time, .week): String(localized: "Time by week")
         case (.time, .month): String(localized: "Time by month")
         case (.time, .year): String(localized: "Time by year")
+        case (.artists, .hour): String(localized: "Artists by hour")
+        case (.artists, .day): String(localized: "Artists by day")
+        case (.artists, .week): String(localized: "Artists by week")
+        case (.artists, .month): String(localized: "Artists by month")
+        case (.artists, .year): String(localized: "Artists by year")
         }
     }
 
@@ -106,7 +147,7 @@ struct PlaysByDayPanel: View {
         guard let series, let peak = series.peak else {
             return String(localized: "No plays in this range.")
         }
-        let average = Spoken.value(Int(series.average.rounded()), measure: measure)
+        let average = spoken(Int(series.average.rounded()))
         let averageText =
             switch bucket {
             case .hour: String(localized: "Average \(average) an hour.")
@@ -115,8 +156,7 @@ struct PlaysByDayPanel: View {
             case .month: String(localized: "Average \(average) a month.")
             case .year: String(localized: "Average \(average) a year.")
             }
-        let peakText = String(
-            localized: "Peak \(spokenBucket(peak.key, in: series)), \(Spoken.value(peak.value, measure: measure)).")
+        let peakText = String(localized: "Peak \(spokenBucket(peak.key, in: series)), \(spoken(peak.value)).")
         return "\(averageText) \(peakText)"
     }
 
@@ -125,73 +165,61 @@ struct PlaysByDayPanel: View {
         return series.bucket == .week ? String(localized: "week of \(label)") : label
     }
 
-    private var descriptor: LampGridDescriptor? {
+    private var chartSummary: ChartSummary? {
         guard let series, !series.isEmpty else { return nil }
-        let axisTitle =
-            switch bucket {
-            case .hour: String(localized: "Hour")
-            case .day: String(localized: "Day")
-            case .week: String(localized: "Week")
-            case .month: String(localized: "Month")
-            case .year: String(localized: "Year")
-            }
-        return LampGridDescriptor(
-            title: titleText, summary: spokenSummary, xTitle: axisTitle, yTitle: measure.label,
-            previousTitle: String(localized: "Period before"),
-            categories: series.columns.map { spokenBucket($0.key, in: series) },
-            values: series.columns.map { Double($0.value) },
-            previous: series.hasPrevious ? series.columns.map { $0.previous.map(Double.init) } : nil,
-            maximum: Double(series.scale), isTime: measure == .time)
+        var lines = [ChartSummary.Series(name: titleText, values: series.columns.map { Double($0.value) })]
+        if series.hasPrevious {
+            lines.append(
+                ChartSummary.Series(
+                    name: String(localized: "Period before"), values: series.columns.map { $0.previous.map(Double.init) }))
+        }
+        return ChartSummary(
+            title: titleText, summary: spokenSummary, xTitle: bucket.axisTitle, yTitle: quantity.label,
+            categories: series.columns.map { spokenBucket($0.key, in: series) }, series: lines,
+            range: 0...Double(max(1, series.scale)), format: quantity == .time ? .duration : .count)
     }
 }
 
-/// Adds the audio graph only once there is a series to play.
-private struct ChartDescription: ViewModifier {
-    let descriptor: LampGridDescriptor?
+/// On Stats, VoiceOver swipes up and down to count plays, time or artists.
+private struct QuantityAdjustment: ViewModifier {
+    let choice: Binding<ListeningSeries.Quantity>?
 
     func body(content: Content) -> some View {
-        if let descriptor {
-            content.accessibilityChartDescriptor(descriptor)
+        if let choice {
+            content.accessibilityAdjustableAction { direction in
+                let all = ListeningSeries.Quantity.allCases
+                guard let index = all.firstIndex(of: choice.wrappedValue) else { return }
+                switch direction {
+                case .increment: choice.wrappedValue = all[(index + 1) % all.count]
+                case .decrement: choice.wrappedValue = all[(index + all.count - 1) % all.count]
+                @unknown default: break
+                }
+            }
         } else {
             content
         }
     }
 }
 
-/// The series for VoiceOver's audio graph: one data point per bucket, and
-/// the period before as a second series when there is one.
-private nonisolated struct LampGridDescriptor: AXChartDescriptorRepresentable {
-    let title: String
-    let summary: String
-    let xTitle: String
-    let yTitle: String
-    let previousTitle: String
-    let categories: [String]
-    let values: [Double]
-    let previous: [Double?]?
-    let maximum: Double
-    let isTime: Bool
+extension ListeningSeries.Bucket {
+    /// The axis a bucket runs along, for the audio graph.
+    var axisTitle: String {
+        switch self {
+        case .hour: String(localized: "Hour")
+        case .day: String(localized: "Day")
+        case .week: String(localized: "Week")
+        case .month: String(localized: "Month")
+        case .year: String(localized: "Year")
+        }
+    }
+}
 
-    func makeChartDescriptor() -> AXChartDescriptor {
-        let isTime = isTime
-        let xAxis = AXCategoricalDataAxisDescriptor(title: xTitle, categoryOrder: categories)
-        let yAxis = AXNumericDataAxisDescriptor(
-            title: yTitle, range: 0...max(1, maximum), gridlinePositions: []
-        ) { value in
-            isTime ? Figures.duration(milliseconds: Int(value), width: .wide) : Figures.count(Int(value))
+extension ListeningSeries.Quantity {
+    var label: String {
+        switch self {
+        case .plays: String(localized: "Plays")
+        case .time: String(localized: "Time")
+        case .artists: String(localized: "Artists")
         }
-        var series = [
-            AXDataSeriesDescriptor(
-                name: title, isContinuous: false,
-                dataPoints: zip(categories, values).map { AXDataPoint(x: $0, y: $1) })
-        ]
-        if let previous {
-            series.append(
-                AXDataSeriesDescriptor(
-                    name: previousTitle, isContinuous: false,
-                    dataPoints: zip(categories, previous).map { AXDataPoint(x: $0, y: $1) }))
-        }
-        return AXChartDescriptor(
-            title: title, summary: summary, xAxis: xAxis, yAxis: yAxis, additionalAxes: [], series: series)
     }
 }

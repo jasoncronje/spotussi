@@ -150,10 +150,15 @@ public struct RecentPlay: Identifiable, Hashable, Sendable {
     public let imageURL: String?
     public let playedAt: Date
     public let note: Note?
+    /// When it stopped; the start when unknown.
+    public let endedAt: Date
+    /// Passes the play rule (D7).
+    public let isCounted: Bool
+    public let isSkipped: Bool
 
     public init(
         id: String, trackID: String, name: String, artists: String?, imageURL: String?,
-        playedAt: Date, note: Note?
+        playedAt: Date, note: Note?, endedAt: Date? = nil, isCounted: Bool = true, isSkipped: Bool = false
     ) {
         self.id = id
         self.trackID = trackID
@@ -162,19 +167,33 @@ public struct RecentPlay: Identifiable, Hashable, Sendable {
         self.imageURL = imageURL
         self.playedAt = playedAt
         self.note = note
+        self.endedAt = endedAt ?? playedAt
+        self.isCounted = isCounted
+        self.isSkipped = isSkipped
+    }
+
+    /// A row of the API's play log.
+    public init(_ play: Components.Schemas.Play) {
+        let note: Note? =
+            if play.skipped { .skipped(atMilliseconds: play.msPlayed) }
+            else if !play.countsAsPlay { .notCounted }
+            else if play.msEstimated { .estimated(milliseconds: play.msPlayed) }
+            else { nil }
+        self.init(
+            id: play.id, trackID: play.track.id, name: play.track.name,
+            artists: TopEntry.names(play.track.artists), imageURL: play.track.imageUrl,
+            playedAt: Date(milliseconds: play.playedAt), note: note, endedAt: Date(milliseconds: play.endedAt),
+            isCounted: play.countsAsPlay, isSkipped: play.skipped)
     }
 
     public static func list(_ history: Components.Schemas.History, limit: Int = 10) -> [RecentPlay] {
-        history.items.prefix(limit).map { play in
-            let note: Note? =
-                if play.skipped { .skipped(atMilliseconds: play.msPlayed) }
-                else if !play.countsAsPlay { .notCounted }
-                else if play.msEstimated { .estimated(milliseconds: play.msPlayed) }
-                else { nil }
-            return RecentPlay(
-                id: play.id, trackID: play.track.id, name: play.track.name,
-                artists: TopEntry.names(play.track.artists), imageURL: play.track.imageUrl,
-                playedAt: Date(timeIntervalSince1970: Double(play.playedAt) / 1000), note: note)
-        }
+        history.items.prefix(limit).map(RecentPlay.init)
+    }
+}
+
+extension Date {
+    /// An instant from the API's milliseconds since 1970.
+    public init(milliseconds: some BinaryInteger) {
+        self.init(timeIntervalSince1970: Double(milliseconds) / 1000)
     }
 }
