@@ -4,7 +4,8 @@ import SpotussiAPI
 import SpotussiKit
 
 /// An artist, album, track or genre page for the shared range and the
-/// page's measure: its head and totals, listening over time, what inside
+/// page's measure: its head and totals, listening over time and around the
+/// clock, what inside
 /// it was played most, and where it was played from. Like the Overview,
 /// each section loads on its own, all at once, and keeps its last answer
 /// (dimmed) while a new range loads.
@@ -16,6 +17,7 @@ final class EntityModel {
     /// The instance has no such entity.
     private(set) var isNotFound = false
     private(set) var series = Loaded<ListeningSeries>()
+    private(set) var clock = Loaded<HourlyListening>()
     private var lists: [EntityKind: Loaded<TopPage>] = [:]
     private(set) var contexts = Loaded<PlayContexts>()
     /// A track's latest plays in the range.
@@ -73,6 +75,14 @@ final class EntityModel {
                 ).ok.body.json
                 return .series(timeline.map { ListeningSeries($0, measure: query.measure) })
             }
+            group.addTask {
+                let clock = try? await client.getClock(
+                    query: .init(
+                        range: range.range, from: range.from, to: range.to, artistId: scope.artist,
+                        albumId: scope.album, trackId: scope.track, genreId: scope.genre)
+                ).ok.body.json
+                return .clock(clock.map { HourlyListening($0, measure: query.measure) })
+            }
             for item in listed {
                 group.addTask {
                     let page = try? await TopPage.load(
@@ -110,6 +120,7 @@ final class EntityModel {
     private nonisolated enum Part: Sendable {
         case detail(EntityDetail?, notFound: Bool)
         case series(ListeningSeries?)
+        case clock(HourlyListening?)
         case list(EntityKind, TopPage?)
         case contexts(PlayContexts?)
         case plays([RecentPlay]?)
@@ -121,6 +132,7 @@ final class EntityModel {
             isNotFound = notFound
             detail.finish(value, for: query)
         case .series(let value): series.finish(value, for: query)
+        case .clock(let value): clock.finish(value, for: query)
         case .list(let kind, let value): lists[kind, default: Loaded()].finish(value, for: query)
         case .contexts(let value): contexts.finish(value, for: query)
         case .plays(let value): plays.finish(value, for: query)

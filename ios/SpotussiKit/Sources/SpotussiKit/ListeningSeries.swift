@@ -11,6 +11,16 @@ public struct ListeningSeries: Hashable, Sendable {
         case hour, day, week, month, year
     }
 
+    /// What a column counts: the two measures, or different artists, which
+    /// the web's Stats page adds (D14).
+    public enum Quantity: String, CaseIterable, Hashable, Sendable {
+        case plays, time, artists
+
+        public init(_ measure: Measure) {
+            self = measure == .plays ? .plays : .time
+        }
+    }
+
     public struct Column: Identifiable, Hashable, Sendable {
         public let id: Int
         /// The bucket's key in the instance's time zone: `2026-10-17T13`,
@@ -41,30 +51,42 @@ public struct ListeningSeries: Hashable, Sendable {
     public static let maximumColumns = 72
 
     public let bucket: Bucket
-    public let measure: Measure
+    public let quantity: Quantity
     public let columns: [Column]
 
     public init(_ timeline: Components.Schemas.Timeline, measure: Measure) {
+        self.init(timeline, quantity: Quantity(measure))
+    }
+
+    public init(_ timeline: Components.Schemas.Timeline, quantity: Quantity) {
         let previous = timeline.previous == nil ? [] : (timeline.previousPoints ?? [])
         func value(_ point: Components.Schemas.TimelinePoint) -> Int {
-            measure == .plays ? point.plays : point.msPlayed
+            switch quantity {
+            case .plays: point.plays
+            case .time: point.msPlayed
+            case .artists: point.artists
+            }
         }
         var columns = timeline.points.enumerated().map { index, point in
             let before = previous.indices.contains(index) ? previous[index] : nil
             return Column(
                 id: index, key: point.key, value: value(point),
-                estimated: measure == .time ? min(point.msEstimated, point.msPlayed) : 0,
+                estimated: quantity == .time ? min(point.msEstimated, point.msPlayed) : 0,
                 previous: before.map(value), previousKey: before?.key)
         }
         var bucket = Bucket(rawValue: timeline.bucket.rawValue) ?? .day
-        if bucket == .month, columns.count > Self.maximumColumns {
+        // Different artists don't add up across months, so they stay months.
+        if bucket == .month, quantity != .artists, columns.count > Self.maximumColumns {
             columns = Self.byYear(columns)
             bucket = .year
         }
         self.bucket = bucket
-        self.measure = measure
+        self.quantity = quantity
         self.columns = columns
     }
+
+    /// Plays or time; different artists are a count, like plays.
+    public var measure: Measure { quantity == .time ? .time : .plays }
 
     public var hasPrevious: Bool { columns.contains { $0.previous != nil } }
 
@@ -134,13 +156,25 @@ public struct ListeningSeries: Hashable, Sendable {
 // MARK: - Labels
 
 extension ListeningSeries {
+    /// A bucket in full, for the peak and VoiceOver.
+    public func label(_ key: String, locale: Locale = .autoupdatingCurrent) -> String {
+        bucket.label(key, locale: locale)
+    }
+
+    /// A bucket under the axis.
+    public func tick(_ key: String, locale: Locale = .autoupdatingCurrent) -> String {
+        bucket.tick(key, locale: locale)
+    }
+}
+
+extension ListeningSeries.Bucket {
     /// A bucket in full, for the peak and VoiceOver: "Wed, Oct 7",
     /// "Oct 17 at 1 PM", "Oct 2026", "2026". A week is its first day,
     /// "Oct 12, 2026"; the screen says "Week of" around it.
     public func label(_ key: String, locale: Locale = .autoupdatingCurrent) -> String {
-        guard let date = Self.date(key, bucket: bucket) else { return key }
+        guard let date = date(key) else { return key }
         let style = Self.style(locale)
-        return switch bucket {
+        return switch self {
         case .hour: date.formatted(style.month(.abbreviated).day().hour())
         case .day: date.formatted(style.weekday(.abbreviated).month(.abbreviated).day())
         case .week: date.formatted(style.month(.abbreviated).day().year())
@@ -152,9 +186,9 @@ extension ListeningSeries {
     /// A bucket under the axis: "Oct 7", "1 PM", "Oct", or the year for a
     /// January.
     public func tick(_ key: String, locale: Locale = .autoupdatingCurrent) -> String {
-        guard let date = Self.date(key, bucket: bucket) else { return key }
+        guard let date = date(key) else { return key }
         let style = Self.style(locale)
-        return switch bucket {
+        return switch self {
         case .hour: date.formatted(style.hour())
         case .day, .week: date.formatted(style.month(.abbreviated).day())
         case .month: key.hasSuffix("-01") ? String(key.prefix(4)) : date.formatted(style.month(.abbreviated))
@@ -174,8 +208,9 @@ extension ListeningSeries {
         Date.FormatStyle(locale: locale, calendar: calendar, timeZone: .gmt)
     }
 
-    private static func date(_ key: String, bucket: Bucket) -> Date? {
-        switch bucket {
+    private func date(_ key: String) -> Date? {
+        let calendar = Self.calendar
+        switch self {
         case .hour:
             guard key.count >= 13, let hour = Int(key.suffix(2)),
                 let day = LocalDate(String(key.prefix(10)))?.date(in: calendar)

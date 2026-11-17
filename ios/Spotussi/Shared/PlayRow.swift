@@ -5,8 +5,16 @@ import SwiftUI
 /// it was skipped, too short to count, or of estimated length. Not a
 /// button: whoever lists it decides where it leads.
 struct PlayRow: View {
+    /// How the time reads: "3 min ago" in a list of recent plays, the
+    /// clock time in a log grouped by day, where a lit lamp also marks a
+    /// counted play.
+    enum Style {
+        case recent, clock
+    }
+
     let play: RecentPlay
     let now: Date
+    var style = Style.recent
     /// Where the track's page zooms from, if it does.
     var zoom: ZoomOrigin?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -30,13 +38,18 @@ struct PlayRow: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             VStack(alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing, spacing: 2) {
-                Text(Figures.playTime(play.playedAt, now: now))
+                Text(Self.time(play, now: now, style: style))
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
                 if let note = play.note {
                     noteText(note)
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.tertiary)
+                } else if style == .clock, play.isCounted {
+                    Circle()
+                        .fill(.lamp)
+                        .frame(width: 6, height: 6)
+                        .padding(.vertical, 3)
                 }
             }
             .fixedSize()
@@ -46,7 +59,14 @@ struct PlayRow: View {
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenLabel(play))
-        .accessibilityValue(Self.spokenValue(play, now: now))
+        .accessibilityValue(Self.spokenValue(play, now: now, style: style))
+    }
+
+    private static func time(_ play: RecentPlay, now: Date, style: Style) -> String {
+        switch style {
+        case .recent: Figures.playTime(play.playedAt, now: now)
+        case .clock: Figures.clockTime(play.playedAt)
+        }
     }
 
     private func noteText(_ note: RecentPlay.Note) -> Text {
@@ -63,9 +83,9 @@ struct PlayRow: View {
     }
 
     /// "8:19 AM, skipped at 0:22"
-    static func spokenValue(_ play: RecentPlay, now: Date) -> String {
-        let time = Figures.playTime(play.playedAt, now: now)
-        guard let note = play.note else { return time }
+    static func spokenValue(_ play: RecentPlay, now: Date, style: Style = .recent) -> String {
+        let when = time(play, now: now, style: style)
+        guard let note = play.note else { return when }
         let detail =
             switch note {
             case .skipped(let at): String(localized: "skipped at \(Figures.trackLength(milliseconds: at))")
@@ -73,6 +93,6 @@ struct PlayRow: View {
             case .estimated(let length):
                 String(localized: "about \(Figures.trackLength(milliseconds: length))")
             }
-        return "\(time), \(detail)"
+        return "\(when), \(detail)"
     }
 }

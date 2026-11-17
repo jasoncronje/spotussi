@@ -1,6 +1,80 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ leads with %@ of plays." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ leads with %2$@ of plays."
+          }
+        }
+      }
+    },
+    "%@ leads with %@ of time." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ leads with %2$@ of time."
+          }
+        }
+      }
+    },
+    "%@ of plays" : {},
+    "%@ of time" : {},
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %@ · %@ known" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ · %3$@ known"
+          }
+        }
+      }
+    },
+    "%@ · %lld plays" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$#@plays@"
+          },
+          "substitutions" : {
+            "plays" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg play"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg plays"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%@ · by plays" : {},
     "%@ · by time" : {},
     "%@, named by you" : {},
@@ -48,6 +122,7 @@
         }
       }
     },
+    "%lld counted" : {},
     "%lld genres" : {
       "localizations" : {
         "en" : {
@@ -70,6 +145,7 @@
         }
       }
     },
+    "%lld on" : {},
     "%lld plays" : {
       "localizations" : {
         "en" : {
@@ -92,7 +168,40 @@
         }
       }
     },
+    "%lld sessions · %lld min gap" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@sessions@ · %2$lld min gap"
+          },
+          "substitutions" : {
+            "sessions" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg session"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg sessions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld skipped" : {},
+    "%lld skipped or short" : {},
     "%lld tracks" : {
       "localizations" : {
         "en" : {
@@ -108,6 +217,50 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld tracks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld years newer at the end." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld year newer at the end."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld years newer at the end."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld years older at the end." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld year older at the end."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld years older at the end."
                 }
               }
             }
@@ -133,22 +286,45 @@
     "All %@" : {},
     "All time" : {},
     "Allow the camera in Settings, or type the address and token." : {},
+    "Any" : {},
     "Artist" : {},
     "Artist page" : {},
+    "Artist share" : {},
     "Artists" : {},
+    "Artists by day" : {},
+    "Artists by hour" : {},
+    "Artists by month" : {},
+    "Artists by week" : {},
+    "Artists by year" : {},
+    "Artists per track" : {},
+    "Average" : {},
     "Average %@ a day." : {},
     "Average %@ a month." : {},
     "Average %@ a week." : {},
     "Average %@ a year." : {},
     "Average %@ an hour." : {},
+    "Average %@." : {},
     "Both days count, in your server’s time zone." : {},
+    "Bucket" : {},
+    "Busiest around %@, quietest around %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Busiest around %1$@, quietest around %2$@."
+          }
+        }
+      }
+    },
+    "Busiest hour" : {},
     "Camera access is off" : {},
     "Cancel" : {},
     "Can’t reach that address." : {},
     "Can’t reach the server right now." : {},
     "Capture" : {},
-    "Charts and the listening clock" : {},
     "Check the address, and that you’re on the same network or VPN." : {},
+    "Clear" : {},
+    "Clear filters" : {},
     "Coming soon." : {},
     "Compilation" : {},
     "Connect" : {},
@@ -159,16 +335,21 @@
     "Couldn’t load more." : {},
     "Couldn’t load. Pull down to retry." : {},
     "Couldn’t search." : {},
+    "Count" : {},
     "Count by" : {},
+    "Counted" : {},
     "Custom range" : {},
     "Custom…" : {},
     "Day" : {},
     "Demo data" : {},
+    "Device" : {},
+    "Devices" : {},
     "Down %@" : {},
     "Enter address and token" : {},
-    "Every play, newest first" : {},
+    "Everyone else" : {},
     "Excluded from stats" : {},
     "Explicit" : {},
+    "Filters" : {},
     "Find the code in **Settings**, **API & MCP** on the web." : {},
     "First played" : {},
     "Free software, AGPL-3.0." : {},
@@ -176,21 +357,27 @@
     "From Settings, API & MCP on the web." : {},
     "Genre" : {},
     "Genres" : {},
+    "Genres over time" : {},
     "History" : {},
     "Hour" : {},
     "Imported history" : {},
+    "In order" : {},
     "In range" : {},
     "Kind" : {},
     "Last play" : {},
     "Last: %@" : {},
     "Latest plays" : {},
     "Leave demo" : {},
+    "Length" : {},
     "Library" : {},
     "Liked Songs" : {},
+    "Listened" : {},
+    "Listening clock" : {},
     "Loading more" : {},
     "Loading…" : {},
     "Make a new one in Settings, API & MCP." : {},
     "Month" : {},
+    "Mostly" : {},
     "Needs reconnecting on the web" : {},
     "Never played" : {},
     "New" : {},
@@ -198,21 +385,27 @@
     "No change" : {},
     "No genres yet." : {},
     "No plays in this range." : {},
+    "No plays match." : {},
     "No plays yet." : {},
+    "No release dates yet." : {},
     "No results" : {},
+    "No sessions in this range." : {},
     "None" : {},
     "Not affiliated with Spotify." : {},
     "Not connected" : {},
+    "Not counted" : {},
     "Not in your library." : {},
     "Not played" : {},
     "Not played in this range" : {},
     "Not recorded" : {},
+    "Not skipped" : {},
     "Nothing playing" : {},
     "Now playing" : {},
     "OK" : {},
     "Open Settings" : {},
     "Open in Spotify" : {},
     "Other" : {},
+    "Other genres" : {},
     "Overview" : {},
     "Pair with %@" : {},
     "Pairing cancelled." : {},
@@ -241,6 +434,7 @@
     },
     "Period before" : {},
     "Plain http needs an IP address or .local name." : {},
+    "Platforms" : {},
     "Played from" : {},
     "Playing now" : {},
     "Playlist" : {},
@@ -250,14 +444,19 @@
     "Plays by month" : {},
     "Plays by week" : {},
     "Plays by year" : {},
+    "Plays in History" : {},
     "Point at the code in Settings, API & MCP on the web." : {},
+    "Quietest %@" : {},
     "Range" : {},
     "Rank" : {},
     "Recently played" : {},
+    "Release year" : {},
+    "Remove %@" : {},
     "Replace the paired server?" : {},
     "Retry" : {},
     "Retrying after errors" : {},
     "Returns to pairing." : {},
+    "Run" : {},
     "Same as in your browser." : {},
     "Sample listening, not real history." : {},
     "Saved %@" : {},
@@ -269,11 +468,21 @@
     "Search what you’ve played" : {},
     "Server" : {},
     "Server version" : {},
+    "Session not found." : {},
+    "Sessions" : {},
     "Settings" : {},
+    "Share" : {},
+    "Show" : {},
     "Show all time" : {},
     "Show this range" : {},
     "Shows sample data." : {},
+    "Shuffle" : {},
+    "Shuffle off" : {},
+    "Shuffle on" : {},
+    "Silence %@" : {},
     "Single" : {},
+    "Skipped" : {},
+    "Skipped or short" : {},
     "Spotify" : {},
     "Stats" : {},
     "Status" : {},
@@ -295,20 +504,98 @@
       }
     },
     "This iPhone will use the new token for %@." : {},
+    "Time" : {},
     "Time by day" : {},
     "Time by hour" : {},
     "Time by month" : {},
     "Time by week" : {},
     "Time by year" : {},
     "Time listened" : {},
+    "Timeline" : {},
     "To" : {},
     "Token" : {},
     "Token not accepted." : {},
     "Tokens start with spt_. Copy it again." : {},
     "Top" : {},
+    "Top %lld artists hold %@ of plays." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@top@ %2$@ of plays."
+          },
+          "substitutions" : {
+            "top" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Top artist holds"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Top %arg artists hold"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Top %lld artists hold %@ of time." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@top@ %2$@ of time."
+          },
+          "substitutions" : {
+            "top" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Top artist holds"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Top %arg artists hold"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Top %lld · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Top %1$lld · %2$@"
+          }
+        }
+      }
+    },
     "Top albums" : {},
+    "Top artist" : {},
     "Top artists" : {},
     "Top genres" : {},
+    "Top track" : {},
     "Top tracks" : {},
     "Track" : {},
     "Tracks" : {},
@@ -326,6 +613,7 @@
     "Use https, or the server’s IP address." : {},
     "Use the address from your browser, like stats.example.com." : {},
     "Use the address from your browser." : {},
+    "Value" : {},
     "Version" : {},
     "Waiting for the next play" : {},
     "Week" : {},
@@ -342,6 +630,7 @@
       }
     },
     "iOS allows plain http only on your own network." : {},
+    "mostly %@" : {},
     "new" : {},
     "new this period" : {},
     "not counted" : {},
@@ -434,6 +723,7 @@
       }
     },
     "same rank as before" : {},
+    "silence %@" : {},
     "skipped at %@" : {},
     "spt_…" : {},
     "stats.example.com" : {},

@@ -157,7 +157,7 @@ struct EntityHeader: View {
 }
 
 /// An artist, album or genre to open, as a solid chip.
-private struct EntityChip: View {
+struct EntityChip: View {
     let link: EntityLink
 
     var body: some View {

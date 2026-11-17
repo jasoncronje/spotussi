@@ -15,6 +15,22 @@ public struct Tone: ShapeStyle, Hashable, Sendable {
         self.light = Color(hex: light)
         self.dark = Color(hex: dark)
     }
+
+    /// The colour for `scheme`, for APIs that take a plain colour.
+    public func color(for scheme: ColorScheme) -> Color {
+        scheme == .dark ? dark : light
+    }
+
+    /// Series in a chart that shows several: the first lit, the rest steps
+    /// of aluminium that grow fainter towards the unlit grille, never a
+    /// rainbow (D40). Each step is at least 3:1 against the panel.
+    public static let series: [Tone] = [
+        .lamp,
+        Tone(light: 0x2A2D35, dark: 0xE6E8EB),
+        Tone(light: 0x535862, dark: 0xB5B9C0),
+        Tone(light: 0x767B85, dark: 0x8C919A),
+        Tone(light: 0x8F949D, dark: 0x6B7079),
+    ]
 }
 
 extension ShapeStyle where Self == Tone {
