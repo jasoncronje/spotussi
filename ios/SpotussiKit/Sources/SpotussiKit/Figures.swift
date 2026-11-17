@@ -39,6 +39,31 @@ public enum Figures {
             .formatted(Duration.TimeFormatStyle(pattern: pattern, locale: locale))
     }
 
+    /// A release date as precisely as it is known: "Dec 11, 2014",
+    /// "Dec 2014" or "2014". Nil for anything that isn't one of the API's
+    /// three shapes.
+    public static func releaseDate(_ text: String, locale: Locale = .autoupdatingCurrent) -> String? {
+        let parts = text.split(separator: "-", omittingEmptySubsequences: false).map { Int($0) }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .gmt
+        let base = Date.FormatStyle(locale: locale, calendar: calendar, timeZone: .gmt)
+        switch parts.count {
+        case 1:
+            guard let year = parts[0], text.count == 4 else { return nil }
+            return String(year)
+        case 2:
+            guard let year = parts[0], let month = parts[1], (1...12).contains(month),
+                let date = calendar.date(from: DateComponents(year: year, month: month, day: 1))
+            else { return nil }
+            return date.formatted(base.year().month(.abbreviated))
+        case 3:
+            guard let day = LocalDate(text), let date = day.date(in: calendar) else { return nil }
+            return date.formatted(base.year().month(.abbreviated).day())
+        default:
+            return nil
+        }
+    }
+
     /// When a recent play started: the clock time within the last day, and
     /// "3 days ago" or a date before that, like the web's recent plays.
     public static func playTime(

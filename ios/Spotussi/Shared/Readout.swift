@@ -1,7 +1,8 @@
 import SpotussiKit
 import SwiftUI
 
-/// A labelled figure on a panel, with its change against the period before.
+/// A labelled figure on a panel, with its change against the period before
+/// or a line of detail under it.
 struct Readout: View {
     let label: LocalizedStringKey
     let value: String
@@ -10,6 +11,8 @@ struct Readout: View {
     var spokenValue: String?
     /// Nil when there is nothing to compare with.
     var change: Change?
+    /// "of 568 artists", "1h 7m · 8 skipped"
+    var detail: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -24,6 +27,11 @@ struct Readout: View {
                 .accessibilityLabel(spokenValue ?? value)
             if let change {
                 ChangeLine(change: change)
+            }
+            if let detail {
+                Text(detail)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

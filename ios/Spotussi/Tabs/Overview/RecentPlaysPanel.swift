@@ -1,14 +1,19 @@
 import SpotussiKit
 import SwiftUI
 
-/// The latest plays, newest first, whatever the range.
+/// The latest plays, newest first: the Overview's, whatever the range, and
+/// a track page's in its range. With a namespace, each play opens its
+/// track's page.
 struct RecentPlaysPanel: View {
+    let title: LocalizedStringKey
     let plays: [RecentPlay]?
     let failed: Bool
+    /// Nil where the plays are of the page's own track.
+    var namespace: Namespace.ID?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            PanelTitle("Recently played")
+            PanelTitle(title)
             if let plays {
                 if plays.isEmpty {
                     Text("No plays yet.")
@@ -32,9 +37,23 @@ struct RecentPlaysPanel: View {
         TimelineView(.everyMinute) { context in
             VStack(spacing: 2) {
                 ForEach(plays) { play in
-                    PlayRow(play: play, now: context.date)
+                    row(play, now: context.date)
                 }
             }
+        }
+    }
+
+    @ViewBuilder private func row(_ play: RecentPlay, now: Date) -> some View {
+        if let namespace, !play.trackID.isEmpty {
+            let zoom = ZoomOrigin(id: "play:\(play.id)", namespace: namespace)
+            RouteLink(
+                route: .entity(EntityLink(kind: .track, id: play.trackID, name: play.name), zoom: zoom),
+                accessibilityLabel: PlayRow.spokenLabel(play), accessibilityValue: PlayRow.spokenValue(play, now: now)
+            ) {
+                PlayRow(play: play, now: now, zoom: zoom)
+            }
+        } else {
+            PlayRow(play: play, now: now)
         }
     }
 

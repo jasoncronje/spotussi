@@ -7,6 +7,8 @@ import SwiftUI
 struct PlayRow: View {
     let play: RecentPlay
     let now: Date
+    /// Where the track's page zooms from, if it does.
+    var zoom: ZoomOrigin?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -16,6 +18,7 @@ struct PlayRow: View {
             : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
         layout {
             ArtworkImage(url: play.imageURL, side: 40, symbol: "music.note")
+                .zoomSource(zoom)
             VStack(alignment: .leading, spacing: 2) {
                 Text(play.name)
                     .font(.body.weight(.medium))
@@ -42,8 +45,8 @@ struct PlayRow: View {
         .frame(minHeight: 44)
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel([play.name, play.artists].compactMap(\.self).joined(separator: ", "))
-        .accessibilityValue(accessibilityValue)
+        .accessibilityLabel(Self.spokenLabel(play))
+        .accessibilityValue(Self.spokenValue(play, now: now))
     }
 
     private func noteText(_ note: RecentPlay.Note) -> Text {
@@ -54,7 +57,13 @@ struct PlayRow: View {
         }
     }
 
-    private var accessibilityValue: String {
+    /// "The Honest Paradise, Iris Sakoti"
+    static func spokenLabel(_ play: RecentPlay) -> String {
+        [play.name, play.artists].compactMap(\.self).joined(separator: ", ")
+    }
+
+    /// "8:19 AM, skipped at 0:22"
+    static func spokenValue(_ play: RecentPlay, now: Date) -> String {
         let time = Figures.playTime(play.playedAt, now: now)
         guard let note = play.note else { return time }
         let detail =
