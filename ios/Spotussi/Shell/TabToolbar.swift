@@ -28,21 +28,21 @@ private struct TabToolbar: ViewModifier {
                     }
                     ToolbarSpacer(.fixed, placement: .topBarTrailing)
                 }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button {
-                            isSearching = true
-                        } label: {
-                            Label("Search", systemImage: "magnifyingglass")
-                        }
-                        Button {
-                            isShowingSettings = true
-                        } label: {
-                            Label("Settings", systemImage: "gearshape")
-                        }
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        isSearching = true
+                    } label: {
+                        Label("Search", systemImage: "magnifyingglass")
                     }
+                    Button {
+                        isShowingSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                }
             }
             .sheet(isPresented: $isSearching) {
-                SearchTab()
+                SearchSheet()
             }
             .sheet(isPresented: $isShowingSettings) {
                 SettingsSheet()

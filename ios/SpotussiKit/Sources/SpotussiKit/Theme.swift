@@ -32,7 +32,8 @@ extension ShapeStyle where Self == Tone {
 }
 
 extension Color {
-    init(hex: UInt32) {
+    /// An sRGB colour from `0xRRGGBB`.
+    public init(hex: UInt32) {
         self.init(
             .sRGB,
             red: Double((hex >> 16) & 0xFF) / 255,

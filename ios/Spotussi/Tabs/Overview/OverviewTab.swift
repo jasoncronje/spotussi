@@ -11,6 +11,7 @@ struct OverviewTab: View {
     @Environment(NowPlayingModel.self) private var nowPlaying
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var model = OverviewModel()
+    @Namespace private var zoom
 
     var body: some View {
         TabPage(
@@ -28,7 +29,8 @@ struct OverviewTab: View {
             } else {
                 rangeSections
             }
-            RecentPlaysPanel(plays: model.recent, failed: model.recentFailed)
+            RecentPlaysPanel(
+                title: "Recently played", plays: model.recent, failed: model.recentFailed, namespace: zoom)
         }
         .task(id: query) { await model.load(query, client: client) }
         .task(id: nowPlaying.track?.id) { await model.loadRecent(client: client) }
@@ -37,34 +39,32 @@ struct OverviewTab: View {
 
     @ViewBuilder private var rangeSections: some View {
         let measure = query.measure
-        section(model.summary) { summary, isFailed in
+        LoadedSection(model.summary, for: query) { summary, isFailed in
             if isFailed {
                 SectionFailure().panel()
             } else {
                 SummaryGrid(summary: summary, measure: measure, compareLabel: options.range.compareLabel)
             }
         }
-        section(model.series) { series, isFailed in
-            PlaysByDayPanel(series: series, isFailed: isFailed)
+        LoadedSection(model.series, for: query) { series, isFailed in
+            PlaysByDayPanel(series: series, isFailed: isFailed, screen: .overview)
         }
-        ForEach(TopEntry.Kind.allCases, id: \.self) { kind in
-            section(model.top(kind)) { entries, isFailed in
-                TopFivePanel(kind: kind, entries: entries, measure: measure, isFailed: isFailed)
+        ForEach(EntityKind.allCases, id: \.self) { kind in
+            LoadedSection(model.top(kind), for: query) { entries, isFailed in
+                TopListPanel(
+                    title: Self.title(kind), kind: kind, entries: entries, measure: measure, isFailed: isFailed,
+                    namespace: zoom)
             }
         }
     }
 
-    /// A section with its latest answer: placeholders until the first one,
-    /// dimmed while the next range loads, one quiet line if it failed.
-    private func section<Value, Content: View>(
-        _ loaded: Loaded<Value>, @ViewBuilder content: (Value?, Bool) -> Content
-    ) -> some View {
-        let isFailed = loaded.hasFailed(for: query)
-        let isStale = loaded.isStale(for: query) && !isFailed
-        return content(isFailed ? nil : loaded.value, isFailed)
-            .redacted(reason: loaded.value == nil && !isFailed ? .placeholder : [])
-            .opacity(isStale ? 0.55 : 1)
-            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: isStale)
+    private static func title(_ kind: EntityKind) -> LocalizedStringKey {
+        switch kind {
+        case .artist: "Top artists"
+        case .track: "Top tracks"
+        case .album: "Top albums"
+        case .genre: "Top genres"
+        }
     }
 
     private var query: OverviewModel.Query {

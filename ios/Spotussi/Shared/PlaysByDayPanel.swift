@@ -8,6 +8,8 @@ import SwiftUI
 struct PlaysByDayPanel: View {
     let series: ListeningSeries?
     let isFailed: Bool
+    /// Whose Plays/Time choice titles the panel before the series is in.
+    let screen: ViewOptions.Screen
     @Environment(ViewOptions.self) private var options
 
     var body: some View {
@@ -37,7 +39,7 @@ struct PlaysByDayPanel: View {
         .modifier(ChartDescription(descriptor: descriptor))
     }
 
-    private var measure: Measure { series?.measure ?? options.measure(for: .overview) }
+    private var measure: Measure { series?.measure ?? options.measure(for: screen) }
     private var bucket: ListeningSeries.Bucket { series?.bucket ?? .day }
 
     private var title: some View {

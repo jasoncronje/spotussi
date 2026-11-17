@@ -8,11 +8,7 @@ import SpotussiKit
 /// loaded last stays on screen (dimmed) while the next range loads.
 @Observable
 final class OverviewModel {
-    /// What the range-bound sections depend on; a change re-queries.
-    nonisolated struct Query: Equatable, Sendable {
-        let range: StatsRange
-        let measure: Measure
-    }
+    typealias Query = StatsQuery
 
     private(set) var summary = Loaded<Components.Schemas.OverviewSummary>()
     private(set) var series = Loaded<ListeningSeries>()
@@ -109,39 +105,5 @@ final class OverviewModel {
         case .series(let value): series.finish(value, for: query)
         case .top(let kind, let value): tops[kind, default: Loaded()].finish(value, for: query)
         }
-    }
-}
-
-/// A section's last answer and the query it answered, and whether the
-/// latest query failed.
-struct Loaded<Value> {
-    private(set) var value: Value?
-    private(set) var query: OverviewModel.Query?
-    private var failedQuery: OverviewModel.Query?
-
-    /// The value when it answers `query`.
-    func current(for query: OverviewModel.Query) -> Value? {
-        self.query == query ? value : nil
-    }
-
-    /// An answer for another range or measure, shown dimmed until the new
-    /// one arrives.
-    func isStale(for query: OverviewModel.Query) -> Bool {
-        value != nil && self.query != query
-    }
-
-    /// The request for `query` failed and there is nothing current to show.
-    func hasFailed(for query: OverviewModel.Query) -> Bool {
-        failedQuery == query && self.query != query
-    }
-
-    mutating func finish(_ newValue: Value?, for query: OverviewModel.Query) {
-        guard let newValue else {
-            failedQuery = query
-            return
-        }
-        value = newValue
-        self.query = query
-        failedQuery = nil
     }
 }

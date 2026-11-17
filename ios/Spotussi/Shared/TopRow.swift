@@ -9,7 +9,11 @@ struct TopRow: View {
     let measure: Measure
     /// The entry's value against the first entry's, 0...1.
     let share: Double
+    /// Where the entry's page zooms from, if it does.
+    var zoom: ZoomOrigin?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Room for a three-digit rank, so ranks line up down a long list.
+    @ScaledMetric(relativeTo: .caption) private var rankWidth = 24
 
     var body: some View {
         // At the largest sizes the figure goes under the name, which then
@@ -23,8 +27,9 @@ struct TopRow: View {
                 Text(entry.rank, format: .number)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
-                    .frame(minWidth: 18, alignment: .trailing)
+                    .frame(minWidth: rankWidth, alignment: .trailing)
                 leading
+                    .zoomSource(zoom)
             }
             VStack(alignment: .leading, spacing: 3) {
                 Text(entry.name)
@@ -52,8 +57,8 @@ struct TopRow: View {
         .frame(minHeight: 44)
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityValue(accessibilityValue)
+        .accessibilityLabel(Self.spokenLabel(entry))
+        .accessibilityValue(Self.spokenValue(entry, measure: measure))
     }
 
     @ViewBuilder private var leading: some View {
@@ -67,12 +72,14 @@ struct TopRow: View {
         }
     }
 
-    private var accessibilityLabel: String {
+    /// "1. The Honest Paradise, Iris Sakoti"
+    static func spokenLabel(_ entry: TopEntry) -> String {
         let name = String(localized: "\(entry.rank). \(entry.name)")
         return [name, entry.detail].compactMap(\.self).joined(separator: ", ")
     }
 
-    private var accessibilityValue: String {
+    /// "18 plays, up 1 from rank 2"
+    static func spokenValue(_ entry: TopEntry, measure: Measure) -> String {
         let figure = Spoken.value(entry.value(for: measure), measure: measure)
         guard let movement = entry.movement else { return figure }
         return "\(figure), \(MovementMark.spoken(movement))"
@@ -118,7 +125,7 @@ struct MovementMark: View {
 }
 
 /// A thin meter: the lit part is the share.
-private struct ShareBar: View {
+struct ShareBar: View {
     let share: Double
 
     var body: some View {
@@ -134,9 +141,18 @@ private struct ShareBar: View {
 }
 
 /// A genre has no artwork: a column of four lamps lit to its share.
-private struct GenreGlyph: View {
+struct GenreGlyph: View {
     let share: Double
-    @ScaledMetric(relativeTo: .body) private var side = 40
+    /// The tile under the lamps: the page's ground on a panel, a panel on
+    /// the page.
+    private let tile: Tone
+    @ScaledMetric private var side: CGFloat
+
+    init(share: Double, side: CGFloat = 40, tile: Tone = .ground) {
+        self.share = share
+        self.tile = tile
+        _side = ScaledMetric(wrappedValue: side, relativeTo: .body)
+    }
 
     var body: some View {
         let lit = max(1, Int((share * 4).rounded()))
@@ -151,7 +167,7 @@ private struct GenreGlyph: View {
             }
         }
         .frame(width: side, height: side)
-        .background(.ground, in: .rect(cornerRadius: side * 0.12))
+        .background(tile, in: .rect(cornerRadius: side * 0.12))
         .accessibilityHidden(true)
     }
 }

@@ -4,9 +4,7 @@ import SpotussiAPI
 /// One row of a top list, whatever kind it ranks, as the web's top-list
 /// adapters in routes/+page.svelte shape it.
 public struct TopEntry: Identifiable, Hashable, Sendable {
-    public enum Kind: String, CaseIterable, Hashable, Sendable {
-        case artist, track, album, genre
-    }
+    public typealias Kind = EntityKind
 
     public let kind: Kind
     /// The entity's API id, for opening its page.
@@ -14,16 +12,19 @@ public struct TopEntry: Identifiable, Hashable, Sendable {
     public let rank: Int
     public let name: String
     /// A track's or album's artists, "A, B".
-    public let detail: String?
+    public var detail: String?
     public let imageURL: String?
     public let plays: Int
     public let milliseconds: Int
     /// Nil when the range has no previous period to move from.
     public let movement: Movement?
+    /// `spotify:track:…`; nil for genres, local files and artists or albums
+    /// known only from an export.
+    public let spotifyURI: String?
 
     public init(
         kind: Kind, entityID: String, rank: Int, name: String, detail: String?, imageURL: String?,
-        plays: Int, milliseconds: Int, movement: Movement?
+        plays: Int, milliseconds: Int, movement: Movement?, spotifyURI: String? = nil
     ) {
         self.kind = kind
         self.entityID = entityID
@@ -34,9 +35,12 @@ public struct TopEntry: Identifiable, Hashable, Sendable {
         self.plays = plays
         self.milliseconds = milliseconds
         self.movement = movement
+        self.spotifyURI = spotifyURI
     }
 
     public var id: String { "\(kind.rawValue):\(entityID)" }
+
+    public var link: EntityLink { EntityLink(kind: kind, id: entityID, name: name) }
 
     public func value(for measure: Measure) -> Int {
         measure == .plays ? plays : milliseconds
@@ -83,7 +87,8 @@ extension TopEntry {
                 kind: .artist, entityID: item.artist.id, rank: item.rank, name: item.artist.name,
                 detail: nil, imageURL: item.artist.imageUrl, plays: item.plays,
                 milliseconds: item.msPlayed,
-                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil))
+                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil),
+                spotifyURI: item.artist.uri)
         }
     }
 
@@ -93,7 +98,8 @@ extension TopEntry {
                 kind: .track, entityID: item.track.id, rank: item.rank, name: item.track.name,
                 detail: names(item.track.artists), imageURL: item.track.imageUrl, plays: item.plays,
                 milliseconds: item.msPlayed,
-                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil))
+                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil),
+                spotifyURI: item.track.uri)
         }
     }
 
@@ -103,7 +109,8 @@ extension TopEntry {
                 kind: .album, entityID: item.album.id, rank: item.rank, name: item.album.name,
                 detail: names(item.album.artists), imageURL: item.album.imageUrl, plays: item.plays,
                 milliseconds: item.msPlayed,
-                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil))
+                movement: Movement(rank: item.rank, previousRank: item.prevRank, hasPrevious: top.previous != nil),
+                spotifyURI: item.album.uri)
         }
     }
 
