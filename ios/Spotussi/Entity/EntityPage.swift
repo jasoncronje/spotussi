@@ -14,9 +14,6 @@ struct EntityPage: View {
     @Environment(Session.self) private var session
     @Environment(ViewOptions.self) private var options
     @State private var model: EntityModel
-    /// The name has scrolled up under the bar, so the bar shows it.
-    @State private var isTitleInBar = false
-    @State private var headerHeight: CGFloat = 320
     @Namespace private var zoom
 
     init(link: EntityLink) {
@@ -29,16 +26,10 @@ struct EntityPage: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 EntityHeader(link: link, detail: model.detail.value)
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { headerHeight = $0 }
                 sections(query)
                     .padding(.horizontal, 16)
             }
             .padding(.bottom, 32)
-        }
-        .onScrollGeometryChange(for: Bool.self) { [headerHeight] geometry in
-            geometry.contentOffset.y + geometry.contentInsets.top > headerHeight - 56
-        } action: { _, isPast in
-            isTitleInBar = isPast
         }
         .background(.ground)
         // The soft edge lets the artwork show through under the bar, where
@@ -46,7 +37,9 @@ struct EntityPage: View {
         .scrollEdgeEffectStyle(.soft, for: .top)
         .navigationTitle(model.detail.value?.name ?? link.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar(removing: isTitleInBar ? nil : .title)
+        // The bar holds back, range, Plays/Time and Open in Spotify: a title
+        // there is clipped to a letter, and the name leads the page anyway.
+        .toolbar(removing: .title)
         .entityToolbar(screen: link.kind.screen, spotifyURI: model.detail.value?.spotifyURI)
         .task(id: query) { await model.load(query, client: client) }
         .refreshable { [model, query, client] in
