@@ -12,6 +12,17 @@ extension View {
     }
 }
 
+extension View {
+    /// Placeholder content while the first answer loads: drawn redacted and
+    /// hidden from VoiceOver, which would otherwise read made-up names and
+    /// zeros.
+    func placeholder(_ isPlaceholder: Bool = true) -> some View {
+        self
+            .redacted(reason: isPlaceholder ? .placeholder : [])
+            .accessibilityHidden(isPlaceholder)
+    }
+}
+
 extension ShapeStyle where Self == Color {
     /// Text and spinners on an accent-filled button: white on the light-mode
     /// green, near-black on the brighter dark-mode green, where white would

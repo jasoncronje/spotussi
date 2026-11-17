@@ -3,7 +3,8 @@ import SwiftUI
 
 /// Where the entity was played from: playlists, albums, artist pages and
 /// Liked Songs, ranked by the measure, then what has no recorded source.
-/// Read-only: naming Spotify's own playlists stays on the web (D17).
+/// A playlist opens its page. Read-only: naming Spotify's own playlists
+/// stays on the web (D17).
 struct PlayContextsPanel: View {
     let contexts: PlayContexts?
     let measure: Measure
@@ -33,11 +34,22 @@ struct PlayContextsPanel: View {
         let leader = Double(contexts.leader(for: measure))
         return VStack(spacing: 2) {
             ForEach(contexts.items) { context in
-                ContextRow(
+                let row = ContextRow(
                     rank: context.rank, symbol: symbol(context.kind), imageURL: context.imageURL,
                     name: name(context), kind: kindName(context), isUnresolved: context.name == nil,
                     value: context.value(for: measure), share: Double(context.value(for: measure)) / leader,
                     measure: measure)
+                if let id = context.playlistID {
+                    RouteLink(
+                        route: .playlist(PlaylistLink(id: id, name: name(context))), accessibilityLabel: row.label,
+                        accessibilityValue: Spoken.value(context.value(for: measure), measure: measure),
+                        spotifyURI: context.id
+                    ) {
+                        row
+                    }
+                } else {
+                    row
+                }
             }
             let unknown = contexts.unknown(for: measure)
             if unknown > 0 {
@@ -57,7 +69,7 @@ struct PlayContextsPanel: View {
                     kind: "Playlist", isUnresolved: false, value: 0, share: 1, measure: measure)
             }
         }
-        .redacted(reason: .placeholder)
+        .placeholder()
     }
 
     /// The web's words for a context with no name.
@@ -149,7 +161,7 @@ private struct ContextRow: View {
         .accessibilityValue(Spoken.value(value, measure: measure))
     }
 
-    private var label: String {
+    var label: String {
         let named = rank.map { String(localized: "\($0). \(name)") } ?? name
         return [named, kind].compactMap(\.self).joined(separator: ", ")
     }

@@ -72,8 +72,7 @@ struct SessionsList: View {
             }
         }
         .panel(padding: 12)
-        .redacted(reason: .placeholder)
-        .accessibilityHidden(true)
+        .placeholder()
     }
 
     private var client: Client {

@@ -3,16 +3,18 @@ import SpotussiKit
 import SwiftUI
 
 /// Pairing until there is an instance (or the demo), then the tabs. Pairing
-/// links are handled here so they work from any screen.
+/// and page links are handled here so they work from any screen.
 struct RootView: View {
     @Environment(Session.self) private var session
     @Environment(PairingModel.self) private var pairing
+    @Environment(Navigator.self) private var navigator
     /// A pairing link that would replace the paired instance, waiting for a yes.
     @State private var replacement: PairingLink?
 
     var body: some View {
         content
             .onOpenURL(perform: open)
+            .onChange(of: connectionID) { navigator.reset() }
             .sensoryFeedback(.success, trigger: pairing.pairings)
             .confirmationDialog(
                 replacementTitle, isPresented: isConfirmingReplacement, titleVisibility: .visible,
@@ -51,6 +53,11 @@ struct RootView: View {
     }
 
     private func open(_ url: URL) {
+        if let page = DeepLink(url) {
+            // Before pairing there are no pages to open.
+            if session.client != nil { navigator.open(page) }
+            return
+        }
         guard let link = pairing.link(from: url) else { return }
         if session.instance == nil {
             pairing.pair(link)

@@ -78,18 +78,29 @@ struct PairingView: View {
             .glassEffect(.regular.interactive(), in: .capsule)
             .disabled(pairing.isConnecting)
 
+            // The 44-point height is on the labels, so it is the hit area.
             if pairing.isConnecting {
-                Button("Cancel") { pairing.cancel() }
-                    .buttonStyle(.borderless)
-                    .tint(.secondary)
-                    .frame(minHeight: 44)
+                Button {
+                    pairing.cancel()
+                } label: {
+                    Text("Cancel")
+                        .frame(minWidth: 88, minHeight: 44)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.borderless)
+                .tint(.secondary)
             } else {
-                Button("Try the demo") { session.startDemo() }
-                    .buttonStyle(.borderless)
-                    .tint(.secondary)
-                    .font(.subheadline.weight(.medium))
-                    .frame(minHeight: 44)
-                    .accessibilityHint("Shows sample data.")
+                Button {
+                    session.startDemo()
+                } label: {
+                    Text("Try the demo")
+                        .font(.subheadline.weight(.medium))
+                        .frame(minWidth: 88, minHeight: 44)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.borderless)
+                .tint(.secondary)
+                .accessibilityHint("Shows sample data.")
             }
         }
     }

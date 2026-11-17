@@ -8,6 +8,8 @@ import SwiftUI
 struct HistoryList: View {
     let model: HistoryModel
     let query: HistoryQuery
+    /// The artist, album or track is a filter a person chose.
+    var scopeIsFilter = false
     /// Takes off the filters a person set.
     let clear: () -> Void
 
@@ -80,7 +82,7 @@ struct HistoryList: View {
     }
 
     @ViewBuilder private var empty: some View {
-        if query.filter.activeCount > 0 {
+        if query.filter.filterCount(includingScope: scopeIsFilter) > 0 {
             VStack(alignment: .leading, spacing: 12) {
                 Text("No plays match.")
                     .foregroundStyle(.secondary)

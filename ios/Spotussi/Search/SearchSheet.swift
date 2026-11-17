@@ -82,7 +82,7 @@ struct SearchSheet: View {
         CatalogSearch.query(text)
     }
 
-    private static func title(_ kind: EntityKind) -> LocalizedStringKey {
+    static func title(_ kind: EntityKind) -> LocalizedStringKey {
         switch kind {
         case .artist: "Artists"
         case .album: "Albums"
@@ -100,36 +100,52 @@ struct SearchSheet: View {
 private struct SearchHitLink: View {
     let hit: SearchHit
     let namespace: Namespace.ID
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         let zoom = ZoomOrigin(id: hit.id, namespace: namespace)
         RouteLink(
-            route: .entity(hit.link, zoom: zoom),
-            accessibilityLabel: [hit.link.name, hit.detail].compactMap(\.self).joined(separator: ", "),
+            route: .entity(hit.link, zoom: zoom), accessibilityLabel: SearchHitRow.spokenLabel(hit),
             accessibilityValue: hit.link.kind.name
         ) {
-            let layout =
-                dynamicTypeSize.isAccessibilitySize
-                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
-                : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
-            layout {
-                ArtworkImage(url: hit.imageURL, side: 40, symbol: hit.link.kind.symbol, isRound: hit.link.kind == .artist)
-                    .zoomSource(zoom)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(hit.link.name)
-                        .font(.body.weight(.medium))
-                    if let detail = hit.detail {
-                        Text(detail)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.vertical, 6)
-            .frame(minHeight: 44)
+            SearchHitRow(hit: hit, zoom: zoom)
         }
+    }
+}
+
+/// A result's artwork, name and artists. Not a button: whoever lists it
+/// decides what a tap does.
+struct SearchHitRow: View {
+    let hit: SearchHit
+    var zoom: ZoomOrigin?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        let layout =
+            dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
+        layout {
+            ArtworkImage(url: hit.imageURL, side: 40, symbol: hit.link.kind.symbol, isRound: hit.link.kind == .artist)
+                .zoomSource(zoom)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(hit.link.name)
+                    .font(.body.weight(.medium))
+                if let detail = hit.detail {
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 6)
+        .frame(minHeight: 44)
+        .contentShape(.rect)
+    }
+
+    /// "The Honest Paradise, Iris Sakoti"
+    static func spokenLabel(_ hit: SearchHit) -> String {
+        [hit.link.name, hit.detail].compactMap(\.self).joined(separator: ", ")
     }
 }
 

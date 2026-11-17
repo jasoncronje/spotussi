@@ -54,10 +54,19 @@ public final class InstanceStatus {
     }
 
     /// Loads the status and Spotify connection together. On failure the last
-    /// good answers stay; a cancelled refresh changes nothing.
+    /// good answers stay; a cancelled refresh changes nothing. Answers served
+    /// from storage because the server can't be reached are shown, with the
+    /// time they were stored, and count as the server being unreachable.
     public func refresh() async {
         isRefreshing = true
         defer { isRefreshing = false }
+        let observer = LastSeen.Observer()
+        await LastSeen.$observer.withValue(observer) {
+            await load(observer)
+        }
+    }
+
+    private func load(_ observer: LastSeen.Observer) async {
         do {
             // The version is for the Settings sheet only, so its failure
             // doesn't count as the refresh failing.
@@ -78,8 +87,13 @@ public final class InstanceStatus {
             }
             systemStatus = newStatus
             spotifyConnection = newConnection
-            lastUpdated = now()
-            failure = nil
+            if observer.servedFromStorage {
+                if let storedAt = observer.storedAt { lastUpdated = storedAt }
+                failure = .unreachable
+            } else {
+                lastUpdated = now()
+                failure = nil
+            }
         } catch {
             fail(RequestFailure(error))
         }

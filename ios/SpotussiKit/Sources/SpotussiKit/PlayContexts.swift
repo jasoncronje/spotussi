@@ -75,4 +75,13 @@ public struct PlayContext: Identifiable, Hashable, Sendable {
     public func value(for measure: Measure) -> Int {
         measure == .plays ? plays : milliseconds
     }
+
+    /// The library's id for a playlist context: its URI's last part, as
+    /// the server builds `spotify:playlist:<id>`. Nil for other kinds.
+    public var playlistID: String? {
+        guard kind == .playlist else { return nil }
+        let parts = id.split(separator: ":", omittingEmptySubsequences: false)
+        guard parts.count == 3, parts[0] == "spotify", parts[1] == "playlist", !parts[2].isEmpty else { return nil }
+        return String(parts[2])
+    }
 }

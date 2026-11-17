@@ -18,7 +18,8 @@ import Testing
 
     // MARK: - The log
 
-    @Test func demoPagingStopsAfterTheOnlyPage() async throws {
+    @Test func aServerRepeatingThePageEndsTheLog() async throws {
+        let client = fixtureClient()
         let first = try await HistoryLog.load(range: .default, filter: HistoryFilter(), client: client)
         var log = HistoryLog(first: first, calendar: utc)
         #expect(log.count == 25)
@@ -26,8 +27,8 @@ import Testing
         #expect(log.nextCursor == "12jo")
         #expect(!log.isComplete)
 
-        // The demo answers every cursor with the first page: the log must
-        // end rather than repeat it.
+        // A server that answers every cursor with the first page: the log
+        // must end rather than repeat it.
         log.append(try await HistoryLog.load(range: .default, filter: HistoryFilter(), cursor: "12jo", client: client))
         #expect(log.isComplete)
         #expect(log.count == 25)
@@ -114,7 +115,8 @@ import Testing
 
     // MARK: - Sessions
 
-    @Test func demoSessionsStopAfterTheOnlyPage() async throws {
+    @Test func aServerRepeatingThePageEndsTheSessions() async throws {
+        let client = fixtureClient()
         var list = SessionList(first: try await SessionList.load(range: .default, client: client))
         #expect(list.sessions.count == 25)
         #expect(list.total == 102)

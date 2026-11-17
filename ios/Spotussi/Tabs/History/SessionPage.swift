@@ -49,7 +49,7 @@ struct SessionPage: View {
     @ViewBuilder private var content: some View {
         let loaded = model.session
         figures(loaded)
-            .redacted(reason: loaded == nil ? .placeholder : [])
+            .placeholder(loaded == nil)
         if let loaded {
             SessionTapePanel(session: loaded, tape: SessionTape(session: loaded, plays: model.plays))
             if !loaded.topArtists.isEmpty {

@@ -6,6 +6,7 @@ struct SpotussiApp: App {
     @State private var session: Session
     @State private var pairing: PairingModel
     @State private var options = ViewOptions()
+    @State private var navigator = Navigator()
 
     init() {
         let session = Session()
@@ -19,6 +20,7 @@ struct SpotussiApp: App {
                 .environment(session)
                 .environment(pairing)
                 .environment(options)
+                .environment(navigator)
         }
     }
 }

@@ -16,15 +16,16 @@ import Testing
 
     // MARK: - Paging
 
-    @Test func demoSongsStopAfterTheOnlyPage() async throws {
+    @Test func aServerRepeatingThePageEndsTheSongs() async throws {
+        let client = fixtureClient()
         let query = SavedSong.Query(filter: .neverPlayed, sort: .added)
         var list = OffsetList(first: try await SavedSong.page(query, offset: 0, limit: 50, client: client))
         #expect(list.items.count == 25)
         #expect(list.total == 1_454)
         #expect(!list.isComplete)
 
-        // The demo answers every offset with the first page: the list must
-        // end rather than repeat it.
+        // A server that answers every offset with the first page: the list
+        // must end rather than repeat it.
         list.append(
             try await SavedSong.page(query, offset: list.nextOffset, limit: 50, client: client),
             requestedAt: list.nextOffset)
@@ -32,7 +33,8 @@ import Testing
         #expect(list.items.count == 25)
     }
 
-    @Test func demoAlbumsAndPlaylistsStopToo() async throws {
+    @Test func albumsAndPlaylistsEndToo() async throws {
+        let client = fixtureClient()
         var albums = OffsetList(first: try await SavedAlbum.page(.added, offset: 0, limit: 50, client: client))
         albums.append(
             try await SavedAlbum.page(.added, offset: albums.nextOffset, limit: 50, client: client),

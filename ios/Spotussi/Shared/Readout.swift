@@ -13,6 +13,7 @@ struct Readout: View {
     var change: Change?
     /// "of 568 artists", "1h 7m · 8 skipped"
     var detail: String?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -22,7 +23,9 @@ struct Readout: View {
             Text(value)
                 .font(.readout(.title))
                 .contentTransition(.numericText())
-                .lineLimit(1)
+                // One line that shrinks a little; a second line at the
+                // largest sizes rather than cutting the figure off.
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
                 .minimumScaleFactor(0.7)
                 .accessibilityLabel(spokenValue ?? value)
             if let change {

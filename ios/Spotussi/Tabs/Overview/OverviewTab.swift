@@ -2,9 +2,9 @@ import SpotussiAPI
 import SpotussiKit
 import SwiftUI
 
-/// How much was listened in the range, when, and to what, then the latest
-/// plays. Re-queried when the range or measure changes; recent plays when
-/// the playing track changes.
+/// How much was listened in the range, on which days and at what hours,
+/// and to what, then the latest plays. Re-queried when the range or
+/// measure changes; recent plays when the playing track changes.
 struct OverviewTab: View {
     @Environment(Session.self) private var session
     @Environment(ViewOptions.self) private var options
@@ -48,6 +48,9 @@ struct OverviewTab: View {
         }
         LoadedSection(model.series, for: query) { series, isFailed in
             PlaysByDayPanel(series: series, isFailed: isFailed, screen: .overview)
+        }
+        LoadedSection(model.clock, for: query) { hours, isFailed in
+            ListeningClockPanel(hours: hours, isFailed: isFailed, measure: measure)
         }
         ForEach(EntityKind.allCases, id: \.self) { kind in
             LoadedSection(model.top(kind), for: query) { entries, isFailed in

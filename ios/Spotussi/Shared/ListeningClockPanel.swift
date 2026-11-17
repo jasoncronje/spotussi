@@ -78,8 +78,10 @@ struct ListeningClockPanel: View {
                 .foregroundStyle(.secondary)
         }
         .multilineTextAlignment(alignment == .center ? .center : .leading)
-        .lineLimit(1)
-        .minimumScaleFactor(0.8)
+        // Inside the dial it has the ring's width and shrinks to fit; beside
+        // it, at the largest sizes, it wraps instead.
+        .lineLimit(alignment == .center ? 1 : nil)
+        .minimumScaleFactor(alignment == .center ? 0.8 : 1)
         .redacted(reason: hours == nil ? .placeholder : [])
         .allowsHitTesting(false)
     }

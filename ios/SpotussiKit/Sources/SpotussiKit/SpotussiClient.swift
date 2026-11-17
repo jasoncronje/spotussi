@@ -6,14 +6,15 @@ import SpotussiAPI
 
 extension Client {
     /// A client for a paired instance. Every request carries the read-only
-    /// token; responses are cached by `URLCache` and revalidated with the
-    /// API's ETags (it answers every GET with `Cache-Control: no-cache`).
+    /// token; answers are kept in `cache`, revalidated with the API's ETags
+    /// and served from there when the server can't be reached.
     public static func live(
-        _ instance: Instance, token: String, session: URLSession = .spotussi
+        _ instance: Instance, token: String, session: URLSession = .spotussi, cache: URLCache = .spotussiAPI
     ) -> Client {
         Client(
             serverURL: instance.apiURL,
-            transport: URLSessionTransport(configuration: .init(session: session)),
+            transport: LastSeenTransport(
+                base: URLSessionTransport(configuration: .init(session: session)), cache: cache),
             middlewares: [BearerToken(token)]
         )
     }
@@ -29,14 +30,12 @@ extension Client {
 }
 
 extension URLSession {
-    /// One session for API calls, with a disk cache so the last answer for
-    /// each request survives a relaunch and a server that can't be reached.
+    /// One session for API calls. It keeps no cache of its own:
+    /// `LastSeenTransport` keeps the answers and asks with their ETags.
     public static let spotussi: URLSession = {
         let config = URLSessionConfiguration.default
-        config.urlCache = URLCache(
-            memoryCapacity: 8 << 20, diskCapacity: 64 << 20,
-            directory: URL.cachesDirectory.appending(path: "api"))
-        config.requestCachePolicy = .useProtocolCachePolicy
+        config.urlCache = nil
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
         config.timeoutIntervalForRequest = 20
         config.waitsForConnectivity = false
         return URLSession(configuration: config)

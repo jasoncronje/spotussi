@@ -8,9 +8,7 @@ extension URLSession {
     /// system's HTTP caching keeps them across launches.
     public static let artwork: URLSession = {
         let config = URLSessionConfiguration.default
-        config.urlCache = URLCache(
-            memoryCapacity: 4 << 20, diskCapacity: 128 << 20,
-            directory: URL.cachesDirectory.appending(path: "artwork"))
+        config.urlCache = URLCache.protected(name: "artwork", memory: 4 << 20, disk: 128 << 20)
         config.requestCachePolicy = .useProtocolCachePolicy
         config.timeoutIntervalForRequest = 20
         return URLSession(configuration: config)

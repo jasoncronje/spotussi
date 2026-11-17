@@ -11,31 +11,29 @@ struct TabPage<Content: View>: View {
     let controls: TabControls
     /// A change scrolls back to the top: a new list replaces the old one.
     var scrollReset: AnyHashable?
+    /// A change brings the view with this id to the top.
+    var scrollTarget: ScrollTarget?
     /// The tab's own reload for pull-to-refresh; the status reloads anyway.
     var refresh: (@Sendable () async -> Void)?
     @ViewBuilder let content: Content
 
     @Environment(InstanceStatus.self) private var status
     @Environment(PairingModel.self) private var pairing
+    @Environment(Navigator.self) private var navigator
+    @Environment(\.tab) private var tab
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var position = ScrollPosition(edge: .top)
+    /// The stack's pages outside the tab bar, where the navigator has none.
+    @State private var localPath: [Route] = []
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    StatusNotices()
-                    content
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 32)
-                .animation(reduceMotion ? nil : .smooth, value: status.notices)
-                .animation(reduceMotion ? nil : .smooth, value: pairing.isConnecting)
-            }
-            .scrollPosition($position)
-            .onChange(of: scrollReset) {
-                position.scrollTo(edge: .top)
+        NavigationStack(path: path) {
+            ScrollViewReader { proxy in
+                scroll
+                    .onChange(of: scrollTarget) { _, target in
+                        guard let target else { return }
+                        proxy.scrollTo(target.id, anchor: .top)
+                    }
             }
             .background(.ground)
             .navigationTitle(title)
@@ -49,6 +47,36 @@ struct TabPage<Content: View>: View {
             }
         }
     }
+
+    private var scroll: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                StatusNotices()
+                content
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
+            .animation(reduceMotion ? nil : .smooth, value: status.notices)
+            .animation(reduceMotion ? nil : .smooth, value: pairing.isConnecting)
+        }
+        .scrollPosition($position)
+        .onChange(of: scrollReset) {
+            position.scrollTo(edge: .top)
+        }
+    }
+
+    private var path: Binding<[Route]> {
+        guard let tab else { return $localPath }
+        return navigator.path(for: tab)
+    }
+}
+
+/// A view to bring to the top of a tab's scroll; a new `request` asks
+/// again for the same view.
+nonisolated struct ScrollTarget: Equatable {
+    let id: String
+    let request: Int
 }
 
 /// Which toolbar controls a tab shows.

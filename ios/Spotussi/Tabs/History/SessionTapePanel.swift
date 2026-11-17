@@ -41,6 +41,31 @@ struct SessionTapePanel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Timeline"))
         .accessibilityValue(spokenValue)
+        .chartSummary(chartSummary)
+    }
+
+    /// Each row in order by its start, with how long it played, counted
+    /// and the rest as two series.
+    private var chartSummary: ChartSummary? {
+        guard !tape.marks.isEmpty else { return nil }
+        let span = session.endedAt.timeIntervalSince(session.startedAt)
+        let lengths = tape.marks.map { ($0.end - $0.start) * span * 1000 }
+        let categories = tape.marks.enumerated().map { index, mark in
+            "\(index + 1). \(Figures.clockTime(session.startedAt.addingTimeInterval(mark.start * span)))"
+        }
+        let title = String(localized: "Timeline")
+        return ChartSummary(
+            title: title, summary: spokenValue, xTitle: String(localized: "Start"),
+            yTitle: String(localized: "Length"), categories: categories,
+            series: [
+                ChartSummary.Series(
+                    name: String(localized: "Counted"),
+                    values: zip(tape.marks, lengths).map { $0.isLit ? $1 : nil }),
+                ChartSummary.Series(
+                    name: String(localized: "Skipped or short"),
+                    values: zip(tape.marks, lengths).map { $0.isLit ? nil : $1 }),
+            ],
+            range: 0...max(1, lengths.max() ?? 1), format: .duration)
     }
 
     /// "30 counted, 4 skipped or short, silence 40 seconds"

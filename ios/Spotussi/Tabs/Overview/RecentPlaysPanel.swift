@@ -26,7 +26,7 @@ struct RecentPlaysPanel: View {
                 SectionFailure()
             } else {
                 rows(Self.placeholders)
-                    .redacted(reason: .placeholder)
+                    .placeholder()
             }
         }
         .panel()

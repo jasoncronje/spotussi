@@ -7,8 +7,8 @@ import Testing
 /// Top lists paged without a cap, the four entity pages, play contexts and
 /// search, reduced from the demo data the way the web's views read them.
 @Suite struct RankedListTests {
-    @Test func demoPagingStopsAfterTheOnlyPage() async throws {
-        let client = Client.demo
+    @Test func aServerRepeatingThePageEndsTheList() async throws {
+        let client = fixtureClient()
         let first = try await TopPage.load(.track, range: .default, measure: .plays, limit: 50, client: client)
         var list = RankedList(first: first)
         #expect(list.entries.count == 25)
@@ -16,8 +16,8 @@ import Testing
         #expect(!list.isComplete)
         #expect(list.nextOffset == 25)
 
-        // The demo answers every request with the first page, whatever the
-        // offset: the list must end rather than repeat it.
+        // A server that answers every offset with the first page: the list
+        // must end rather than repeat it.
         let again = try await TopPage.load(
             .track, range: .default, measure: .plays, offset: list.nextOffset, limit: 50, client: client)
         list.append(again, requestedAt: 25)

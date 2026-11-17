@@ -91,7 +91,7 @@ struct TopListPanel: View {
                     share: Double(placeholderCount + 1 - rank) / Double(placeholderCount))
             }
         }
-        .redacted(reason: .placeholder)
+        .placeholder()
     }
 }
 

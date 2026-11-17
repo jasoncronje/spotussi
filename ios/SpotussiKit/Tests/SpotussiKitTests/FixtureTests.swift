@@ -81,3 +81,46 @@ import Testing
         #expect(response.status == .notFound)
     }
 }
+
+/// Demo mode is honest about how much it holds: lists are as long as their
+/// fixture, `offset` and `limit` take their slice, and nothing pages on.
+@Suite struct DemoListTests {
+    let client = Client.demo
+
+    @Test func aListIsAsLongAsItsFixture() async throws {
+        let top = try await client.getTopTracks(query: .init(limit: 50)).ok.body.json
+        #expect(top.items.count == 25)
+        #expect(top.total == 25)
+    }
+
+    @Test func limitAndOffsetTakeTheirSlice() async throws {
+        let all = try await client.getTopArtists().ok.body.json
+        let five = try await client.getTopArtists(query: .init(limit: 5)).ok.body.json
+        #expect(five.items.map(\.artist.id) == all.items.prefix(5).map(\.artist.id))
+        #expect(five.total == 25)
+
+        let later = try await client.getTopArtists(query: .init(limit: 10, offset: 20)).ok.body.json
+        #expect(later.items.map(\.artist.id) == all.items.suffix(5).map(\.artist.id))
+        let past = try await client.getTopArtists(query: .init(limit: 50, offset: 50)).ok.body.json
+        #expect(past.items.isEmpty)
+    }
+
+    @Test func historyHasNoNextPage() async throws {
+        let log = HistoryLog(first: try await HistoryLog.load(range: .default, filter: HistoryFilter(), client: client))
+        #expect(log.total == 25)
+        #expect(log.count == 25)
+        #expect(log.nextCursor == nil)
+        #expect(log.isComplete)
+    }
+
+    @Test func libraryListsEndOnTheirFirstPage() async throws {
+        let songs = OffsetList(
+            first: try await SavedSong.page(
+                SavedSong.Query(filter: .all, sort: .added), offset: 0, limit: 50, client: client))
+        #expect(songs.total == 25)
+        #expect(songs.isComplete)
+        let sessions = SessionList(first: try await SessionList.load(range: .default, client: client))
+        #expect(sessions.total == sessions.sessions.count)
+        #expect(sessions.isComplete)
+    }
+}
