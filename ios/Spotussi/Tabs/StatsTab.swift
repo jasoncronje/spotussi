@@ -13,7 +13,7 @@ struct StatsTab: View {
             ComingNextPanel(
                 symbol: "chart.bar.xaxis",
                 title: "Charts and the listening clock",
-                message: "When you listen, genres and artists over time, release years and more. Coming in a later update.")
+                message: "Coming soon.")
         }
     }
 }

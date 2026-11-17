@@ -16,7 +16,7 @@ struct CustomRangeSheet: View {
                     DatePicker("From", selection: $from, in: ...to, displayedComponents: .date)
                     DatePicker("To", selection: $to, in: from...max(from, .now), displayedComponents: .date)
                 } footer: {
-                    Text("Both days count. Days follow your server’s time zone.")
+                    Text("Both days count, in your server’s time zone.")
                 }
             }
             .navigationTitle("Custom range")

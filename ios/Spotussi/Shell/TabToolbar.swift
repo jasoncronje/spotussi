@@ -12,6 +12,7 @@ extension View {
 private struct TabToolbar: ViewModifier {
     let controls: TabControls
     @State private var isShowingSettings = false
+    @State private var isSearching = false
 
     func body(content: Content) -> some View {
         content
@@ -27,13 +28,21 @@ private struct TabToolbar: ViewModifier {
                     }
                     ToolbarSpacer(.fixed, placement: .topBarTrailing)
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isShowingSettings = true
-                    } label: {
-                        Label("Settings", systemImage: "gearshape")
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button {
+                            isSearching = true
+                        } label: {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+                        Button {
+                            isShowingSettings = true
+                        } label: {
+                            Label("Settings", systemImage: "gearshape")
+                        }
                     }
-                }
+            }
+            .sheet(isPresented: $isSearching) {
+                SearchTab()
             }
             .sheet(isPresented: $isShowingSettings) {
                 SettingsSheet()

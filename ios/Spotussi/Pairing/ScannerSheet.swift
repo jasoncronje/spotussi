@@ -39,7 +39,7 @@ struct ScannerSheet: View {
             ContentUnavailableView {
                 Label("Camera access is off", systemImage: "camera")
             } description: {
-                Text("Allow the camera for Spotussi in Settings to scan the code, or enter the address and token instead.")
+                Text("Allow the camera in Settings, or type the address and token.")
             } actions: {
                 Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
@@ -54,7 +54,7 @@ struct ScannerSheet: View {
             ContentUnavailableView {
                 Label("No camera to scan with", systemImage: "qrcode.viewfinder")
             } description: {
-                Text("This device can’t scan codes. Enter the address and token instead.")
+                Text("This device can’t scan. Type the address and token.")
             } actions: {
                 Button(action: onEnterByHand) {
                     Text("Enter address and token").foregroundStyle(.accentLabel)
@@ -71,7 +71,7 @@ struct ScannerSheet: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.orange)
             }
-            Text("Point the camera at the code under Settings, API & MCP, Pair iPhone on the web.")
+            Text("Point at the code in Settings, API & MCP on the web.")
                 .font(.subheadline)
         }
         .panel()

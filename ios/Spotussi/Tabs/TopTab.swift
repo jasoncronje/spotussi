@@ -18,8 +18,8 @@ struct TopTab: View {
                 symbol: "list.number",
                 title: "Top tracks, artists, albums and genres",
                 message: measure == .plays
-                    ? "Ranked by counted plays, with how each moved since the period before. Coming in the next update."
-                    : "Ranked by time listened, with how each moved since the period before. Coming in the next update.")
+                    ? "Coming soon."
+                    : "Coming soon.")
         }
     }
 }

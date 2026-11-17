@@ -20,7 +20,7 @@ struct OverviewTab: View {
                 figures(summary)
                 topPanel(summary)
             } else if model.didFail {
-                Text("The summary didn’t load. Pull down to try again.")
+                Text("Couldn’t load. Pull down to retry.")
                     .foregroundStyle(.secondary)
                     .panel()
             } else {
@@ -30,7 +30,7 @@ struct OverviewTab: View {
             ComingNextPanel(
                 symbol: "chart.dots.scatter",
                 title: "Plays by day, top fives and recent plays",
-                message: "The rest of the Overview arrives in the next update.")
+                message: "Coming soon.")
         }
         .task(id: query) { await model.load(query, client: client) }
         .animation(reduceMotion ? nil : .smooth, value: model.summary)
@@ -63,7 +63,7 @@ struct OverviewTab: View {
         let previous = summary?.previousSummary
         return VStack(alignment: .leading, spacing: 10) {
             if let compare = options.range.compareLabel, summary?.previousSummary != nil {
-                Text("Changes are \(compare).")
+                Text(compare)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

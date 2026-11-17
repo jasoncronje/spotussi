@@ -12,7 +12,7 @@ struct StatusSection: View {
             LabeledContent("Spotify", value: spotify)
             LabeledContent("Capture", value: capture)
             if let lastPlay {
-                LabeledContent("Last play caught", value: lastPlay)
+                LabeledContent("Last play", value: lastPlay)
             }
             LabeledContent("Server version", value: status.serverVersion ?? unknown)
         } header: {
@@ -46,7 +46,7 @@ struct StatusSection: View {
     private var capture: String {
         guard let state = status.systemStatus?.capture.state else { return unknown }
         return switch state {
-        case .playing: String(localized: "Catching a play now")
+        case .playing: String(localized: "Playing now")
         case .idle: String(localized: "Waiting for the next play")
         case .backingOff: String(localized: "Retrying after errors")
         case .stopped: String(localized: "Stopped")

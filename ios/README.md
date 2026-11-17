@@ -56,3 +56,7 @@ spotussi://pair?url=<base URL>&token=<spt_…>
 ```
 
 `url` is the instance's origin and `token` is a read-only API token. Plain `http` works for IP addresses and local names; a public name needs `https`.
+
+## Running in the simulator
+
+Build without `CODE_SIGNING_ALLOWED=NO` when you mean to run the app: an unsigned build can't write to the Keychain, so pairing ends in "Pairing didn't finish". CI only compiles, so it keeps signing off.

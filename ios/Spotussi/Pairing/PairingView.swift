@@ -22,10 +22,6 @@ struct PairingView: View {
                         .transition(.opacity)
                 }
                 actions
-                Text("Read-only access. The token is kept in the Keychain on this iPhone.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 32)
@@ -56,9 +52,7 @@ struct PairingView: View {
             Text("Connect to your server")
                 .font(.system(.title2, weight: .bold).width(.expanded))
                 .accessibilityAddTraits(.isHeader)
-            Text("Your listening stats from your own Spotussi server, on your iPhone.")
-                .foregroundStyle(.secondary)
-            Text("On the web: **Settings**, **API & MCP**, **Pair iPhone**.")
+            Text("Find the code in **Settings**, **API & MCP** on the web.")
                 .foregroundStyle(.secondary)
         }
         .multilineTextAlignment(.center)
@@ -95,7 +89,7 @@ struct PairingView: View {
                     .tint(.secondary)
                     .font(.subheadline.weight(.medium))
                     .frame(minHeight: 44)
-                    .accessibilityHint("Shows sample listening data instead of your own.")
+                    .accessibilityHint("Shows sample data.")
             }
         }
     }

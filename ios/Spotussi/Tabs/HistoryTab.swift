@@ -10,7 +10,7 @@ struct HistoryTab: View {
             ComingNextPanel(
                 symbol: "clock.arrow.circlepath",
                 title: "Every play, newest first",
-                message: "With filters for skips, shuffle and devices, and your longest sessions. Coming in a later update.")
+                message: "Coming soon.")
         }
     }
 }

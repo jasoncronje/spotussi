@@ -68,12 +68,12 @@ struct ManualEntrySheet: View {
         } footer: {
             if Instance(address: address)?.plainHTTPIsBlocked == true {
                 Label(
-                    "Plain http works only for an IP address or a .local name. Use https for a public name.",
+                    "Plain http needs an IP address or .local name.",
                     systemImage: "exclamationmark.triangle"
                 )
                 .foregroundStyle(.orange)
             } else {
-                Text("The address you open Spotussi at in a browser.")
+                Text("Same as in your browser.")
             }
         }
     }
@@ -97,7 +97,7 @@ struct ManualEntrySheet: View {
         } header: {
             Text("Token")
         } footer: {
-            Text("On the web: Settings, API & MCP, Pair iPhone. The token starts with spt_.")
+            Text("From Settings, API & MCP on the web.")
         }
     }
 

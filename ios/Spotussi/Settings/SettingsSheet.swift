@@ -50,7 +50,7 @@ struct SettingsSheet: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Demo data")
                         .font(.headline)
-                    Text("Sample listening from Spotussi’s test server, not anyone’s real history.")
+                    Text("Sample listening, not real history.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -68,7 +68,7 @@ struct SettingsSheet: View {
                     session.unpair()
                 }
             } footer: {
-                Text("Back to pairing, to connect your own server.")
+                Text("Returns to pairing.")
             }
         } else {
             Section {
@@ -86,7 +86,7 @@ struct SettingsSheet: View {
                     Button("Cancel", role: .cancel) {}
                 } message: {
                     Text(
-                        "The app forgets this server and what it loaded. The token stays valid until you revoke it on the web, under Settings, API & MCP."
+                        "The token stays valid until you revoke it on the web."
                     )
                 }
             }
@@ -96,7 +96,7 @@ struct SettingsSheet: View {
     private var aboutSection: some View {
         Section("About") {
             LabeledContent("Version", value: AppVersion.display)
-            Text("Spotussi is free software under the GNU Affero General Public License, version 3.")
+            Text("Free software, AGPL-3.0.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text("Not affiliated with Spotify.")

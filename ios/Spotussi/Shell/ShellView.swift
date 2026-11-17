@@ -1,10 +1,11 @@
 import SpotussiKit
 import SwiftUI
 
-/// Five tabs and search, each with its own navigation stack.
+/// Five tabs, each with its own navigation stack. Search opens from the
+/// toolbar: a sixth tab would push Library and Search under "More".
 struct ShellView: View {
     nonisolated enum Destination: Hashable {
-        case overview, top, stats, history, library, search
+        case overview, top, stats, history, library
     }
 
     @Environment(InstanceStatus.self) private var status
@@ -28,9 +29,6 @@ struct ShellView: View {
             }
             Tab("Library", systemImage: "books.vertical", value: .library) {
                 LibraryTab()
-            }
-            Tab(value: .search, role: .search) {
-                SearchTab()
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)

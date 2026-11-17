@@ -8,7 +8,7 @@ struct LibraryTab: View {
             ComingNextPanel(
                 symbol: "books.vertical",
                 title: "Saved songs, albums and playlists",
-                message: "And how soon what you save reaches heavy rotation. Coming in a later update.")
+                message: "Coming soon.")
         }
     }
 }
