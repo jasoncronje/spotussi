@@ -38,6 +38,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Spotussi uses the camera to scan the pairing code shown in your server's settings.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Spotussi connects to your own Spotussi server when it is on your home network.</string>
 	<key>UILaunchScreen</key>

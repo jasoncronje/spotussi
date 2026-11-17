@@ -18,6 +18,10 @@ settings:
     SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
     SWIFT_APPROACHABLE_CONCURRENCY: YES
     SWIFT_STRICT_CONCURRENCY: complete
+    # Strings in SwiftUI views and String(localized:) land in the app's
+    # String Catalog (Spotussi/Localizable.xcstrings).
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
     MARKETING_VERSION: 0.1.0
     CURRENT_PROJECT_VERSION: 1
 packages:
@@ -63,6 +67,8 @@ targets:
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         NSLocalNetworkUsageDescription: Spotussi connects to your own Spotussi server when it is on your home network.
+        # Pairing scans the QR code from Settings → API & MCP on the web.
+        NSCameraUsageDescription: Spotussi uses the camera to scan the pairing code shown in your server's settings.
 schemes:
   Spotussi:
     build:

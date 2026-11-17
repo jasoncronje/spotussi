@@ -1,0 +1,161 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ · by plays" : {},
+    "%@ · by time" : {},
+    "%lld plays" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld play"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld plays"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "About" : {},
+    "Address" : {},
+    "Address and token" : {},
+    "Allow the camera for Spotussi in Settings to scan the code, or enter the address and token instead." : {},
+    "And how soon what you save reaches heavy rotation. Coming in a later update." : {},
+    "Artist" : {},
+    "Artists" : {},
+    "Back to pairing, to connect your own server." : {},
+    "Both days count. Days follow your server’s time zone." : {},
+    "Camera access is off" : {},
+    "Cancel" : {},
+    "Can’t reach the server right now." : {},
+    "Capture" : {},
+    "Catching a play now" : {},
+    "Changes are %@." : {},
+    "Charts and the listening clock" : {},
+    "Check the address, and that this iPhone is on the same network or VPN as the server." : {},
+    "Connect" : {},
+    "Connect to your server" : {},
+    "Connected" : {},
+    "Connected as %@" : {},
+    "Connecting to %@…" : {},
+    "Count by" : {},
+    "Custom range" : {},
+    "Custom…" : {},
+    "Demo data" : {},
+    "Down %@" : {},
+    "Enter address and token" : {},
+    "Every play, newest first" : {},
+    "Find any track, artist or album in your history. Coming in the next update." : {},
+    "From" : {},
+    "History" : {},
+    "It may have been revoked or mistyped. Make a new one under Settings, API & MCP, Pair iPhone." : {},
+    "Last play caught" : {},
+    "Leave demo" : {},
+    "Library" : {},
+    "Loading…" : {},
+    "Most listened to" : {},
+    "Most played" : {},
+    "Needs reconnecting on the web" : {},
+    "No camera to scan with" : {},
+    "No change" : {},
+    "Not affiliated with Spotify." : {},
+    "Not connected" : {},
+    "Nothing answered at that address." : {},
+    "OK" : {},
+    "On the web: **Settings**, **API & MCP**, **Pair iPhone**." : {},
+    "On the web: Settings, API & MCP, Pair iPhone. The token starts with spt_." : {},
+    "Open Settings" : {},
+    "Overview" : {},
+    "Pair with %@" : {},
+    "Pairing didn’t finish (error %lld)." : {},
+    "Pairing didn’t finish." : {},
+    "Pairing was called off." : {},
+    "Plain http works only for an IP address or a .local name. Use https for a public name." : {},
+    "Plays" : {},
+    "Plays by day, top fives and recent plays" : {},
+    "Point the camera at the code under Settings, API & MCP, Pair iPhone on the web." : {},
+    "Range" : {},
+    "Ranked by counted plays, with how each moved since the period before. Coming in the next update." : {},
+    "Ranked by time listened, with how each moved since the period before. Coming in the next update." : {},
+    "Read-only access. The token is kept in the Keychain on this iPhone." : {},
+    "Replace the paired server?" : {},
+    "Retrying after errors" : {},
+    "Sample listening from Spotussi’s test server, not anyone’s real history." : {},
+    "Saved songs, albums and playlists" : {},
+    "Scan QR code" : {},
+    "Scan pairing code" : {},
+    "Scan the code under Settings, API & MCP, Pair iPhone on the web." : {},
+    "Search" : {},
+    "Search what you’ve played" : {},
+    "Server" : {},
+    "Server version" : {},
+    "Settings" : {},
+    "Show this range" : {},
+    "Shows sample listening data instead of your own." : {},
+    "Something answered, but it isn’t Spotussi." : {},
+    "Spotify" : {},
+    "Spotussi is free software under the GNU Affero General Public License, version 3." : {},
+    "Stats" : {},
+    "Status" : {},
+    "Stopped" : {},
+    "That address can’t be used." : {},
+    "That doesn’t look like a Spotussi token." : {},
+    "That isn’t a Spotussi pairing code." : {},
+    "The address you open Spotussi at in a browser." : {},
+    "The app forgets this server and what it loaded. The token stays valid until you revoke it on the web, under Settings, API & MCP." : {},
+    "The rest of the Overview arrives in the next update." : {},
+    "The server didn’t accept the token." : {},
+    "The summary didn’t load. Pull down to try again." : {},
+    "This device can’t scan codes. Enter the address and token instead." : {},
+    "This iPhone will read from %@ instead of %@. The old token stays valid until you revoke it on the web." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This iPhone will read from %1$@ instead of %2$@. The old token stays valid until you revoke it on the web."
+          }
+        }
+      }
+    },
+    "This iPhone will use the new token for %@." : {},
+    "Time listened" : {},
+    "To" : {},
+    "Token" : {},
+    "Tokens start with spt_. Copy it again from Settings, API & MCP, Pair iPhone on the web." : {},
+    "Top" : {},
+    "Top tracks, artists, albums and genres" : {},
+    "Track" : {},
+    "Tracks" : {},
+    "Tracks, artists, albums" : {},
+    "Try again in a moment. If it keeps happening, check the server’s logs." : {},
+    "Try again when you’re ready." : {},
+    "Try the demo" : {},
+    "Type it as you would in a browser, such as stats.example.com or http://192.168.1.20:8080." : {},
+    "Unknown" : {},
+    "Unpair" : {},
+    "Unpair this iPhone" : {},
+    "Unpair this iPhone?" : {},
+    "Up %@" : {},
+    "Updated %@." : {},
+    "Use https for a public name, or the server’s IP address or .local name with http." : {},
+    "Use the address you open Spotussi at in a browser." : {},
+    "Version" : {},
+    "Waiting for the next play" : {},
+    "When you listen, genres and artists over time, release years and more. Coming in a later update." : {},
+    "With filters for skips, shuffle and devices, and your longest sessions. Coming in a later update." : {},
+    "Your listening stats from your own Spotussi server, on your iPhone." : {},
+    "iOS allows plain http only on your own network." : {},
+    "spt_…" : {},
+    "stats.example.com" : {}
+  },
+  "version" : "1.0"
+}

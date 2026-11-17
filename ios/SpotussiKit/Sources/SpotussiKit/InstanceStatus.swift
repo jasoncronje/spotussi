@@ -20,6 +20,8 @@ public final class InstanceStatus {
     public private(set) var systemStatus: Components.Schemas.SystemStatus?
     /// The last Spotify connection that loaded (account name, scopes).
     public private(set) var spotifyConnection: Components.Schemas.SpotifyConnection?
+    /// The server's version from `/health`, once it has answered.
+    public private(set) var serverVersion: String?
     /// When `systemStatus` was loaded.
     public private(set) var lastUpdated: Date?
     /// Why the latest refresh failed; nil once one succeeds.
@@ -57,9 +59,13 @@ public final class InstanceStatus {
         isRefreshing = true
         defer { isRefreshing = false }
         do {
+            // The version is for the Settings sheet only, so its failure
+            // doesn't count as the refresh failing.
+            async let health = try? client.getHealth().ok.body.json
             async let status = client.getSystemStatus()
             async let connection = client.getSpotifyConnection()
             let (statusOutput, connectionOutput) = try await (status, connection)
+            if let version = (await health)?.version { serverVersion = version }
             let newStatus: Components.Schemas.SystemStatus
             let newConnection: Components.Schemas.SpotifyConnection
             switch statusOutput {

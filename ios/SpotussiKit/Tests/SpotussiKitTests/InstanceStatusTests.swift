@@ -125,9 +125,21 @@ import Testing
         #expect(model.systemStatus?.data.plays == 43762)
         #expect(model.spotifyConnection?.state == .notConfigured)
         #expect(model.lastUpdated == now)
+        #expect(model.serverVersion == "dev")
         #expect(model.failure == nil)
         #expect(!model.isRefreshing)
         #expect(model.notices.isEmpty)
+    }
+
+    @Test func aMissingVersionDoesNotFailTheRefresh() async {
+        let transport = StubTransport { operationID in
+            operationID == "getHealth" ? Reply.html(404) : Reply.fixture(operationID)
+        }
+        let model = InstanceStatus(client: transport.apiClient, now: { now })
+        await model.refresh()
+        #expect(model.failure == nil)
+        #expect(model.serverVersion == nil)
+        #expect(model.systemStatus != nil)
     }
 
     @Test func keepsTheLastGoodStatusWhenTheServerGoesAway() async throws {
