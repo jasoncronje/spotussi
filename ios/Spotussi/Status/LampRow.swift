@@ -1,15 +1,31 @@
 import SpotussiKit
 import SwiftUI
 
-/// Catalog progress as a row of lamps, like the web's catalog strip: lit
-/// for looked up, dim for provisional details, unlit for the rest.
+/// Progress as a row of lamps, like the web's catalog strip: lit for done,
+/// dim for provisional, unlit for the rest.
 struct LampRow: View {
-    let progress: CatalogProgress
+    let lit: Int
+    var dim = 0
     var count = 24
     @ScaledMetric(relativeTo: .caption) private var lampSize = 7
 
-    var body: some View {
+    /// Catalog lookups: lit for looked up, dim for provisional details.
+    init(progress: CatalogProgress, count: Int = 24) {
         let lamps = progress.lamps(count: count)
+        lit = lamps.lit
+        dim = lamps.dim
+        self.count = count
+    }
+
+    /// A fraction done, lit from the left.
+    init(lit: Int, count: Int = 24) {
+        self.lit = lit
+        self.count = count
+    }
+
+    var body: some View {
+        let lit = lit
+        let dim = dim
         let count = count
         let lampSize = lampSize
         Canvas { context, size in
@@ -20,9 +36,9 @@ struct LampRow: View {
                     x: CGFloat(index) * pitch + (pitch - side) / 2,
                     y: (size.height - side) / 2, width: side, height: side)
                 let lamp = Path(ellipseIn: rect)
-                if index < lamps.lit {
+                if index < lit {
                     context.fill(lamp, with: .style(Tone.lamp))
-                } else if index < lamps.lit + lamps.dim {
+                } else if index < lit + dim {
                     var dimmed = context
                     dimmed.opacity = 0.38
                     dimmed.fill(lamp, with: .style(Tone.lamp))

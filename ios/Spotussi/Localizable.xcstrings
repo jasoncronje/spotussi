@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ added" : {},
+    "%@ added %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ added %2$@"
+          }
+        }
+      }
+    },
     "%@ leads with %@ of plays." : {
       "localizations" : {
         "en" : {
@@ -22,7 +33,9 @@
       }
     },
     "%@ of plays" : {},
+    "%@ of saved songs" : {},
     "%@ of time" : {},
+    "%@ played" : {},
     "%@ · %@" : {
       "localizations" : {
         "en" : {
@@ -122,7 +135,10 @@
         }
       }
     },
+    "%lld collaborative" : {},
     "%lld counted" : {},
+    "%lld followed" : {},
+    "%lld from this playlist" : {},
     "%lld genres" : {
       "localizations" : {
         "en" : {
@@ -145,7 +161,64 @@
         }
       }
     },
+    "%lld here" : {},
+    "%lld never played" : {},
+    "%lld of %lld played" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld played"
+          }
+        }
+      }
+    },
     "%lld on" : {},
+    "%lld other release" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld other release"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld other releases"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld played" : {},
+    "%lld playlists" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld playlist"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld playlists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld plays" : {
       "localizations" : {
         "en" : {
@@ -164,6 +237,39 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld plays from it" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld play from it"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld plays from it"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld saved" : {},
+    "%lld saved · %lld removed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld saved · %2$lld removed"
           }
         }
       }
@@ -202,6 +308,60 @@
     },
     "%lld skipped" : {},
     "%lld skipped or short" : {},
+    "%lld songs" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld song"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld songs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld songs saved since %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@songs@ saved since %2$@."
+          },
+          "substitutions" : {
+            "songs" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg song"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg songs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld tracks" : {
       "localizations" : {
         "en" : {
@@ -268,6 +428,7 @@
         }
       }
     },
+    "%lld yours" : {},
     "%lld. %@" : {
       "localizations" : {
         "en" : {
@@ -279,12 +440,19 @@
       }
     },
     "About" : {},
+    "Added %@" : {},
     "Address" : {},
     "Address and token" : {},
     "Album" : {},
     "Albums" : {},
+    "All" : {},
     "All %@" : {},
+    "All before saving" : {},
+    "All later" : {},
     "All time" : {},
+    "All within a day" : {},
+    "All within a month" : {},
+    "All within a week" : {},
     "Allow the camera in Settings, or type the address and token." : {},
     "Any" : {},
     "Artist" : {},
@@ -297,6 +465,28 @@
     "Artists by week" : {},
     "Artists by year" : {},
     "Artists per track" : {},
+    "At %lld plays" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "At %lld play"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "At %lld plays"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Average" : {},
     "Average %@ a day." : {},
     "Average %@ a month." : {},
@@ -304,6 +494,7 @@
     "Average %@ a year." : {},
     "Average %@ an hour." : {},
     "Average %@." : {},
+    "Before saving" : {},
     "Both days count, in your server’s time zone." : {},
     "Bucket" : {},
     "Busiest around %@, quietest around %@." : {
@@ -325,7 +516,7 @@
     "Check the address, and that you’re on the same network or VPN." : {},
     "Clear" : {},
     "Clear filters" : {},
-    "Coming soon." : {},
+    "Collaborative" : {},
     "Compilation" : {},
     "Connect" : {},
     "Connect to your server" : {},
@@ -340,18 +531,23 @@
     "Counted" : {},
     "Custom range" : {},
     "Custom…" : {},
+    "Date" : {},
     "Day" : {},
     "Demo data" : {},
     "Device" : {},
     "Devices" : {},
     "Down %@" : {},
     "Enter address and token" : {},
+    "Ever played" : {},
+    "Every saved song played." : {},
     "Everyone else" : {},
     "Excluded from stats" : {},
     "Explicit" : {},
     "Filters" : {},
     "Find the code in **Settings**, **API & MCP** on the web." : {},
     "First played" : {},
+    "First sync running." : {},
+    "Followed" : {},
     "Free software, AGPL-3.0." : {},
     "From" : {},
     "From Settings, API & MCP on the web." : {},
@@ -363,13 +559,44 @@
     "Imported history" : {},
     "In order" : {},
     "In range" : {},
+    "In rotation" : {},
+    "In rotation %lld days after saving" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "In rotation %lld day after saving"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "In rotation %lld days after saving"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "In rotation before saving" : {},
+    "In rotation the day it was saved" : {},
     "Kind" : {},
+    "Last %@" : {},
     "Last play" : {},
+    "Last played" : {},
+    "Last played %@" : {},
     "Last: %@" : {},
+    "Later" : {},
     "Latest plays" : {},
     "Leave demo" : {},
     "Length" : {},
     "Library" : {},
+    "Library access missing; reconnect Spotify on the web." : {},
+    "Library sync is off." : {},
     "Liked Songs" : {},
     "Listened" : {},
     "Listening clock" : {},
@@ -377,35 +604,60 @@
     "Loading…" : {},
     "Make a new one in Settings, API & MCP." : {},
     "Month" : {},
+    "Most heard" : {},
+    "Most in %@, %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Most in %1$@, %2$lld."
+          }
+        }
+      }
+    },
+    "Most played" : {},
     "Mostly" : {},
+    "Name" : {},
     "Needs reconnecting on the web" : {},
+    "Never" : {},
     "Never played" : {},
     "New" : {},
     "No camera to scan with" : {},
     "No change" : {},
     "No genres yet." : {},
+    "No playlists." : {},
     "No plays in this range." : {},
     "No plays match." : {},
     "No plays yet." : {},
     "No release dates yet." : {},
     "No results" : {},
+    "No saved albums." : {},
+    "No saved songs." : {},
+    "No saves yet." : {},
     "No sessions in this range." : {},
+    "No songs." : {},
     "None" : {},
+    "None yet" : {},
     "Not affiliated with Spotify." : {},
     "Not connected" : {},
     "Not counted" : {},
     "Not in your library." : {},
+    "Not known" : {},
     "Not played" : {},
     "Not played in this range" : {},
     "Not recorded" : {},
     "Not skipped" : {},
+    "Not yet" : {},
     "Nothing playing" : {},
+    "Nothing saved yet." : {},
     "Now playing" : {},
     "OK" : {},
     "Open Settings" : {},
     "Open in Spotify" : {},
     "Other" : {},
     "Other genres" : {},
+    "Other release" : {},
+    "Other release played" : {},
     "Overview" : {},
     "Pair with %@" : {},
     "Pairing cancelled." : {},
@@ -435,23 +687,39 @@
     "Period before" : {},
     "Plain http needs an IP address or .local name." : {},
     "Platforms" : {},
+    "Played" : {},
     "Played from" : {},
     "Playing now" : {},
     "Playlist" : {},
+    "Playlists" : {},
     "Plays" : {},
     "Plays by day" : {},
     "Plays by hour" : {},
     "Plays by month" : {},
     "Plays by week" : {},
     "Plays by year" : {},
+    "Plays from it" : {},
     "Plays in History" : {},
     "Point at the code in Settings, API & MCP on the web." : {},
+    "Q%lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Q%1$lld %2$@"
+          }
+        }
+      }
+    },
     "Quietest %@" : {},
     "Range" : {},
     "Rank" : {},
+    "Reached rotation" : {},
     "Recently played" : {},
+    "Recently saved" : {},
     "Release year" : {},
     "Remove %@" : {},
+    "Removed" : {},
     "Replace the paired server?" : {},
     "Retry" : {},
     "Retrying after errors" : {},
@@ -460,7 +728,7 @@
     "Same as in your browser." : {},
     "Sample listening, not real history." : {},
     "Saved %@" : {},
-    "Saved songs, albums and playlists" : {},
+    "Saved songs" : {},
     "Scan QR code" : {},
     "Scan pairing code" : {},
     "Scan the code from Settings, API & MCP." : {},
@@ -483,10 +751,19 @@
     "Single" : {},
     "Skipped" : {},
     "Skipped or short" : {},
+    "Songs" : {},
+    "Songs not shared by Spotify." : {},
+    "Songs saved" : {},
+    "Sort" : {},
+    "Sort and filter" : {},
     "Spotify" : {},
+    "Spotify isn’t connected." : {},
     "Stats" : {},
     "Status" : {},
     "Stopped" : {},
+    "Synced %@" : {},
+    "Syncing" : {},
+    "Syncing %@" : {},
     "That address can’t be used." : {},
     "That doesn’t look like a Spotussi token." : {},
     "That isn’t a Spotussi pairing code." : {},
@@ -513,6 +790,8 @@
     "Time listened" : {},
     "Timeline" : {},
     "To" : {},
+    "To first play" : {},
+    "To rotation" : {},
     "Token" : {},
     "Token not accepted." : {},
     "Tokens start with spt_. Copy it again." : {},
@@ -617,8 +896,17 @@
     "Version" : {},
     "Waiting for the next play" : {},
     "Week" : {},
+    "When" : {},
+    "Within a day" : {},
+    "Within a month" : {},
+    "Within a week" : {},
     "Year" : {},
+    "You added" : {},
+    "You added %@" : {},
+    "Yours" : {},
     "about %@" : {},
+    "day, median of %lld" : {},
+    "days, median of %lld" : {},
     "down %lld from rank %lld" : {
       "localizations" : {
         "en" : {
@@ -630,10 +918,12 @@
       }
     },
     "iOS allows plain http only on your own network." : {},
+    "last %@" : {},
     "mostly %@" : {},
     "new" : {},
     "new this period" : {},
     "not counted" : {},
+    "of %lld" : {},
     "of %lld albums" : {
       "localizations" : {
         "en" : {
