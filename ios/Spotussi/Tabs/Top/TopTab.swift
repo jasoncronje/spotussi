@@ -29,7 +29,6 @@ struct TopTab: View {
                 Text(KindPicker.count(total, of: kind))
                     .font(.footnote.monospacedDigit())
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 4)
             }
             RankedListPanel(model: model, query: query, namespace: zoom)
         }

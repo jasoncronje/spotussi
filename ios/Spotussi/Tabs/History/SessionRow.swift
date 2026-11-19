@@ -13,6 +13,8 @@ struct SessionRow: View {
     let now: Date
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var rankWidth = 24
+    /// Room for "1h 40m", so every row's meter ends at the same place.
+    @ScaledMetric(relativeTo: .subheadline) private var lengthWidth = 56
 
     var body: some View {
         let layout =
@@ -43,6 +45,9 @@ struct SessionRow: View {
             Text(Figures.duration(milliseconds: session.duration))
                 .font(.subheadline.weight(.semibold).monospacedDigit())
                 .fixedSize()
+                .frame(
+                    minWidth: dynamicTypeSize.isAccessibilitySize ? nil : lengthWidth,
+                    alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
         }
         .padding(.vertical, 8)
         .frame(minHeight: 44)

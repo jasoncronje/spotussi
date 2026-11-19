@@ -68,6 +68,7 @@ struct SharePanel: View {
         let colors = Tone.series.map { $0.color(for: scheme) }
         let grille = Tone.grille.color(for: scheme)
         let scale = breakdown.scale
+        let ticks = Set(ChartAxis.keys(breakdown.columns.map(\.key)))
         return Chart {
             ForEach(breakdown.columns) { column in
                 let dimmed = selected != nil && selected != column.key
@@ -89,9 +90,12 @@ struct SharePanel: View {
         }
         .chartYScale(domain: 0...scale)
         .chartXAxis {
-            AxisMarks(values: ChartAxis.keys(breakdown.columns.map(\.key))) { value in
-                AxisValueLabel {
-                    if let key = value.as(String.self) {
+            // Every bucket gets a mark, and only the chosen few a label:
+            // given string values, Charts labelled every column, which
+            // ran together into one unreadable line.
+            AxisMarks { value in
+                if let key = value.as(String.self), ticks.contains(key) {
+                    AxisValueLabel {
                         Text(breakdown.bucket.tick(key))
                     }
                 }

@@ -130,9 +130,7 @@ private struct DayHeading: View {
     var body: some View {
         Text(Figures.day(date, now: now))
             .font(.footnote.weight(.semibold))
-            .textCase(.uppercase)
             .foregroundStyle(.secondary)
-            .padding(.horizontal, 4)
             .padding(.vertical, 6)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.ground)

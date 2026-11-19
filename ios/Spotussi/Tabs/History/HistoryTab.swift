@@ -114,7 +114,6 @@ struct CountLine: View {
         text
             .font(.footnote.monospacedDigit())
             .foregroundStyle(.secondary)
-            .padding(.horizontal, 4)
     }
 }
 

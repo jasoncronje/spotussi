@@ -23,7 +23,10 @@ extension Figures {
         date.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, timeZone: timeZone))
     }
 
-    /// From one clock time to another: "2:46 – 4:26 PM".
+    /// From one clock time to another: "2:46 – 4:26 PM", or past midnight
+    /// "11:25 PM – Mon 12:52 AM". The interval style would write both full
+    /// dates ("11/8/2026, 11:25 PM – 11/9/2026, 12:52 AM") under a heading
+    /// that already names the day.
     public static func timeSpan(
         _ start: Date, _ end: Date, locale: Locale = .autoupdatingCurrent,
         timeZone: TimeZone = .autoupdatingCurrent
@@ -31,6 +34,11 @@ extension Figures {
         guard end > start else { return clockTime(start, locale: locale, timeZone: timeZone) }
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
+        if !calendar.isDate(start, inSameDayAs: end) {
+            let endStyle = Date.FormatStyle(locale: locale, calendar: calendar, timeZone: timeZone)
+                .weekday(.abbreviated).hour().minute()
+            return "\(clockTime(start, locale: locale, timeZone: timeZone)) – \(end.formatted(endStyle))"
+        }
         return (start..<end).formatted(
             Date.IntervalFormatStyle(locale: locale, calendar: calendar, timeZone: timeZone).hour().minute())
     }
