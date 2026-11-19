@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"testing/fstest"
+
+	"spotussi/internal/accent"
 )
 
 func doGet(t *testing.T, h http.Handler, path string, hdr ...string) *httptest.ResponseRecorder {
@@ -51,6 +53,34 @@ func TestSPAServing(t *testing.T) {
 	etag := doGet(t, h, "/").Header().Get("ETag")
 	if rec := doGet(t, h, "/", "If-None-Match", etag); rec.Code != 304 {
 		t.Errorf("index revalidation: %d", rec.Code)
+	}
+}
+
+func TestSPADeploymentAccent(t *testing.T) {
+	ui := fstest.MapFS{
+		"index.html":    {Data: []byte("<html><head></head><body>app</body></html>")},
+		"index.html.br": {Data: []byte("precompressed stock page")},
+	}
+	seed, err := accent.Parse("#F2AB3E")
+	if err != nil {
+		t.Fatal(err)
+	}
+	stock := NewHandler(Options{UI: ui})
+	stockPage := doGet(t, stock, "/", "Accept-Encoding", "br")
+	if stockPage.Header().Get("Content-Encoding") != "br" {
+		t.Fatal("stock page should retain precompression")
+	}
+	custom := NewHandler(Options{UI: ui, Accent: seed})
+	for _, url := range []string{"/", "/stats", "/index.html"} {
+		rec := doGet(t, custom, url, "Accept-Encoding", "br", "If-None-Match", stockPage.Header().Get("ETag"))
+		if rec.Code != 200 || rec.Header().Get("Content-Encoding") != "" ||
+			!strings.Contains(rec.Body.String(), "<style>"+seed.CSS()+"</style></head>") ||
+			rec.Header().Get("Cache-Control") != "no-cache" {
+			t.Errorf("%s: %d %v %s", url, rec.Code, rec.Header(), rec.Body.String())
+		}
+		if cached := doGet(t, custom, url, "If-None-Match", rec.Header().Get("ETag")); cached.Code != 304 {
+			t.Errorf("%s: custom ETag not revalidated: %d", url, cached.Code)
+		}
 	}
 }
 

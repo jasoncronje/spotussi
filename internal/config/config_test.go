@@ -20,13 +20,13 @@ func TestDefaults(t *testing.T) {
 func TestValidValues(t *testing.T) {
 	cfg, err := FromLookup(lookup(map[string]string{
 		"PORT": "9000", "HOST": "127.0.0.1", "DATA_DIR": "/data", "BASE_URL": "https://stats.example.com/", "AUTH_MODE": "Proxy",
-		"TRUSTED_PROXIES": "172.16.0.0/12, 10.0.0.2", "AUTH_PROXY_HEADER": "X-Forwarded-User",
+		"TRUSTED_PROXIES": "172.16.0.0/12, 10.0.0.2", "AUTH_PROXY_HEADER": "X-Forwarded-User", "ACCENT_COLOR": "#F2AB3E",
 	}))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if cfg.Port != 9000 || cfg.Host != "127.0.0.1" || cfg.DataDir != "/data" || cfg.BaseURL != "https://stats.example.com" || cfg.AuthMode != AuthProxy ||
-		!cfg.AuthModeSet || !cfg.DataDirSet || len(cfg.TrustedProxies) != 2 || cfg.ProxyAuthHeader != "X-Forwarded-User" {
+		!cfg.AuthModeSet || !cfg.DataDirSet || len(cfg.TrustedProxies) != 2 || cfg.ProxyAuthHeader != "X-Forwarded-User" || cfg.Accent.CSS() == "" {
 		t.Fatalf("unexpected config: %+v", cfg)
 	}
 }
@@ -43,6 +43,7 @@ func TestInvalidValues(t *testing.T) {
 		"proxy no ips": {"AUTH_MODE": "proxy"},
 		"bad proxies":  {"TRUSTED_PROXIES": "10.0.0.0/99"},
 		"bad header":   {"AUTH_PROXY_HEADER": "Remote User"},
+		"bad accent":   {"ACCENT_COLOR": "amber"},
 	} {
 		if _, err := FromLookup(lookup(env)); err == nil {
 			t.Errorf("%s: expected error", name)

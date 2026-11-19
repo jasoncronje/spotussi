@@ -11,7 +11,7 @@
 /*
  * Visual direction: "level meter". The app is an instrument that meters your
  * listening, in the spirit of 70s/80s hi-fi faceplates: a cool aluminium
- * panel by day, a graphite console by night, and one green signal (the
+ * panel by day, a graphite console by night, and one accent signal (the
  * colour of a lit meter) for data. Chrome stays neutral so album artwork
  * carries the rest of the colour.
  *
@@ -41,24 +41,25 @@
 	--destructive: oklch(0.55 0.2 27);
 	--border: oklch(0.885 0.005 265);
 	--input: oklch(0.86 0.006 265);
-	--ring: oklch(0.607 0.166 149);
+	--ring: var(--signal);
 	--grille: oklch(0.86 0.005 265);
 
-	--signal: oklch(0.607 0.166 149);
-	--signal-soft: oklch(0.607 0.166 149 / 0.16);
-	--signal-dim: oklch(0.607 0.166 149 / 0.38);
-	--signal-ink: oklch(0.508 0.138 149);
+	--signal: var(--instance-signal-light, oklch(0.607 0.166 149));
+	--signal-soft: color-mix(in oklch, var(--signal) 16%, transparent);
+	--signal-dim: color-mix(in oklch, var(--signal) 38%, transparent);
+	--signal-ink: var(--instance-signal-ink-light, oklch(0.508 0.138 149));
+	--night-signal: var(--instance-signal-dark, oklch(0.689 0.187 149));
 
 	/* Onboarding tuner scale: graphite glass set into the panel, lit with
-	   the night-mode green in both themes, like a receiver's dial. */
+	   the night-mode signal in both themes, like a receiver's dial. */
 	--window: oklch(0.215 0.008 265);
 	--window-edge: oklch(0.82 0.005 265);
 	--window-lip: oklch(1 0 0 / 0.7);
 	--scale-tick: oklch(0.38 0.01 265);
 	--scale-off-ink: oklch(0.7 0.01 265);
 	--scale-on: oklch(0.9 0.006 265);
-	--scale-lit: oklch(0.689 0.187 149);
-	--scale-glow: oklch(0.689 0.187 149 / 0.5);
+	--scale-lit: var(--night-signal);
+	--scale-glow: color-mix(in oklch, var(--scale-lit) 50%, transparent);
 
 	/* Categorical series, fixed order (validated: light surface #FBFBFC). */
 	--chart-1: #169c45;
@@ -95,13 +96,11 @@
 	--destructive: oklch(0.7 0.17 25);
 	--border: oklch(0.3 0.008 265);
 	--input: oklch(0.34 0.008 265);
-	--ring: oklch(0.689 0.187 149);
 	--grille: oklch(0.31 0.008 265);
 
-	--signal: oklch(0.689 0.187 149);
-	--signal-soft: oklch(0.689 0.187 149 / 0.18);
-	--signal-dim: oklch(0.689 0.187 149 / 0.38);
-	--signal-ink: oklch(0.77 0.212 149);
+	--signal: var(--night-signal);
+	--signal-soft: color-mix(in oklch, var(--signal) 18%, transparent);
+	--signal-ink: var(--instance-signal-ink-dark, oklch(0.77 0.212 149));
 
 	--window: oklch(0.135 0.005 265);
 	--window-edge: oklch(0.29 0.008 265);

@@ -8,6 +8,7 @@ Every environment variable is optional.
 | `HOST` | all interfaces | Listen address |
 | `DATA_DIR` | `./data` (`/data` in the image) | SQLite database and the instance key |
 | `TZ` | `UTC` | Default display time zone until you pick one in the wizard or Settings |
+| `ACCENT_COLOR` | Spotify Green (`#1db954`) | Web accent for the whole instance; use an opaque `#RRGGBB` color |
 | `BASE_URL` | derived per request | External URL, e.g. `https://stats.example.com`. Decides the Spotify redirect URI |
 | `TRUSTED_PROXIES` | none | Comma-separated IPs/CIDRs of reverse proxies whose `X-Forwarded-*` headers (and auth header) are believed. Needed behind a proxy for HTTPS detection, Secure cookies and client IPs; required for `proxy` mode |
 | `AUTH_MODE` | `password` | `password` (owner password, set on first visit with the setup token from the log), `proxy` (forward-auth header from a trusted proxy) or `none` (no login; private networks only) |
@@ -28,6 +29,19 @@ Every environment variable is optional.
 | `LIBRARY_SYNC_ENABLED` | `true` | Sync saved songs, saved albums and playlists for the Library page ([spotify.md](spotify.md#library)) |
 | `LIBRARY_SYNC_INTERVAL` | `1h` | Time between quick library checks (10m to 24h); every list is also read in full once a day |
 | `IMPORT_MAX_BYTES` | `2147483648` (2 GiB) | Largest accepted export upload |
+
+### Web accent
+
+Set `ACCENT_COLOR` to change the accent for everyone on this instance. For example, to use amber, add this to the Spotussi service in Docker Compose:
+
+```yaml
+environment:
+  ACCENT_COLOR: "#f2ab3e"
+```
+
+Quote the value so YAML does not treat the `#` as a comment. Run `docker compose up -d` to apply the change, or restart the standalone server with the new environment. Remove the variable to restore the built-in green.
+
+Spotussi derives shades for light and dark mode from the chosen color. Highlights, focus rings and single-series charts follow the accent. Categorical chart palettes and favicons stay the same.
 
 ## Command line
 

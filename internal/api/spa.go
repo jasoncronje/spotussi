@@ -49,7 +49,7 @@ const placeholderHTML = `<!doctype html><meta charset="utf-8"><title>spotussi</t
 // to index.html so client-side routes work on reload; unknown paths with an
 // extension are real 404s. Hashed assets under _app/immutable are cached for
 // a year; everything else must revalidate.
-func newSPAHandler(fsys fs.FS) http.Handler {
+func newSPAHandler(fsys fs.FS, accentCSS string) http.Handler {
 	h := &spaHandler{files: map[string]*spaFile{}}
 	if fsys != nil {
 		_ = fs.WalkDir(fsys, ".", func(p string, d fs.DirEntry, err error) error {
@@ -64,13 +64,19 @@ func newSPAHandler(fsys fs.FS) http.Handler {
 				return nil
 			}
 			f := &spaFile{body: body, ctype: contentType(p)}
-			if b, err := fs.ReadFile(fsys, p+".br"); err == nil {
-				f.br = b
+			if p == "index.html" && accentCSS != "" {
+				// Apply the instance palette before first paint. The precompressed
+				// index no longer matches, so use the modified HTML for all clients.
+				f.body = bytes.Replace(body, []byte("</head>"), []byte("<style>"+accentCSS+"</style></head>"), 1)
+			} else {
+				if b, err := fs.ReadFile(fsys, p+".br"); err == nil {
+					f.br = b
+				}
+				if b, err := fs.ReadFile(fsys, p+".gz"); err == nil {
+					f.gz = b
+				}
 			}
-			if b, err := fs.ReadFile(fsys, p+".gz"); err == nil {
-				f.gz = b
-			}
-			sum := sha256.Sum256(body)
+			sum := sha256.Sum256(f.body)
 			f.etag = `"` + base64.RawURLEncoding.EncodeToString(sum[:12]) + `"`
 			h.files[p] = f
 			return nil
