@@ -14,6 +14,9 @@ struct TopRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Room for a three-digit rank, so ranks line up down a long list.
     @ScaledMetric(relativeTo: .caption) private var rankWidth = 24
+    /// Room for "3h 12m" or "▲ 611", so every row's meter ends at the
+    /// same place down the list.
+    @ScaledMetric(relativeTo: .subheadline) private var figureWidth = 56
 
     var body: some View {
         // At the largest sizes the figure goes under the name, which then
@@ -52,6 +55,9 @@ struct TopRow: View {
                 }
             }
             .fixedSize()
+            .frame(
+                minWidth: dynamicTypeSize.isAccessibilitySize ? nil : figureWidth,
+                alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
         }
         .padding(.vertical, 6)
         .frame(minHeight: 44)
@@ -127,13 +133,16 @@ struct MovementMark: View {
 /// A thin meter: the lit part is the share.
 struct ShareBar: View {
     let share: Double
+    @Environment(\.redactionReasons) private var redactionReasons
 
     var body: some View {
         Capsule()
             .fill(.grille)
             .overlay(alignment: .leading) {
+                // Unlit in a placeholder: a lit meter would read as data
+                // while the first answer is still on its way.
                 Capsule()
-                    .fill(.lamp)
+                    .fill(redactionReasons.contains(.placeholder) ? AnyShapeStyle(.grille) : AnyShapeStyle(.lamp))
                     .scaleEffect(x: min(1, max(0.02, share)), anchor: .leading)
             }
             .accessibilityHidden(true)

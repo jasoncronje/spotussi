@@ -56,9 +56,7 @@ struct SessionPage: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Mostly")
                         .font(.footnote.weight(.semibold))
-                        .textCase(.uppercase)
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 4)
                         .accessibilityAddTraits(.isHeader)
                     FlowLayout {
                         ForEach(loaded.topArtists, id: \.self) { artist in

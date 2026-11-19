@@ -89,6 +89,16 @@ import Testing
         #expect(older == "Oct 8, 2026")
     }
 
+    @Test func timeSpansPastMidnightNameTheNextDay() {
+        // Sun, Nov 8, 2026, 11:25 PM to Mon 12:52 AM, GMT.
+        let start = Date(timeIntervalSince1970: 1_794_180_300)
+        let end = start.addingTimeInterval(87 * 60)
+        let text = plain(Figures.timeSpan(start, end, locale: us, timeZone: .gmt))
+        #expect(text == "11:25 PM – Mon 12:52 AM")
+        let sameDay = plain(Figures.timeSpan(start.addingTimeInterval(-3600), start, locale: us, timeZone: .gmt))
+        #expect(!sameDay.contains("2026"))
+    }
+
     @Test func agoIsShort() {
         #expect(RelativeTime.ago(now.addingTimeInterval(-20), now: now, locale: us) == "just now")
         #expect(RelativeTime.ago(now.addingTimeInterval(-86_400), now: now, locale: us) == "yesterday")
