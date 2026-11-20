@@ -11,6 +11,7 @@ import (
 	"runtime/debug"
 	"time"
 
+	"spotussi/internal/accent"
 	"spotussi/internal/auth"
 	"spotussi/internal/spotify"
 	"spotussi/internal/trust"
@@ -34,6 +35,8 @@ type Options struct {
 	DB Pinger
 	// UI is the built SPA (may be nil or empty in dev builds).
 	UI fs.FS
+	// Accent overrides the web UI's highlight palette for this deployment.
+	Accent accent.Seed
 	// Extra mounts additional handlers by mux pattern (e.g. mock images).
 	Extra map[string]http.Handler
 
@@ -102,7 +105,7 @@ func NewHandler(o Options) http.Handler {
 	for pattern, h := range o.Extra {
 		mux.Handle(pattern, h)
 	}
-	mux.Handle("/", newSPAHandler(o.UI))
+	mux.Handle("/", newSPAHandler(o.UI, o.Accent.CSS()))
 	var h http.Handler = mux
 	if o.Auth != nil {
 		h = requireAuth(o.Auth, h)
