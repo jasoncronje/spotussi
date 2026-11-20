@@ -1104,8 +1104,8 @@ img.sp-art { display: block; height: auto; object-fit: cover; }
 .foot-cols p { color: var(--on-dark-muted); max-width: 30ch; }
 .foot-cols p + p { margin-top: 0.3rem; }
 .foot-cols .f-first { color: var(--on-dark); font-weight: 600; margin-bottom: 0.2rem; }
-.foot-cols a { color: var(--on-dark-muted); }
-.foot-cols a:hover { color: var(--on-dark); }
+.foot-cols a, .legal a { color: var(--on-dark-muted); }
+.foot-cols a:hover, .legal a:hover { color: var(--on-dark); }
 .legal { margin-top: clamp(2rem, 4vw, 3rem); font-size: 13px; color: var(--on-dark-muted); }
 
 /* ---------------------------------------------------------------- motion */
