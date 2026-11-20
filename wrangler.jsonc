@@ -1,7 +1,8 @@
 // The marketing page in site/, served by a static-assets-only Worker on
 // Cloudflare (D35). No script runs: Cloudflare serves the files directly.
-// Deployed by .github/workflows/site.yml; spotussi.app was attached once
-// as a custom domain, and deploys without `routes` leave it in place.
+// Deployed only by Cloudflare Workers Builds from main (site/README.md,
+// "Deploy"); spotussi.app was attached once as a custom domain, and deploys
+// without `routes` leave it in place.
 {
   "name": "spotussi",
   "compatibility_date": "2026-10-01",
@@ -9,8 +10,8 @@
     // site/.assetsignore keeps the folder's README out of the upload.
     "directory": "site"
   },
-  // Production lives only on spotussi.app; pull requests upload a version
-  // with a preview alias on workers.dev (see the workflow).
+  // Production lives only on spotussi.app. Builds run for main only, so no
+  // preview versions are uploaded any more.
   "workers_dev": false,
   "preview_urls": true
 }
