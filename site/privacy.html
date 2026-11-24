@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · spotussi</title>
+<meta name="description" content="What the spotussi iPhone app and server do with your data: the app collects nothing, and your listening history stays on the server you run.">
+<link rel="canonical" href="https://spotussi.app/privacy">
+<meta name="theme-color" content="#121317">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<style>
+  :root { color-scheme: dark; --ground: #121317; --panel: #1A1C21; --ink: #E6E8EB; --muted: #B5B9C0; --lamp: #1DB954; --rule: #2A2D35; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 17px/1.6 Archivo, system-ui, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 56px 16px 80px; }
+  .home { color: var(--muted); text-decoration: none; font-weight: 600; font-stretch: 125%; }
+  .home:hover { color: var(--ink); }
+  h1 { font-size: clamp(32px, 7vw, 44px); line-height: 1.1; font-stretch: 125%; font-weight: 800; margin: 32px 0 8px; }
+  h2 { font-size: 20px; font-stretch: 125%; font-weight: 700; margin: 40px 0 8px; }
+  p, li { color: var(--muted); }
+  strong { color: var(--ink); }
+  a { color: var(--lamp); }
+  ul { padding-left: 20px; }
+  .lede { font-size: 19px; color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; padding: 20px 24px; margin-top: 24px; }
+  .date { font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <a class="home" href="/">spotussi</a>
+  <h1>Privacy</h1>
+  <p class="date">Updated November 23, 2026</p>
+
+  <p class="lede">The spotussi iPhone app collects nothing. It talks only to the spotussi server you run, and your listening history stays on that server. We never receive it.</p>
+
+  <h2>Who runs what</h2>
+  <p>spotussi is self-hosted software. You (or someone you trust) run the server on your own machine, and it keeps your Spotify listening history in one file there. The developer of spotussi does not operate a server for you, has no account system, and cannot see your data.</p>
+
+  <h2>The iPhone app</h2>
+  <ul>
+    <li><strong>No analytics, no tracking, no ads.</strong> The app contains no third-party SDKs and sends nothing to the developer or anyone else.</li>
+    <li><strong>Your server only.</strong> When paired, the app sends requests to the server address you gave it, carrying a read-only API token. The token is stored in the iPhone's Keychain.</li>
+    <li><strong>Artwork.</strong> Cover art comes from the addresses your server gives, which may be Spotify's image servers. Those servers see an ordinary image request from your phone; the app never sends them your token.</li>
+    <li><strong>Camera.</strong> Used only while you scan the pairing QR code. Nothing is recorded or stored.</li>
+    <li><strong>Local network.</strong> Used only to reach a server on your home network or VPN.</li>
+    <li><strong>On the phone.</strong> The app keeps its last answers from your server in its cache so it can show them offline. Unpairing deletes the token and the cache. Deleting the app removes everything.</li>
+    <li><strong>Demo.</strong> Try the demo shows bundled, made-up sample data and makes no network requests.</li>
+    <li><strong>Open in Spotify.</strong> This hands the item to the Spotify app or website, where Spotify's own privacy policy applies.</li>
+  </ul>
+
+  <h2>The server</h2>
+  <p>The server stores what you connect it to: your Spotify account's playback (through Spotify's Web API) and any streaming history export you import. It looks up artist and album details from Spotify and public music databases (Deezer, MusicBrainz, ListenBrainz) sending only the names it looks up, never your history. Whoever runs the server controls that data and can back it up, export it or delete it at any time.</p>
+
+  <h2>This website</h2>
+  <p>spotussi.app is a static page with no analytics or cookies. Its fonts load from Google Fonts.</p>
+
+  <h2>Children</h2>
+  <p>spotussi is not directed at children and collects no personal information from anyone.</p>
+
+  <h2>Changes and contact</h2>
+  <p>If this policy changes, the date above changes with it. Questions go to <a href="https://github.com/jasoncronje/spotussi/issues">the project's issue tracker</a>.</p>
+</main>
+</body>
+</html>

@@ -102,6 +102,7 @@ struct SettingsSheet: View {
             Text("Not affiliated with Spotify.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+            Link("Privacy policy", destination: URL(string: "https://spotussi.app/privacy")!)
         }
     }
 }
