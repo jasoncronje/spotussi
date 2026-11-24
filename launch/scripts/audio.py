@@ -32,20 +32,31 @@ VO_OFFSET = 0.3  # the voice file starts this far into the film
 # silence before a phrase, so they run up to half a second early).
 WORDS = {
     "spotify": 0.15, "comes": 1.01, "once": 1.16,
-    "spotussi": 2.59, "every": 5.15, "on": 6.15,
+    "brand": 2.59, "every": 5.15, "on": 6.15,
     "real": 7.63, "top": 8.04, "notJust": 9.09,
     "numberOne": 10.46, "twelve": 11.89, "since": 12.81,
     "session": 14.80, "playByPlay": 16.14,
     "watch": 17.535, "week": 18.77,
     "logs": 19.955, "asItHappens": 20.80, "and": 21.56, "imports": 21.75,
     "desktop": 23.855, "pocket": 24.85,
-    "brand": 26.04, "free": 27.05, "selfHost": 28.64, "end": 30.30,
+    "signOff": 26.04, "free": 27.05, "selfHost": 28.64, "end": 30.30,
 }
-# The first word of each new slide, in order. One cut-in pause (a run of digital silence) sits before each.
-SLIDES = ["spotussi", "real", "numberOne", "session", "watch", "logs", "desktop", "brand"]
-CUTS = ["lock", "top", "artist", "sessions", "taste", "live", "devices", "end"]
-# The natural gap before each of those words (end of the previous phrase to the onset).
-GAPS = [0.42, 0.42, 0.40, 0.50, 0.455, 0.415, 0.425, 0.41]
+# Every slide change: its name, the first word of the new slide, the natural gap before that word
+# (end of the previous phrase to the onset) and how far that gap may change, in seconds. Most may
+# move a few hundredths either way. Two are held open on purpose: the intro slide needs a clean
+# break before the history slide, and the year needs room to flip by before "On your own server".
+SLIDES = [
+    ("intro", "brand", 0.42, (-0.06, 0.17)),
+    ("history", "every", 0.22, (0.10, 0.36)),
+    ("server", "on", 0.10, (0.80, 1.25)),
+    ("top", "real", 0.42, (-0.06, 0.17)),
+    ("artist", "numberOne", 0.40, (-0.06, 0.17)),
+    ("sessions", "session", 0.50, (-0.06, 0.17)),
+    ("taste", "watch", 0.455, (-0.06, 0.17)),
+    ("live", "logs", 0.415, (-0.06, 0.17)),
+    ("devices", "desktop", 0.425, (-0.06, 0.17)),
+    ("end", "signOff", 0.41, (-0.06, 0.17)),
+]
 # Two of the cut-in pauses landed inside a word's decaying tail, leaving a faint remnant after the hole.
 # Mute the remnant so the word simply ends: (from, to) in vo.wav seconds.
 REMNANTS = [(7.301, 7.43), (25.717, 25.80)]
@@ -62,28 +73,45 @@ TAIL = 1.05  # seconds the final hit rings before the film ends
 
 
 def solve_pauses():
-    """Choose the beat phase and the smallest pause changes that put every slide change on a beat."""
-    on = np.array([WORDS[w] for w in SLIDES])
-    best = None
-    for c in np.arange(0, BEAT, 0.002):
-        shift, ds = 0.0, []
-        for i in range(len(on)):
-            lead = (on[i] + shift - c) % BEAT
-            if LEAD[0] <= lead <= LEAD[1]:
-                d = 0.0
-            else:
-                d = min((a - lead + k * BEAT for a in LEAD for k in (-1, 0, 1)), key=abs)
-            if not (-0.060 <= d <= 0.13 and 0.33 <= GAPS[i] + d <= 0.60):
-                break
-            ds.append(d)
-            shift += d
-        else:
-            cost = sum(abs(d) for d in ds)
-            if best is None or cost < best[0] - 1e-9:
-                best = (cost, float(c), ds)
-    if best is None:
+    """Choose the beat phase and the smallest pause changes that put every slide change on a beat.
+
+    A dynamic programme over the slides. The state is the lead each cut has on its first word; the
+    change to each pause then follows from two neighbouring leads, up to a whole number of beats.
+    """
+    leads = np.arange(LEAD[0], LEAD[1] + 1e-9, 0.01)
+    on = [WORDS[word] for _, word, _, _ in SLIDES]
+    # cost[i][a]: the least total change with slide i's lead at leads[a]; the first pause stays as it is.
+    cost = [[0.02 * abs(lead - 0.15) for lead in leads]]
+    back = [[(None, 0.0)] * len(leads)]
+    for i in range(1, len(SLIDES)):
+        dmin, dmax = SLIDES[i][3]
+        want = min(max(0.0, dmin), dmax)  # the change we would make if beats did not matter
+        row, brow = [], []
+        for lead in leads:
+            best = (math.inf, None, 0.0)
+            for a, prev in enumerate(leads):
+                base = (lead - prev) - (on[i] - on[i - 1])
+                fits = [base + k * BEAT for k in range(-12, 13) if dmin <= base + k * BEAT <= dmax]
+                if fits and math.isfinite(cost[i - 1][a]):
+                    d = min(fits, key=lambda v: abs(v - want))
+                    total = cost[i - 1][a] + abs(d - want) + 0.02 * abs(lead - 0.15)
+                    if total < best[0]:
+                        best = (total, a, d)
+            row.append(best[0])
+            brow.append((best[1], best[2]))
+        cost.append(row)
+        back.append(brow)
+    a = int(np.argmin(cost[-1]))
+    if not math.isfinite(cost[-1][a]):
         raise SystemExit("no beat phase fits the slide changes")
-    return best[1], [round(d, 3) for d in best[2]]
+    deltas = []
+    for i in range(len(SLIDES) - 1, 0, -1):
+        prev, d = back[i][a]
+        deltas.append(d)
+        a = prev
+    deltas.append(0.0)
+    deltas.reverse()
+    return float((on[0] - leads[a]) % BEAT), [round(float(d), 3) for d in deltas]
 
 
 def build_voice(deltas):
@@ -94,22 +122,34 @@ def build_voice(deltas):
     z = np.concatenate([[0], (x == 0).astype(np.int8), [0]])
     edges = np.diff(z)
     runs = [(a, b) for a, b in zip(np.where(edges == 1)[0], np.where(edges == -1)[0]) if b - a > sr * 0.02]
-    # Each slide change has exactly one silent run before its first word.
-    picked = []
-    for w in SLIDES:
-        before = [r for r in runs if r[1] / sr <= WORDS[w]]
-        assert before and WORDS[w] - before[-1][1] / sr < 0.5, w
-        picked.append(before[-1])
+    # Where each pause is changed: the run of digital silence already cut in before the word, or,
+    # where there is none, the quietest moment of the natural gap (faded 4 ms either side).
+    edits = []
+    for (_, word, gap, _), d in zip(SLIDES, deltas):
+        on = WORDS[word]
+        before = [r for r in runs if r[1] / sr <= on and on - r[1] / sr < 0.5]
+        if before:
+            edits.append((before[-1][0], before[-1][1], d))
+            continue
+        assert d >= 0, word
+        lo, hi = int((on - gap) * sr), int((on - 0.03) * sr)
+        win = int(0.01 * sr)
+        level = [float(np.mean(x[i : i + win].astype(np.float64) ** 2)) for i in range(lo, hi - win, win // 4)]
+        at = lo + int(np.argmin(level)) * (win // 4) + win // 2
+        n = int(0.004 * sr)
+        x[at - n : at] = (x[at - n : at] * np.linspace(1, 0, n)).astype(np.int16)
+        x[at : at + n] = (x[at : at + n] * np.linspace(0, 1, n)).astype(np.int16)
+        edits.append((at, at, d))
     out, pos = [], 0
-    for (a, b), d in zip(picked, deltas):
+    for a, b, d in edits:
         n = (b - a) + int(round(d * sr))
-        assert n >= 0
+        assert n >= 0 and a >= pos
         out += [x[pos:a], np.zeros(n, np.int16)]
         pos = b
     out.append(x[pos:])
     y = np.concatenate(out)
     wavfile.write(AUDIO / "vo-v2.wav", sr, y)
-    starts = [a / sr for a, _ in picked]
+    starts = [a / sr for a, _, _ in edits]
     return lambda t: t + sum(d for s, d in zip(starts, deltas) if s < t), len(y) / sr
 
 
@@ -224,11 +264,11 @@ def main():
     remap, vo_len = build_voice(deltas)
     words = {k: round(remap(v) + VO_OFFSET, 3) for k, v in WORDS.items()}  # film seconds
     phase = (c + VO_OFFSET) % BEAT
-    beat_of = lambda w: math.floor((words[w] - LEAD[0] - phase) / BEAT + 1e-6)
-    cut_beats = {name: beat_of(w) for name, w in zip(CUTS, SLIDES)}
+    beat_of = lambda w: math.floor((words[w] - LEAD[0] + 0.015 - phase) / BEAT)  # 15 ms of slack for rounding
+    cut_beats = {name: beat_of(word) for name, word, _, _ in SLIDES}
     t_final = phase + (cut_beats["end"] + OUTRO_BEATS) * BEAT
     frames = int(round((t_final + TAIL) * FPS))
-    build_music(phase, cut_beats["end"], phase + cut_beats["lock"] * BEAT, frames / FPS)
+    build_music(phase, cut_beats["end"], phase + cut_beats["intro"] * BEAT, frames / FPS)
     timing = {
         "fps": FPS,
         "duration": frames,
@@ -241,7 +281,7 @@ def main():
     (ROOT / "src" / "timing.json").write_text(json.dumps(timing, indent=2) + "\n")
     print("pause changes (ms):", [int(d * 1000) for d in deltas], "net", round(sum(deltas), 3))
     print("beat phase %.4f period %.5f (%.1f BPM)" % (phase, BEAT, 60 / BEAT))
-    for name, w in zip(CUTS, SLIDES):
+    for name, w, _, _ in SLIDES:
         tb = phase + cut_beats[name] * BEAT
         print("  %-9s beat %2d  f%5.1f  first word f%5.1f  lead %.1f f" % (name, cut_beats[name], tb * FPS, words[w] * FPS, (words[w] - tb) * FPS))
     print("voice ends %.2f s, final hit %.2f s (f%.1f), film %d frames = %.2f s, vo-v2 %.2f s" % (words["end"], t_final, t_final * FPS, frames, frames / FPS, vo_len))

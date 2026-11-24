@@ -1,14 +1,17 @@
-// The spotussi launch film (draft 11), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 13), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
-// 33 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
+// The order: the hook (Wrapped comes once a year), the introduction (what spotussi is, said once),
+// the idea (your whole history, on your own server), six features, the sign-off.
+//
+// 34 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
 // audio it builds: `words` are the frames at which the voice says each cue word, and every slide
 // change sits on a beat of the music, a few frames before the slide's first word.
 import type React from "react";
-import { AbsoluteFill, Audio, Easing, Img, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Easing, Img, Sequence, interpolate, interpolateColors, staticFile, useCurrentFrame } from "remotion";
 import { C, FONT, mulberry32 } from "./kit";
-import { Phone, headStyle } from "./parts";
+import { LAMP_ORDER, Phone, headStyle } from "./parts";
 import TIMING from "./timing.json";
 
 const FPS = 30;
@@ -18,15 +21,18 @@ const w = (k: keyof typeof TIMING.words) => Math.round(TIMING.words[k] * FPS);
 /** The frame of the music's nth beat. */
 const beat = (n: number) => Math.round((TIMING.beat.phase + n * TIMING.beat.period) * FPS);
 /** Slide changes, each on a beat. */
+const cutAt = (k: keyof typeof TIMING.cutBeats) => beat(TIMING.cutBeats[k]);
 const CUT = {
-  lock: beat(TIMING.cutBeats.lock),
-  top: beat(TIMING.cutBeats.top),
-  artist: beat(TIMING.cutBeats.artist),
-  sessions: beat(TIMING.cutBeats.sessions),
-  taste: beat(TIMING.cutBeats.taste),
-  live: beat(TIMING.cutBeats.live),
-  devices: beat(TIMING.cutBeats.devices),
-  end: beat(TIMING.cutBeats.end),
+  intro: cutAt("intro"),
+  history: cutAt("history"),
+  server: cutAt("server"),
+  top: cutAt("top"),
+  artist: cutAt("artist"),
+  sessions: cutAt("sessions"),
+  taste: cutAt("taste"),
+  live: cutAt("live"),
+  devices: cutAt("devices"),
+  end: cutAt("end"),
 };
 /** The music's final hit; the film fades to black as it rings out. */
 const FINAL = beat(TIMING.finalBeat);
@@ -37,6 +43,7 @@ const E = {
   inOut: Easing.bezier(0.65, 0, 0.35, 1),
   in: Easing.bezier(0.7, 0, 0.84, 0),
   land: Easing.bezier(0.34, 1.2, 0.5, 1),
+  emph: Easing.bezier(0.2, 0, 0, 1), // for things that travel: quick away, long settle
 };
 const r = (f: number, a: number, d: number, e: (t: number) => number = E.out) => e(Math.min(1, Math.max(0, (f - a) / Math.max(1, d))));
 const mix = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -88,11 +95,6 @@ const Art = ({ seed, size, round = false, style }: { seed: number; size: number;
 };
 
 // ── Shared pieces.
-/** The mark: which lamps of the 4×4 grille are lit, as [column, row]. */
-const LIT: [number, number][] = [[0, 2], [0, 3], [1, 0], [1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 3]];
-const Panel = ({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) => (
-  <div style={{ position: "absolute", background: PANEL, borderRadius: 22, boxShadow: `0 0 0 1.5px ${EDGE}`, overflow: "hidden", ...style }}>{children}</div>
-);
 const Label = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div style={{ fontFamily: FONT, fontSize: 18, fontWeight: 560, color: MUTE, letterSpacing: "0.01em", ...style }}>{children}</div>
 );
@@ -126,18 +128,7 @@ const Say = ({ words, f, size, out, style, align = "left" }: { words: Wd[]; f: n
   );
 };
 
-/** A scene's container: a plain fade in and out. The scene's one motion lives inside it. */
-const Stage = ({ f, a, b, children, inD = 6, outD = 4 }: { f: number; a: number; b: number; children: React.ReactNode; inD?: number; outD?: number }) => {
-  if (f < a || f >= b) return null;
-  return <AbsoluteFill style={{ opacity: r(f, a, inD, E.out) * (1 - r(f, b - outD, outD, E.in)) }}>{children}</AbsoluteFill>;
-};
-
-// ── Background: flat graphite.
-const Atmos = (_: { f: number }) => <AbsoluteFill style={{ background: "#0a0b0d" }} />;
-
-// ── 1–2. The tear-off calendar. Wrapped: the year's pages flip by blank, and only one page in
-// December has anything on it. spotussi: the year flips by again and every page is full — that
-// day's top song and time listened — faster and faster, then the year stacks into your server.
+// ── The tear-off calendar's data.
 const YEARS = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -217,7 +208,8 @@ const schedule = (start: number, end: number, n: number, accel: number) => {
 };
 const CAL = { x: 1180, y: 190, w: 620, h: 720 };
 
-const Calendar = ({ f, pages, times, durs }: { f: number; pages: { day: number; kind: PageKind }[]; times: number[]; durs: number[] }) => {
+/** The pad: its page edges, the page under the top one, the top page folding back, the rings. */
+const Calendar = ({ f, pages, times, durs, bare = false }: { f: number; pages: { day: number; kind: PageKind }[]; times: number[]; durs: number[]; bare?: boolean }) => {
   let k = 0;
   while (k < times.length && f >= times[k] + durs[k]) k++; // pages fully gone
   const cur = Math.min(k, pages.length - 1);
@@ -227,87 +219,133 @@ const Calendar = ({ f, pages, times, durs }: { f: number; pages: { day: number; 
     <div style={{ position: "absolute", left: CAL.x, top: CAL.y, width: CAL.w, height: CAL.h, perspective: 1600 }}>
       {/* The pad's thickness: a few page edges under the top page. */}
       {[3, 2, 1].map((i) => <div key={i} style={{ position: "absolute", left: i * 4, right: -i * 4, top: i * 7, bottom: -i * 7, borderRadius: 26, background: "#121316", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }} />)}
-      {cur + 1 < pages.length ? <CalPage {...pages[cur + 1]} /> : null}
-      {/* The top page folds back over the binding. It stays solid while it still covers the page
-          under it and stays inside the frame, so two pages' type never show through each other. */}
-      <div style={{ position: "absolute", inset: 0, transformOrigin: "50% 0%", transform: `translateY(${(-pFlip * 150).toFixed(1)}px) rotateX(${(-pFlip * 78).toFixed(2)}deg)`, opacity: pFlip >= 1 ? 0 : 1 - Math.max(0, pFlip - 0.8) / 0.2 }}>
-        <CalPage {...pages[cur]} />
-      </div>
+      {bare ? null : (
+        <>
+          {cur + 1 < pages.length ? <CalPage {...pages[cur + 1]} /> : null}
+          {/* The top page folds back over the binding. It stays solid while it still covers the page
+              under it and stays inside the frame, so two pages' type never show through each other. */}
+          <div style={{ position: "absolute", inset: 0, transformOrigin: "50% 0%", transform: `translateY(${(-pFlip * 150).toFixed(1)}px) rotateX(${(-pFlip * 78).toFixed(2)}deg)`, opacity: pFlip >= 1 ? 0 : 1 - Math.max(0, pFlip - 0.8) / 0.2 }}>
+            <CalPage {...pages[cur]} />
+          </div>
+        </>
+      )}
       {/* Binding rings. */}
       {[0.28, 0.72].map((x) => <div key={x} style={{ position: "absolute", left: CAL.w * x - 14, top: -18, width: 28, height: 44, borderRadius: 14, background: "#2f3138", boxShadow: "inset 0 0 0 3px #3f424b" }} />)}
     </div>
   );
 };
 
+// ── The lockup: the lamp grille and the wordmark. `lamp(i)` is how lit lamp i is, in meter order
+// (column by column, bottom up).
+const MARK_W = 1606.1 / 1157; // the mark plus its gap, as a fraction of the lockup's height
+const WORD_W = 4855 / 1157;
+const lockupWidth = (size: number) => size * (MARK_W + WORD_W);
+const lampSpot = (size: number, i: number) => {
+  const pitch = size / 3.786;
+  const rr = pitch * 0.393;
+  const [col, row] = LAMP_ORDER[i];
+  return { cx: rr + col * pitch, cy: rr + row * pitch, rr };
+};
+const Lockup = ({ x, y, size, grille = 1, lamp, word = 1, wordDx = 0, opacity = 1 }: { x: number; y: number; size: number; grille?: number; lamp: (i: number) => number; word?: number; wordDx?: number; opacity?: number }) => {
+  const pitch = size / 3.786;
+  const rr = pitch * 0.393;
+  return (
+    <div style={{ position: "absolute", left: x, top: y, width: lockupWidth(size), height: size, opacity }}>
+      <svg width={size} height={size} style={{ position: "absolute", overflow: "visible" }}>
+        {Array.from({ length: 16 }, (_, i) => <circle key={i} cx={rr + Math.floor(i / 4) * pitch} cy={rr + (i % 4) * pitch} r={rr} fill={C.grille} opacity={grille} />)}
+        {LAMP_ORDER.map((_, i) => {
+          const s = lampSpot(size, i);
+          return <circle key={i} cx={s.cx} cy={s.cy} r={rr * lamp(i)} fill={C.lamp} />;
+        })}
+      </svg>
+      <Img src={staticFile("logo/word.svg")} style={{ position: "absolute", left: size * MARK_W + wordDx, top: 0, width: size * WORD_W, height: size, opacity: word }} />
+    </div>
+  );
+};
+
+// ── Slide changes. Nothing cross-fades. Each change is one move, started on the beat:
+//   · copy lifts out before the cut and the next slide's copy rises in after it;
+//   · the panel is one surface for the whole film: it reshapes from one slide's panel to the next
+//     (it splits in two and joins again) and the next slide's content comes up inside it;
+//   · where a slide's subject carries over, it travels: the Wrapped page becomes the mark's first
+//     lamp, the lockup shrinks into the corner, the #1 row's cover grows into the artist slide,
+//     the browser window folds into the mark.
+const enter = (f: number, cut: number) => r(f, cut + 1, 9, E.out);
+const leave = (f: number, cut: number) => r(f, cut - 5, 5, E.in);
+const morph = (f: number, cut: number) => r(f, cut - 2, 14, E.emph);
+
+/** A slide's copy, outside the panel: rises in after the cut at `a`, lifts out before the cut at `b`. */
+const Copy = ({ f, a, b, style, children }: { f: number; a: number; b: number; style?: React.CSSProperties; children: React.ReactNode }) => {
+  if (f < a || f >= b) return null;
+  const i = enter(f, a);
+  const o = leave(f, b);
+  return <div style={{ position: "absolute", opacity: i * (1 - o), transform: `translateY(${((1 - i) * 28 - o * 20).toFixed(1)}px)`, ...style }}>{children}</div>;
+};
+/** A slide's content inside the surface: it fades up once the surface has taken its shape. */
+const Inside = ({ f, a, b, children }: { f: number; a: number; b: number; children: React.ReactNode }) => {
+  if (f < a || f >= b) return null;
+  return <div style={{ position: "absolute", inset: 0, opacity: enter(f, a) * (1 - leave(f, b)) }}>{children}</div>;
+};
+
+type Rect = { x: number; y: number; w: number; h: number; r: number };
+const lerpRect = (a: Rect, b: Rect, t: number): Rect => ({ x: mix(a.x, b.x, t), y: mix(a.y, b.y, t), w: mix(a.w, b.w, t), h: mix(a.h, b.h, t), r: mix(a.r, b.r, t) });
+const END_LOCK = { size: 150, y: 232 };
+const RECT = {
+  server: { x: 120, y: 540, w: 1680, h: 300, r: 28 },
+  top: { x: 880, y: 120, w: 920, h: 840, r: 22 },
+  artist: { x: 880, y: 360, w: 920, h: 600, r: 22 },
+  sessions: { x: 120, y: 360, w: 1680, h: 600, r: 22 },
+  taste: { x: 880, y: 150, w: 920, h: 780, r: 22 },
+  recent: { x: 120, y: 330, w: 820, h: 640, r: 22 },
+  importing: { x: 980, y: 330, w: 820, h: 640, r: 22 },
+  window: { x: 120, y: 290, w: 1240, h: 740, r: 18 },
+  mark: { x: 960 - lockupWidth(END_LOCK.size) / 2, y: END_LOCK.y, w: END_LOCK.size, h: END_LOCK.size, r: 36 },
+} satisfies Record<string, Rect>;
+const surfaceStyle = (rc: Rect): React.CSSProperties => ({ position: "absolute", left: rc.x, top: rc.y, width: rc.w, height: rc.h, borderRadius: rc.r, background: PANEL, boxShadow: `0 0 0 1.5px ${EDGE}`, overflow: "hidden" });
+
+// ── 1. The hook. A tear-off calendar: the year's pages flip by blank and land on the one page
+// with anything on it, in December: Wrapped.
+// ── 3. The year again, every page full, faster and faster; then the pad drops into your server.
 const Year = ({ f }: { f: number }) => {
+  const intro = CUT.intro;
+  const hist = CUT.history;
+  const sv = CUT.server;
   const b = CUT.top;
   if (f >= b) return null;
-  const once = w("once"); // "once a year": land on the Wrapped page
-  const lock = CUT.lock; // spotussi: the year again, every page full
-  const server = w("on"); // "On your own server."
-  const exit = r(f, b - 4, 4, E.in);
 
   // Act 1: blank pages Jan → Nov, landing on Dec 1, Wrapped.
   const blankDays = Array.from({ length: 8 }, (_, i) => Math.round((i / 8) * (WRAPPED_DAY - 30)));
   const act1 = [...blankDays.map((day) => ({ day, kind: "blank" as PageKind })), { day: WRAPPED_DAY, kind: "wrapped" as PageKind }];
-  const s1 = schedule(16, once - 2, act1.length - 1, 1);
-  // Act 2: the Wrapped page tears away; Jan 1 onwards, every page full, done before the pad moves.
-  const fullDays = Array.from({ length: 16 }, (_, i) => Math.round((i / 15) * 364));
+  const s1 = schedule(16, w("once") - 2, act1.length - 1, 1);
+  // Act 2: Jan 1 onwards, every page full, done before the pad moves.
+  const fullDays = Array.from({ length: 12 }, (_, i) => Math.round((i / 11) * 364));
   const act2 = fullDays.map((day) => ({ day, kind: "full" as PageKind }));
-  const s2 = schedule(lock + 22, server - 12, act2.length - 1, 0.8);
-  const inAct2 = f >= lock;
-  const tear = r(f, lock, 14, E.in); // the Wrapped page tears off and falls away, solid until it has left the pad
-  const dayNow = inAct2 ? act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day : 0;
+  const s2 = schedule(hist + 12, sv - 10, act2.length - 1, 0.8);
+  const dayNow = act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day;
 
-  // Act 3, in strict turns: the copy clears, the pad shrinks up out of the way, the home server
-  // rises in under it, the pad drops through the slot and the lamps light.
-  const shrink = r(f, server - 8, 10, E.inOut);
-  const device = r(f, server, 12);
-  const drop = r(f, server + 8, 12, E.in);
-  const lamps = r(f, server + 20, 6);
-  const SLOT_Y = 540;
+  // Into the intro slide: the Wrapped page leaves the pad and becomes the mark's first lamp
+  // (see Intro); the bare pad slides away.
+  const padOut = r(f, intro - 2, 8, E.in);
+  // Into the history slide: a full pad slides in from the right.
+  const padIn = r(f, hist, 12, E.out);
+  // Into the server, in strict turns: the copy clears, the pad shrinks up out of the way, the
+  // server rises in under it (the surface), the pad drops through the slot.
+  const shrink = r(f, sv - 8, 10, E.inOut);
+  const drop = r(f, sv + 8, 12, E.in);
+  const SLOT_Y = RECT.server.y;
+  const copyOut = r(f, sv - 8, 5, E.in);
 
   return (
-    <AbsoluteFill style={{ opacity: 1 - exit }}>
-      {/* The pad. Once it drops, it is clipped at the server's top edge: it goes into the slot. */}
-      <div style={{ position: "absolute", inset: 0, clipPath: drop > 0 ? `inset(0 0 ${1080 - SLOT_Y}px 0)` : undefined }}>
-        <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, transform: `translateY(${(mix(0, -220, shrink) + drop * 600).toFixed(1)}px) scale(${mix(1, 0.5, shrink).toFixed(4)})`, transformOrigin: `${CAL.x + CAL.w / 2}px ${CAL.y + CAL.h / 2}px` }}>
-          {!inAct2 ? (
-            <Calendar f={f} pages={act1} times={s1.times} durs={s1.durs} />
-          ) : (
-            <>
-              <Calendar f={f} pages={act2} times={s2.times} durs={s2.durs} />
-              {tear < 1 ? (
-                <div style={{ position: "absolute", left: CAL.x, top: CAL.y, width: CAL.w, height: CAL.h, transformOrigin: "100% 0%", transform: `translate(${(tear * 300).toFixed(1)}px, ${(tear * 700).toFixed(1)}px) rotate(${(tear * 28).toFixed(2)}deg)`, opacity: 1 - Math.max(0, tear - 0.75) / 0.25 }}>
-                  <CalPage day={WRAPPED_DAY} kind="wrapped" />
-                </div>
-              ) : null}
-            </>
-          )}
+    <AbsoluteFill>
+      {f < intro + 6 ? (
+        <div style={{ position: "absolute", inset: 0, opacity: 1 - padOut, transform: `translateX(${(padOut * 90).toFixed(1)}px)` }}>
+          <Calendar f={f} pages={act1} times={s1.times} durs={s1.durs} bare={f >= intro - 2} />
         </div>
-      </div>
-      {/* The home server: one unit, its front panel is the mark. */}
-      {f >= server ? (
-        <div style={{ position: "absolute", left: 120, top: SLOT_Y, width: 1680, height: 300, borderRadius: 28, background: "#17181c", boxShadow: `0 0 0 1.5px ${EDGE}`, opacity: r(f, server, 6), transform: `translateY(${((1 - device) * 40).toFixed(1)}px)` }}>
-          <div style={{ position: "absolute", left: CAL.x + CAL.w / 2 - 120 - 170, top: -2, width: 340, height: 12, borderRadius: 6, background: "#050506" }} />
-          <svg width={180} height={180} style={{ position: "absolute", left: 70, top: 60 }}>
-            {Array.from({ length: 16 }, (_, i) => {
-              const col = Math.floor(i / 4);
-              const row = i % 4;
-              const pitch = 180 / 3.786;
-              const rr = pitch * 0.393;
-              const lit = LIT.some(([c, w2]) => c === col && w2 === row);
-              return (
-                <g key={i}>
-                  <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.grille} />
-                  {lit ? <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.lamp} opacity={lamps} /> : null}
-                </g>
-              );
-            })}
-          </svg>
-          <div style={{ position: "absolute", left: 320, top: 86 }}>
-            <div style={{ ...headStyle(64) }}>spotussi.local</div>
-            <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 16 }}>Your history, on your hardware.</div>
+      ) : null}
+      {f >= hist ? (
+        <div style={{ position: "absolute", inset: 0, clipPath: drop > 0 ? `inset(0 0 ${1080 - SLOT_Y}px 0)` : undefined }}>
+          <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, opacity: padIn, transform: `translate(${((1 - padIn) * 160).toFixed(1)}px, ${(mix(0, -220, shrink) + drop * 600).toFixed(1)}px) scale(${mix(1, 0.5, shrink).toFixed(4)})`, transformOrigin: `${CAL.x + CAL.w / 2}px ${CAL.y + CAL.h / 2}px` }}>
+            <Calendar f={f} pages={act2} times={s2.times} durs={s2.durs} />
           </div>
         </div>
       ) : null}
@@ -315,45 +353,112 @@ const Year = ({ f }: { f: number }) => {
       <Say
         f={f}
         size={88}
-        out={lock - 7}
+        out={intro - 6}
         style={{ left: 120, top: 400, width: 1040 }}
         words={[
           { t: "Spotify", at: 0 },
           { t: "Wrapped", at: 0 },
           { t: "\n", at: 0 },
           { t: "comes", at: w("comes") },
-          { t: "once", at: w("once") },
+          { t: "once", at: 0 },
           { t: "a", at: 0 },
           { t: "year.", at: 0 },
         ]}
       />
-      {f >= lock && f < server - 3 ? (
-        <div style={{ position: "absolute", left: 120, top: 330, width: 1040, opacity: r(f, lock, 8) * (1 - r(f, server - 8, 5, E.in)) }}>
-          {/* What it is, in plain words, the moment the name first appears. */}
-          <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
-            <Img src={staticFile("logo/lockup-dark.svg")} style={{ height: 64 }} />
-            <div style={{ fontFamily: FONT, fontSize: 36, fontWeight: 560, color: C.mist, whiteSpace: "nowrap" }}>Open-source Spotify stats</div>
-          </div>
-          <div style={{ ...headStyle(80), marginTop: 40 }}>
+      {f >= hist && f < sv - 3 ? (
+        <div style={{ position: "absolute", left: 120, top: 434, width: 1040, opacity: enter(f, hist) * (1 - copyOut), transform: `translateY(${((1 - enter(f, hist)) * 28).toFixed(1)}px)` }}>
+          <div style={{ ...headStyle(80) }}>
             Your whole history,
             <br />
-            <span style={{ color: C.lamp, opacity: r(f, w("every") - 1, 8) }}>every single day.</span>
+            <span style={{ color: C.lamp, opacity: r(f, Math.max(hist + 3, w("every") - 1), 8) }}>every single day.</span>
           </div>
-          <div style={{ fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE, marginTop: 36, fontVariantNumeric: "tabular-nums", opacity: r(f, lock + 24, 8) }}>
+          <div style={{ fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE, marginTop: 36, fontVariantNumeric: "tabular-nums", opacity: r(f, hist + 12, 8) }}>
             Day {dayNow + 1} of 365
           </div>
         </div>
       ) : null}
-      <Say f={f} size={96} style={{ left: 120, top: 370 }} words={[{ t: "On", at: server }, { t: "your", at: 0 }, { t: "own", at: 0 }, { t: "server.", at: 0 }]} />
+      <Copy f={f} a={sv - 3} b={b} style={{ left: 120, top: 370, ...headStyle(96) }}>
+        On your own server.
+      </Copy>
     </AbsoluteFill>
+  );
+};
+
+// ── 2. The introduction: what this is, said once. The Wrapped page shrinks into the first lamp of
+// the mark, the rest of the meter lights, the name and one plain line follow. Then the lockup
+// travels to the corner of the history slide and stays there while the year flips by.
+const INTRO = { size: 190, y: 372 };
+const SMALL = { size: 64, x: 120, y: 330 };
+const Intro = ({ f }: { f: number }) => {
+  const a = CUT.intro;
+  const hist = CUT.history;
+  const sv = CUT.server;
+  if (f < a - 2 || f >= sv - 3) return null;
+  const big = { x: 960 - lockupWidth(INTRO.size) / 2, y: INTRO.y, size: INTRO.size };
+  const first = lampSpot(big.size, 0);
+  // The page → the first lamp.
+  const fly = r(f, a - 2, 11, E.emph);
+  const page: Rect = { x: CAL.x, y: CAL.y, w: CAL.w, h: CAL.h, r: 26 };
+  const dot: Rect = { x: big.x + first.cx - first.rr, y: big.y + first.cy - first.rr, w: first.rr * 2, h: first.rr * 2, r: first.rr };
+  const rc = lerpRect(page, dot, fly);
+  const landed = a + 9;
+  // The lockup → the corner of the history slide.
+  const shrink = morph(f, hist);
+  const size = mix(big.size, SMALL.size, shrink);
+  return (
+    <>
+      <Lockup
+        x={mix(big.x, SMALL.x, shrink)}
+        y={mix(big.y, SMALL.y, shrink)}
+        size={size}
+        grille={r(f, a + 2, 7)}
+        lamp={(i) => (i === 0 ? (f >= landed ? 1 : 0) : r(f, landed + i * 1.1, 4))}
+        word={r(f, a + 6, 10)}
+        wordDx={(1 - r(f, a + 6, 12)) * -28}
+        opacity={1 - r(f, sv - 8, 5, E.in)}
+      />
+      {f < landed ? (
+        <div style={{ position: "absolute", left: rc.x, top: rc.y, width: rc.w, height: rc.h, borderRadius: rc.r, overflow: "hidden", background: interpolateColors(fly, [0, 0.6], ["#0f2a19", C.lamp]) }}>
+          <div style={{ position: "absolute", left: 0, top: 0, width: CAL.w, height: CAL.h, opacity: 1 - r(f, a - 2, 4, E.in) }}>
+            <CalPage day={WRAPPED_DAY} kind="wrapped" />
+          </div>
+        </div>
+      ) : null}
+      {f < hist ? (
+        <div style={{ position: "absolute", left: 0, right: 0, top: INTRO.y + INTRO.size + 74, textAlign: "center", ...headStyle(60), opacity: r(f, w("brand") + 14, 10) * (1 - leave(f, hist)), transform: `translateY(${((1 - r(f, w("brand") + 14, 12)) * 24 - leave(f, hist) * 20).toFixed(1)}px)` }}>
+          Free, <span style={{ color: C.lamp }}>open-source</span> stats for your Spotify.
+        </div>
+      ) : null}
+    </>
   );
 };
 
 /** A second, quieter line under a headline, for the sentence that follows it. */
 const subLine: React.CSSProperties = { position: "relative", color: C.mist, fontStretch: "100%", fontWeight: 520, letterSpacing: "0" };
 
-// ── 3. Your real top 10: the list starts on "This month"; on "Not just this month's" the switch
-// slides to "All time" and the rows re-sort, bars and counts running to their lifetime values.
+// ── The server: the surface's first shape. Its front panel is the mark.
+const ServerInside = ({ f }: { f: number }) => {
+  const lamps = r(f, CUT.server + 20, 6);
+  return (
+    <>
+      <div style={{ position: "absolute", left: CAL.x + CAL.w / 2 - RECT.server.x - 170, top: -2, width: 340, height: 12, borderRadius: 6, background: "#050506" }} />
+      <svg width={180} height={180} style={{ position: "absolute", left: 70, top: 60 }}>
+        {Array.from({ length: 16 }, (_, i) => <circle key={i} cx={lampSpot(180, 0).rr + Math.floor(i / 4) * (180 / 3.786)} cy={lampSpot(180, 0).rr + (i % 4) * (180 / 3.786)} r={lampSpot(180, 0).rr} fill={C.grille} />)}
+        {LAMP_ORDER.map((_, i) => {
+          const s = lampSpot(180, i);
+          return <circle key={i} cx={s.cx} cy={s.cy} r={s.rr} fill={C.lamp} opacity={lamps} />;
+        })}
+      </svg>
+      <div style={{ position: "absolute", left: 320, top: 86 }}>
+        <div style={{ ...headStyle(64) }}>spotussi.local</div>
+        <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 16 }}>Your history, on your hardware.</div>
+      </div>
+    </>
+  );
+};
+
+// ── 4. Your real top 10: the list starts on "This month"; on "Not just this month's" the switch
+// slides to "All time" and the all-time #1 rises to the top.
 const ARTISTS = [
   { name: "Nova Reyes", all: 12418, month: 88, seed: 1 },
   { name: "The Midnight Arcade", all: 9870, month: 41, seed: 2 },
@@ -367,10 +472,11 @@ const ARTISTS = [
   { name: "Oslo Nights", all: 3512, month: 74, seed: 10 },
 ];
 const TOP_ROW = 66;
-const TopRow = ({ x, rank, val, frac, lit = false, rankOpacity = 1 }: { x: (typeof ARTISTS)[number]; rank: number; val: number; frac: number; lit?: boolean; rankOpacity?: number }) => (
-  <div style={{ height: TOP_ROW, padding: "0 12px", display: "flex", alignItems: "center", gap: 20 }}>
+const TOP_SLOT = { left: 28, top: 108, pad: 12 };
+const TopRow = ({ x, rank, val, frac, lit = false, rankOpacity = 1, hideArt = false }: { x: (typeof ARTISTS)[number]; rank: number; val: number; frac: number; lit?: boolean; rankOpacity?: number; hideArt?: boolean }) => (
+  <div style={{ height: TOP_ROW, padding: `0 ${TOP_SLOT.pad}px`, display: "flex", alignItems: "center", gap: 20 }}>
     <div style={{ width: 36, textAlign: "right", ...headStyle(26), color: lit ? C.lamp : MUTE, opacity: rankOpacity }}>{rank}</div>
-    <Art seed={x.seed} size={46} round />
+    <Art seed={x.seed} size={46} round style={{ visibility: hideArt ? "hidden" : undefined }} />
     <div style={{ width: 290, fontFamily: FONT, fontSize: 24, fontWeight: 620, color: C.paper, whiteSpace: "nowrap" }}>{x.name}</div>
     <div style={{ flex: 1, height: 8, borderRadius: 4, background: "#23252b" }}>
       <div style={{ width: `${(frac * 100).toFixed(2)}%`, height: 8, borderRadius: 4, background: C.lamp }} />
@@ -378,199 +484,188 @@ const TopRow = ({ x, rank, val, frac, lit = false, rankOpacity = 1 }: { x: (type
     <div style={{ width: 110, textAlign: "right", fontFamily: FONT, fontSize: 24, fontWeight: 680, color: C.paper, fontVariantNumeric: "tabular-nums" }}>{fmt(val)}</div>
   </div>
 );
-const Top = ({ f }: { f: number }) => {
-  const a = CUT.top;
-  const b = CUT.artist;
+const BY_MONTH = [...ARTISTS].sort((x, y) => y.month - x.month);
+const BY_ALL = [...ARTISTS].sort((x, y) => y.all - x.all);
+const LEAD_ARTIST = BY_ALL[0];
+const TopInside = ({ f }: { f: number }) => {
   const sw = w("notJust") - 3; // the switch starts a breath before "Not just this month's"
   const pill = r(f, sw, 14, E.inOut);
-  const byMonth = [...ARTISTS].sort((x, y) => y.month - x.month);
-  const byAll = [...ARTISTS].sort((x, y) => y.all - x.all);
-  const maxM = byMonth[0].month;
-  const maxA = byAll[0].all;
+  const maxM = BY_MONTH[0].month;
+  const maxA = BY_ALL[0].all;
   // One lead: the all-time #1 rises to the top as a solid strip, its count running up. Nothing
   // else travels. The rows in its path clear first; the rest of the month's rows dim and hold
   // still; once the lead has passed, each slot takes its all-time artist, top to bottom, old out
   // before new in. No row ever crosses another.
-  const lead = byAll[0];
-  const leadFrom = byMonth.indexOf(lead);
+  const leadFrom = BY_MONTH.indexOf(LEAD_ARTIST);
   const rise = r(f, sw + 2, 14, E.inOut);
   const swap = (i: number) => sw + 14 + i; // the frame slot i takes its all-time artist
-  const slot = (i: number): React.CSSProperties => ({ position: "absolute", left: 28, right: 28, top: 108 + i * TOP_ROW });
+  const slot = (i: number): React.CSSProperties => ({ position: "absolute", left: TOP_SLOT.left, width: RECT.top.w - TOP_SLOT.left * 2, top: TOP_SLOT.top + i * TOP_ROW });
   return (
-    <Stage f={f} a={a} b={b}>
-      <Panel style={{ left: 880, top: 120, width: 920, height: 840 }}>
-        <div style={{ position: "absolute", left: 40, top: 36, ...headStyle(40) }}>Top artists</div>
-        {/* The range switch slides from This month to All time. */}
-        <div style={{ position: "absolute", right: 40, top: 26, width: 400, height: 60, borderRadius: 30, background: "#0d0e11", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
-          <div style={{ position: "absolute", top: 6, left: mix(6, 200, pill), width: 194, height: 48, borderRadius: 24, background: "#2a2c33" }} />
-          {["This month", "All time"].map((l, i) => (
-            <div key={l} style={{ position: "absolute", top: 0, left: i ? 200 : 6, width: 194, lineHeight: "60px", textAlign: "center", fontFamily: FONT, fontSize: 24, fontWeight: 640, color: (i ? pill : 1 - pill) > 0.5 ? C.paper : MUTE }}>{l}</div>
-          ))}
-        </div>
-        {byMonth.map((x, i) =>
-          x === lead || f >= swap(i) ? null : (
-            <div key={`m-${x.name}`} style={{ ...slot(i), opacity: i < leadFrom ? 1 - r(f, sw, 5, E.in) : mix(1, 0.3, r(f, sw, 4)) * (1 - r(f, swap(i) - 3, 3, E.in)) }}>
-              <TopRow x={x} rank={i + 1} val={x.month} frac={x.month / maxM} />
-            </div>
-          ),
-        )}
-        {byAll.map((x, i) =>
-          i === 0 || f < swap(i) ? null : (
-            <div key={`a-${x.name}`} style={{ ...slot(i), opacity: r(f, swap(i), 6) }}>
-              <TopRow x={x} rank={i + 1} val={x.all} frac={x.all / maxA} />
-            </div>
-          ),
-        )}
-        <div style={{ ...slot(mix(leadFrom, 0, rise)), background: PANEL, zIndex: 2 }}>
-          <TopRow x={lead} rank={rise < 0.5 ? leadFrom + 1 : 1} rankOpacity={Math.abs(1 - 2 * rise)} lit={rise >= 0.5} val={mix(lead.month, lead.all, r(f, sw + 2, 22, E.out))} frac={mix(lead.month / maxM, 1, rise)} />
-        </div>
-      </Panel>
-      <div style={{ position: "absolute", left: 120, top: 400, width: 740, display: "flex", flexDirection: "column", gap: 30 }}>
-        <Say f={f} size={92} style={{ position: "relative" }} words={[{ t: "Your", at: 0 }, { t: "real", at: 0, lit: true }, { t: "\n", at: 0 }, { t: "top", at: 0 }, { t: "10.", at: 0 }]} />
-        <Say f={f} size={46} style={subLine} words={[{ t: "Not", at: w("notJust") }, { t: "just", at: 0 }, { t: "this", at: 0 }, { t: "month's.", at: 0 }]} />
+    <>
+      <div style={{ position: "absolute", left: 40, top: 36, ...headStyle(40) }}>Top artists</div>
+      {/* The range switch slides from This month to All time. */}
+      <div style={{ position: "absolute", left: RECT.top.w - 440, top: 26, width: 400, height: 60, borderRadius: 30, background: "#0d0e11", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
+        <div style={{ position: "absolute", top: 6, left: mix(6, 200, pill), width: 194, height: 48, borderRadius: 24, background: "#2a2c33" }} />
+        {["This month", "All time"].map((l, i) => (
+          <div key={l} style={{ position: "absolute", top: 0, left: i ? 200 : 6, width: 194, lineHeight: "60px", textAlign: "center", fontFamily: FONT, fontSize: 24, fontWeight: 640, color: (i ? pill : 1 - pill) > 0.5 ? C.paper : MUTE }}>{l}</div>
+        ))}
       </div>
-    </Stage>
+      {BY_MONTH.map((x, i) =>
+        x === LEAD_ARTIST || f >= swap(i) ? null : (
+          <div key={`m-${x.name}`} style={{ ...slot(i), opacity: i < leadFrom ? 1 - r(f, sw, 5, E.in) : mix(1, 0.3, r(f, sw, 4)) * (1 - r(f, swap(i) - 3, 3, E.in)) }}>
+            <TopRow x={x} rank={i + 1} val={x.month} frac={x.month / maxM} />
+          </div>
+        ),
+      )}
+      {BY_ALL.map((x, i) =>
+        i === 0 || f < swap(i) ? null : (
+          <div key={`a-${x.name}`} style={{ ...slot(i), opacity: r(f, swap(i), 6) }}>
+            <TopRow x={x} rank={i + 1} val={x.all} frac={x.all / maxA} />
+          </div>
+        ),
+      )}
+      <div style={{ ...slot(mix(leadFrom, 0, rise)), background: PANEL, zIndex: 2 }}>
+        {/* The lead's cover is handed to the travelling cover just before the cut (see HeroCover). */}
+        <TopRow x={LEAD_ARTIST} rank={rise < 0.5 ? leadFrom + 1 : 1} rankOpacity={Math.abs(1 - 2 * rise)} lit={rise >= 0.5} val={mix(LEAD_ARTIST.month, LEAD_ARTIST.all, r(f, sw + 2, 22, E.out))} frac={mix(LEAD_ARTIST.month / maxM, 1, rise)} hideArt={f >= CUT.artist - 5} />
+      </div>
+    </>
+  );
+};
+/** The #1 artist's cover travels: from its row at the top of the list to the artist slide, growing as it goes. */
+const HeroCover = ({ f }: { f: number }) => {
+  const a = CUT.artist;
+  const b = CUT.sessions;
+  if (f < a - 5 || f >= b) return null;
+  const t = morph(f, a);
+  const o = leave(f, b);
+  const from = { x: RECT.top.x + TOP_SLOT.left + TOP_SLOT.pad + 36 + 20, y: RECT.top.y + TOP_SLOT.top + (TOP_ROW - 46) / 2, s: 46 };
+  const size = mix(from.s, 330, t);
+  return (
+    <div style={{ position: "absolute", left: mix(from.x, 120, t), top: mix(from.y, 360, t), opacity: 1 - o, transform: `translateY(${(-o * 20).toFixed(1)}px)` }}>
+      <Art seed={LEAD_ARTIST.seed} size={size} round />
+    </div>
   );
 };
 
-// ── 4. Your #1 artist: who it is, how many plays all time, and since when.
+// ── 5. Your #1 artist: who it is, how many plays all time, and since when.
 const YEARLY = [0.18, 0.22, 0.3, 0.26, 0.41, 0.48, 0.55, 0.72, 0.95, 0.8, 0.67, 0.74, 0.61, 0.7, 0.83, 0.58];
-const ArtistShot = ({ f }: { f: number }) => {
+const ArtistInside = ({ f }: { f: number }) => {
   const a = CUT.artist;
-  const b = CUT.sessions;
   // The count runs from the moment the slide arrives and settles as she says "twelve thousand
   // plays", so the panel never sits on a zero.
   const count = r(f, a, w("twelve") + 14 - a, E.out);
   const first = r(f, w("since") - 1, 10);
   return (
-    <Stage f={f} a={a} b={b}>
-      <Say f={f} size={110} style={{ left: 120, top: 120, width: 1680 }} words={[{ t: "Your", at: 0 }, { t: "#1", at: 0, lit: true }, { t: "artist.", at: 0 }]} />
-      {/* Who: the artist, large, on the left. */}
-      <div style={{ position: "absolute", left: 120, top: 360 }}>
-        <Art seed={1} size={330} round />
-        <div style={{ ...headStyle(76), marginTop: 40 }}>Nova Reyes</div>
-        <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 10 }}>Synthpop</div>
+    <>
+      <div style={{ position: "absolute", left: 44, top: 40 }}>
+        <Label style={{ fontSize: 24 }}>Plays, all time</Label>
+        <div style={{ ...headStyle(150), marginTop: 6, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.05em" }}>{fmt(12418 * count)}</div>
       </div>
-      {/* The proof: plays all time, the first play, and every year since. */}
-      <Panel style={{ left: 880, top: 360, width: 920, height: 600 }}>
-        <div style={{ position: "absolute", left: 44, top: 40 }}>
-          <Label style={{ fontSize: 24 }}>Plays, all time</Label>
-          <div style={{ ...headStyle(150), marginTop: 6, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.05em" }}>{fmt(12418 * count)}</div>
-        </div>
-        <div style={{ position: "absolute", left: 44, top: 248, display: "flex", alignItems: "baseline", gap: 18, opacity: first }}>
-          <Label style={{ fontSize: 24 }}>First play</Label>
-          <div style={{ ...headStyle(44) }}>Mar 4, 2011</div>
-        </div>
-        <Label style={{ position: "absolute", left: 44, top: 336, fontSize: 22 }}>Plays per year</Label>
-        <div style={{ position: "absolute", left: 44, top: 540, width: 832, height: 2, background: EDGE }} />
-        {YEARS.map((y, i) => {
-          const x = 44 + (i / (YEARS.length - 1)) * 798;
-          const h = 150 * YEARLY[i];
-          return (
-            <div key={y} style={{ position: "absolute", left: x, top: 540 - h, width: 34, height: h, borderRadius: "6px 6px 0 0", background: C.lamp, opacity: 0.5 + 0.5 * (i / (YEARS.length - 1)) }}>
-              {i % 5 === 0 ? <div style={{ position: "absolute", top: h + 12, left: -14, width: 62, textAlign: "center", fontFamily: FONT, fontSize: 20, color: MUTE }}>{y}</div> : null}
-            </div>
-          );
-        })}
-      </Panel>
-    </Stage>
+      <div style={{ position: "absolute", left: 44, top: 248, display: "flex", alignItems: "baseline", gap: 18, opacity: first }}>
+        <Label style={{ fontSize: 24 }}>First play</Label>
+        <div style={{ ...headStyle(44) }}>Mar 4, 2011</div>
+      </div>
+      <Label style={{ position: "absolute", left: 44, top: 336, fontSize: 22 }}>Plays per year</Label>
+      <div style={{ position: "absolute", left: 44, top: 540, width: 832, height: 2, background: EDGE }} />
+      {YEARS.map((y, i) => {
+        const x = 44 + (i / (YEARS.length - 1)) * 798;
+        const h = 150 * YEARLY[i];
+        return (
+          <div key={y} style={{ position: "absolute", left: x, top: 540 - h, width: 34, height: h, borderRadius: "6px 6px 0 0", background: C.lamp, opacity: 0.5 + 0.5 * (i / (YEARS.length - 1)) }}>
+            {i % 5 === 0 ? <div style={{ position: "absolute", top: h + 12, left: -14, width: 62, textAlign: "center", fontFamily: FONT, fontSize: 20, color: MUTE }}>{y}</div> : null}
+          </div>
+        );
+      })}
+    </>
   );
 };
 
-// ── 5. Sessions: three days, two sittings each, every play a cover. One playhead runs across and
-// the plays light as it passes.
+// ── 6. Sessions: three days, two sittings each, every play a cover. A playhead marker runs along
+// each lane and the plays light as it passes.
 const SESSIONS = [
   { day: "Mon", blocks: [{ x: 0, n: 6, span: "07:48 – 08:09" }, { x: 760, n: 9, span: "18:20 – 18:51" }] },
   { day: "Wed", blocks: [{ x: 300, n: 8, span: "12:05 – 12:33" }, { x: 1040, n: 5, span: "21:40 – 21:57" }] },
   { day: "Sat", blocks: [{ x: 120, n: 9, span: "10:30 – 11:02" }, { x: 900, n: 7, span: "16:15 – 16:39" }] },
 ];
-const Sessions = ({ f }: { f: number }) => {
+const SessionsInside = ({ f }: { f: number }) => {
   const a = CUT.sessions;
   const b = CUT.taste;
   const X0 = 150; // where the lanes start inside the panel
   const W = 1490;
   const TILE = 64;
-  const headX = X0 + r(f, a + 8, b - a - 22, (t) => t) * W;
+  const headX = X0 + r(f, a + 10, b - a - 24, (t) => t) * W;
   return (
-    <Stage f={f} a={a} b={b}>
-      <Panel style={{ left: 120, top: 360, width: 1680, height: 600 }}>
-        <div style={{ position: "absolute", left: 40, top: 30, ...headStyle(36) }}>Sessions</div>
-        {SESSIONS.map((lane, li) => (
-          <div key={lane.day} style={{ position: "absolute", left: 0, right: 0, top: 112 + li * 158 }}>
-            <div style={{ position: "absolute", left: 40, top: 26, fontFamily: FONT, fontSize: 26, fontWeight: 600, color: MUTE }}>{lane.day}</div>
-            {/* The playhead: one marker per lane, moving as one. It runs across the plays, not the labels under them. */}
-            <div style={{ position: "absolute", top: -8, height: 100, left: headX, width: 3, borderRadius: 2, background: C.lamp, zIndex: 1 }} />
-            {lane.blocks.map((bk, k) => (
-              <div key={k} style={{ position: "absolute", left: X0 + bk.x, top: 0 }}>
-                <div style={{ display: "flex", gap: 8, padding: 10, borderRadius: 16, background: "#1d1f24", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
-                  {Array.from({ length: bk.n }, (_, p) => {
-                    const left = X0 + bk.x + 10 + p * (TILE + 8);
-                    return <Art key={p} seed={(li * 11 + k * 5 + p * 3) % 40} size={TILE} style={{ opacity: mix(0.14, 1, r(headX, left, 30, (t) => t)) }} />;
-                  })}
-                </div>
-                <div style={{ marginTop: 10, marginLeft: 10, fontFamily: FONT, fontSize: 24, fontWeight: 520, color: MUTE, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>
-                  {bk.span} · {bk.n} plays
-                </div>
+    <>
+      <div style={{ position: "absolute", left: 40, top: 30, ...headStyle(36) }}>Sessions</div>
+      {SESSIONS.map((lane, li) => (
+        <div key={lane.day} style={{ position: "absolute", left: 0, width: RECT.sessions.w, top: 112 + li * 158 }}>
+          <div style={{ position: "absolute", left: 40, top: 26, fontFamily: FONT, fontSize: 26, fontWeight: 600, color: MUTE }}>{lane.day}</div>
+          {/* The playhead: one marker per lane, moving as one. It runs across the plays, not the labels under them. */}
+          <div style={{ position: "absolute", top: -8, height: 100, left: headX, width: 3, borderRadius: 2, background: C.lamp, zIndex: 1 }} />
+          {lane.blocks.map((bk, k) => (
+            <div key={k} style={{ position: "absolute", left: X0 + bk.x, top: 0 }}>
+              <div style={{ display: "flex", gap: 8, padding: 10, borderRadius: 16, background: "#1d1f24", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
+                {Array.from({ length: bk.n }, (_, p) => {
+                  const left = X0 + bk.x + 10 + p * (TILE + 8);
+                  return <Art key={p} seed={(li * 11 + k * 5 + p * 3) % 40} size={TILE} style={{ opacity: mix(0.14, 1, r(headX, left, 30, (t) => t)) }} />;
+                })}
               </div>
-            ))}
-          </div>
-        ))}
-      </Panel>
-      <Say f={f} size={92} style={{ left: 120, top: 110, width: 1680 }} words={[{ t: "Every", at: 0 }, { t: "listening", at: 0 }, { t: "session,", at: 0 }, { t: "\n", at: 0 }, { t: "play", at: w("playByPlay") }, { t: "by", at: 0 }, { t: "play.", at: 0 }]} />
-    </Stage>
+              <div style={{ marginTop: 10, marginLeft: 10, fontFamily: FONT, fontSize: 24, fontWeight: 520, color: MUTE, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>
+                {bk.span} · {bk.n} plays
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
   );
 };
 
-// ── 6. Taste: stacked weekly bars whose genre bands shift as the weeks run; one genre grows.
+// ── 7. Taste: stacked weekly bars whose genre bands shift as the weeks run; one genre grows.
 const GENRES = [
   { name: "Indie", col: "#5b5f68" },
   { name: "House", col: "#3a3d46" },
   { name: "Synthpop", col: C.lamp },
   { name: "Hip hop", col: "#80848e" },
 ];
-const Taste = ({ f }: { f: number }) => {
+const TasteInside = ({ f }: { f: number }) => {
   const a = CUT.taste;
   const b = CUT.live;
   const N = 12;
   const H = 520;
-  const shift = r(f, a + 6, b - a - 16, E.inOut); // starts once the headline is up
+  const shift = r(f, a + 10, b - a - 20, E.inOut); // starts once the slide has arrived
   const synAt = (week: number) => 0.12 + 0.55 * Math.min(1, Math.max(0, (week / (N - 1)) * shift * 1.25));
   const lastSyn = synAt(N - 1);
   return (
-    <Stage f={f} a={a} b={b}>
-      <Panel style={{ left: 880, top: 150, width: 920, height: 780 }}>
-        <div style={{ position: "absolute", left: 40, top: 34, ...headStyle(36) }}>Genres over time</div>
-        <div style={{ position: "absolute", left: 40, top: 96, display: "flex", gap: 26 }}>
-          {GENRES.map((g) => (
-            <span key={g.name} style={{ display: "flex", alignItems: "center", gap: 9, fontFamily: FONT, fontSize: 22, color: g.col === C.lamp ? C.paper : MUTE }}>
-              <span style={{ width: 14, height: 14, borderRadius: 7, background: g.col }} />
-              {g.name}
-            </span>
-          ))}
-        </div>
-        {Array.from({ length: N }, (_, week) => {
-          const syn = synAt(week);
-          const rest = 1 - syn;
-          const parts = [rest * 0.42, rest * 0.33, syn, rest * 0.25];
-          return (
-            <div key={week} style={{ position: "absolute", left: 40 + week * 58, bottom: 60, width: 42, height: H, borderRadius: 10, overflow: "hidden", display: "flex", flexDirection: "column-reverse" }}>
-              {parts.map((p, k) => <div key={k} style={{ height: `${(p * 100).toFixed(2)}%`, background: GENRES[k].col, borderTop: "2px solid #15161a" }} />)}
-            </div>
-          );
-        })}
-        {/* The growing band names itself: the label rides the middle of the last week's green band. */}
-        <div style={{ position: "absolute", left: 40 + (N - 1) * 58 + 42 + 18, bottom: 60 + ((1 - lastSyn) * 0.75 + lastSyn / 2) * H - 17, fontFamily: FONT, fontSize: 28, fontWeight: 680, lineHeight: "34px", color: C.lamp }}>Synthpop</div>
-      </Panel>
-      <div style={{ position: "absolute", left: 120, top: 400, width: 740, display: "flex", flexDirection: "column", gap: 30 }}>
-        <Say f={f} size={92} style={{ position: "relative" }} words={[{ t: "Watch", at: 0 }, { t: "your", at: 0 }, { t: "\n", at: 0 }, { t: "taste", at: 0 }, { t: "move.", at: 0 }]} />
-        <Say f={f} size={46} style={subLine} words={[{ t: "Week", at: w("week") }, { t: "on", at: 0 }, { t: "week.", at: 0 }]} />
+    <>
+      <div style={{ position: "absolute", left: 40, top: 34, ...headStyle(36) }}>Genres over time</div>
+      <div style={{ position: "absolute", left: 40, top: 96, display: "flex", gap: 26 }}>
+        {GENRES.map((g) => (
+          <span key={g.name} style={{ display: "flex", alignItems: "center", gap: 9, fontFamily: FONT, fontSize: 22, color: g.col === C.lamp ? C.paper : MUTE }}>
+            <span style={{ width: 14, height: 14, borderRadius: 7, background: g.col }} />
+            {g.name}
+          </span>
+        ))}
       </div>
-    </Stage>
+      {Array.from({ length: N }, (_, week) => {
+        const syn = synAt(week);
+        const rest = 1 - syn;
+        const parts = [rest * 0.42, rest * 0.33, syn, rest * 0.25];
+        return (
+          <div key={week} style={{ position: "absolute", left: 40 + week * 58, top: RECT.taste.h - 60 - H, width: 42, height: H, borderRadius: 10, overflow: "hidden", display: "flex", flexDirection: "column-reverse" }}>
+            {parts.map((p, k) => <div key={k} style={{ height: `${(p * 100).toFixed(2)}%`, background: GENRES[k].col, borderTop: "2px solid #15161a" }} />)}
+          </div>
+        );
+      })}
+      {/* The growing band names itself: the label rides the middle of the last week's green band. */}
+      <div style={{ position: "absolute", left: 40 + (N - 1) * 58 + 42 + 18, top: RECT.taste.h - 60 - ((1 - lastSyn) * 0.75 + lastSyn / 2) * H - 17, fontFamily: FONT, fontSize: 28, fontWeight: 680, lineHeight: "34px", color: C.lamp }}>Synthpop</div>
+    </>
   );
 };
 
-// ── 7. Live and imported, one after the other: a new play opens a row at the top of Recently
-// played ("as it happens"); then the export imports and the whole past counts up ("everything before").
+// ── 8. Live and imported, one after the other. The surface splits in two: a new play opens a row
+// at the top of Recently played ("as it happens"); then the export imports and the whole past
+// counts up ("everything before").
 const RECENT = [
   { t: "Glass Hours", a: "Nova Reyes", s: 11 },
   { t: "Night Signal", a: "Kairo", s: 13 },
@@ -587,174 +682,249 @@ const PlayRow = ({ t, a, s, when, lit = false }: { t: string; a: string; s: numb
     <div style={{ fontFamily: FONT, fontSize: 19, color: lit ? C.lamp : DIM }}>{when}</div>
   </div>
 );
-const LiveImport = ({ f }: { f: number }) => {
-  const a = CUT.live;
-  const b = CUT.devices;
+const RecentInside = ({ f }: { f: number }) => {
   const drop = r(f, w("asItHappens") - 2, 14, E.soft);
+  const rowW = RECT.recent.w - 72;
+  return (
+    <>
+      <div style={{ position: "absolute", left: 36, top: 30, display: "flex", alignItems: "center", gap: 12 }}>
+        <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp }} />
+        <span style={{ ...headStyle(32) }}>Recently played</span>
+      </div>
+      {/* The new play opens its own row: the list moves down exactly as far as the row has grown,
+          so it never sits on top of another row. */}
+      <div style={{ position: "absolute", left: 36, width: rowW, top: 100, height: 80 * drop, borderRadius: 14, overflow: "hidden", background: "#162a21", opacity: drop }}>
+        <PlayRow t="Neon Harbor" a="The Midnight Arcade" s={21} when="now" lit />
+      </div>
+      {RECENT.map((x, i) => (
+        <div key={x.t} style={{ position: "absolute", left: 36, width: rowW, top: 100 + (i + drop) * 92 }}>
+          <PlayRow t={x.t} a={x.a} s={x.s} when={`${(i + 1) * 3} min ago`} />
+        </div>
+      ))}
+    </>
+  );
+};
+const ImportInside = ({ f }: { f: number }) => {
   const imp = w("imports");
   const fill = r(f, imp, 28, E.inOut);
   const shown = r(f, imp, 6);
+  const inner = RECT.importing.w - 80;
   return (
-    <Stage f={f} a={a} b={b}>
-      <Panel style={{ left: 120, top: 330, width: 820, height: 640 }}>
-        <div style={{ position: "absolute", left: 36, top: 30, display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp }} />
-          <span style={{ ...headStyle(32) }}>Recently played</span>
+    <>
+      <div style={{ position: "absolute", left: 40, top: 34, ...headStyle(32) }}>Import your history</div>
+      <div style={{ position: "absolute", left: 40, top: 110, width: inner, height: 140, borderRadius: 18, boxShadow: `inset 0 0 0 2px ${EDGE}`, display: "flex", alignItems: "center", gap: 22, padding: "0 28px", boxSizing: "border-box" }}>
+        <div style={{ width: 74, height: 90, borderRadius: 10, background: "#22242a", boxShadow: `inset 0 0 0 1.5px ${EDGE}`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10, boxSizing: "border-box", fontFamily: FONT, fontSize: 16, fontWeight: 700, color: MUTE }}>ZIP</div>
+        <div>
+          <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 640, color: C.paper }}>Extended streaming history</div>
+          <div style={{ fontFamily: FONT, fontSize: 19, color: MUTE }}>from Spotify's data export</div>
         </div>
-        {/* The new play opens its own row: the list moves down exactly as far as the row has grown,
-            so it never sits on top of another row. */}
-        <div style={{ position: "absolute", left: 36, right: 36, top: 100, height: 80 * drop, borderRadius: 14, overflow: "hidden", background: "#162a21", opacity: drop }}>
-          <PlayRow t="Neon Harbor" a="The Midnight Arcade" s={21} when="now" lit />
-        </div>
-        {RECENT.map((x, i) => (
-          <div key={x.t} style={{ position: "absolute", left: 36, right: 36, top: 100 + (i + drop) * 92 }}>
-            <PlayRow t={x.t} a={x.a} s={x.s} when={`${(i + 1) * 3} min ago`} />
-          </div>
-        ))}
-      </Panel>
-      {/* The export arrives and the past streams in. */}
-      <Panel style={{ left: 980, top: 330, width: 820, height: 640 }}>
-        <div style={{ position: "absolute", left: 40, top: 34, ...headStyle(32) }}>Import your history</div>
-        <div style={{ position: "absolute", left: 40, top: 110, right: 40, height: 140, borderRadius: 18, boxShadow: `inset 0 0 0 2px ${EDGE}`, display: "flex", alignItems: "center", gap: 22, padding: "0 28px" }}>
-          <div style={{ width: 74, height: 90, borderRadius: 10, background: "#22242a", boxShadow: `inset 0 0 0 1.5px ${EDGE}`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10, fontFamily: FONT, fontSize: 16, fontWeight: 700, color: MUTE }}>ZIP</div>
-          <div>
-            <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 640, color: C.paper }}>Extended streaming history</div>
-            <div style={{ fontFamily: FONT, fontSize: 19, color: MUTE }}>from Spotify's data export</div>
-          </div>
-        </div>
-        <div style={{ position: "absolute", left: 40, right: 40, top: 300, height: 12, borderRadius: 6, background: "#23252b" }}>
-          <div style={{ width: `${(fill * 100).toFixed(2)}%`, height: 12, borderRadius: 6, background: C.lamp }} />
-        </div>
-        {/* Nothing is shown until the import starts: no zero waiting on screen. */}
-        <div style={{ position: "absolute", left: 40, top: 340, ...headStyle(76), fontVariantNumeric: "tabular-nums", opacity: shown }}>
-          {fmt(184213 * fill)}
-          <span style={{ ...headStyle(30), color: MUTE, marginLeft: 18 }}>plays since 2011</span>
-        </div>
-        {YEARS.map((y, i) => {
-          const hh = 40 + 90 * (0.35 + (0.65 * ((i * 37) % 11)) / 10);
-          const on = Math.min(1, Math.max(0, fill * YEARS.length - i));
-          return (
-            <div key={y} style={{ position: "absolute", left: 40 + i * 46, bottom: 24, width: 32 }}>
-              <div style={{ position: "relative", height: 130 }}>
-                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: hh, borderRadius: "6px 6px 0 0", background: "#1d1f24", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: hh * on, background: C.lamp }} />
-                </div>
+      </div>
+      <div style={{ position: "absolute", left: 40, width: inner, top: 300, height: 12, borderRadius: 6, background: "#23252b" }}>
+        <div style={{ width: `${(fill * 100).toFixed(2)}%`, height: 12, borderRadius: 6, background: C.lamp }} />
+      </div>
+      {/* Nothing is shown until the import starts: no zero waiting on screen. */}
+      <div style={{ position: "absolute", left: 40, top: 340, ...headStyle(76), fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", opacity: shown }}>
+        {fmt(184213 * fill)}
+        <span style={{ ...headStyle(30), color: MUTE, marginLeft: 18 }}>plays since 2011</span>
+      </div>
+      {/* The year slots are there from the start, dark, and fill green as the import runs. */}
+      {YEARS.map((y, i) => {
+        const hh = 40 + 90 * (0.35 + (0.65 * ((i * 37) % 11)) / 10);
+        const on = Math.min(1, Math.max(0, fill * YEARS.length - i));
+        return (
+          <div key={y} style={{ position: "absolute", left: 40 + i * 46, top: RECT.importing.h - 24 - 166, width: 32 }}>
+            <div style={{ position: "relative", height: 130 }}>
+              <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: hh, borderRadius: "6px 6px 0 0", background: "#1d1f24", overflow: "hidden" }}>
+                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: hh * on, background: C.lamp }} />
               </div>
-              <div style={{ height: 36, marginLeft: -14, width: 60, paddingTop: 10, textAlign: "center", fontFamily: FONT, fontSize: 18, color: MUTE }}>{i % 5 === 0 ? y : ""}</div>
             </div>
-          );
-        })}
-      </Panel>
-      <Say f={f} size={80} style={{ left: 120, top: 110, width: 1680 }} words={[{ t: "Every", at: 0 }, { t: "play", at: 0 }, { t: "as", at: 0 }, { t: "it", at: 0 }, { t: "happens.", at: 0 }, { t: "\n", at: 0 }, { t: "And", at: w("and") }, { t: "everything", at: 0 }, { t: "before.", at: 0 }]} />
-    </Stage>
+            <div style={{ height: 36, marginLeft: -14, width: 60, paddingTop: 10, textAlign: "center", fontFamily: FONT, fontSize: 18, color: MUTE }}>{i % 5 === 0 ? y : ""}</div>
+          </div>
+        );
+      })}
+    </>
   );
 };
 
-// ── 8. Desktop first, then pocket: the dashboard in its browser window holds the frame; the phone
-// slides in beside it on "In your pocket".
-const Devices = ({ f }: { f: number }) => {
-  const a = CUT.devices;
-  const b = CUT.end;
+// ── 9. Desktop first, then pocket: the two panels join into the browser window; the phone slides
+// in beside it on "In your pocket".
+const WindowInside = () => (
+  <div style={{ position: "absolute", left: 0, top: 0, width: RECT.window.w, height: RECT.window.h, background: "#101114" }}>
+    <div style={{ height: 42, background: "#17181c", display: "flex", alignItems: "center", gap: 8, paddingLeft: 18 }}>
+      {[0, 1, 2].map((i) => <span key={i} style={{ width: 12, height: 12, borderRadius: 6, background: C.grille }} />)}
+      <span style={{ marginLeft: 420, padding: "4px 60px", borderRadius: 7, background: "#0b0c0f", color: MUTE, fontFamily: FONT, fontSize: 14 }}>spotussi.local</span>
+    </div>
+    <div style={{ position: "absolute", left: 30, top: 70, width: RECT.window.w - 60, display: "flex", gap: 20 }}>
+      {[
+        { l: "Time listened", n: 136, u: "h" },
+        { l: "Plays", n: 2341 },
+        { l: "Artists", n: 568 },
+        { l: "Tracks", n: 1923 },
+      ].map((x, i) => (
+        <div key={x.l} style={{ flex: 1, height: 140, boxSizing: "border-box", borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: "18px 20px" }}>
+          <Label>{x.l}</Label>
+          <div style={{ ...headStyle(44), marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
+            {fmt(x.n)}
+            {x.u ?? ""}
+          </div>
+          <div style={{ display: "flex", gap: 5, marginTop: 10 }}>
+            {Array.from({ length: 14 }, (_, k) => <span key={k} style={{ width: 9, height: 9, borderRadius: 5, background: k < 6 + i * 2 ? C.lamp : C.grille }} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div style={{ position: "absolute", left: 30, top: 240, width: 760, height: 480, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
+      <Label style={{ position: "absolute", left: 20, top: 18 }}>Plays by day</Label>
+      {Array.from({ length: 28 }, (_, i) => {
+        const hgt = 80 + 280 * Math.abs(Math.sin(i * 1.7) * 0.6 + Math.sin(i * 0.4) * 0.4);
+        return <div key={i} style={{ position: "absolute", left: 24 + i * 26, bottom: 24, width: 16, height: hgt, borderRadius: 4, background: C.lamp, opacity: i === 18 ? 1 : 0.62 }} />;
+      })}
+    </div>
+    <div style={{ position: "absolute", left: 810, top: 240, width: 400, height: 480, boxSizing: "border-box", borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: 20 }}>
+      <Label>Top artists</Label>
+      {ARTISTS.slice(0, 5).map((x) => (
+        <div key={x.name} style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20 }}>
+          <Art seed={x.seed} size={44} round />
+          <span style={{ fontFamily: FONT, fontSize: 20, fontWeight: 620, color: C.paper }}>{x.name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// ── The surface. One panel for the whole film, from the server to the sign-off: it takes each
+// slide's shape in turn. For "live and imported" a second panel splits off it and joins it again.
+const END_OUT = 5; // the last slide clears this many frames early, so the lockup lights on the downbeat
+const Surface = ({ f }: { f: number }) => {
+  const sv = CUT.server;
+  if (f < sv || f >= CUT.end + 4) return null;
+  const fold = r(f, CUT.end - END_OUT - 1, 9, E.emph); // the emptied window folds into the mark
+  let rc: Rect = RECT.server;
+  rc = lerpRect(rc, RECT.top, morph(f, CUT.top));
+  rc = lerpRect(rc, RECT.artist, morph(f, CUT.artist));
+  rc = lerpRect(rc, RECT.sessions, morph(f, CUT.sessions));
+  rc = lerpRect(rc, RECT.taste, morph(f, CUT.taste));
+  rc = lerpRect(rc, RECT.recent, morph(f, CUT.live));
+  rc = lerpRect(rc, RECT.window, morph(f, CUT.devices));
+  rc = lerpRect(rc, RECT.mark, fold);
+  const rise = r(f, sv, 12);
+  // The second panel: out from behind the first on the cut to "live", back into it on the next cut.
+  let rb: Rect = lerpRect(RECT.taste, RECT.importing, morph(f, CUT.live));
+  rb = lerpRect(rb, RECT.window, morph(f, CUT.devices));
+  const second = f >= CUT.live - 2 && f < CUT.devices + 12;
+  return (
+    <>
+      {second ? (
+        <div style={{ ...surfaceStyle(rb), opacity: 1 - r(f, CUT.devices + 2, 8) }}>
+          {/* Its content waits until the two panels have parted. */}
+          <Inside f={f} a={CUT.live + 6} b={CUT.devices}>
+            <ImportInside f={f} />
+          </Inside>
+        </div>
+      ) : null}
+      <div style={{ ...surfaceStyle(rc), opacity: r(f, sv, 6) * (1 - r(f, CUT.end - 3, 5)), transform: `translateY(${((1 - rise) * 40).toFixed(1)}px)` }}>
+        <Inside f={f} a={sv - 3} b={CUT.top}>
+          <ServerInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.top} b={CUT.artist}>
+          <TopInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.artist} b={CUT.sessions}>
+          <ArtistInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.sessions} b={CUT.taste}>
+          <SessionsInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.taste} b={CUT.live}>
+          <TasteInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.live} b={CUT.devices}>
+          <RecentInside f={f} />
+        </Inside>
+        <Inside f={f} a={CUT.devices} b={CUT.end - END_OUT}>
+          <WindowInside />
+        </Inside>
+      </div>
+    </>
+  );
+};
+
+/** Each slide's copy outside the surface. */
+const Captions = ({ f }: { f: number }) => {
+  const col: React.CSSProperties = { left: 120, top: 400, width: 740, display: "flex", flexDirection: "column", gap: 30 };
   const pocket = w("pocket");
   const ph = r(f, pocket - 8, 18, E.land);
+  const phOut = leave(f, CUT.end - END_OUT);
   return (
-    <Stage f={f} a={a} b={b}>
-      <div style={{ position: "absolute", left: 120, top: 290, width: 1240, height: 740, borderRadius: 18, background: "#101114", boxShadow: `0 0 0 1.5px ${EDGE}`, overflow: "hidden" }}>
-        <div style={{ height: 42, background: "#17181c", display: "flex", alignItems: "center", gap: 8, paddingLeft: 18 }}>
-          {[0, 1, 2].map((i) => <span key={i} style={{ width: 12, height: 12, borderRadius: 6, background: C.grille }} />)}
-          <span style={{ marginLeft: 420, padding: "4px 60px", borderRadius: 7, background: "#0b0c0f", color: MUTE, fontFamily: FONT, fontSize: 14 }}>spotussi.local</span>
+    <>
+      <Copy f={f} a={CUT.top} b={CUT.artist} style={col}>
+        <div style={headStyle(92)}>
+          Your <span style={{ color: C.lamp }}>real</span>
+          <br />
+          top 10.
         </div>
-        <div style={{ position: "absolute", left: 30, top: 70, right: 30, display: "flex", gap: 20 }}>
-          {[
-            { l: "Time listened", n: 136, u: "h" },
-            { l: "Plays", n: 2341 },
-            { l: "Artists", n: 568 },
-            { l: "Tracks", n: 1923 },
-          ].map((x, i) => (
-            <div key={x.l} style={{ flex: 1, height: 140, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: "18px 20px" }}>
-              <Label>{x.l}</Label>
-              <div style={{ ...headStyle(44), marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
-                {fmt(x.n)}
-                {x.u ?? ""}
-              </div>
-              <div style={{ display: "flex", gap: 5, marginTop: 10 }}>
-                {Array.from({ length: 14 }, (_, k) => <span key={k} style={{ width: 9, height: 9, borderRadius: 5, background: k < 6 + i * 2 ? C.lamp : C.grille }} />)}
-              </div>
-            </div>
-          ))}
+        <Say f={f} size={46} style={subLine} words={[{ t: "Not", at: w("notJust") }, { t: "just", at: 0 }, { t: "this", at: 0 }, { t: "month's.", at: 0 }]} />
+      </Copy>
+
+      <Copy f={f} a={CUT.artist} b={CUT.sessions} style={{ left: 120, top: 120, ...headStyle(110) }}>
+        Your <span style={{ color: C.lamp }}>#1</span> artist.
+      </Copy>
+      <HeroCover f={f} />
+      <Copy f={f} a={CUT.artist + 3} b={CUT.sessions} style={{ left: 120, top: 730 }}>
+        <div style={headStyle(76)}>Nova Reyes</div>
+        <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 10 }}>Synthpop</div>
+      </Copy>
+
+      <Copy f={f} a={CUT.sessions} b={CUT.taste} style={{ left: 120, top: 110, width: 1680, height: 200 }}>
+        <Say f={f} size={92} style={{ left: 0, top: 0, width: 1680 }} words={[{ t: "Every", at: 0 }, { t: "listening", at: 0 }, { t: "session,", at: 0 }, { t: "\n", at: 0 }, { t: "play", at: w("playByPlay") }, { t: "by", at: 0 }, { t: "play.", at: 0 }]} />
+      </Copy>
+
+      <Copy f={f} a={CUT.taste} b={CUT.live} style={col}>
+        <div style={headStyle(92)}>
+          Watch your
+          <br />
+          taste move.
         </div>
-        <div style={{ position: "absolute", left: 30, top: 240, width: 760, height: 480, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}` }}>
-          <Label style={{ position: "absolute", left: 20, top: 18 }}>Plays by day</Label>
-          {Array.from({ length: 28 }, (_, i) => {
-            const hgt = 80 + 280 * Math.abs(Math.sin(i * 1.7) * 0.6 + Math.sin(i * 0.4) * 0.4);
-            return <div key={i} style={{ position: "absolute", left: 24 + i * 26, bottom: 24, width: 16, height: hgt, borderRadius: 4, background: C.lamp, opacity: i === 18 ? 1 : 0.62 }} />;
-          })}
-        </div>
-        <div style={{ position: "absolute", left: 810, top: 240, width: 370, height: 480, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: 20 }}>
-          <Label>Top artists</Label>
-          {ARTISTS.slice(0, 5).map((x) => (
-            <div key={x.name} style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20 }}>
-              <Art seed={x.seed} size={44} round />
-              <span style={{ fontFamily: FONT, fontSize: 20, fontWeight: 620, color: C.paper }}>{x.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <Phone screen="overview" w={330} style={{ left: mix(1200, 1470, ph), top: mix(420, 260, ph), opacity: Math.min(1, ph * 2), transform: `rotate(${mix(-6, -2, ph).toFixed(2)}deg)`, boxShadow: `0 0 0 2.5px ${C.grille}, 0 60px 120px rgba(0,0,0,.7)` }} />
-      <div style={{ position: "absolute", left: 120, top: 100, whiteSpace: "nowrap", ...headStyle(80) }}>
+        <Say f={f} size={46} style={subLine} words={[{ t: "Week", at: w("week") }, { t: "on", at: 0 }, { t: "week.", at: 0 }]} />
+      </Copy>
+
+      <Copy f={f} a={CUT.live} b={CUT.devices} style={{ left: 120, top: 110, width: 1680, height: 180 }}>
+        <Say f={f} size={80} style={{ left: 0, top: 0, width: 1680 }} words={[{ t: "Every", at: 0 }, { t: "play", at: 0 }, { t: "as", at: 0 }, { t: "it", at: 0 }, { t: "happens.", at: 0 }, { t: "\n", at: 0 }, { t: "And", at: w("and") }, { t: "everything", at: 0 }, { t: "before.", at: 0 }]} />
+      </Copy>
+
+      <Copy f={f} a={CUT.devices} b={CUT.end - END_OUT} style={{ left: 120, top: 100, whiteSpace: "nowrap", ...headStyle(80) }}>
         On your desktop.{" "}
         <span style={{ opacity: r(f, pocket - 1, 10) }}>
           In your <span style={{ color: C.lamp }}>pocket.</span>
         </span>
-      </div>
-    </Stage>
+      </Copy>
+      {f >= pocket - 8 && f < CUT.end - END_OUT ? (
+        <Phone screen="overview" w={330} style={{ left: mix(1200, 1470, ph) + phOut * 60, top: mix(420, 260, ph), opacity: Math.min(1, ph * 2) * (1 - phOut), transform: `rotate(${mix(-6, -2, ph).toFixed(2)}deg)`, boxShadow: `0 0 0 2.5px ${C.grille}, 0 60px 120px rgba(0,0,0,.7)` }} />
+      ) : null}
+    </>
   );
 };
 
-// ── 9. Sign-off and call to action, one line of voice at a time: the lockup lights on the music's
-// downbeat as she says the name; "Free and open source" brings the repo; "Self-host in one
-// command" brings the command, which types itself.
+// ── 10. Sign-off and call to action. The window folds into the mark and the meter lights on the
+// music's downbeat as she says the name; then the repo; then "Self-host in one command" and the
+// command, which types itself.
 const CMD = "docker compose up -d";
 const SignOff = ({ f }: { f: number }) => {
   const a = CUT.end;
-  if (f < a) return null;
-  const size = 150;
-  const pitch = size / 3.786;
-  const rr = pitch * 0.393;
-  const lockW = size * (1606.1 / 1157 + 4855 / 1157);
-  const lampsOn = r(f, a + 1, 8);
-  const free = r(f, w("free") - 1, 10);
-  const repo = r(f, w("free") + 7, 10);
+  if (f < a - 4) return null;
   const host = w("selfHost");
+  const repo = r(f, w("free") - 1, 10);
   const box = r(f, host - 3, 10);
   const typed = Math.max(0, Math.min(CMD.length, Math.floor(f - (host + 2))));
   const fade = r(f, FINAL + 6, DURATION - FINAL - 8, E.inOut);
   const centred: React.CSSProperties = { position: "absolute", left: 0, right: 0, textAlign: "center" };
   return (
-    <AbsoluteFill style={{ opacity: r(f, a, 6) * (1 - fade) }}>
-      <div style={{ position: "absolute", left: 960 - lockW / 2, top: 196, width: lockW, height: size }}>
-        <svg width={size} height={size} style={{ position: "absolute", overflow: "visible" }}>
-          {Array.from({ length: 16 }, (_, i) => {
-            const col = Math.floor(i / 4);
-            const row = i % 4;
-            const lit = LIT.some(([c, w2]) => c === col && w2 === row);
-            return (
-              <g key={i}>
-                <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.grille} />
-                {lit ? <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr * lampsOn} fill={C.lamp} /> : null}
-              </g>
-            );
-          })}
-        </svg>
-        <Img src={staticFile("logo/word.svg")} style={{ position: "absolute", left: size * (1606.1 / 1157), top: 0, width: size * (4855 / 1157), height: size }} />
-      </div>
-      <div style={{ ...centred, top: 398, ...headStyle(64), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.02em", opacity: free }}>
-        Free and <span style={{ color: C.lamp }}>open source</span>
-      </div>
-      <div style={{ ...centred, top: 494, ...headStyle(46), fontStretch: "112%", fontWeight: 640, letterSpacing: "-0.01em", opacity: repo }}>github.com/jasoncronje/spotussi</div>
+    <AbsoluteFill style={{ opacity: 1 - fade }}>
+      <Lockup x={RECT.mark.x} y={END_LOCK.y} size={END_LOCK.size} grille={r(f, a - 4, 5)} lamp={(i) => r(f, a - 1 + i * 0.8, 4)} word={r(f, a, 8)} wordDx={(1 - r(f, a, 10)) * -24} />
+      <div style={{ ...centred, top: 452, ...headStyle(54), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.015em", opacity: repo, transform: `translateY(${((1 - repo) * 20).toFixed(1)}px)` }}>github.com/jasoncronje/spotussi</div>
       {/* The call to action: the label, then the install command types into a terminal pill. */}
-      <div style={{ ...centred, top: 646, fontFamily: FONT, fontSize: 34, fontWeight: 560, color: C.mist, opacity: box }}>Self-host in one command</div>
-      <div style={{ position: "absolute", left: 960 - 420, top: 706, width: 840, height: 100, borderRadius: 50, background: "#101114", boxShadow: `0 0 0 2px ${EDGE}`, opacity: box, display: "flex", alignItems: "center", padding: "0 44px", gap: 22, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 38, color: C.paper }}>
+      <div style={{ ...centred, top: 636, fontFamily: FONT, fontSize: 34, fontWeight: 560, color: C.mist, opacity: box }}>Self-host in one command</div>
+      <div style={{ position: "absolute", left: 960 - 420, top: 696, width: 840, height: 100, boxSizing: "border-box", borderRadius: 50, background: "#101114", boxShadow: `0 0 0 2px ${EDGE}`, opacity: box, display: "flex", alignItems: "center", padding: "0 44px", gap: 22, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 38, color: C.paper }}>
         <span style={{ color: C.lamp }}>$</span>
         <span>{CMD.slice(0, typed)}</span>
         <span style={{ width: 18, height: 40, background: C.lamp, opacity: typed < CMD.length ? 1 : 0, marginLeft: -14 }} />
@@ -777,15 +947,11 @@ const Music = () => {
 export const Launch = ({ bgm = true }: { bgm?: boolean }) => {
   const f = useCurrentFrame();
   return (
-    <AbsoluteFill style={{ fontFamily: FONT }}>
-      <Atmos f={f} />
+    <AbsoluteFill style={{ fontFamily: FONT, background: "#0a0b0d" }}>
       <Year f={f} />
-      <Top f={f} />
-      <ArtistShot f={f} />
-      <Sessions f={f} />
-      <Taste f={f} />
-      <LiveImport f={f} />
-      <Devices f={f} />
+      <Intro f={f} />
+      <Surface f={f} />
+      <Captions f={f} />
       <SignOff f={f} />
       <AbsoluteFill style={{ background: "#000", opacity: 1 - r(f, 0, 20, E.inOut) }} />
       {bgm ? <Music /> : null}
