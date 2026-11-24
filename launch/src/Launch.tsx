@@ -59,7 +59,7 @@ const Open = () => {
   // The mark starts alone in the centre, then slides left as the word comes in.
   const slide = ramp(frame, B(6) - 6, 26, EASE.smooth);
   const x = 960 - markSize / 2 + (960 - lockW / 2 - (960 - markSize / 2)) * slide;
-  const exit = ramp(frame, B(11.5), 12, EASE.exit);
+  const exit = ramp(frame, B(11) - 2, 12, EASE.exit); // done 3 f before the cut
   return (
     <AbsoluteFill style={{ opacity: 1 - exit, transform: `translateY(${(-30 * exit).toFixed(2)}px)` }}>
       <div style={{ position: "absolute", left: x, top: 360 }}>
@@ -78,11 +78,12 @@ const PHONE_Y = (1080 - phoneH(PHONE_W)) / 2;
 
 const Hero = () => {
   const frame = useCurrentFrame();
-  const rise = ramp(frame, 0, 34, EASE.out);
+  const rise = ramp(frame, -8, 34, EASE.out); // pre-rolled so frame 0 already shows the phone
   const push = 1 + 0.025 * ramp(frame, 0, len(SHOTS.hero), EASE.smooth);
   const lift = 1 - rise; // 1 while it is still off the floor
+  const exit = ramp(frame, len(SHOTS.hero) - 10, 9, EASE.exit);
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ opacity: 1 - exit }}>
       <FloorShadow x={PHONE_X + PHONE_W / 2} y={PHONE_Y + phoneH(PHONE_W)} w={PHONE_W * 0.9} lift={lift} />
       <Phone
         screen="overview"
@@ -93,7 +94,7 @@ const Hero = () => {
           transform: `translateY(${(lift * 120).toFixed(2)}px) scale(${(push * (0.96 + 0.04 * rise)).toFixed(4)})`,
         }}
       />
-      <Caption lines={["Spotify stats,", "in your *pocket."]} sub="Your listening history, now on iPhone." at={10} />
+      <Caption lines={["Spotify stats,", "in your *pocket."]} sub="Your self-hosted listening history, on iPhone." at={4} />
     </AbsoluteFill>
   );
 };
@@ -115,11 +116,11 @@ const Feature = ({
   tilt?: number;
 }) => {
   const frame = useCurrentFrame();
-  const enter = ramp(frame, 0, 18, EASE.snappy);
-  const exit = ramp(frame, dur - 9, 9, EASE.exit);
+  const enter = ramp(frame, -4, 20, EASE.snappy); // pre-rolled so frame 0 already shows the phone
+  const exit = ramp(frame, dur - 10, 9, EASE.exit); // done a frame before the cut
   const drift = 1 + 0.02 * ramp(frame, 0, dur, EASE.smooth);
-  const dx = (1 - enter) * 720 * enterFrom - exit * 900;
-  const speed = Math.abs((1 - ramp(frame, 0, 18, (t) => t)) * 40) + exit * 50;
+  const dx = (1 - enter) * 720 * enterFrom + exit * 900; // leaves to the right, away from the caption
+  const speed = Math.abs((1 - ramp(frame, -4, 20, (t) => t)) * 40) + exit * 50;
   return (
     <AbsoluteFill>
       <Phone
@@ -132,7 +133,7 @@ const Feature = ({
         }}
       />
       <div style={{ opacity: 1 - exit }}>
-        <Caption lines={lines} sub={sub} at={6} />
+        <Caption lines={lines} sub={sub} at={0} />
       </div>
     </AbsoluteFill>
   );
@@ -143,12 +144,13 @@ const DropFeature = (props: { screen: string; lines: string[]; sub: string; dur:
   const frame = useCurrentFrame();
   const settle = 1.035 - 0.035 * ramp(frame, 0, 8, EASE.out); // shutter afterglow
   const flash = props.flash ? interpolate(frame, [0, 4], [0.9, 0], { extrapolateRight: "clamp", easing: EASE.out }) : 0;
-  const exit = ramp(frame, props.dur - 6, 6, EASE.exit);
+  const exit = ramp(frame, props.dur - 7, 6, EASE.exit);
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{ transform: `scale(${settle.toFixed(4)})`, opacity: 1 - exit }}>
-        <Phone screen={props.screen} style={{ left: PHONE_X, top: PHONE_Y }} />
-        <Caption lines={props.lines} sub={props.sub} at={2} />
+      <AbsoluteFill style={{ opacity: 1 - exit }}>
+        {/* Only the phone takes the hit (aesthetic R4: full-frame hits are kept for the two slams). */}
+        <Phone screen={props.screen} style={{ left: PHONE_X, top: PHONE_Y, transform: `scale(${settle.toFixed(4)})` }} />
+        <Caption lines={props.lines} sub={props.sub} at={-4} />
       </AbsoluteFill>
       {flash > 0 ? <AbsoluteFill style={{ background: C.paper, opacity: flash }} /> : null}
     </AbsoluteFill>
@@ -165,8 +167,8 @@ const Wall = () => {
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <div style={{ position: "absolute", left: 168, top: 200 }}>
-        <Words items={words("All yours.", 0)} dy={30} blur={14} style={headStyle(92)} />
-        <Words items={words("On *your server.", 10)} dy={30} blur={14} style={headStyle(92)} />
+        <Words items={words("All yours.", -6)} dy={30} blur={14} style={headStyle(92)} />
+        <Words items={words("On *your server.", 4)} dy={30} blur={14} style={headStyle(92)} />
       </div>
       <div style={{ position: "absolute", left: 1010, top: 196, width: 760 }}>
         {WALL.map((t, i) => {
@@ -203,15 +205,16 @@ const Wall = () => {
 
 // ── 9. Outro: every screen the film showed comes back for the group photo
 // (outro-group-photo-launch), then the lockup lands and the meter strip fills.
+const GW = 330;
 const GROUP = [
-  { screen: "library", x: 120, rot: -9, dx: -520, cue: 0 },
-  { screen: "stats", x: 470, rot: -4, dx: -380, cue: 7 },
-  { screen: "overview", x: 820, rot: 0, dx: 0, cue: 15 },
-  { screen: "artist", x: 1170, rot: 4, dx: 380, cue: 22 },
-  { screen: "sessions", x: 1520, rot: 9, dx: 520, cue: 30 },
-];
+  { screen: "library", rot: -10, dx: -560, cue: -4 },
+  { screen: "stats", rot: -6, dx: -420, cue: 3 },
+  { screen: "top", rot: -2, dx: -160, cue: 10 },
+  { screen: "overview", rot: 2, dx: 160, cue: 17 },
+  { screen: "artist", rot: 6, dx: 420, cue: 24 },
+  { screen: "sessions", rot: 10, dx: 560, cue: 31 },
+].map((g, i) => ({ ...g, x: 960 + (i - 2.5) * 300 - GW / 2 })); // all six inside the frame
 export const OUTRO_LOCK = B(60) - B(56); // the lockup stamp, relative to the shot
-const GW = 380;
 
 const Outro = () => {
   const frame = useCurrentFrame();
@@ -221,6 +224,7 @@ const Outro = () => {
   const lock = ramp(frame, OUTRO_LOCK, 22, EASE.out);
   const tag = ramp(frame, OUTRO_LOCK + 16, 22, EASE.out);
   const strip = ramp(frame, OUTRO_LOCK + 20, 30, EASE.smooth);
+  const STRIP_W = 15 * 24 + 2 * 0.393 * 24;
   const fade = ramp(frame, B(76) - B(56), len(SHOTS.outro) - (B(76) - B(56)), EASE.smooth);
   return (
     <AbsoluteFill style={{ opacity: 1 - fade }}>
@@ -239,7 +243,7 @@ const Outro = () => {
               w={GW}
               style={{
                 left: g.x,
-                top: 500 + Math.abs(g.rot) * 6,
+                top: 540 + Math.abs(g.rot) * 6,
                 opacity: interpolate(frame, [g.cue, g.cue + 3], [0, 1], { extrapolateRight: "clamp" }) * (1 - 0.15 * recede),
                 transform: `translate(${((1 - t) * g.dx).toFixed(2)}px, ${((1 - t) * 420).toFixed(2)}px) rotate(${(g.rot * (2 - t)).toFixed(2)}deg)`,
                 filter: `saturate(${(1 - 0.2 * recede).toFixed(3)})`,
@@ -263,9 +267,9 @@ const Outro = () => {
         <Lockup size={120} lampTimes={LAMP_ORDER.map(() => -100)} wordAt={-100} />
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, top: 336, textAlign: "center", opacity: tag, transform: `translateY(${((1 - tag) * 14).toFixed(2)}px)`, ...subStyle(38), color: C.paper }}>
-        Spotify stats, self-hosted.
+        Your Spotify stats, on your own server.
       </div>
-      <div style={{ position: "absolute", left: 960 - 15 * 24 * 0.5, top: 420 }}>
+      <div style={{ position: "absolute", left: 960 - STRIP_W / 2, top: 410, opacity: tag }}>
         <Strip cols={16} pitch={24} seed={5} p={strip} />
       </div>
     </AbsoluteFill>
@@ -281,7 +285,7 @@ const PEAK_MS: Record<string, number> = {
   "lamp-click-1": 30,
   "lamp-click-2": 40,
   "lamp-cascade": 790,
-  knob: 1340,
+  knob: 340, // trimmed to start 1.0 s in
   "whoosh-1": 450,
   "whoosh-2": 570,
   "whoosh-long": 740,
@@ -301,31 +305,37 @@ const at = (target: number, src: string, volume: number, durationInFrames?: numb
 
 export const SFX: Sfx[] = [
   // Open: one relay click per lamp, two takes alternating, stepping down so it doesn't read as a machine gun.
-  ...LAMP_TIMES.map((f, i) => at(f, i % 2 ? "lamp-click-2" : "lamp-click-1", 0.55 - i * 0.02)),
-  at(B(6) + 8, "whoosh-2", 0.25), // the word slides out of the mark
+  ...LAMP_TIMES.map((f, i) => at(f, i % 2 ? "lamp-click-2" : "lamp-click-1", 0.42 - i * 0.015)),
+  at(B(6) + 8, "whoosh-2", 0.2), // the word slides out of the mark
   // Hero: the phone rises.
-  at(SHOTS.hero.from + 10, "whoosh-1", 0.35),
+  at(SHOTS.hero.from + 4, "whoosh-1", 0.3),
   // Features glide in.
-  at(SHOTS.top.from + 6, "whoosh-2", 0.4),
-  at(SHOTS.artist.from + 6, "whoosh-1", 0.4),
+  at(SHOTS.top.from + 4, "whoosh-2", 0.3),
+  at(SHOTS.artist.from + 4, "whoosh-1", 0.3),
   // Build into the drop, then the first slam.
-  at(SHOTS.sessions.from - 1, "riser", 0.45),
-  at(SHOTS.sessions.from, "impact", 0.45),
-  at(SHOTS.stats.from + 2, "knob", 0.35, 30), // range switch feel on Stats
-  at(SHOTS.library.from, "glass-tap", 0.7),
-  at(SHOTS.library.to - 2, "tape-stop", 0.4), // the drop ends, the breakdown starts
+  at(SHOTS.sessions.from - 1, "riser", 0.4),
+  at(SHOTS.sessions.from, "impact", 0.5),
+  at(SHOTS.stats.from + 4, "knob", 0.4), // range switch feel on Stats
+  at(SHOTS.library.from, "glass-tap", 0.4),
+  at(SHOTS.library.to - 2, "tape-stop", 0.35), // the drop ends, the breakdown starts
   // Breakdown: a lamp per line.
-  ...[0, 1, 2, 3, 4].map((i) => at(SHOTS.wall.from + WALL_AT(i) + 4, i % 2 ? "lamp-click-2" : "lamp-click-1", 0.5)),
+  ...[0, 1, 2, 3, 4].map((i) => at(SHOTS.wall.from + WALL_AT(i) + 4, i % 2 ? "lamp-click-2" : "lamp-click-1", 0.4)),
   // Outro: phones arrive, the lockup stamps (second and last slam), the strip fills, afterglow.
   at(SHOTS.outro.from + 10, "whoosh-long", 0.35),
-  at(SHOTS.outro.from + OUTRO_LOCK, "impact", 0.42),
-  at(SHOTS.outro.from + OUTRO_LOCK + 34, "lamp-cascade", 0.45),
-  at(SHOTS.outro.from + OUTRO_LOCK + 30, "shimmer", 0.22),
+  at(SHOTS.outro.from + OUTRO_LOCK, "impact", 0.5),
+  at(SHOTS.outro.from + OUTRO_LOCK + 34, "lamp-cascade", 0.4),
+  at(SHOTS.outro.from + OUTRO_LOCK + 30, "shimmer", 0.3),
 ];
 
 const Bgm = () => {
   const frame = useCurrentFrame();
-  const v = interpolate(frame, [0, 6, B(76), DURATION], [0, 0.6, 0.6, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const base = interpolate(frame, [0, 6, B(76), DURATION], [0, 0.6, 0.6, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Duck about 5 dB under each cue (4 f down, held through the cue's first 10 f, 8 f back up).
+  const duck = SFX.reduce((d, c) => {
+    const k = interpolate(frame, [c.from - 4, c.from, c.from + 10, c.from + 18], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+    return Math.max(d, k);
+  }, 0);
+  const v = base * (1 - 0.44 * duck);
   return <Audio src={staticFile("audio/bgm.mp3")} volume={v} />;
 };
 
@@ -346,7 +356,7 @@ export const Launch = ({ bgm = true }: { bgm?: boolean }) => (
       <Feature screen="artist" lines={["Go deep on", "any *artist."]} sub="Rank, all-time plays and your first listen." dur={len(SHOTS.artist)} tilt={-3} />
     </Scene>
     <Scene s={SHOTS.sessions}>
-      <DropFeature screen="sessions" lines={["Every session,", "*remembered."]} sub="Grouped into the stretches you actually listened." dur={len(SHOTS.sessions)} flash />
+      <DropFeature screen="sessions" lines={["Every session,", "*remembered."]} sub="Your history, grouped into the stretches you actually listened." dur={len(SHOTS.sessions)} flash />
     </Scene>
     <Scene s={SHOTS.stats}>
       <DropFeature screen="stats" lines={["Watch your", "taste *move."]} sub="Plays by day and artist share, week on week." dur={len(SHOTS.stats)} />

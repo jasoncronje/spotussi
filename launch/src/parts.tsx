@@ -5,12 +5,14 @@ import { C, EASE, FONT, mulberry32, ramp } from "./kit";
 
 // ── blur-slide (video-shotcraft typography/blur-slide): y, blur and opacity
 // share one progress and one ease-out, so each word rises out of soft focus.
-export type Word = { text: string; start: number; dur?: number; lit?: boolean };
+export type Word = { text: string; start: number; dur?: number; lit?: boolean; tail?: string };
 
 export const words = (text: string, start: number, gap = 4, dur = 22): Word[] =>
   text.split(" ").map((t, i) => {
     const lit = t.startsWith("*");
-    return { text: lit ? t.slice(1) : t, start: start + i * gap, dur, lit };
+    const raw = lit ? t.slice(1) : t;
+    const m = lit ? raw.match(/^(.*?)([.,!?]*)$/) : null;
+    return { text: m ? m[1] : raw, tail: m ? m[2] : undefined, start: start + i * gap, dur, lit };
   });
 
 export const Words = ({
@@ -37,10 +39,10 @@ export const Words = ({
               opacity: p,
               transform: `translateY(${((1 - p) * dy).toFixed(2)}px)`,
               filter: p >= 0.999 ? undefined : `blur(${((1 - p) * blur).toFixed(2)}px)`,
-              color: w.lit ? C.lamp : undefined,
             }}
           >
-            {w.text}
+            <span style={{ color: w.lit ? C.lamp : undefined }}>{w.text}</span>
+            {w.tail}
           </span>
         );
       })}

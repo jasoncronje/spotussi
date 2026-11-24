@@ -9,7 +9,7 @@ Mode: autonomous (video-shotcraft pipeline; the owner said "take your picks and 
 - **Must show:** Overview, Top, Artist, Sessions, Stats, Library; the self-hosted, offline and open-source promise.
 - **Format:** 1920×1080, 30 fps, 43 s, English, no voice-over. Two renders: with music and without (`props-nobgm.json`).
 - **Data:** only the demo-mode simulator captures in `brand/marketing/captures` (invented names, no real listening data). Meter strips use seeded heights.
-- **Copy:** every line comes from the approved App Store images in `brand/scripts/marketing.mjs`; nothing claims App Store availability.
+- **Copy:** every line comes from the approved App Store, wide and social images in `brand/scripts/marketing.mjs`; nothing claims App Store availability.
 
 ## Look and motion
 
@@ -21,7 +21,7 @@ Deliberate departures from the cards: no gold dust, stage light or glow in the o
 
 ## Music
 
-`bgm-electro` take B (ElevenLabs). Measured 120.0 BPM, first beat 0.526 s (`BEAT0 = 15.78 f`, one beat = 15 f). Quiet 0–16.5 s, drop at beat 32 (16.5 s), dip at beats 48–56, second high 56–72, ends about 42.5 s. A Whisper pass returned only its usual hallucination on instrumentals, so no vocals were found.
+`bgm-electro` take B (ElevenLabs). Measured 120.0 BPM, first beat 0.526 s (`BEAT0 = 15.78 f`, one beat = 15 f). Lighter 0–16.5 s (only about 4 dB below the drop), drop at beat 32 (16.5 s), a thinner section at beats 48–56 (not quieter), second high 56–72, ends about 42.5 s. A Whisper pass returned only its usual hallucination on instrumentals, so no vocals were found.
 
 ## Storyboard
 
@@ -39,9 +39,14 @@ Deliberate departures from the cards: no gold dust, stage light or glow in the o
 
 ## Sound
 
-Picks (from `public/palette.html`, chosen by measurement, not by ear): lamp-click C and A alternating, lamp-cascade B, knob B, whoosh A, C and B, glass-tap B, tape-stop B, riser B, impact B, shimmer B. Each cue pins the file's own energy peak to its target frame. The output track offset measured 0 f on this pipeline (two impact probes). Mix peak −2.0 dB.
+Picks (from `public/palette.html`, chosen by measurement, not by ear): lamp-click C and A alternating, lamp-cascade B, knob B, whoosh A, C and B, glass-tap B, tape-stop B, riser B, impact B, shimmer B. Each cue pins the file's own energy peak to its target frame. The output track offset measured 0 f on this pipeline (two impact probes). SFX files are normalized to a −1 dBFS sample peak (gains recorded in the commit), and the music ducks about 5 dB under every cue. Mix: −3.3 dB peak, −19.1 dB mean.
+
+## Independent review (draft 1)
+
+A fresh-context reviewer found 11 issues; fixed: the knob cue never reached its peak (file trimmed, cue moved onto Stats); cues buried under the music (normalized files, ducking); four seams that popped to a blank frame (exits finish before each cut, entrances pre-rolled); Top missing from the outro (six phones now); meter strip early, off-centre and touching the phones; full-frame hits on every drop cut (now only the phone settles, the flash stays on the first hit); three unapproved copy lines; green full stops; phones exiting over captions (they now leave to the right). Kept: the lamp's brief brightness flash, which the hero reel also uses.
 
 ## Known gaps in draft 1
 
 - No hand-listening has been done; the sound picks are by measurement only.
+- Loudness is about −18 LUFS; social platforms sit near −14.
 - The workbench manifest (`src/workbench.ts`) is not written yet.
