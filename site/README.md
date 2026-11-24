@@ -27,7 +27,7 @@ The marketing page for spotussi: plain HTML, CSS and a little JavaScript, no bui
 | Deploy command | `npx wrangler deploy` (reads `wrangler.jsonc`) |
 | Build watch paths | include `site/*`, `wrangler.jsonc`; exclude `node_modules/**, .git/` (paths are from the repository root) |
 
-No build variables or secrets. Settings live in the dashboard (Workers & Pages → `spotussi` → Settings → Builds), not in this repo. **Status: not yet connected (Jason does this in the dashboard).** Until then, merges to `main` do not deploy the site.
+No build variables or secrets. Settings live in the dashboard (Workers & Pages → `spotussi` → Settings → Builds), not in this repo. **Status: connected 2026-11-24** (Cloudflare account e00ae2a1…, the shared `Workers Builds - 2026-11-19` API token, preview builds off). The first Builds deploy was the merge of #55.
 
 **Pull request previews are gone.** The old GitHub Actions workflow uploaded a preview at `<branch>-spotussi.<subdomain>.workers.dev` for each pull request; Workers Builds runs for `main` only, so check changes locally (the `spotussi-site` launch configuration) before merging.
 

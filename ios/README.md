@@ -7,7 +7,7 @@ A read-only native app for one Spotussi instance. Scope and decisions: [docs/pro
 | Path | What it is |
 |---|---|
 | `Spotussi/` | The app target: screens and the app entry point |
-| `SpotussiKit/` | A local Swift package. `SpotussiAPI` is the client generated from `api/openapi.yaml`. `SpotussiKit` holds pairing, the client set-up, the demo data, the brand's colours and type, number and date formatting, the screens' view data and artwork loading |
+| `SpotussiKit/` | A local Swift package. `SpotussiAPI` is the client generated from `api/openapi.yaml`. `SpotussiKit` holds pairing, the client set-up, the demo data and its generated cover art, the brand's colours and type, number and date formatting, the screens' view data and artwork loading |
 | `project.yml` | The XcodeGen spec that `Spotussi.xcodeproj` is generated from |
 | `openapi-generator-config.yaml` | Which API operations the client includes |
 | `scripts/` | Regenerating the client, re-recording the demo data, drawing the app icon |
@@ -93,7 +93,7 @@ Each build, in Xcode:
 3. Target Spotussi → General → Identity: raise Build above the last upload.
 4. Choose Any iOS Device (arm64) as the destination, then Product → Archive.
 5. In the Organizer: Distribute App → TestFlight & App Store → Distribute.
-6. In App Store Connect → TestFlight, wait for processing (10 to 30 minutes), then add internal testers. External testers also need Test Information (a description, a feedback address, a privacy policy URL) and Beta App Review; tell the reviewer to tap Try the demo on the first screen.
+6. In App Store Connect → TestFlight, wait for processing (10 to 30 minutes), then add internal testers. External testers also need Test Information (a description, a feedback address, a privacy policy URL) and Beta App Review; tell the reviewer to tap Try the demo on the first screen. For the App Store itself (blockers, metadata, review notes), see [app-store.md](../docs/project/app-store.md).
 
 The same from the command line (on the MacBook Air, through the build slot), with your team ID:
 

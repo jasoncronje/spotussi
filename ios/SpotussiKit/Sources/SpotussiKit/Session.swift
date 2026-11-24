@@ -120,7 +120,7 @@ public final class Session {
     /// The request for an `image_url` from the API: resolved against the
     /// instance when it is relative, and carrying the token only when it
     /// goes to the instance itself, never to another host. Nil in demo
-    /// mode, whose artwork the app can't draw, and for anything but http(s).
+    /// mode, whose artwork DemoArtwork draws, and for anything but http(s).
     public func artworkRequest(for imageURL: String) -> URLRequest? {
         guard case .paired(let instance, _) = state,
             let url = URL(string: imageURL, relativeTo: instance.baseURL)?.absoluteURL,

@@ -100,6 +100,20 @@ private struct ArtworkLoader<Placeholder: View>: View {
     }
 
     private func load() async {
+        if session.isDemo, let url {
+            guard pixels > 0 else { return }
+            let key = "demo:\(url)#\(pixels)"
+            if let cached = ArtworkMemory.shared.image(for: key) {
+                show(cached, from: url)
+                return
+            }
+            guard let drawn = await DemoArtwork.image(for: url, maxPixelSize: pixels),
+                !Task.isCancelled
+            else { return }
+            ArtworkMemory.shared.store(drawn, for: key)
+            show(drawn, from: url)
+            return
+        }
         guard let url, let request = session.artworkRequest(for: url) else {
             show(nil, from: nil)
             return
