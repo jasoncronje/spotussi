@@ -9,13 +9,79 @@ import { AbsoluteFill, Audio, Easing, Img, Sequence, interpolate, staticFile, us
 import { C, FONT, mulberry32 } from "./kit";
 import { Phone, headStyle } from "./parts";
 
-export const DURATION = 960;
+export const DURATION = 1140;
 const VO = 0.3;
-// The artist line was re-voiced and spliced in at 9.56 s; it runs 1.34 s longer than the old one,
-// so every word after it (original time 12.5 s on) moves by that much.
-const SPLICE = 1.34;
-const v = (s: number) => Math.round((s + (s >= 12.5 ? SPLICE : 0) + VO) * 30); // voice time → frame
-const va = (t: number) => Math.round((9.56 + t + VO) * 30); // a word in the spliced artist line
+// Voice-over: one continuous take (ElevenLabs "Laurel"), with short pauses cut in at every slide
+// change so each slide can settle (scripts above, cuts in vo.wav). Scenes are cued to its words.
+// v(key): the key is the word's time in the original script timing; the value is where that word
+// now sits in vo.wav, in seconds. va(key) does the same for the "Your number one artist" line.
+const VO_AT: Record<string, number> = {
+  "0": 0.06,
+  "0.84": 0.96,
+  "1.06": 1.22,
+  "1.46": 1.62,
+  "1.66": 1.84,
+  "2.16": 2.89,
+  "4.38": 5.39,
+  "5.58": 6.55,
+  "5.92": 6.81,
+  "6.1": 6.97,
+  "6.38": 7.27,
+  "6.96": 8.51,
+  "7.28": 8.91,
+  "7.64": 9.27,
+  "7.9": 9.55,
+  "8.3": 10.03,
+  "8.68": 10.45,
+  "8.88": 10.63,
+  "9.08": 10.85,
+  "9.56": 12.16,
+  "12.52": 17.16,
+  "12.98": 17.38,
+  "13.44": 17.8,
+  "13.98": 18.36,
+  "14.26": 18.78,
+  "14.5": 19.12,
+  "14.94": 20.45,
+  "15.38": 20.63,
+  "15.54": 20.79,
+  "15.74": 21.03,
+  "16.02": 21.33,
+  "16.58": 21.99,
+  "16.8": 22.17,
+  "17.22": 23.41,
+  "17.56": 23.57,
+  "17.76": 23.77,
+  "18.12": 24.15,
+  "18.48": 24.51,
+  "18.72": 24.77,
+  "18.88": 24.93,
+  "19.2": 25.25,
+  "19.48": 25.59,
+  "19.72": 25.83,
+  "20.2": 26.37,
+  "20.82": 27.93,
+  "21.22": 28.05,
+  "21.36": 28.21,
+  "22.2": 29.13,
+  "22.46": 29.33,
+  "22.6": 29.45,
+  "23.08": 30.61,
+  "23.9": 31.51,
+  "25.5": 33.25,
+  "27.3": 35.13,
+};
+const VA_AT: Record<string, number> = { "0": 12.16, "0.16": 12.3, "0.82": 12.74, "1.5": 13.42, "2.88": 14.88 };
+const v = (s: number) => {
+  const t = VO_AT[String(s)];
+  if (t === undefined) throw new Error(`No voice cue for ${s}`);
+  return Math.round((t + VO) * 30);
+};
+const va = (t: number) => {
+  const x = VA_AT[String(t)];
+  if (x === undefined) throw new Error(`No voice cue for artist ${t}`);
+  return Math.round((x + VO) * 30);
+};
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const E = {
   out: Easing.bezier(0.16, 1, 0.3, 1),
