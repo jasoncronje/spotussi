@@ -1,3 +1,4 @@
 public/audio/palette/*.mp3
 node_modules/
 out/
+public/cards/
