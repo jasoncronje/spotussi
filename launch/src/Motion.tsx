@@ -1,9 +1,10 @@
-// The spotussi launch film (draft 15), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 16), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
 // The order: the hook (Wrapped comes once a year), the introduction (what spotussi is, said once),
-// the idea (your whole history, on your own server), five features, the three ways in (web app,
+// the answer to the hook (not once a year: every single day, your whole history, on your own
+// server), five features, the three ways in (web app,
 // iOS app, your agent over MCP), the sign-off.
 //
 // 35 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
@@ -26,7 +27,7 @@ const cutAt = (k: keyof typeof TIMING.cutBeats) => beat(TIMING.cutBeats[k]);
 const CUT = {
   intro: cutAt("intro"),
   history: cutAt("history"),
-  server: cutAt("server"),
+  server: w("on") - 5, // not a slide change: the server rises under the pad as she says "on your own server"
   top: cutAt("top"),
   artist: cutAt("artist"),
   sessions: cutAt("sessions"),
@@ -158,14 +159,17 @@ type PageKind = "blank" | "full" | "wrapped";
 const CalPage = ({ day, kind }: { day: number; kind: PageKind }) => {
   const { m, d } = monthDay(day);
   const wrapped = kind === "wrapped";
+  const lit = kind !== "blank";
   const song = SONGS[(day * 7) % SONGS.length];
   const mins = Math.round(20 + DAYS[day] * 240);
   return (
     <div style={{ position: "absolute", inset: 0, borderRadius: 26, background: wrapped ? "#0f2a19" : "#17181c", boxShadow: `inset 0 0 0 1.5px ${wrapped ? "#1f6b3c" : EDGE}`, overflow: "hidden" }}>
-      {/* Header band: month and weekday, like a desk calendar's red strip, in graphite. */}
-      <div style={{ height: 96, background: wrapped ? C.lamp : "#23252b", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 36px" }}>
-        <span style={{ ...headStyle(40), color: wrapped ? "#06140b" : C.paper }}>{m}</span>
-        <span style={{ fontFamily: FONT, fontSize: 24, fontWeight: 600, color: wrapped ? "#06140b" : MUTE }}>{WEEKDAYS[day % 7]}</span>
+      {/* Header band: month and weekday, like a desk calendar's red strip. A blank day's is graphite.
+          The Wrapped page's is lit green, and so is every full page's: with spotussi, every day is
+          the day you get your stats. */}
+      <div style={{ height: 96, background: lit ? C.lamp : "#23252b", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 36px" }}>
+        <span style={{ ...headStyle(40), color: lit ? "#06140b" : C.paper }}>{m}</span>
+        <span style={{ fontFamily: FONT, fontSize: 24, fontWeight: 600, color: lit ? "#06140b" : MUTE }}>{WEEKDAYS[day % 7]}</span>
       </div>
       <div style={{ position: "absolute", left: 36, top: 112, ...headStyle(230), color: wrapped ? C.lamp : C.paper, letterSpacing: "-0.05em" }}>{d}</div>
       <div style={{ position: "absolute", left: 36, right: 36, bottom: 40, height: 210 }}>
@@ -306,7 +310,8 @@ const surfaceStyle = (rc: Rect): React.CSSProperties => ({ position: "absolute",
 
 // ── 1. The hook. A tear-off calendar: the year's pages flip by blank and land on the one page
 // with anything on it, in December: Wrapped.
-// ── 3. The year again, every page full, faster and faster; then the pad drops into your server.
+// ── 3. The answer: not once a year, every single day. The year again, and this time every page is
+// lit and full, faster and faster; then the pad drops into your server.
 const Year = ({ f }: { f: number }) => {
   const intro = CUT.intro;
   const hist = CUT.history;
@@ -319,10 +324,9 @@ const Year = ({ f }: { f: number }) => {
   const act1 = [...blankDays.map((day) => ({ day, kind: "blank" as PageKind })), { day: WRAPPED_DAY, kind: "wrapped" as PageKind }];
   const s1 = schedule(16, w("once") - 2, act1.length - 1, 1);
   // Act 2: Jan 1 onwards, every page full, done before the pad moves.
-  const fullDays = Array.from({ length: 12 }, (_, i) => Math.round((i / 11) * 364));
+  const fullDays = Array.from({ length: 20 }, (_, i) => Math.round((i / 19) * 364));
   const act2 = fullDays.map((day) => ({ day, kind: "full" as PageKind }));
-  const s2 = schedule(hist + 12, sv - 10, act2.length - 1, 0.8);
-  const dayNow = act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day;
+  const s2 = schedule(hist + 12, sv - 10, act2.length - 1, 0.6); // slow at first, then faster and faster
 
   // Into the intro slide: the Wrapped page leaves the pad and becomes the mark's first lamp
   // (see Intro); the bare pad slides away.
@@ -368,14 +372,13 @@ const Year = ({ f }: { f: number }) => {
       />
       {f >= hist && f < sv - 3 ? (
         <div style={{ position: "absolute", left: 120, top: 434, width: 1040, opacity: enter(f, hist) * (1 - copyOut), transform: `translateY(${((1 - enter(f, hist)) * 28).toFixed(1)}px)` }}>
-          <div style={{ ...headStyle(80) }}>
-            Your whole history,
+          {/* The answer to the opener, in the same place and size as "comes once a year". */}
+          <div style={{ ...headStyle(88) }}>
+            <span style={{ color: C.mist }}>Not once a year.</span>
             <br />
-            <span style={{ color: C.lamp, opacity: r(f, Math.max(hist + 3, w("every") - 1), 8) }}>every single day.</span>
+            <span style={{ color: C.lamp, opacity: r(f, w("every") - 1, 8) }}>Every single day.</span>
           </div>
-          <div style={{ fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE, marginTop: 36, fontVariantNumeric: "tabular-nums", opacity: r(f, hist + 12, 8) }}>
-            Day {dayNow + 1} of 365
-          </div>
+          <div style={{ ...subLine, fontFamily: FONT, fontSize: 46, marginTop: 30, opacity: r(f, w("history") - 1, 10), transform: `translateY(${((1 - r(f, w("history") - 1, 10)) * 12).toFixed(1)}px)` }}>Your whole listening history.</div>
         </div>
       ) : null}
       <Copy f={f} a={sv - 3} b={b} style={{ left: 120, top: 370, ...headStyle(96) }}>

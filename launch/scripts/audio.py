@@ -5,10 +5,10 @@
 
 Reads   public/audio/vo-v3.wav   the voice take (one continuous read)
         public/audio/bgm-v3.wav  the EDM loop (124 BPM, flat: no intro, no drop, no ending)
-Writes  public/audio/vo-v4.wav   the same take; only the silent pauses at the ten slide changes are
+Writes  public/audio/vo-v4.wav   the same take; only the silent pauses at the nine slide changes are
                                  moved (by 0.25 s at most, 0.6 s before the sign-off), so every slide
                                  change can sit on a beat
-        public/audio/bgm-v4.wav  the same loop re-cut to the film: sped up 2.4% (127 BPM), a filtered intro
+        public/audio/bgm-v4.wav  the same loop re-cut to the film: sped up 1.6% (126 BPM), a filtered intro
                                  that opens when spotussi arrives, the track's own fill and lift moved under
                                  the end card, and a final hit that rings out (it had no ending)
         src/timing.json          word cues, slide-change frames and the beat grid, read by Motion.tsx
@@ -30,57 +30,57 @@ VO_OFFSET = 0.3  # the voice file starts this far into the film
 
 # ── Voice ────────────────────────────────────────────────────────────────────────────────────
 # vo-v3.wav is the take as recorded (ElevenLabs "Laurel", eleven_v4, one continuous read), sped up
-# 6% and levelled to about -16 LUFS:
-#   ffmpeg -i palette/vo4-laurel.mp3 -af "atempo=1.06,loudnorm=I=-15.9:TP=-1.6:LRA=11" -ar 44100 -ac 1 vo-v3.wav
+# 8% and levelled to about -16 LUFS:
+#   ffmpeg -i palette/vo5-laurel.mp3 -af "atempo=1.08,loudnorm=I=-15.2:TP=-1.6:LRA=11" -ar 44100 -ac 1 vo-v3.wav
 # The script: "Spotify Wrapped comes once a year. This is Spot-oo-see. Free, open-source stats for
-# your Spotify. Your whole listening history, every single day, on your own server. Your real top
-# ten. Not just this month's. Your number one artist. Twelve thousand plays, since twenty eleven.
-# Every listening session, play by play. Watch your taste move, week on week. It logs every play as
-# it happens, and imports everything before. On your desktop, in your pocket, or just ask your
-# agent. Spot-oo-see. Self-host in one command."
+# your Spotify. Not once a year. Every single day. Your whole listening history, on your own
+# server. Your real top ten. Not just this month's. Your number one artist. Twelve thousand plays,
+# since twenty eleven. Every listening session, play by play. Watch your taste move, week on week.
+# It logs every play as it happens, and imports everything before. On your desktop, in your pocket,
+# or just ask your agent. Spot-oo-see. Self-host in one command."
 #
 # Word onsets in vo-v3.wav, in seconds. Phrase starts are read off its energy envelope (whisper's
 # word starts include the silence before a phrase, so they run early); words inside a phrase are
 # whisper's.
 WORDS = {
-    "spotify": 0.16, "comes": 1.06, "once": 1.30,
-    "thisIs": 2.41, "brand": 3.10, "free": 4.036,
-    "history": 6.645, "every": 8.171, "on": 9.134,
-    "real": 10.456, "notJust": 11.863,
-    "numberOne": 13.070, "twelve": 14.677, "since": 15.92,
-    "session": 17.410, "playByPlay": 18.717,
-    "watch": 19.785, "week": 21.10,
-    "logs": 22.070, "asItHappens": 23.12, "and": 23.80, "imports": 24.10,
-    "desktop": 25.732, "pocket": 26.62, "agent": 27.458,
-    "signOff": 28.909, "selfHost": 29.882, "end": 31.543,
+    "spotify": 0.085, "comes": 0.88, "once": 1.24,
+    "thisIs": 2.385, "brand": 3.02, "free": 3.971,
+    "notOnce": 6.765, "every": 7.892, "history": 9.274, "on": 10.671,
+    "real": 11.908, "notJust": 13.265,
+    "numberOne": 14.447, "twelve": 15.999, "since": 17.18,
+    "session": 18.578, "playByPlay": 19.850,
+    "watch": 20.952, "week": 22.22,
+    "logs": 23.197, "asItHappens": 24.20, "and": 24.92, "imports": 25.20,
+    "desktop": 26.819, "pocket": 27.50, "agent": 28.605,
+    "signOff": 30.067, "selfHost": 31.059, "end": 32.656,
 }
 # Every slide change: its name, the first word of the new slide, the natural gap before that word
 # (end of the previous phrase to the onset) and how far that gap may change, in seconds. The take
-# runs its sentences close together (about 0.27 s), which suits the film, so the pauses move only as
-# far as the beat needs. The last one is opened: the agent's answer needs a moment on screen before
-# the sign-off.
+# runs its sentences close together (0.2 to 0.3 s), which suits the film, so the pauses move only
+# as far as the beat needs, and none is left under a quarter of a second. The last one is opened:
+# the agent's answer needs a moment on screen before the sign-off.
 SLIDES = [
-    ("intro", "thisIs", 0.294, (-0.05, 0.25)),
-    ("history", "history", 0.299, (-0.05, 0.25)),
-    ("server", "on", 0.100, (-0.03, 0.25)),
-    ("top", "real", 0.269, (-0.04, 0.25)),
-    ("artist", "numberOne", 0.264, (-0.04, 0.25)),
-    ("sessions", "session", 0.304, (-0.05, 0.25)),
-    ("taste", "watch", 0.264, (-0.04, 0.25)),
-    ("live", "logs", 0.284, (-0.05, 0.25)),
-    ("devices", "desktop", 0.264, (-0.04, 0.25)),
-    ("end", "signOff", 0.269, (0.30, 0.62)),
+    ("intro", "thisIs", 0.324, (-0.05, 0.25)),
+    ("history", "notOnce", 0.329, (-0.05, 0.25)),
+    ("top", "real", 0.234, (0.0, 0.27)),
+    ("artist", "numberOne", 0.195, (0.04, 0.30)),
+    ("sessions", "session", 0.264, (-0.03, 0.25)),
+    ("taste", "watch", 0.234, (0.0, 0.27)),
+    ("live", "logs", 0.220, (0.0, 0.28)),
+    ("devices", "desktop", 0.244, (0.0, 0.26)),
+    ("end", "signOff", 0.254, (0.25, 0.62)),
 ]
 
 # ── Music ────────────────────────────────────────────────────────────────────────────────────
 BEAT_NATIVE = 0.48391  # seconds per beat in bgm-v3.wav (124 BPM), from a fit over its 84 kicks
 KICK0 = 0.0125  # the first kick's onset
-SPEED = 128 / 125  # +2.4%: plain resampling, so no time-stretch artefacts (pitch rises 0.4 semitone)
+RESAMPLE = (125, 127)  # +1.6%: plain resampling, so no time-stretch artefacts (pitch rises 0.3 semitone)
+SPEED = RESAMPLE[1] / RESAMPLE[0]
 BEAT = BEAT_NATIVE / SPEED
-LEAD = (0.11, 0.25)  # a slide change lands on a beat this long before its first word
+LEAD = (0.08, 0.30)  # a slide change lands on a beat this long before its first word
 LIFT_BEAT = 32  # in the source: a two-beat fill, then hats and a crash come in on this beat
 OUTRO_BEATS = 8  # two bars from the end card's downbeat to the final hit
-TAIL = 1.05  # seconds the final hit rings before the film ends
+TAIL = 0.9  # seconds the final hit rings before the film ends
 
 
 def solve_pauses():
@@ -221,7 +221,7 @@ def build_music(phase, drop_beat, intro_open, duration):
         nxt = y[int(round(a * sr)) - xf : int(round(b * sr))]
         seq[-xf:] = seq[-xf:] * (1 - ramp) + nxt[:xf] * ramp
         seq = np.concatenate([seq, nxt[xf:]])
-    seq = signal.resample_poly(seq, 125, 128, axis=0)
+    seq = signal.resample_poly(seq, *RESAMPLE, axis=0)
 
     n = int(round(duration * sr))
     seq = seq[:n] if len(seq) >= n else np.concatenate([seq, np.zeros((n - len(seq), 2))])
