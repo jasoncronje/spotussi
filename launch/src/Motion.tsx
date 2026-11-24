@@ -329,7 +329,11 @@ const Year = ({ f }: { f: number }) => {
       />
       {f >= lock && f < server - 3 ? (
         <div style={{ position: "absolute", left: 120, top: 330, width: 1040, opacity: r(f, lock, 8) * (1 - r(f, server - 8, 5, E.in)) }}>
-          <Img src={staticFile("logo/lockup-dark.svg")} style={{ height: 64 }} />
+          {/* What it is, in plain words, the moment the name first appears. */}
+          <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
+            <Img src={staticFile("logo/lockup-dark.svg")} style={{ height: 64 }} />
+            <div style={{ fontFamily: FONT, fontSize: 36, fontWeight: 560, color: C.mist, whiteSpace: "nowrap" }}>Open-source Spotify stats</div>
+          </div>
           <div style={{ ...headStyle(80), marginTop: 40 }}>
             Your whole history,
             <br />
