@@ -1,0 +1,216 @@
+{
+ "dpr": 2.5,
+ "tabbar": null,
+ "firstRow": {
+  "x": 40,
+  "y": 457,
+  "w": 1360,
+  "h": 73
+ },
+ "nav": [
+  {
+   "label": "spotussi",
+   "href": "/",
+   "fixed": false,
+   "x": 36,
+   "y": 11,
+   "w": 121.109375,
+   "h": 34
+  },
+  {
+   "label": "Overview",
+   "href": "/",
+   "fixed": false,
+   "x": 381.84375,
+   "y": 10,
+   "w": 107.453125,
+   "h": 36
+  },
+  {
+   "label": "Top",
+   "href": "/top",
+   "fixed": false,
+   "x": 493.296875,
+   "y": 10,
+   "w": 71.71875,
+   "h": 36
+  },
+  {
+   "label": "Stats",
+   "href": "/stats",
+   "fixed": false,
+   "x": 569.015625,
+   "y": 10,
+   "w": 80.96875,
+   "h": 36
+  },
+  {
+   "label": "History",
+   "href": "/history",
+   "fixed": false,
+   "x": 653.984375,
+   "y": 10,
+   "w": 93.453125,
+   "h": 36
+  },
+  {
+   "label": "Sessions",
+   "href": "/sessions",
+   "fixed": false,
+   "x": 751.4375,
+   "y": 10,
+   "w": 106.6875,
+   "h": 36
+  },
+  {
+   "label": "Library",
+   "href": "/library",
+   "fixed": false,
+   "x": 862.125,
+   "y": 10,
+   "w": 91.640625,
+   "h": 36
+  },
+  {
+   "label": "Settings",
+   "href": "/settings/general",
+   "fixed": false,
+   "x": 957.765625,
+   "y": 10,
+   "w": 100.390625,
+   "h": 36
+  },
+  {
+   "label": "Today",
+   "href": "/history?range=today",
+   "fixed": false,
+   "x": 43,
+   "y": 67,
+   "w": 66.875,
+   "h": 28
+  },
+  {
+   "label": "7 days",
+   "href": "/history?range=last_7d",
+   "fixed": false,
+   "x": 109.875,
+   "y": 67,
+   "w": 69.1875,
+   "h": 28
+  },
+  {
+   "label": "4 weeks",
+   "href": "/history",
+   "fixed": false,
+   "x": 179.0625,
+   "y": 67,
+   "w": 78.359375,
+   "h": 28
+  },
+  {
+   "label": "6 months",
+   "href": "/history?range=last_6m",
+   "fixed": false,
+   "x": 257.421875,
+   "y": 67,
+   "w": 85.578125,
+   "h": 28
+  },
+  {
+   "label": "12 months",
+   "href": "/history?range=last_12m",
+   "fixed": false,
+   "x": 343,
+   "y": 67,
+   "w": 92.640625,
+   "h": 28
+  },
+  {
+   "label": "All time",
+   "href": "/history?range=all",
+   "fixed": false,
+   "x": 435.640625,
+   "y": 67,
+   "w": 74.328125,
+   "h": 28
+  }
+ ],
+ "rangebar": null,
+ "page": {
+  "w": 1440,
+  "h": 1700
+ },
+ "figures": [],
+ "lamps": [
+  {
+   "x": 74,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 334.92,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 594.78,
+   "y": 329.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  }
+ ],
+ "bars": [],
+ "clock": null,
+ "headings": {
+  "History": {
+   "heading": {
+    "x": 40,
+    "y": 146,
+    "w": 1360,
+    "h": 52
+   },
+   "panel": {
+    "x": 40,
+    "y": 146,
+    "w": 1360,
+    "h": 52
+   }
+  },
+  "Friday, November 6, 2026": {
+   "heading": {
+    "x": 40,
+    "y": 428,
+    "w": 162.89,
+    "h": 20
+   },
+   "panel": {
+    "x": 40,
+    "y": 420,
+    "w": 1360,
+    "h": 1650
+   }
+  },
+  "Thursday, November 5, 2026": {
+   "heading": {
+    "x": 40,
+    "y": 2102,
+    "w": 183.41,
+    "h": 20
+   },
+   "panel": {
+    "x": 40,
+    "y": 2094,
+    "w": 1360,
+    "h": 5756
+   }
+  }
+ }
+}

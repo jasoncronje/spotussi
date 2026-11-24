@@ -1,0 +1,457 @@
+[
+ {
+  "group": "Music",
+  "key": "bgm-electro",
+  "desc": "Minimal electronic, 120 BPM: analog bass pulse, tight kick and clap, glassy pluck. Builds, drops, final hit.",
+  "takes": [
+   {
+    "file": "audio/palette/bgm-electro-a.mp3",
+    "take": "A",
+    "dur": 45.0,
+    "peak": -1.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-b.mp3",
+    "take": "B",
+    "dur": 45.0,
+    "peak": -0.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-c.mp3",
+    "take": "C",
+    "dur": 45.0,
+    "peak": -0.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-d.mp3",
+    "take": "D",
+    "dur": 45.0,
+    "peak": -0.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Music",
+  "key": "bgm-house",
+  "desc": "Hi-fi deep house, 118 BPM: Rhodes chords, round sub, soft kick, tape warmth. Relaxed and confident.",
+  "takes": [
+   {
+    "file": "audio/palette/bgm-house-a.mp3",
+    "take": "A",
+    "dur": 45.0,
+    "peak": -0.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-b.mp3",
+    "take": "B",
+    "dur": 45.0,
+    "peak": 0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-c.mp3",
+    "take": "C",
+    "dur": 45.0,
+    "peak": -0.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-d.mp3",
+    "take": "D",
+    "dur": 45.0,
+    "peak": -0.7,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "lamp-click",
+  "desc": "A meter lamp lights. One per lamp in the logo build.",
+  "takes": [
+   {
+    "file": "audio/palette/lamp-click-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -10.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -15.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -10.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -7.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "lamp-cascade",
+  "desc": "A meter strip or chart fills, bottom to top.",
+  "takes": [
+   {
+    "file": "audio/palette/lamp-cascade-a.mp3",
+    "take": "A",
+    "dur": 1.0,
+    "peak": -19.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-b.mp3",
+    "take": "B",
+    "dur": 1.0,
+    "peak": -15.3,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-c.mp3",
+    "take": "C",
+    "dur": 1.0,
+    "peak": -18.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-d.mp3",
+    "take": "D",
+    "dur": 1.0,
+    "peak": -15.4,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "knob",
+  "desc": "Range switch (Week, Month, Year) or a dial turning.",
+  "takes": [
+   {
+    "file": "audio/palette/knob-a.mp3",
+    "take": "A",
+    "dur": 3.0,
+    "peak": -13.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -6.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-c.mp3",
+    "take": "C",
+    "dur": 3.0,
+    "peak": -9.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-d.mp3",
+    "take": "D",
+    "dur": 3.0,
+    "peak": -2.2,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "counter",
+  "desc": "Figures counting up: hours listened, plays.",
+  "takes": [
+   {
+    "file": "audio/palette/counter-a.mp3",
+    "take": "A",
+    "dur": 3.0,
+    "peak": -1.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-b.mp3",
+    "take": "B",
+    "dur": 3.0,
+    "peak": -0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-c.mp3",
+    "take": "C",
+    "dur": 3.0,
+    "peak": -0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-d.mp3",
+    "take": "D",
+    "dur": 4.0,
+    "peak": -0.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "whoosh",
+  "desc": "Phone or card moves across frame.",
+  "takes": [
+   {
+    "file": "audio/palette/whoosh-a.mp3",
+    "take": "A",
+    "dur": 1.48,
+    "peak": -13.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -7.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-c.mp3",
+    "take": "C",
+    "dur": 1.48,
+    "peak": -14.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -16.2,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "glass-swipe",
+  "desc": "Thumb scroll on the phone.",
+  "takes": [
+   {
+    "file": "audio/palette/glass-swipe-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -52.8,
+    "silent": true
+   },
+   {
+    "file": "audio/palette/glass-swipe-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -53.9,
+    "silent": true
+   },
+   {
+    "file": "audio/palette/glass-swipe-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -31.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-swipe-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -31.9,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "glass-tap",
+  "desc": "Fingertip tap on a tab or row.",
+  "takes": [
+   {
+    "file": "audio/palette/glass-tap-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -20.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -18.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -31.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -48.3,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "tape-stop",
+  "desc": "Hard cut or scene end.",
+  "takes": [
+   {
+    "file": "audio/palette/tape-stop-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -7.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -4.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -11.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-d.mp3",
+    "take": "D",
+    "dur": 3.0,
+    "peak": -2.1,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "riser",
+  "desc": "Build into the logo or the drop.",
+  "takes": [
+   {
+    "file": "audio/palette/riser-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -17.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -5.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -18.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -23.3,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "impact",
+  "desc": "Wordmark lands. Use 3 times at most.",
+  "takes": [
+   {
+    "file": "audio/palette/impact-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -7.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -2.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -7.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -6.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "shimmer",
+  "desc": "Afterglow once the logo has landed.",
+  "takes": [
+   {
+    "file": "audio/palette/shimmer-a.mp3",
+    "take": "A",
+    "dur": 5.0,
+    "peak": -14.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-b.mp3",
+    "take": "B",
+    "dur": 5.0,
+    "peak": -14.3,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-c.mp3",
+    "take": "C",
+    "dur": 5.0,
+    "peak": -13.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-d.mp3",
+    "take": "D",
+    "dur": 4.0,
+    "peak": -16.6,
+    "silent": false
+   }
+  ]
+ }
+]

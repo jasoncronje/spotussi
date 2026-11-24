@@ -1,0 +1,508 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>spotussi sound palette</title>
+<style>
+@font-face{font-family:Archivo;src:url(../../motion/public/archivo-wdth.woff2) format("woff2");font-stretch:62% 125%;font-weight:100 900}
+:root{--bg:#121317;--card:#1A1C21;--grille:#3A3D46;--lamp:#1DB954;--fg:#ECEEF1;--mute:#8B8F99}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 Archivo,system-ui,sans-serif;padding:32px 16px 64px}
+main{max-width:980px;margin:0 auto}
+h1{font-stretch:125%;font-weight:760;letter-spacing:-.035em;font-size:34px;margin:0 0 4px}
+h1 b{color:var(--lamp);font-weight:760}
+p.lede{color:var(--mute);margin:0 0 28px;max-width:62ch}
+h2{font-stretch:125%;font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:36px 0 10px}
+.row{background:var(--card);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.row h3{margin:0;font-size:16px;font-stretch:115%;font-weight:700}.row p{margin:2px 0 12px;color:var(--mute);font-size:13.5px}
+.takes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.take{border:1px solid var(--grille);border-radius:9px;padding:8px 10px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.take.pick{border-color:var(--lamp);box-shadow:inset 0 0 0 1px var(--lamp)}
+.take.silent{opacity:.4}
+.play{width:34px;height:34px;border-radius:50%;border:0;background:var(--grille);color:var(--fg);font-size:13px;cursor:pointer;flex:none}
+.play.on{background:var(--lamp);color:#0b0c0e}
+.meta{font-size:12px;color:var(--mute);line-height:1.3}.meta strong{color:var(--fg);font-size:14px}
+.bar{position:sticky;bottom:12px;margin-top:28px;background:var(--card);border:1px solid var(--grille);border-radius:12px;padding:10px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar code{flex:1;min-width:0;font-size:12px;color:var(--mute);overflow-wrap:anywhere}
+.bar button{background:var(--lamp);color:#0b0c0e;border:0;border-radius:8px;padding:8px 14px;font:600 13px Archivo,sans-serif;cursor:pointer}
+</style></head><body><main>
+<h1>spotussi sound <b>palette</b></h1>
+<p class="lede">An analog hi-fi console: relay clicks for lamps, detent knobs, a flip counter, tape spin-up and stop. Warm and mechanical, never game bleeps. Play a take, click the card to pick it. Faded cards came out near-silent.</p>
+<div id="list"></div>
+<div class="bar"><code id="out">No picks yet.</code><button id="copy">Copy picks</button></div>
+</main><script>
+const DATA=[
+ {
+  "group": "Music",
+  "key": "bgm-electro",
+  "desc": "Minimal electronic, 120 BPM: analog bass pulse, tight kick and clap, glassy pluck. Builds, drops, final hit.",
+  "takes": [
+   {
+    "file": "audio/palette/bgm-electro-a.mp3",
+    "take": "A",
+    "dur": 45.0,
+    "peak": -1.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-b.mp3",
+    "take": "B",
+    "dur": 45.0,
+    "peak": -0.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-c.mp3",
+    "take": "C",
+    "dur": 45.0,
+    "peak": -0.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-electro-d.mp3",
+    "take": "D",
+    "dur": 45.0,
+    "peak": -0.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Music",
+  "key": "bgm-house",
+  "desc": "Hi-fi deep house, 118 BPM: Rhodes chords, round sub, soft kick, tape warmth. Relaxed and confident.",
+  "takes": [
+   {
+    "file": "audio/palette/bgm-house-a.mp3",
+    "take": "A",
+    "dur": 45.0,
+    "peak": -0.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-b.mp3",
+    "take": "B",
+    "dur": 45.0,
+    "peak": 0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-c.mp3",
+    "take": "C",
+    "dur": 45.0,
+    "peak": -0.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/bgm-house-d.mp3",
+    "take": "D",
+    "dur": 45.0,
+    "peak": -0.7,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "lamp-click",
+  "desc": "A meter lamp lights. One per lamp in the logo build.",
+  "takes": [
+   {
+    "file": "audio/palette/lamp-click-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -10.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -15.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -10.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-click-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -7.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "lamp-cascade",
+  "desc": "A meter strip or chart fills, bottom to top.",
+  "takes": [
+   {
+    "file": "audio/palette/lamp-cascade-a.mp3",
+    "take": "A",
+    "dur": 1.0,
+    "peak": -19.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-b.mp3",
+    "take": "B",
+    "dur": 1.0,
+    "peak": -15.3,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-c.mp3",
+    "take": "C",
+    "dur": 1.0,
+    "peak": -18.7,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/lamp-cascade-d.mp3",
+    "take": "D",
+    "dur": 1.0,
+    "peak": -15.4,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "knob",
+  "desc": "Range switch (Week, Month, Year) or a dial turning.",
+  "takes": [
+   {
+    "file": "audio/palette/knob-a.mp3",
+    "take": "A",
+    "dur": 3.0,
+    "peak": -13.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -6.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-c.mp3",
+    "take": "C",
+    "dur": 3.0,
+    "peak": -9.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/knob-d.mp3",
+    "take": "D",
+    "dur": 3.0,
+    "peak": -2.2,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Brand",
+  "key": "counter",
+  "desc": "Figures counting up: hours listened, plays.",
+  "takes": [
+   {
+    "file": "audio/palette/counter-a.mp3",
+    "take": "A",
+    "dur": 3.0,
+    "peak": -1.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-b.mp3",
+    "take": "B",
+    "dur": 3.0,
+    "peak": -0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-c.mp3",
+    "take": "C",
+    "dur": 3.0,
+    "peak": -0.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/counter-d.mp3",
+    "take": "D",
+    "dur": 4.0,
+    "peak": -0.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "whoosh",
+  "desc": "Phone or card moves across frame.",
+  "takes": [
+   {
+    "file": "audio/palette/whoosh-a.mp3",
+    "take": "A",
+    "dur": 1.48,
+    "peak": -13.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -7.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-c.mp3",
+    "take": "C",
+    "dur": 1.48,
+    "peak": -14.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/whoosh-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -16.2,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "glass-swipe",
+  "desc": "Thumb scroll on the phone.",
+  "takes": [
+   {
+    "file": "audio/palette/glass-swipe-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -52.8,
+    "silent": true
+   },
+   {
+    "file": "audio/palette/glass-swipe-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -53.9,
+    "silent": true
+   },
+   {
+    "file": "audio/palette/glass-swipe-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -31.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-swipe-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -31.9,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "glass-tap",
+  "desc": "Fingertip tap on a tab or row.",
+  "takes": [
+   {
+    "file": "audio/palette/glass-tap-a.mp3",
+    "take": "A",
+    "dur": 0.48,
+    "peak": -20.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-b.mp3",
+    "take": "B",
+    "dur": 0.48,
+    "peak": -18.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-c.mp3",
+    "take": "C",
+    "dur": 0.48,
+    "peak": -31.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/glass-tap-d.mp3",
+    "take": "D",
+    "dur": 0.48,
+    "peak": -48.3,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "group": "Motion",
+  "key": "tape-stop",
+  "desc": "Hard cut or scene end.",
+  "takes": [
+   {
+    "file": "audio/palette/tape-stop-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -7.5,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -4.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -11.0,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/tape-stop-d.mp3",
+    "take": "D",
+    "dur": 3.0,
+    "peak": -2.1,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "riser",
+  "desc": "Build into the logo or the drop.",
+  "takes": [
+   {
+    "file": "audio/palette/riser-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -17.1,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -5.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -18.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/riser-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -23.3,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "impact",
+  "desc": "Wordmark lands. Use 3 times at most.",
+  "takes": [
+   {
+    "file": "audio/palette/impact-a.mp3",
+    "take": "A",
+    "dur": 2.0,
+    "peak": -7.2,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-b.mp3",
+    "take": "B",
+    "dur": 2.0,
+    "peak": -2.6,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-c.mp3",
+    "take": "C",
+    "dur": 2.0,
+    "peak": -7.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/impact-d.mp3",
+    "take": "D",
+    "dur": 2.0,
+    "peak": -6.6,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "group": "Accent",
+  "key": "shimmer",
+  "desc": "Afterglow once the logo has landed.",
+  "takes": [
+   {
+    "file": "audio/palette/shimmer-a.mp3",
+    "take": "A",
+    "dur": 5.0,
+    "peak": -14.4,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-b.mp3",
+    "take": "B",
+    "dur": 5.0,
+    "peak": -14.3,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-c.mp3",
+    "take": "C",
+    "dur": 5.0,
+    "peak": -13.8,
+    "silent": false
+   },
+   {
+    "file": "audio/palette/shimmer-d.mp3",
+    "take": "D",
+    "dur": 4.0,
+    "peak": -16.6,
+    "silent": false
+   }
+  ]
+ }
+];
+let picks={};try{picks=JSON.parse(localStorage.getItem("picks")||"{}")}catch(e){}
+const audio=new Audio();let cur=null;
+const list=document.getElementById("list");let g="";
+for(const r of DATA){
+ if(r.group!==g){g=r.group;list.insertAdjacentHTML("beforeend","<h2>"+g+"</h2>")}
+ const row=document.createElement("div");row.className="row";
+ row.innerHTML="<h3>"+r.key+"</h3><p>"+r.desc+"</p><div class=takes></div>";
+ const box=row.querySelector(".takes");
+ for(const t of r.takes){
+  const el=document.createElement("div");el.className="take"+(t.silent?" silent":"")+(picks[r.key]===t.take?" pick":"");
+  el.innerHTML="<button class=play>▶</button><div class=meta><strong>Take "+t.take+"</strong><br>"+t.dur+" s · peak "+t.peak+" dB"+(t.silent?" · silent":"")+"</div>";
+  const b=el.querySelector(".play");
+  b.onclick=e=>{e.stopPropagation();if(cur===b&&!audio.paused){audio.pause();b.classList.remove("on");b.textContent="▶";return}
+   if(cur){cur.classList.remove("on");cur.textContent="▶"}audio.src="audio/palette/"+t.file.split("/").pop();audio.currentTime=0;audio.play();cur=b;b.classList.add("on");b.textContent="■"};
+  el.onclick=()=>{picks[r.key]=picks[r.key]===t.take?undefined:t.take;box.querySelectorAll(".take").forEach(x=>x.classList.remove("pick"));if(picks[r.key])el.classList.add("pick");save()};
+  box.appendChild(el)}
+ list.appendChild(row)}
+audio.onended=()=>{if(cur){cur.classList.remove("on");cur.textContent="▶"}};
+function save(){try{localStorage.setItem("picks",JSON.stringify(picks))}catch(e){}const s=Object.entries(picks).filter(x=>x[1]).map(x=>x[0]+" "+x[1]).join(", ");document.getElementById("out").textContent=s||"No picks yet."}
+save();
+document.getElementById("copy").onclick=()=>navigator.clipboard.writeText(document.getElementById("out").textContent);
+</script></body></html>

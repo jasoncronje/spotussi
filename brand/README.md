@@ -75,3 +75,15 @@ uv run --with fonttools --with brotli --with uharfbuzz python brand/scripts/outl
 ```
 
 `previews/mark-directions.png` records the three directions the mark was chosen from (Ladder, chosen; Peak hold; Matrix s).
+
+## iPhone marketing images
+
+`brand/marketing/` holds the iPhone app's marketing images, built by `node brand/scripts/marketing.mjs` from real demo-mode captures in `brand/marketing/captures/` (iPhone 18 Pro simulator, dark appearance, Try the demo, status bar at 9:41):
+
+| File | Use |
+| --- | --- |
+| `marketing/app-store/01…07-*.png` | App Store screenshots, 1320×2868 (6.9" slot) |
+| `marketing/wide-1920x1080.png` | Site hero, posts, slides |
+| `marketing/social-1200x630.png` | Open Graph / social card for the app |
+
+The phone frame is drawn in the script, not taken from Apple's bezels, so it can live in this repo. To refresh, re-capture the screens with the same names and run the script again.

@@ -1,0 +1,180 @@
+{
+ "dpr": 3,
+ "tabbar": {
+  "x": 0,
+  "y": 779,
+  "w": 390,
+  "h": 65
+ },
+ "firstRow": {
+  "x": 140,
+  "y": 589,
+  "w": 185.265625,
+  "h": 76
+ },
+ "nav": [
+  {
+   "label": "spotussi",
+   "href": "/",
+   "fixed": false,
+   "x": 12,
+   "y": 11,
+   "w": 121.109375,
+   "h": 34
+  },
+  {
+   "label": "Overview",
+   "href": "/",
+   "fixed": true,
+   "x": 0,
+   "y": 780,
+   "w": 55.703125,
+   "h": 64
+  },
+  {
+   "label": "Top",
+   "href": "/top",
+   "fixed": true,
+   "x": 55.703125,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "Stats",
+   "href": "/stats",
+   "fixed": true,
+   "x": 111.421875,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "History",
+   "href": "/history",
+   "fixed": true,
+   "x": 167.140625,
+   "y": 780,
+   "w": 55.703125,
+   "h": 64
+  },
+  {
+   "label": "Sessions",
+   "href": "/sessions",
+   "fixed": true,
+   "x": 222.84375,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "Library",
+   "href": "/library",
+   "fixed": true,
+   "x": 278.5625,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  },
+  {
+   "label": "Settings",
+   "href": "/settings/general",
+   "fixed": true,
+   "x": 334.28125,
+   "y": 780,
+   "w": 55.71875,
+   "h": 64
+  }
+ ],
+ "rangebar": {
+  "x": 0,
+  "y": 57,
+  "w": 390,
+  "h": 49
+ },
+ "page": {
+  "w": 390,
+  "h": 2000
+ },
+ "figures": [],
+ "lamps": [
+  {
+   "x": 27,
+   "y": 80,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 46,
+   "y": 369.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 46,
+   "y": 411.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 46,
+   "y": 453.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  }
+ ],
+ "bars": [],
+ "clock": null,
+ "headings": {
+  "History": {
+   "heading": {
+    "x": 16,
+    "y": 130,
+    "w": 358,
+    "h": 40
+   },
+   "panel": {
+    "x": 16,
+    "y": 130,
+    "w": 358,
+    "h": 40
+   }
+  },
+  "Friday, November 6, 2026": {
+   "heading": {
+    "x": 16,
+    "y": 552,
+    "w": 162.89,
+    "h": 20
+   },
+   "panel": {
+    "x": 16,
+    "y": 544,
+    "w": 358,
+    "h": 1950
+   }
+  },
+  "Thursday, November 5, 2026": {
+   "heading": {
+    "x": 16,
+    "y": 2526,
+    "w": 183.41,
+    "h": 20
+   },
+   "panel": {
+    "x": 16,
+    "y": 2518,
+    "w": 358,
+    "h": 6276
+   }
+  }
+ }
+}
