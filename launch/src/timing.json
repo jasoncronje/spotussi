@@ -1,6 +1,6 @@
 {
   "fps": 30,
-  "duration": 1018,
+  "duration": 1061,
   "voOffset": 0.3,
   "beat": {
     "phase": 0.2772,
@@ -16,9 +16,9 @@
     "taste": 39,
     "live": 44,
     "devices": 52,
-    "end": 57
+    "end": 60
   },
-  "finalBeat": 69,
+  "finalBeat": 72,
   "words": {
     "spotify": 0.45,
     "comes": 1.31,
@@ -42,9 +42,10 @@
     "imports": 23.014,
     "desktop": 25.1,
     "pocket": 26.095,
-    "signOff": 27.323,
-    "free": 28.333,
-    "selfHost": 29.923,
-    "end": 31.583
+    "pocketEnd": 26.875,
+    "signOff": 28.741,
+    "free": 29.751,
+    "selfHost": 31.341,
+    "end": 33.001
   }
 }

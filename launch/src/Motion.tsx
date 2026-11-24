@@ -1,11 +1,12 @@
-// The spotussi launch film (draft 13), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 14), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
 // The order: the hook (Wrapped comes once a year), the introduction (what spotussi is, said once),
-// the idea (your whole history, on your own server), six features, the sign-off.
+// the idea (your whole history, on your own server), five features, the three ways in (web app,
+// iOS app, your agent over MCP), the sign-off.
 //
-// 34 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
+// 35 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
 // audio it builds: `words` are the frames at which the voice says each cue word, and every slide
 // change sits on a beat of the music, a few frames before the slide's first word.
 import type React from "react";
@@ -298,7 +299,7 @@ const RECT = {
   taste: { x: 880, y: 150, w: 920, h: 780, r: 22 },
   recent: { x: 120, y: 330, w: 820, h: 640, r: 22 },
   importing: { x: 980, y: 330, w: 820, h: 640, r: 22 },
-  window: { x: 120, y: 290, w: 1240, h: 740, r: 18 },
+  window: { x: 120, y: 320, w: 1000, h: 597, r: 16 },
   mark: { x: 960 - lockupWidth(END_LOCK.size) / 2, y: END_LOCK.y, w: END_LOCK.size, h: END_LOCK.size, r: 36 },
 } satisfies Record<string, Rect>;
 const surfaceStyle = (rc: Rect): React.CSSProperties => ({ position: "absolute", left: rc.x, top: rc.y, width: rc.w, height: rc.h, borderRadius: rc.r, background: PANEL, boxShadow: `0 0 0 1.5px ${EDGE}`, overflow: "hidden" });
@@ -746,15 +747,17 @@ const ImportInside = ({ f }: { f: number }) => {
   );
 };
 
-// ── 9. Desktop first, then pocket: the two panels join into the browser window; the phone slides
-// in beside it on "In your pocket".
+// ── 9. Three ways in, one after the other. The two panels join into the browser window (the web
+// app, the hero); the phone slides in on "In your pocket"; then your agent: spotussi has an MCP
+// server, so a question in plain words gets an answer from the same data.
+const WIN = { w: 1240, h: 740 }; // the dashboard is drawn at this size and scaled to the window
 const WindowInside = () => (
-  <div style={{ position: "absolute", left: 0, top: 0, width: RECT.window.w, height: RECT.window.h, background: "#101114" }}>
+  <div style={{ position: "absolute", left: 0, top: 0, width: WIN.w, height: WIN.h, background: "#101114", transform: `scale(${(RECT.window.w / WIN.w).toFixed(4)})`, transformOrigin: "0 0" }}>
     <div style={{ height: 42, background: "#17181c", display: "flex", alignItems: "center", gap: 8, paddingLeft: 18 }}>
       {[0, 1, 2].map((i) => <span key={i} style={{ width: 12, height: 12, borderRadius: 6, background: C.grille }} />)}
       <span style={{ marginLeft: 420, padding: "4px 60px", borderRadius: 7, background: "#0b0c0f", color: MUTE, fontFamily: FONT, fontSize: 14 }}>spotussi.local</span>
     </div>
-    <div style={{ position: "absolute", left: 30, top: 70, width: RECT.window.w - 60, display: "flex", gap: 20 }}>
+    <div style={{ position: "absolute", left: 30, top: 70, width: WIN.w - 60, display: "flex", gap: 20 }}>
       {[
         { l: "Time listened", n: 136, u: "h" },
         { l: "Plays", n: 2341 },
@@ -794,6 +797,8 @@ const WindowInside = () => (
 
 // ── The surface. One panel for the whole film, from the server to the sign-off: it takes each
 // slide's shape in turn. For "live and imported" a second panel splits off it and joins it again.
+const PHONE = { x: 1150, y: 354, w: 250 };
+const AGENT: Rect = { x: 1430, y: 320, w: 370, h: 597, r: 22 };
 const END_OUT = 5; // the last slide clears this many frames early, so the lockup lights on the downbeat
 const Surface = ({ f }: { f: number }) => {
   const sv = CUT.server;
@@ -853,8 +858,14 @@ const Surface = ({ f }: { f: number }) => {
 const Captions = ({ f }: { f: number }) => {
   const col: React.CSSProperties = { left: 120, top: 400, width: 740, display: "flex", flexDirection: "column", gap: 30 };
   const pocket = w("pocket");
+  const out = CUT.end - END_OUT;
   const ph = r(f, pocket - 8, 18, E.land);
-  const phOut = leave(f, CUT.end - END_OUT);
+  const phOut = leave(f, out);
+  // The third way in arrives on the first beat after she has said "pocket".
+  let agentBeat = TIMING.cutBeats.end;
+  while (beat(agentBeat - 1) >= w("pocketEnd") - 2) agentBeat--;
+  const agent = beat(agentBeat);
+  const way: React.CSSProperties = { top: 944, textAlign: "center", fontFamily: FONT, fontSize: 28, fontWeight: 560, color: C.mist };
   return (
     <>
       <Copy f={f} a={CUT.top} b={CUT.artist} style={col}>
@@ -892,15 +903,53 @@ const Captions = ({ f }: { f: number }) => {
         <Say f={f} size={80} style={{ left: 0, top: 0, width: 1680 }} words={[{ t: "Every", at: 0 }, { t: "play", at: 0 }, { t: "as", at: 0 }, { t: "it", at: 0 }, { t: "happens.", at: 0 }, { t: "\n", at: 0 }, { t: "And", at: w("and") }, { t: "everything", at: 0 }, { t: "before.", at: 0 }]} />
       </Copy>
 
-      <Copy f={f} a={CUT.devices} b={CUT.end - END_OUT} style={{ left: 120, top: 100, whiteSpace: "nowrap", ...headStyle(80) }}>
+      <Copy f={f} a={CUT.devices} b={out} style={{ left: 120, top: 84, whiteSpace: "nowrap", ...headStyle(80) }}>
         On your desktop.{" "}
-        <span style={{ opacity: r(f, pocket - 1, 10) }}>
-          In your <span style={{ color: C.lamp }}>pocket.</span>
+        <span style={{ opacity: r(f, pocket - 1, 10) }}>In your pocket.</span>
+        <br />
+        <span style={{ opacity: r(f, agent, 10) }}>
+          Or just ask your <span style={{ color: C.lamp }}>agent.</span>
         </span>
       </Copy>
-      {f >= pocket - 8 && f < CUT.end - END_OUT ? (
-        <Phone screen="overview" w={330} style={{ left: mix(1200, 1470, ph) + phOut * 60, top: mix(420, 260, ph), opacity: Math.min(1, ph * 2) * (1 - phOut), transform: `rotate(${mix(-6, -2, ph).toFixed(2)}deg)`, boxShadow: `0 0 0 2.5px ${C.grille}, 0 60px 120px rgba(0,0,0,.7)` }} />
+      <Copy f={f} a={CUT.devices} b={out} style={{ ...way, left: RECT.window.x, width: RECT.window.w }}>
+        Blazing-fast web app
+      </Copy>
+      {f >= pocket - 8 && f < out ? (
+        <>
+          <Phone screen="overview" w={PHONE.w} style={{ left: mix(PHONE.x - 150, PHONE.x, ph), top: mix(PHONE.y + 110, PHONE.y, ph), opacity: Math.min(1, ph * 2) * (1 - phOut), transform: `translateY(${(-phOut * 20).toFixed(1)}px) rotate(${mix(-6, 0, ph).toFixed(2)}deg)`, boxShadow: `0 0 0 2.5px ${C.grille}, 0 40px 90px rgba(0,0,0,.6)` }} />
+          <div style={{ ...way, position: "absolute", left: PHONE.x - 40, width: PHONE.w + 80, opacity: r(f, pocket + 4, 8) * (1 - phOut) }}>Native iOS app</div>
+        </>
       ) : null}
+      <Copy f={f} a={agent - 1} b={out} style={{ ...surfaceStyle(AGENT), padding: 26, boxSizing: "border-box" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp }} />
+          <span style={headStyle(28)}>Your agent</span>
+          <span style={{ marginLeft: "auto", padding: "5px 14px", borderRadius: 14, background: "#23252b", fontFamily: FONT, fontSize: 19, fontWeight: 640, color: C.mist }}>MCP</span>
+        </div>
+        {/* The exchange arrives in order: the question, the tool it calls, the answer. */}
+        <div style={{ marginTop: 34, marginLeft: 34, padding: "16px 20px", borderRadius: "20px 20px 6px 20px", background: "#23252b", fontFamily: FONT, fontSize: 25, fontWeight: 560, lineHeight: 1.3, color: C.paper, opacity: r(f, agent + 5, 7) }}>Who did I play most this summer?</div>
+        <div style={{ marginTop: 30, display: "flex", alignItems: "center", gap: 10, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 19, color: MUTE, opacity: r(f, agent + 11, 7) }}>
+          <span style={{ width: 9, height: 9, borderRadius: 5, background: C.lamp }} />
+          spotussi · get_top
+        </div>
+        <div style={{ marginTop: 26, opacity: r(f, agent + 17, 8) }}>
+          {[
+            { x: ARTISTS[0], n: 412 },
+            { x: ARTISTS[2], n: 365 },
+            { x: ARTISTS[4], n: 301 },
+          ].map(({ x, n }, k) => (
+            <div key={x.name} style={{ display: "flex", alignItems: "center", gap: 14, height: 68 }}>
+              <span style={{ width: 20, ...headStyle(22), color: k ? MUTE : C.lamp }}>{k + 1}</span>
+              <Art seed={x.seed} size={46} round />
+              <span style={{ flex: 1, fontFamily: FONT, fontSize: 24, fontWeight: 620, color: C.paper, whiteSpace: "nowrap" }}>{x.name}</span>
+              <span style={{ fontFamily: FONT, fontSize: 24, fontWeight: 680, color: C.paper, fontVariantNumeric: "tabular-nums" }}>{n}</span>
+            </div>
+          ))}
+        </div>
+      </Copy>
+      <Copy f={f} a={agent + 3} b={out} style={{ ...way, left: AGENT.x, width: AGENT.w }}>
+        Any MCP client
+      </Copy>
     </>
   );
 };

@@ -38,13 +38,14 @@ WORDS = {
     "session": 14.80, "playByPlay": 16.14,
     "watch": 17.535, "week": 18.77,
     "logs": 19.955, "asItHappens": 20.80, "and": 21.56, "imports": 21.75,
-    "desktop": 23.855, "pocket": 24.85,
+    "desktop": 23.855, "pocket": 24.85, "pocketEnd": 25.63,
     "signOff": 26.04, "free": 27.05, "selfHost": 28.64, "end": 30.30,
 }
 # Every slide change: its name, the first word of the new slide, the natural gap before that word
 # (end of the previous phrase to the onset) and how far that gap may change, in seconds. Most may
-# move a few hundredths either way. Two are held open on purpose: the intro slide needs a clean
-# break before the history slide, and the year needs room to flip by before "On your own server".
+# move a few hundredths either way. Three are held open on purpose: the intro slide needs a clean
+# break before the history slide, the year needs room to flip by before "On your own server", and
+# the third way in ("ask your agent", which the voice does not say yet) plays before the sign-off.
 SLIDES = [
     ("intro", "brand", 0.42, (-0.06, 0.17)),
     ("history", "every", 0.22, (0.10, 0.36)),
@@ -55,7 +56,7 @@ SLIDES = [
     ("taste", "watch", 0.455, (-0.06, 0.17)),
     ("live", "logs", 0.415, (-0.06, 0.17)),
     ("devices", "desktop", 0.425, (-0.06, 0.17)),
-    ("end", "signOff", 0.41, (-0.06, 0.17)),
+    ("end", "signOff", 0.41, (1.45, 1.95)),
 ]
 # Two of the cut-in pauses landed inside a word's decaying tail, leaving a faint remnant after the hole.
 # Mute the remnant so the word simply ends: (from, to) in vo.wav seconds.
