@@ -242,34 +242,20 @@ const Year = ({ f }: { f: number }) => {
   const tear = r(f, lockAt, 14, E.in); // the Wrapped page tears off and falls away
   const dayNow = inAct2 ? act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day : 0;
 
-  // Act 3: the pad slides into the server window, with the year's pages stacked behind it.
-  const fold = r(f, server - 4, 20, E.inOut);
-  const calX = mix(0, -1090, fold);
-  const calS = mix(1, 0.62, fold);
+  // Act 3: one move. The pad shrinks and drops through a slot into a small home server whose
+  // front panel is the mark's lamp grille; the lamps light as it lands.
+  const shrink = r(f, server - 4, 14, E.inOut);
+  const drop = r(f, server + 8, 12, E.in);
+  const land = server + 20;
+  const lamps = r(f, land, 6);
+  const device = r(f, server - 4, 10);
+  const SLOT_Y = 540;
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit, filter: exit > 0 ? `blur(${(exit * 14).toFixed(1)}px)` : undefined }}>
-      {/* Server window (act 3). */}
-      <div style={{ position: "absolute", left: 120, top: 300, width: 1680, height: 680, borderRadius: 26, background: PANEL, boxShadow: `0 0 0 1.5px ${EDGE}`, opacity: fold }}>
-        <div style={{ position: "absolute", left: 36, top: 30, display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 54, height: 40, borderRadius: 8, boxShadow: `inset 0 0 0 2px ${EDGE}`, display: "flex", flexDirection: "column", justifyContent: "center", gap: 6, padding: "0 9px" }}>
-            {[0, 1].map((i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ flex: 1, height: 3, borderRadius: 2, background: "#3a3d46" }} />
-                <span style={{ width: 6, height: 6, borderRadius: 3, background: C.lamp }} />
-              </div>
-            ))}
-          </div>
-          <span style={{ fontFamily: FONT, fontSize: 28, fontWeight: 640, color: C.paper }}>spotussi.local</span>
-        </div>
-        <div style={{ position: "absolute", left: 760, top: 210, ...headStyle(150), fontVariantNumeric: "tabular-nums" }}>365</div>
-        <div style={{ position: "absolute", left: 768, top: 380, fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE }}>of 365 days logged in 2026</div>
-        <div style={{ position: "absolute", left: 768, top: 450, display: "flex", gap: 7, flexWrap: "wrap", width: 840 }}>
-          {Array.from({ length: 52 }, (_, k) => <span key={k} style={{ width: 9, height: 22, borderRadius: 3, background: C.lamp, opacity: 0.45 + 0.55 * DAYS[k * 7] }} />)}
-        </div>
-      </div>
       {/* The pad. */}
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, transform: `translateX(${calX.toFixed(1)}px) scale(${calS.toFixed(4)})`, transformOrigin: `${CAL.x + CAL.w / 2}px 760px` }}>
+      <div style={{ position: "absolute", inset: 0, clipPath: device > 0 ? `inset(0 0 ${1080 - SLOT_Y}px 0)` : undefined }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, transform: `translateY(${(mix(0, -220, shrink) + drop * 600).toFixed(1)}px) scale(${mix(1, 0.5, shrink).toFixed(4)})`, transformOrigin: `${CAL.x + CAL.w / 2}px ${CAL.y + CAL.h / 2}px` }}>
         {!inAct2 ? (
           <Calendar f={f} pages={act1} times={s1.times} durs={s1.durs} />
         ) : (
@@ -283,6 +269,32 @@ const Year = ({ f }: { f: number }) => {
           </>
         )}
       </div>
+      </div>
+      {/* The home server: one unit, its front panel is the mark. */}
+      {device > 0 ? (
+        <div style={{ position: "absolute", left: 120, top: SLOT_Y, width: 1680, height: 300, borderRadius: 28, background: "#17181c", boxShadow: `0 0 0 1.5px ${EDGE}`, opacity: device }}>
+          <div style={{ position: "absolute", left: CAL.x + CAL.w / 2 - 120 - 170, top: -2, width: 340, height: 12, borderRadius: 6, background: "#050506" }} />
+          <svg width={180} height={180} style={{ position: "absolute", left: 70, top: 60 }}>
+            {Array.from({ length: 16 }, (_, i) => {
+              const col = Math.floor(i / 4);
+              const row = i % 4;
+              const pitch = 180 / 3.786;
+              const rr = pitch * 0.393;
+              const lit = [[0, 2], [0, 3], [1, 0], [1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 3]].some(([c, w]) => c === col && w === row);
+              return (
+                <g key={i}>
+                  <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.grille} />
+                  {lit ? <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.lamp} opacity={lamps} /> : null}
+                </g>
+              );
+            })}
+          </svg>
+          <div style={{ position: "absolute", left: 320, top: 86 }}>
+            <div style={{ ...headStyle(64) }}>spotussi.local</div>
+            <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 16 }}>Your history, on your hardware.</div>
+          </div>
+        </div>
+      ) : null}
       {/* Copy, left column, in strict turns. */}
       <Say
         f={f}
@@ -312,7 +324,7 @@ const Year = ({ f }: { f: number }) => {
           </div>
         </div>
       ) : null}
-      <Say f={f} size={80} style={{ left: 120, top: 150 }} words={[{ t: "On", at: v(5.58) }, { t: "your", at: v(5.92) }, { t: "own", at: v(6.1) }, { t: "server.", at: v(6.38) }]} />
+      <Say f={f} size={96} style={{ left: 120, top: 370 }} words={[{ t: "On", at: v(5.58) }, { t: "your", at: v(5.92) }, { t: "own", at: v(6.1) }, { t: "server.", at: v(6.38) }]} />
     </AbsoluteFill>
   );
 };
