@@ -9,9 +9,13 @@ import { AbsoluteFill, Audio, Easing, Img, Sequence, interpolate, staticFile, us
 import { C, FONT, mulberry32 } from "./kit";
 import { Phone, headStyle } from "./parts";
 
-export const DURATION = 930;
+export const DURATION = 960;
 const VO = 0.3;
-const v = (s: number) => Math.round((s + VO) * 30); // voice time → frame
+// The artist line was re-voiced and spliced in at 9.56 s; it runs 1.34 s longer than the old one,
+// so every word after it (original time 12.5 s on) moves by that much.
+const SPLICE = 1.34;
+const v = (s: number) => Math.round((s + (s >= 12.5 ? SPLICE : 0) + VO) * 30); // voice time → frame
+const va = (t: number) => Math.round((9.56 + t + VO) * 30); // a word in the spliced artist line
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const E = {
   out: Easing.bezier(0.16, 1, 0.3, 1),
@@ -114,15 +118,17 @@ const Stage = ({ f, a, b, children, inD = 8, outD = 7 }: { f: number; a: number;
 // ── Background: graphite, a slow green glow that breathes with the scenes.
 const Atmos = (_: { f: number }) => <AbsoluteFill style={{ background: "#0a0b0d" }} />;
 
-// ── 1–2. The year. Wrapped is one bar in December; spotussi is a bar for every day, swept in
-// January to December with the date running, then the whole year folds into your own server.
+// ── 1–2. The tear-off calendar. Wrapped: the year's pages flip by blank, and only one page in
+// December has anything on it. spotussi: the year flips by again and every page is full — that
+// day's top song and time listened — faster and faster, then the year stacks into your server.
 const YEARS = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MDAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const dateOf = (d: number) => {
+const WEEKDAYS = ["Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]; // 2026 starts on a Thursday
+const monthDay = (d: number) => {
   let m = 0;
   while (m < 11 && d >= MDAYS[m]) d -= MDAYS[m++];
-  return `${MONTHS[m]} ${d + 1}`;
+  return { m: MONTHS[m], d: d + 1 };
 };
 const DAYS = (() => {
   const rnd = mulberry32(21);
@@ -132,31 +138,120 @@ const DAYS = (() => {
     return Math.max(0.08, Math.min(1, week * season * (0.55 + rnd() * 0.75)));
   });
 })();
-const YEAR_W = 1680;
-const YEAR_H = 360;
+const SONGS = [
+  ["Glass Hours", "Nova Reyes"], ["Night Signal", "Kairo"], ["Paper Moons", "Static Bloom"], ["Low Tide", "June Avenue"],
+  ["Afterglow FM", "Lumen Drift"], ["Neon Harbor", "The Midnight Arcade"], ["Coastline", "Halcyon Coast"], ["Velvet Static", "Mira Vale"],
+  ["Orbiting", "Paper Satellites"], ["Polar Lights", "Oslo Nights"],
+];
+const WRAPPED_DAY = 334; // Dec 1
+
+type PageKind = "blank" | "full" | "wrapped";
+const CalPage = ({ day, kind }: { day: number; kind: PageKind }) => {
+  const { m, d } = monthDay(day);
+  const wrapped = kind === "wrapped";
+  const song = SONGS[(day * 7) % SONGS.length];
+  const mins = Math.round(20 + DAYS[day] * 240);
+  return (
+    <div style={{ position: "absolute", inset: 0, borderRadius: 26, background: wrapped ? "#0f2a19" : "#17181c", boxShadow: `inset 0 0 0 1.5px ${wrapped ? "#1f6b3c" : EDGE}`, overflow: "hidden" }}>
+      {/* Header band: month and weekday, like a desk calendar's red strip, in graphite. */}
+      <div style={{ height: 96, background: wrapped ? C.lamp : "#23252b", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 36px" }}>
+        <span style={{ ...headStyle(40), color: wrapped ? "#06140b" : C.paper }}>{m}</span>
+        <span style={{ fontFamily: FONT, fontSize: 24, fontWeight: 600, color: wrapped ? "#06140b" : MUTE }}>{WEEKDAYS[day % 7]}</span>
+      </div>
+      <div style={{ position: "absolute", left: 36, top: 112, ...headStyle(230), color: wrapped ? C.lamp : C.paper, letterSpacing: "-0.05em" }}>{d}</div>
+      <div style={{ position: "absolute", left: 36, right: 36, bottom: 40, height: 210 }}>
+        {kind === "blank" ? (
+          <div style={{ position: "absolute", inset: 0, borderRadius: 18, background: "#121316" }} />
+        ) : null}
+        {wrapped ? (
+          <div style={{ position: "absolute", inset: 0 }}>
+            <div style={{ ...headStyle(64), color: C.paper }}>Your Wrapped</div>
+            <div style={{ fontFamily: FONT, fontSize: 28, color: "#9fd9b4", marginTop: 14 }}>Your year in stats, once a year.</div>
+          </div>
+        ) : null}
+        {kind === "full" ? (
+          <div style={{ position: "absolute", inset: 0, display: "flex", gap: 26, alignItems: "flex-start" }}>
+            <Art seed={(day * 7) % 40} size={130} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: FONT, fontSize: 20, color: MUTE }}>Top song</div>
+              <div style={{ fontFamily: FONT, fontSize: 32, fontWeight: 680, color: C.paper, marginTop: 4, whiteSpace: "nowrap" }}>{song[0]}</div>
+              <div style={{ fontFamily: FONT, fontSize: 22, color: MUTE }}>{song[1]}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 18 }}>
+                <span style={{ ...headStyle(40), fontVariantNumeric: "tabular-nums" }}>{Math.floor(mins / 60)}h {String(mins % 60).padStart(2, "0")}m</span>
+                <span style={{ fontFamily: FONT, fontSize: 20, color: MUTE }}>listened</span>
+              </div>
+              <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
+                {Array.from({ length: 16 }, (_, k) => <span key={k} style={{ width: 12, height: 12, borderRadius: 6, background: k < Math.round(DAYS[day] * 16) ? C.lamp : C.grille }} />)}
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+/** A flip schedule: page k starts flipping at times[k] and takes durs[k] frames. */
+const schedule = (start: number, end: number, n: number, accel: number) => {
+  const times: number[] = [];
+  for (let k = 0; k < n; k++) times.push(start + (end - start) * Math.pow(k / n, accel));
+  const durs = times.map((t, k) => Math.max(1.2, Math.min(10, ((k + 1 < n ? times[k + 1] : end) - t) * 1.6)));
+  return { times, durs };
+};
+const CAL = { x: 1180, y: 190, w: 620, h: 720 };
+
+const Calendar = ({ f, pages, times, durs, from }: { f: number; pages: { day: number; kind: PageKind }[]; times: number[]; durs: number[]; from?: number }) => {
+  let k = 0;
+  while (k < times.length && f >= times[k] + durs[k]) k++; // pages fully gone
+  const cur = Math.min(k, pages.length - 1);
+  const flipping = k < times.length && f >= times[k] ? (f - times[k]) / durs[k] : 0;
+  const pFlip = Easing.in(Easing.quad)(Math.min(1, flipping));
+  void from;
+  return (
+    <div style={{ position: "absolute", left: CAL.x, top: CAL.y, width: CAL.w, height: CAL.h, perspective: 1600 }}>
+      {/* The pad's thickness: a few page edges under the top page. */}
+      {[3, 2, 1].map((i) => <div key={i} style={{ position: "absolute", left: i * 4, right: -i * 4, top: i * 7, bottom: -i * 7, borderRadius: 26, background: "#121316", boxShadow: `inset 0 0 0 1.5px ${EDGE}` }} />)}
+      {cur + 1 < pages.length ? <CalPage {...pages[cur + 1]} /> : null}
+      <div style={{ position: "absolute", inset: 0, transformOrigin: "50% 0%", transform: `translateY(${(-pFlip * 520).toFixed(1)}px) rotateX(${(-pFlip * 40).toFixed(2)}deg) rotateZ(${(pFlip * -6).toFixed(2)}deg)`, opacity: pFlip >= 1 ? 0 : 1 - Math.max(0, pFlip - 0.5) / 0.5 }}>
+        <CalPage {...pages[cur]} />
+      </div>
+      {/* Binding rings. */}
+      {[0.28, 0.72].map((x) => <div key={x} style={{ position: "absolute", left: CAL.w * x - 14, top: -18, width: 28, height: 44, borderRadius: 14, background: "#2f3138", boxShadow: "inset 0 0 0 3px #3f424b" }} />)}
+    </div>
+  );
+};
+
 const Year = ({ f }: { f: number }) => {
   const b = v(6.96);
   if (f > b) return null;
-  const once = v(1.06); // "once a year"
-  const lockAt = v(2.16); // "spotussi is your whole listening history"
-  const sweep = v(4.38); // "every single day"
+  const once = v(1.06); // "once a year": land on the Wrapped page
+  const lockAt = v(2.16); // spotussi: the year again, every page full
+  const fast = v(4.38); // "every single day": flat out
   const server = v(5.58); // "on your own server"
-  const SWEEP_LEN = 36;
-  const head = r(f, sweep, SWEEP_LEN, Easing.bezier(0.45, 0, 0.25, 1)); // 0..1 across the year
-  const wrapped = r(f, once, 12, E.pop) * (1 - r(f, sweep - 2, 10, E.in));
-  const fold = r(f, server - 2, 22, E.inOut); // the chart folds into the server window
   const exit = r(f, b - 7, 7, E.in);
-  const x0 = 960 - YEAR_W / 2;
-  const base = 880;
-  const dayW = YEAR_W / 365;
-  const dayIdx = Math.min(364, Math.floor(head * 365));
-  const hours = 0.4 + DAYS[dayIdx] * 3.6;
+
+  // Act 1: blank pages Jan → Nov, accelerating, landing on Dec 1, Wrapped.
+  const blankDays = Array.from({ length: 22 }, (_, i) => Math.round((i / 22) * (WRAPPED_DAY - 4)));
+  const act1 = [...blankDays.map((day) => ({ day, kind: "blank" as PageKind })), { day: WRAPPED_DAY, kind: "wrapped" as PageKind }];
+  const s1 = schedule(14, once - 2, act1.length - 1, 0.7);
+  // Act 2: the Wrapped page tears away; Jan 1 onwards, every page full, ending at the server line.
+  const fullDays = Array.from({ length: 70 }, (_, i) => Math.round((i / 69) * 364));
+  const act2 = fullDays.map((day) => ({ day, kind: "full" as PageKind }));
+  const s2 = schedule(lockAt + 26, server - 6, act2.length - 1, 0.55);
+  const inAct2 = f >= lockAt;
+  const tear = r(f, lockAt, 14, E.in); // the Wrapped page tears off and falls away
+  const dayNow = inAct2 ? act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day : 0;
+
+  // Act 3: the pad slides into the server window, with the year's pages stacked behind it.
+  const fold = r(f, server - 4, 20, E.inOut);
+  const calX = mix(0, -1090, fold);
+  const calS = mix(1, 0.62, fold);
+
   return (
     <AbsoluteFill style={{ opacity: 1 - exit, filter: exit > 0 ? `blur(${(exit * 14).toFixed(1)}px)` : undefined }}>
-      {/* The server window the year folds into. */}
-      <div style={{ position: "absolute", left: 120, top: 300, width: 1680, height: 700, borderRadius: 26, background: PANEL, boxShadow: `0 0 0 1.5px ${EDGE}`, opacity: fold, transform: `scale(${mix(1.08, 1, fold).toFixed(4)})` }}>
-        <div style={{ position: "absolute", left: 30, top: 26, display: "flex", alignItems: "center", gap: 14 }}>
-          {/* A rack unit: two slots and a lamp. */}
+      {/* Server window (act 3). */}
+      <div style={{ position: "absolute", left: 120, top: 300, width: 1680, height: 680, borderRadius: 26, background: PANEL, boxShadow: `0 0 0 1.5px ${EDGE}`, opacity: fold }}>
+        <div style={{ position: "absolute", left: 36, top: 30, display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 54, height: 40, borderRadius: 8, boxShadow: `inset 0 0 0 2px ${EDGE}`, display: "flex", flexDirection: "column", justifyContent: "center", gap: 6, padding: "0 9px" }}>
             {[0, 1].map((i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -165,52 +260,35 @@ const Year = ({ f }: { f: number }) => {
               </div>
             ))}
           </div>
-          <span style={{ fontFamily: FONT, fontSize: 26, fontWeight: 640, color: C.paper }}>spotussi.local</span>
-          <span style={{ fontFamily: FONT, fontSize: 20, color: MUTE, marginLeft: 10 }}>2026 · 365 days</span>
+          <span style={{ fontFamily: FONT, fontSize: 28, fontWeight: 640, color: C.paper }}>spotussi.local</span>
+        </div>
+        <div style={{ position: "absolute", left: 760, top: 210, ...headStyle(150), fontVariantNumeric: "tabular-nums" }}>365</div>
+        <div style={{ position: "absolute", left: 768, top: 380, fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE }}>of 365 days logged in 2026</div>
+        <div style={{ position: "absolute", left: 768, top: 450, display: "flex", gap: 7, flexWrap: "wrap", width: 840 }}>
+          {Array.from({ length: 52 }, (_, k) => <span key={k} style={{ width: 9, height: 22, borderRadius: 3, background: C.lamp, opacity: 0.45 + 0.55 * DAYS[k * 7] }} />)}
         </div>
       </div>
-      {/* The chart itself: axis, month labels, Wrapped's single bar, then every day. */}
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, transform: `translateY(${mix(0, -20, fold).toFixed(1)}px) scale(${mix(1, 0.88, fold).toFixed(4)})`, transformOrigin: "960px 900px" }}>
-        <div style={{ position: "absolute", left: x0, top: base, width: YEAR_W, height: 2, background: EDGE }} />
-        {MONTHS.map((m, i) => {
-          const start = MDAYS.slice(0, i).reduce((s, d) => s + d, 0);
-          const lit = i === 11 && wrapped > 0.1;
-          return (
-            <div key={m} style={{ position: "absolute", left: x0 + start * dayW, top: base + 18, width: MDAYS[i] * dayW, textAlign: "center", fontFamily: FONT, fontSize: 24, fontWeight: 600, color: lit ? C.lamp : MUTE, opacity: r(f, 2 + i * 1.5, 12) }}>
-              {m}
-            </div>
-          );
-        })}
-        {/* Every day: a bar per day, rising as the sweep passes it. */}
-        {DAYS.map((h, i) => {
-          const at = i / 365;
-          const on = head <= 0 ? 0 : Math.min(1, Math.max(0, (head - at) * 24));
-          if (on <= 0) return null;
-          return <div key={i} style={{ position: "absolute", left: x0 + i * dayW, top: base - YEAR_H * h * on, width: dayW * 0.7, height: YEAR_H * h * on, borderRadius: 2, background: C.lamp, opacity: 0.55 + 0.45 * h }} />;
-        })}
-        {/* Wrapped: one tall bar in December, called out, then it is absorbed by the daily bars. */}
-        {wrapped > 0 ? (
+      {/* The pad. */}
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1920, height: 1080, transform: `translateX(${calX.toFixed(1)}px) scale(${calS.toFixed(4)})`, transformOrigin: `${CAL.x + CAL.w / 2}px 760px` }}>
+        {!inAct2 ? (
+          <Calendar f={f} pages={act1} times={s1.times} durs={s1.durs} />
+        ) : (
           <>
-            <div style={{ position: "absolute", left: x0 + 345 * dayW - 9, top: base - YEAR_H * wrapped, width: 18, height: YEAR_H * wrapped, borderRadius: 6, background: C.lamp }} />
-            <div style={{ position: "absolute", left: x0 + 345 * dayW - 160, top: base - YEAR_H - 70, width: 320, textAlign: "center", ...headStyle(36), color: C.lamp, opacity: wrapped }}>Wrapped</div>
+            <Calendar f={f} pages={act2} times={s2.times} durs={s2.durs} />
+            {tear < 1 ? (
+              <div style={{ position: "absolute", left: CAL.x, top: CAL.y, width: CAL.w, height: CAL.h, transformOrigin: "100% 0%", transform: `translate(${(tear * 300).toFixed(1)}px, ${(tear * 700).toFixed(1)}px) rotate(${(tear * 28).toFixed(2)}deg)`, opacity: 1 - tear }}>
+                <CalPage day={WRAPPED_DAY} kind="wrapped" />
+              </div>
+            ) : null}
           </>
-        ) : null}
-        {/* The sweep head: a line and the date it has reached. */}
-        {head > 0 && head < 1 ? (
-          <>
-            <div style={{ position: "absolute", left: x0 + head * YEAR_W, top: base - YEAR_H - 40, width: 2, height: YEAR_H + 40, background: C.paper, opacity: 0.8 }} />
-            <div style={{ position: "absolute", left: x0 + head * YEAR_W - 120, top: base - YEAR_H - 96, width: 240, textAlign: "center", fontFamily: FONT, fontSize: 26, fontWeight: 640, color: C.paper, fontVariantNumeric: "tabular-nums" }}>
-              {dateOf(dayIdx)} · {Math.floor(hours)}h {String(Math.floor((hours % 1) * 60)).padStart(2, "0")}m
-            </div>
-          </>
-        ) : null}
+        )}
       </div>
-      {/* Copy, in strict turns: the hook, then the lockup and its line, then the server line. */}
+      {/* Copy, left column, in strict turns. */}
       <Say
         f={f}
-        size={120}
-        out={lockAt - 10}
-        style={{ left: 120, top: 120, width: 1680 }}
+        size={88}
+        out={lockAt - 9}
+        style={{ left: 120, top: 400, width: 1040 }}
         words={[
           { t: "Spotify", at: 0 },
           { t: "Wrapped", at: 0 },
@@ -222,10 +300,15 @@ const Year = ({ f }: { f: number }) => {
         ]}
       />
       {f >= lockAt ? (
-        <div style={{ position: "absolute", left: 120, top: 120, textAlign: "left", opacity: r(f, lockAt, 10) * (1 - r(f, server - 10, 8, E.in)), filter: r(f, lockAt, 10) < 0.99 ? `blur(${((1 - r(f, lockAt, 10)) * 12).toFixed(1)}px)` : undefined }}>
+        <div style={{ position: "absolute", left: 120, top: 330, width: 1040, opacity: r(f, lockAt, 10) * (1 - r(f, server - 10, 8, E.in)) }}>
           <Img src={staticFile("logo/lockup-dark.svg")} style={{ height: 64 }} />
-          <div style={{ ...headStyle(80), marginTop: 34 }}>
-            Your whole history, <span style={{ color: C.lamp, opacity: r(f, sweep, 8) }}>every single day.</span>
+          <div style={{ ...headStyle(80), marginTop: 40 }}>
+            Your whole history,
+            <br />
+            <span style={{ color: C.lamp, opacity: r(f, fast, 8) }}>every single day.</span>
+          </div>
+          <div style={{ fontFamily: FONT, fontSize: 34, fontWeight: 600, color: MUTE, marginTop: 36, fontVariantNumeric: "tabular-nums", opacity: r(f, lockAt + 24, 8) }}>
+            Day {dayNow + 1} of 365
           </div>
         </div>
       ) : null}
@@ -299,42 +382,49 @@ const Top = ({ f }: { f: number }) => {
   );
 };
 
-// ── 4. One artist, all-time: the count rolls to 12,418 and a timeline draws from 2011.
+// ── 4. Your #1 artist: who it is, how many plays all time, and since when.
 const ArtistShot = ({ f }: { f: number }) => {
   const a = v(9.56);
   const b = v(12.52);
-  const count = r(f, a + 6, 30, E.out);
-  const since = v(11.1);
-  const line = r(f, since - 4, 26, E.inOut);
+  const count = r(f, va(1.5) - 2, 30, E.out);
+  const first = r(f, va(2.88) - 2, 12);
+  const line = r(f, va(2.88), 24, E.inOut);
   const rnd = mulberry32(31);
   const yearly = YEARS.map((_, i) => 0.25 + 0.75 * Math.min(1, (0.3 + i / 12) * (0.7 + rnd() * 0.5)));
   return (
     <Stage f={f} a={a} b={b}>
-      <div style={{ position: "absolute", left: 120, top: 120, display: "flex", alignItems: "center", gap: 48 }}>
-        <div style={{ transform: `scale(${mix(0.6, 1, r(f, a + 2, 16, E.pop)).toFixed(3)}) rotate(${(f - a) * 0.15}deg)` }}>
-          <Art seed={1} size={250} round />
+      <Say f={f} size={110} style={{ left: 120, top: 120, width: 1680 }} words={[{ t: "Your", at: va(0) }, { t: "#1", at: va(0.16), lit: true }, { t: "artist.", at: va(0.82) }]} />
+      {/* Who: the artist, large, on the left. */}
+      <div style={{ position: "absolute", left: 120, top: 360, opacity: r(f, a + 4, 12), transform: `scale(${mix(0.85, 1, r(f, a + 4, 16, E.pop)).toFixed(3)})`, transformOrigin: "0% 50%" }}>
+        <div style={{ transform: `rotate(${((f - a) * 0.12).toFixed(2)}deg)` }}>
+          <Art seed={1} size={330} round />
         </div>
-        <div>
-          <Label style={{ fontSize: 26 }}>Artist · #1 all time</Label>
-          <div style={{ ...headStyle(96), marginTop: 6 }}>Nova Reyes</div>
+        <div style={{ ...headStyle(76), marginTop: 40 }}>Nova Reyes</div>
+        <div style={{ fontFamily: FONT, fontSize: 30, color: MUTE, marginTop: 10 }}>Synthpop · your most played, all time</div>
+      </div>
+      {/* The proof: plays all time, the first play, and every year since. */}
+      <Panel style={{ left: 880, top: 360, width: 920, height: 600 }}>
+        <div style={{ position: "absolute", left: 44, top: 40 }}>
+          <Label style={{ fontSize: 24 }}>Plays, all time</Label>
+          <div style={{ ...headStyle(150), marginTop: 6, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.05em" }}>{fmt(12418 * count)}</div>
         </div>
-      </div>
-      <div style={{ position: "absolute", left: 110, top: 400, ...headStyle(250), fontVariantNumeric: "tabular-nums", letterSpacing: "-0.05em" }}>
-        {fmt(12418 * count)}
-        <span style={{ ...headStyle(70), color: MUTE, marginLeft: 30 }}>plays</span>
-      </div>
-      {/* Since 2011: an axis draws left to right, a bar rises for each year as the line passes it. */}
-      <div style={{ position: "absolute", left: 120, top: 900, width: 1680, height: 2, background: EDGE, transform: `scaleX(${line.toFixed(4)})`, transformOrigin: "0 50%" }} />
-      {YEARS.map((y, i) => {
-        const x = 146 + (i / (YEARS.length - 1)) * 1628;
-        const on = r(f, since - 4 + i * 1.6, 12, E.out);
-        return (
-          <div key={y} style={{ position: "absolute", left: x - 26, top: 900 - 150 * yearly[i] * on, width: 52, height: 150 * yearly[i] * on, borderRadius: "10px 10px 0 0", background: i === YEARS.length - 1 ? C.lamp : "#2f3138" }}>
-            {i % 3 === 0 || i === YEARS.length - 1 ? <div style={{ position: "absolute", top: 150 * yearly[i] * on + 14, left: -10, width: 72, textAlign: "center", fontFamily: FONT, fontSize: 20, color: MUTE, opacity: on }}>{y}</div> : null}
-          </div>
-        );
-      })}
-      <Say f={f} size={64} style={{ right: 120, top: 175 }} words={[{ t: "Since", at: v(11.1) }, { t: "2011.", at: v(11.74) }]} />
+        <div style={{ position: "absolute", left: 44, top: 248, display: "flex", alignItems: "baseline", gap: 18, opacity: first, transform: `translateY(${((1 - first) * 16).toFixed(1)}px)` }}>
+          <Label style={{ fontSize: 24 }}>First play</Label>
+          <div style={{ ...headStyle(44) }}>Mar 4, 2011</div>
+        </div>
+        <Label style={{ position: "absolute", left: 44, top: 336, fontSize: 22 }}>Plays per year</Label>
+        <div style={{ position: "absolute", left: 44, top: 540, width: 832, height: 2, background: EDGE, transform: `scaleX(${line.toFixed(4)})`, transformOrigin: "0 50%" }} />
+        {YEARS.map((y, i) => {
+          const x = 44 + (i / (YEARS.length - 1)) * 800;
+          const on = r(f, va(2.88) + i * 1.3, 12, E.out);
+          const h = 150 * yearly[i] * on;
+          return (
+            <div key={y} style={{ position: "absolute", left: x, top: 540 - h, width: 34, height: h, borderRadius: "6px 6px 0 0", background: C.lamp, opacity: 0.5 + 0.5 * (i / (YEARS.length - 1)) }}>
+              {i % 5 === 0 || i === YEARS.length - 1 ? <div style={{ position: "absolute", top: h + 12, left: -14, width: 62, textAlign: "center", fontFamily: FONT, fontSize: 20, color: MUTE, opacity: on }}>{y}</div> : null}
+            </div>
+          );
+        })}
+      </Panel>
     </Stage>
   );
 };
@@ -614,7 +704,7 @@ const SignOff = ({ f }: { f: number }) => {
 // ── Audio: voice on top, music under it (ducked 8 dB while she speaks), no effects.
 const Music = () => {
   const f = useCurrentFrame();
-  const talking = interpolate(f, [v(0) - 8, v(0), v(27.3), v(27.3) + 15], [0, 1, 1, 0], clamp);
+  const talking = interpolate(f, [v(0) - 8, v(0), v(27.3), v(27.3) + 15], [0, 1, 1, 0], clamp); // v() includes the splice
   const fade = interpolate(f, [0, 2, DURATION - 40, DURATION], [0, 1, 1, 0], clamp);
   return <Audio src={staticFile("audio/bgm-v3.wav")} volume={fade * (1 - 0.6 * talking)} />;
 };
