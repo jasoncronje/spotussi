@@ -1,0 +1,395 @@
+{
+ "dpr": 2.5,
+ "tabbar": null,
+ "firstRow": {
+  "x": 65,
+  "y": 294,
+  "w": 1310,
+  "h": 60.5
+ },
+ "nav": [
+  {
+   "label": "spotussi",
+   "href": "/",
+   "fixed": false,
+   "x": 36,
+   "y": 11,
+   "w": 121.109375,
+   "h": 34
+  },
+  {
+   "label": "Overview",
+   "href": "/",
+   "fixed": false,
+   "x": 381.84375,
+   "y": 10,
+   "w": 107.453125,
+   "h": 36
+  },
+  {
+   "label": "Top",
+   "href": "/top",
+   "fixed": false,
+   "x": 493.296875,
+   "y": 10,
+   "w": 71.71875,
+   "h": 36
+  },
+  {
+   "label": "Stats",
+   "href": "/stats",
+   "fixed": false,
+   "x": 569.015625,
+   "y": 10,
+   "w": 80.96875,
+   "h": 36
+  },
+  {
+   "label": "History",
+   "href": "/history",
+   "fixed": false,
+   "x": 653.984375,
+   "y": 10,
+   "w": 93.453125,
+   "h": 36
+  },
+  {
+   "label": "Sessions",
+   "href": "/sessions",
+   "fixed": false,
+   "x": 751.4375,
+   "y": 10,
+   "w": 106.6875,
+   "h": 36
+  },
+  {
+   "label": "Library",
+   "href": "/library",
+   "fixed": false,
+   "x": 862.125,
+   "y": 10,
+   "w": 91.640625,
+   "h": 36
+  },
+  {
+   "label": "Settings",
+   "href": "/settings/general",
+   "fixed": false,
+   "x": 957.765625,
+   "y": 10,
+   "w": 100.390625,
+   "h": 36
+  },
+  {
+   "label": "Today",
+   "href": "/top/artists?range=today",
+   "fixed": false,
+   "x": 43,
+   "y": 67,
+   "w": 66.875,
+   "h": 28
+  },
+  {
+   "label": "7 days",
+   "href": "/top/artists?range=last_7d",
+   "fixed": false,
+   "x": 109.875,
+   "y": 67,
+   "w": 69.1875,
+   "h": 28
+  },
+  {
+   "label": "4 weeks",
+   "href": "/top/artists",
+   "fixed": false,
+   "x": 179.0625,
+   "y": 67,
+   "w": 78.359375,
+   "h": 28
+  },
+  {
+   "label": "6 months",
+   "href": "/top/artists?range=last_6m",
+   "fixed": false,
+   "x": 257.421875,
+   "y": 67,
+   "w": 85.578125,
+   "h": 28
+  },
+  {
+   "label": "12 months",
+   "href": "/top/artists?range=last_12m",
+   "fixed": false,
+   "x": 343,
+   "y": 67,
+   "w": 92.640625,
+   "h": 28
+  },
+  {
+   "label": "All time",
+   "href": "/top/artists?range=all",
+   "fixed": false,
+   "x": 435.640625,
+   "y": 67,
+   "w": 74.328125,
+   "h": 28
+  },
+  {
+   "label": "Artists",
+   "href": "/top/artists",
+   "fixed": false,
+   "x": 1078.765625,
+   "y": 191,
+   "w": 76.125,
+   "h": 32
+  },
+  {
+   "label": "Tracks",
+   "href": "/top/tracks",
+   "fixed": false,
+   "x": 1154.890625,
+   "y": 191,
+   "w": 76.828125,
+   "h": 32
+  },
+  {
+   "label": "Albums",
+   "href": "/top/albums",
+   "fixed": false,
+   "x": 1231.71875,
+   "y": 191,
+   "w": 83.5625,
+   "h": 32
+  },
+  {
+   "label": "Genres",
+   "href": "/top/genres",
+   "fixed": false,
+   "x": 1315.28125,
+   "y": 191,
+   "w": 81.71875,
+   "h": 32
+  },
+  {
+   "label": "Page2",
+   "href": "/top/artists?page=2",
+   "fixed": false,
+   "x": 1235.171875,
+   "y": 3360,
+   "w": 36,
+   "h": 36
+  },
+  {
+   "label": "Page32",
+   "href": "/top/artists?page=32",
+   "fixed": false,
+   "x": 1299,
+   "y": 3360,
+   "w": 36,
+   "h": 36
+  },
+  {
+   "label": "",
+   "href": "/top/artists?page=2",
+   "fixed": false,
+   "x": 1339,
+   "y": 3360,
+   "w": 36,
+   "h": 36
+  }
+ ],
+ "rangebar": null,
+ "page": {
+  "w": 1440,
+  "h": 1500
+ },
+ "figures": [],
+ "lamps": [
+  {
+   "x": 1289.11,
+   "y": 78.5,
+   "w": 5,
+   "h": 5,
+   "kind": "dot",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 321.5,
+   "w": 272.19,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 382.5,
+   "w": 239.78,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 443.5,
+   "w": 200.89,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 504.5,
+   "w": 187.94,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 565.5,
+   "w": 168.48,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 626.5,
+   "w": 168.48,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 687.5,
+   "w": 155.53,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 748.5,
+   "w": 149.05,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 809.5,
+   "w": 136.09,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 870.5,
+   "w": 129.61,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 931.5,
+   "w": 129.61,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 992.5,
+   "w": 129.61,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1053.5,
+   "w": 116.64,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1114.5,
+   "w": 110.16,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1175.5,
+   "w": 103.69,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1236.5,
+   "w": 103.69,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1297.5,
+   "w": 103.69,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1358.5,
+   "w": 97.2,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1419.5,
+   "w": 90.72,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  },
+  {
+   "x": 894.81,
+   "y": 1480.5,
+   "w": 90.72,
+   "h": 5,
+   "kind": "bar",
+   "clock": false
+  }
+ ],
+ "bars": [],
+ "clock": null,
+ "headings": {
+  "Top artists": {
+   "heading": {
+    "x": 40,
+    "y": 146,
+    "w": 440.25,
+    "h": 52
+   },
+   "panel": {
+    "x": 40,
+    "y": 146,
+    "w": 440.25,
+    "h": 52
+   }
+  }
+ }
+}

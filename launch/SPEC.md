@@ -1,52 +1,41 @@
-# Launch video: design spec (draft 1)
+# Launch video: design spec (draft 2, "Power on")
 
-Mode: autonomous (video-shotcraft pipeline; the owner said "take your picks and make the first draft").
+Draft 1 (`src/LaunchV1.tsx`, composition `LaunchV1`) was rejected as boring and phone-first. Draft 2 makes the desktop app the star and the phone a short coda.
 
-## Brief
+## Concept
 
-- **What:** spotussi for iPhone, a self-hosted Spotify stats app. Free and open source (AGPL).
-- **For:** people who self-host and care about their listening data; posted on the site and social.
-- **Must show:** Overview, Top, Artist, Sessions, Stats, Library; the self-hosted, offline and open-source promise.
-- **Format:** 1920×1080, 30 fps, 43 s, English, no voice-over. Two renders: with music and without (`props-nobgm.json`).
-- **Data:** only the demo-mode simulator captures in `brand/marketing/captures` (invented names, no real listening data). Meter strips use seeded heights.
-- **Copy:** every line comes from the approved App Store, wide and social images in `brand/scripts/marketing.mjs`; nothing claims App Store availability.
-
-## Look and motion
-
-Brand kit as-is: Console ground, Archivo at 125% width weight 760, green as the only accent (one lit word per headline), lowercase lockup, the drawn phone from `marketing.mjs`.
-
-Motion voice: "professional and trusted" preset. Entrances 18–24 f ease-out, no bounce; the only overshoot is the outro phones landing (bezier 0.34, 1.4, 0.44, 1). Lamps light with a short incandescent flash, like the hero reel's `Lamps.tsx`.
-
-Deliberate departures from the cards: no gold dust, stage light or glow in the outro (the brand forbids glow and a second accent), and the beat-cut flash is used once, on the drop, not as a three-flash series.
+The desktop app boots like a hi-fi amp. Built from the hero reel's desktop captures (`motion/public/1440`, lit and unlit pairs with every lamp's position), so every lamp that lights is the app's own pixels.
 
 ## Music
 
-`bgm-electro` take B (ElevenLabs). Measured 120.0 BPM, first beat 0.526 s (`BEAT0 = 15.78 f`, one beat = 15 f). Lighter 0–16.5 s (only about 4 dB below the drop), drop at beat 32 (16.5 s), a thinner section at beats 48–56 (not quieter), second high 56–72, ends about 42.5 s. A Whisper pass returned only its usual hallucination on instrumentals, so no vocals were found.
+`bgm-power` take D (ElevenLabs, `public/audio/bgm-power.mp3`). 128 BPM, first beat 0.434 s (`BEAT0 = 13.02 f`, one beat = 14.0625 f). Quiet build to the drop at beat 30 (14.49 s); full energy to beat 70 (33.25 s); a lower tail to the end.
 
-## Storyboard
+## Storyboard (beats)
 
-| # | Beats (frames) | Shot | Key motion | Sound |
+| # | Beats | Shot | Motion | Sound |
 |---|---|---|---|---|
-| 1 | 0–12 (0–196) | Open: the mark lights lamp by lamp, the word slides out, "Every play, kept forever." | Lamps on the off-beats; blur-slide | Relay click per lamp, soft whoosh |
-| 2 | 12–20 (196–316) | Hero: Overview phone rises; "Spotify stats, in your pocket." | contact-shadow-lift (floor shadow stays behind) | Whoosh |
-| 3 | 20–26 (316–406) | Top: "Know your real top 10." | Phone glides in, blur by speed | Whoosh |
-| 4 | 26–32 (406–496) | Artist: "Go deep on any artist." | Same, slight tilt | Whoosh, riser into the drop |
-| 5 | 32–37 (496–571) | Drop, Sessions: "Every session, remembered." | Hard cut on the beat, one white flash, shutter settle | Impact (slam 1 of 2) |
-| 6 | 37–42 (571–646) | Stats: "Watch your taste move." | Hard cut, shutter settle | Knob |
-| 7 | 42–48 (646–736) | Library: "Find the songs you never play." | Hard cut, shutter settle | Glass tap, tape stop |
-| 8 | 48–56 (736–856) | Breakdown: "All yours. On your server." and five promises | One line and one lamp per beat | Relay click per line |
-| 9 | 56–end (856–1290) | Outro: five phones fly in, lockup stamps at beat 60, "Spotify stats, self-hosted.", meter strip fills; fade from beat 76 | outro-group-photo-launch adapted; crane 4° → 0 | Long whoosh, impact (slam 2), lamp cascade, shimmer |
+| 1 | 0–8 | Self-test: macro on each Overview meter | Each meter sweeps on and its figure counts; the camera hops meter to meter (gauge-readout-moves, adapted to lamp meters) | Tube hum swell, cascade and click per meter |
+| 2 | 8–14 | "Every / play, / kept / forever." | One word per beat, then the full line pushes in | Relay click per word |
+| 3 | 14–30 | Crane: plays-by-day peak to the full dashboard | crane-rise-reveal; every lamp lights as it enters view; pushes in through the riser | Cascades, riser |
+| 4 | 30–38 | Drop: five lit pages as a train past a 60° wall | steep-tilt-glide with speed ghost; flash | Impact (slam 1 of 3), long whoosh |
+| 5 | 38–46 | Top: rank bars sweep, then a 6-frame crash zoom onto the #1 row; a giant "#1" slams in | crash-zoom-punch (bounce) | Selector click, whoosh, impact (slam 2) |
+| 6 | 46–54 | Artist: chart climbs, listening clock lights around the dial; console label | Slow push | Selector, cascade, a click a beat |
+| 7 | 54–62 | Sessions: tabletop, scrolling, meters light in a wave; caption types out | Tilted plane | Selector, cascade, a click a beat |
+| 8 | 62–70 | Stats: lateral dolly, columns climb; "taste move." slams in the centre | Dolly | Selector, cascade, small hit |
+| 9 | 70–76 | Pocket: desktop steps back into a window, the phone slides out | | Tape stop, whoosh, tap |
+| 10 | 76–end | Lockup: the mark ignites, word slides out, tagline, meter strip, footer | | Impact (slam 3), clicks, cascade, shimmer |
 
-## Sound
+Between pages, the amp's source selector (OVERVIEW · TOP · ARTIST · SESSIONS · STATS) clicks over and the cut lands on the beat.
 
-Picks (from `public/palette.html`, chosen by measurement, not by ear): lamp-click C and A alternating, lamp-cascade B, knob B, whoosh A, C and B, glass-tap B, tape-stop B, riser B, impact B, shimmer B. Each cue pins the file's own energy peak to its target frame. The output track offset measured 0 f on this pipeline (two impact probes). SFX files are normalized to a −1 dBFS sample peak (gains recorded in the commit), and the music ducks about 5 dB under every cue. Mix: −3.3 dB peak, −19.1 dB mean.
+## Rules kept
 
-## Independent review (draft 1)
+Brand palette and type; green only on lamps and one word per caption. Full-frame hits limited to three (drop, crash zoom, lockup). Cues pin the sound's peak to the target frame (output offset measured 0 f). Two renders: with and without music.
 
-A fresh-context reviewer found 11 issues; fixed: the knob cue never reached its peak (file trimmed, cue moved onto Stats); cues buried under the music (normalized files, ducking); four seams that popped to a blank frame (exits finish before each cut, entrances pre-rolled); Top missing from the outro (six phones now); meter strip early, off-centre and touching the phones; full-frame hits on every drop cut (now only the phone settles, the flash stays on the first hit); three unapproved copy lines; green full stops; phones exiting over captions (they now leave to the right). Kept: the lamp's brief brightness flash, which the hero reel also uses.
+## Review
 
-## Known gaps in draft 1
+A fresh-context reviewer checked an earlier render of this draft. Fixed from that review: figures disappearing when pages lit fully, one caption template repeated five times (now five styles), the dashboard settling too small, silent Artist and Sessions shots, a weak crash zoom, an overlong lockup, a near-silent opening, the music dipping before the phone cut. Not done: the meters pulsing with the music, and a fly-through drop.
 
-- No hand-listening has been done; the sound picks are by measurement only.
-- Loudness is about −18 LUFS; social platforms sit near −14.
-- The workbench manifest (`src/workbench.ts`) is not written yet.
+## Known gaps
+
+- Sound is picked and mixed by measurement; nobody has listened yet.
+- Loudness is about −17 dB mean; social platforms sit near −14 LUFS.
