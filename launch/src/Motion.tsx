@@ -1,4 +1,4 @@
-// The spotussi launch film (draft 17), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 18), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
@@ -282,7 +282,9 @@ const morph = (f: number, cut: number) => r(f, cut - 2, 14, E.emph);
 /** A slide's copy, outside the panel: rises in after the cut at `a`, lifts out before the cut at `b`. */
 const Copy = ({ f, a, b, style, children }: { f: number; a: number; b: number; style?: React.CSSProperties; children: React.ReactNode }) => {
   if (f < a || f >= b) return null;
-  const i = enter(f, a);
+  // Copy waits a few frames longer than the panel's content: by then the reshaping surface has
+  // moved clear of where the copy lands, so the two never cross.
+  const i = r(f, a + 5, 8, E.out);
   const o = leave(f, b);
   return <div style={{ position: "absolute", opacity: i * (1 - o), transform: `translateY(${((1 - i) * 28 - o * 20).toFixed(1)}px)`, ...style }}>{children}</div>;
 };
@@ -906,6 +908,7 @@ const Captions = ({ f }: { f: number }) => {
           <br />
           taste move.
         </div>
+        <Say f={f} size={46} style={{ ...subLine, whiteSpace: "nowrap" }} words={[{ t: "Week", at: w("weekByWeek") }, { t: "by", at: 0 }, { t: "week,", at: 0 }, { t: "year", at: 0 }, { t: "by", at: 0 }, { t: "year.", at: 0 }]} />
       </Copy>
 
       <Copy f={f} a={CUT.live} b={CUT.devices} style={{ left: 120, top: 110, width: 1680, height: 180 }}>
@@ -994,7 +997,7 @@ const SignOff = ({ f }: { f: number }) => {
 // ── Audio: the voice on top; the music 10 dB under it for as long as she speaks, then up to the
 // voice's level for the last bars and the final hit. The music's own arc (filtered intro, fill,
 // lift, ending) is in the file. MASTER lifts the mix to about −14 LUFS with peaks under −1 dBFS.
-const MASTER = 1.2;
+const MASTER = 1.17;
 const DUCK = 0.316;
 const Music = () => {
   const end = w("end");

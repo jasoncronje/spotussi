@@ -30,45 +30,44 @@ VO_OFFSET = 0.3  # the voice file starts this far into the film
 
 # ── Voice ────────────────────────────────────────────────────────────────────────────────────
 # vo-v3.wav is the take as recorded (ElevenLabs "Laurel", eleven_v4, one continuous read), sped up
-# 9% and levelled to about -16 LUFS:
-#   ffmpeg -i palette/vo6-laurel.mp3 -af "atempo=1.09,loudnorm=I=-15.2:TP=-1.6:LRA=11" -ar 44100 -ac 1 vo-v3.wav
+# 10% and levelled to about -16 LUFS:
+#   ffmpeg -i palette/vo8-laurel.mp3 -af "atempo=1.10,loudnorm=I=-15.2:TP=-1.6:LRA=11" -ar 44100 -ac 1 vo-v3.wav
 # The script: "Spotify Wrapped comes once a year. This is Spot-oo-see. Free, open-source stats for
 # your Spotify. Not once a year. Every single day. Your whole listening history, on your own
 # server. Your real top ten. Not just this month's. Your number one artist. Twelve thousand plays,
-# since twenty eleven. Every listening session, play by play. Watch your taste move. It logs every
-# play as it happens, and imports everything before. On your desktop, in your pocket, or just ask
-# your AI agent. Spot-oo-see. Self-host in one command."
+# since twenty eleven. Every listening session, play by play. Watch your taste move. Week by week,
+# year by year. It logs every play as it happens, and imports everything before. On your desktop,
+# in your pocket, or just ask your AI agent. Spot-oo-see. Self-host in one command."
 #
 # Word onsets in vo-v3.wav, in seconds. Phrase starts are read off its energy envelope (whisper's
 # word starts include the silence before a phrase, so they run early); words inside a phrase are
 # whisper's.
 WORDS = {
-    "spotify": 0.130, "comes": 1.04, "once": 1.26,
-    "thisIs": 2.390, "brand": 3.04, "free": 4.036,
-    "notOnce": 6.630, "every": 7.702, "history": 9.194, "on": 10.581,
-    "real": 11.778, "notJust": 13.220,
-    "numberOne": 14.462, "twelve": 15.979, "since": 17.10,
-    "session": 18.563, "playByPlay": 19.845,
-    "watch": 21.002,
-    "logs": 22.678, "asItHappens": 23.74, "and": 24.32, "imports": 24.62,
-    "desktop": 26.305, "pocket": 27.20, "agent": 28.041,
-    "signOff": 29.932, "selfHost": 30.900, "end": 32.511,
+    "spotify": 0.095, "comes": 1.02, "once": 1.22,
+    "thisIs": 2.350, "brand": 2.94, "free": 3.886,
+    "notOnce": 6.565, "every": 7.717, "history": 9.079, "on": 10.476,
+    "real": 11.649, "notJust": 13.025,
+    "numberOne": 14.258, "twelve": 15.804, "since": 16.96,
+    "session": 18.413, "playByPlay": 19.715,
+    "watch": 20.798, "weekByWeek": 22.254,
+    "logs": 24.215, "asItHappens": 25.26, "and": 25.88, "imports": 26.18,
+    "desktop": 27.787, "pocket": 28.550, "agent": 29.523,
+    "signOff": 31.379, "selfHost": 32.322, "end": 33.823,
 }
 # Every slide change: its name, the first word of the new slide, the natural gap before that word
 # (end of the previous phrase to the onset) and how far that gap may change, in seconds. The pauses
-# move only as far as the beat needs, and none is left under 0.22 s. Two are opened: the taste
-# slide has one short line, so its chart gets a moment to run before the next slide, and the
+# move only as far as the beat needs, and none is left under 0.22 s. The last one is opened: the
 # agent's answer needs a moment on screen before the sign-off.
 SLIDES = [
-    ("intro", "thisIs", 0.344, (-0.10, 0.20)),
-    ("history", "notOnce", 0.324, (-0.10, 0.20)),
-    ("top", "real", 0.294, (-0.07, 0.20)),
-    ("artist", "numberOne", 0.304, (-0.08, 0.20)),
-    ("sessions", "session", 0.339, (-0.10, 0.20)),
-    ("taste", "watch", 0.319, (-0.09, 0.20)),
-    ("live", "logs", 0.289, (0.30, 0.65)),
-    ("devices", "desktop", 0.304, (-0.08, 0.20)),
-    ("end", "signOff", 0.334, (0.18, 0.55)),
+    ("intro", "thisIs", 0.309, (-0.08, 0.20)),
+    ("history", "notOnce", 0.389, (-0.12, 0.20)),
+    ("top", "real", 0.254, (-0.03, 0.20)),
+    ("artist", "numberOne", 0.274, (-0.05, 0.20)),
+    ("sessions", "session", 0.304, (-0.08, 0.20)),
+    ("taste", "watch", 0.309, (-0.08, 0.20)),
+    ("live", "logs", 0.274, (-0.05, 0.20)),
+    ("devices", "desktop", 0.289, (-0.06, 0.20)),
+    ("end", "signOff", 0.289, (0.18, 0.55)),
 ]
 
 # ── Music ────────────────────────────────────────────────────────────────────────────────────
