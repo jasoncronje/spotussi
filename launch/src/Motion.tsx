@@ -1,11 +1,11 @@
-// The spotussi launch film (draft 16), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 17), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
 // The order: the hook (Wrapped comes once a year), the introduction (what spotussi is, said once),
 // the answer to the hook (not once a year: every single day, your whole history, on your own
 // server), five features, the three ways in (web app,
-// iOS app, your agent over MCP), the sign-off.
+// iOS app, your AI agent over MCP), the sign-off.
 //
 // 35 s at 30 fps. All timing comes from timing.json, which scripts/audio.py writes next to the
 // audio it builds: `words` are the frames at which the voice says each cue word, and every slide
@@ -628,7 +628,8 @@ const SessionsInside = ({ f }: { f: number }) => {
   );
 };
 
-// ── 7. Taste: stacked weekly bars whose genre bands shift as the weeks run; one genre grows.
+// ── 7. Taste: one stacked bar per year of the history, whose genre bands shift as the years run;
+// one genre grows.
 const GENRES = [
   { name: "Indie", col: "#5b5f68" },
   { name: "House", col: "#3a3d46" },
@@ -638,8 +639,11 @@ const GENRES = [
 const TasteInside = ({ f }: { f: number }) => {
   const a = CUT.taste;
   const b = CUT.live;
-  const N = 12;
-  const H = 520;
+  const N = YEARS.length;
+  const H = 500;
+  const PITCH = 44;
+  const BAR = 32;
+  const base = RECT.taste.h - 84; // the bars stand on this line; the years sit under it
   const shift = r(f, a + 10, b - a - 20, E.inOut); // starts once the slide has arrived
   const synAt = (week: number) => 0.12 + 0.55 * Math.min(1, Math.max(0, (week / (N - 1)) * shift * 1.25));
   const lastSyn = synAt(N - 1);
@@ -659,13 +663,16 @@ const TasteInside = ({ f }: { f: number }) => {
         const rest = 1 - syn;
         const parts = [rest * 0.42, rest * 0.33, syn, rest * 0.25];
         return (
-          <div key={week} style={{ position: "absolute", left: 40 + week * 58, top: RECT.taste.h - 60 - H, width: 42, height: H, borderRadius: 10, overflow: "hidden", display: "flex", flexDirection: "column-reverse" }}>
-            {parts.map((p, k) => <div key={k} style={{ height: `${(p * 100).toFixed(2)}%`, background: GENRES[k].col, borderTop: "2px solid #15161a" }} />)}
+          <div key={week} style={{ position: "absolute", left: 40 + week * PITCH, top: base - H, width: BAR }}>
+            <div style={{ height: H, borderRadius: 8, overflow: "hidden", display: "flex", flexDirection: "column-reverse" }}>
+              {parts.map((p, k) => <div key={k} style={{ height: `${(p * 100).toFixed(2)}%`, background: GENRES[k].col, borderTop: "2px solid #15161a" }} />)}
+            </div>
+            {week % 5 === 0 ? <div style={{ marginTop: 12, marginLeft: -14, width: 60, textAlign: "center", fontFamily: FONT, fontSize: 20, color: MUTE }}>{YEARS[week]}</div> : null}
           </div>
         );
       })}
       {/* The growing band names itself: the label rides the middle of the last week's green band. */}
-      <div style={{ position: "absolute", left: 40 + (N - 1) * 58 + 42 + 18, top: RECT.taste.h - 60 - ((1 - lastSyn) * 0.75 + lastSyn / 2) * H - 17, fontFamily: FONT, fontSize: 28, fontWeight: 680, lineHeight: "34px", color: C.lamp }}>Synthpop</div>
+      <div style={{ position: "absolute", left: 40 + (N - 1) * PITCH + BAR + 18, top: base - ((1 - lastSyn) * 0.75 + lastSyn / 2) * H - 17, fontFamily: FONT, fontSize: 28, fontWeight: 680, lineHeight: "34px", color: C.lamp }}>Synthpop</div>
     </>
   );
 };
@@ -899,7 +906,6 @@ const Captions = ({ f }: { f: number }) => {
           <br />
           taste move.
         </div>
-        <Say f={f} size={46} style={subLine} words={[{ t: "Week", at: w("week") }, { t: "on", at: 0 }, { t: "week.", at: 0 }]} />
       </Copy>
 
       <Copy f={f} a={CUT.live} b={CUT.devices} style={{ left: 120, top: 110, width: 1680, height: 180 }}>
@@ -911,7 +917,7 @@ const Captions = ({ f }: { f: number }) => {
         <span style={{ opacity: r(f, pocket - 1, 10) }}>In your pocket.</span>
         <br />
         <span style={{ opacity: r(f, agent, 10) }}>
-          Or just ask your <span style={{ color: C.lamp }}>agent.</span>
+          Or just ask your <span style={{ color: C.lamp }}>AI agent.</span>
         </span>
       </Copy>
       <Copy f={f} a={CUT.devices} b={out} style={{ ...way, left: RECT.window.x, width: RECT.window.w }}>
@@ -926,8 +932,7 @@ const Captions = ({ f }: { f: number }) => {
       <Copy f={f} a={agent - 1} b={out} style={{ ...surfaceStyle(AGENT), padding: 26, boxSizing: "border-box" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp }} />
-          <span style={headStyle(28)}>Your agent</span>
-          <span style={{ marginLeft: "auto", padding: "5px 14px", borderRadius: 14, background: "#23252b", fontFamily: FONT, fontSize: 19, fontWeight: 640, color: C.mist }}>MCP</span>
+          <span style={headStyle(28)}>Your AI agent</span>
         </div>
         {/* The exchange arrives in order: the question, the tool it calls, the answer. */}
         <div style={{ marginTop: 34, marginLeft: 34, padding: "16px 20px", borderRadius: "20px 20px 6px 20px", background: "#23252b", fontFamily: FONT, fontSize: 25, fontWeight: 560, lineHeight: 1.3, color: C.paper, opacity: r(f, agent + 4, 7) }}>Who did I play most this summer?</div>
@@ -989,7 +994,7 @@ const SignOff = ({ f }: { f: number }) => {
 // ── Audio: the voice on top; the music 10 dB under it for as long as she speaks, then up to the
 // voice's level for the last bars and the final hit. The music's own arc (filtered intro, fill,
 // lift, ending) is in the file. MASTER lifts the mix to about −14 LUFS with peaks under −1 dBFS.
-const MASTER = 1.23;
+const MASTER = 1.2;
 const DUCK = 0.316;
 const Music = () => {
   const end = w("end");
