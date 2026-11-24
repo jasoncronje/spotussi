@@ -82,37 +82,37 @@ const Label = ({ children, style }: { children: React.ReactNode; style?: React.C
 );
 
 type Wd = { t: string; at: number; lit?: boolean };
-/** Words rise out of blur at their voice frames; the whole line clears with `out`. */
+/** A line of copy appears as one piece when its first word is spoken: a short fade and a small
+ * rise, nothing per word. `\n` starts a new line, which appears on its own first word. `out` clears it. */
 const Say = ({ words, f, size, out, style, align = "left" }: { words: Wd[]; f: number; size: number; out?: number; style?: React.CSSProperties; align?: "left" | "center" }) => {
-  const gone = out !== undefined ? r(f, out, 7, E.in) : 0;
+  const gone = out !== undefined ? r(f, out, 6, E.in) : 0;
   if (gone >= 1) return null;
+  const lines: Wd[][] = [[]];
+  for (const w of words) (w.t === "\n" ? lines.push([]) : lines[lines.length - 1].push(w));
   return (
-    <div style={{ position: "absolute", display: "flex", flexWrap: "wrap", justifyContent: align === "center" ? "center" : "flex-start", columnGap: "0.25em", ...headStyle(size), opacity: 1 - gone, filter: gone > 0 ? `blur(${(gone * 12).toFixed(1)}px)` : undefined, transform: `translateY(${(-gone * 24).toFixed(1)}px)`, ...style }}>
-      {words.map((w, i) => {
-        if (w.t === "\n") return <span key={i} style={{ flexBasis: "100%", height: 0 }} />;
-        const p = r(f, w.at - 1, 9);
+    <div style={{ position: "absolute", ...headStyle(size), opacity: 1 - gone, textAlign: align, ...style }}>
+      {lines.map((ln, i) => {
+        if (!ln.length) return null;
+        const p = r(f, ln[0].at - 1, 10);
         return (
-          <span key={i} style={{ display: "inline-block", color: w.lit ? C.lamp : undefined, opacity: p, transform: `translateY(${((1 - p) * size * 0.35).toFixed(1)}px)`, filter: p > 0.995 ? undefined : `blur(${((1 - p) * 14).toFixed(1)}px)` }}>
-            {w.t}
-          </span>
+          <div key={i} style={{ opacity: p, transform: `translateY(${((1 - p) * 12).toFixed(1)}px)` }}>
+            {ln.map((w, k) => (
+              <span key={k} style={{ color: w.lit ? C.lamp : undefined }}>
+                {k ? " " : ""}
+                {w.t}
+              </span>
+            ))}
+          </div>
         );
       })}
     </div>
   );
 };
 
-/** A scene's container: zooms in from blur, drifts, and zooms through on the way out. */
-const Stage = ({ f, a, b, children, inD = 8, outD = 7 }: { f: number; a: number; b: number; children: React.ReactNode; inD?: number; outD?: number }) => {
+/** A scene's container: a plain fade in and out. The scene's one motion lives inside it. */
+const Stage = ({ f, a, b, children, inD = 8, outD = 6 }: { f: number; a: number; b: number; children: React.ReactNode; inD?: number; outD?: number }) => {
   if (f < a || f >= b) return null;
-  const pin = r(f, a, inD, E.out);
-  const pout = r(f, b - outD, outD, E.in);
-  const drift = r(f, a, b - a, (t) => t);
-  const s = mix(0.92, 1, pin) * (1 + 0.03 * drift) * (1 + 0.18 * pout);
-  return (
-    <AbsoluteFill style={{ opacity: Math.min(pin * 1.4, 1) * (1 - pout), transform: `scale(${s.toFixed(4)})`, filter: pin < 0.99 || pout > 0.01 ? `blur(${((1 - pin) * 16 + pout * 18).toFixed(1)}px)` : undefined }}>
-      {children}
-    </AbsoluteFill>
-  );
+  return <AbsoluteFill style={{ opacity: r(f, a, inD, E.out) * (1 - r(f, b - outD, outD, E.in)) }}>{children}</AbsoluteFill>;
 };
 
 // ── Background: graphite, a slow green glow that breathes with the scenes.
@@ -231,13 +231,13 @@ const Year = ({ f }: { f: number }) => {
   const exit = r(f, b - 7, 7, E.in);
 
   // Act 1: blank pages Jan → Nov, accelerating, landing on Dec 1, Wrapped.
-  const blankDays = Array.from({ length: 22 }, (_, i) => Math.round((i / 22) * (WRAPPED_DAY - 4)));
+  const blankDays = Array.from({ length: 8 }, (_, i) => Math.round((i / 8) * (WRAPPED_DAY - 30)));
   const act1 = [...blankDays.map((day) => ({ day, kind: "blank" as PageKind })), { day: WRAPPED_DAY, kind: "wrapped" as PageKind }];
-  const s1 = schedule(14, once - 2, act1.length - 1, 0.7);
+  const s1 = schedule(16, once - 2, act1.length - 1, 1);
   // Act 2: the Wrapped page tears away; Jan 1 onwards, every page full, ending at the server line.
-  const fullDays = Array.from({ length: 70 }, (_, i) => Math.round((i / 69) * 364));
+  const fullDays = Array.from({ length: 16 }, (_, i) => Math.round((i / 15) * 364));
   const act2 = fullDays.map((day) => ({ day, kind: "full" as PageKind }));
-  const s2 = schedule(lockAt + 26, server - 6, act2.length - 1, 0.55);
+  const s2 = schedule(lockAt + 22, server - 8, act2.length - 1, 0.8);
   const inAct2 = f >= lockAt;
   const tear = r(f, lockAt, 14, E.in); // the Wrapped page tears off and falls away
   const dayNow = inAct2 ? act2[Math.min(act2.length - 1, s2.times.filter((t) => f >= t).length)].day : 0;
@@ -357,8 +357,8 @@ const Top = ({ f }: { f: number }) => {
           ))}
         </div>
         {ARTISTS.map((x, i) => {
-          const pos = mix(mRank(x.name), aRank(x.name), Easing.bezier(0.5, 0, 0.2, 1)(Math.min(1, Math.max(0, (f - sw - Math.abs(aRank(x.name) - mRank(x.name)) * 0.6) / 18))));
-          const enter = r(f, a + 4 + mRank(x.name) * 2, 12, E.out);
+          const pos = mix(mRank(x.name), aRank(x.name), t);
+          const enter = 1;
           const val = mix(x.month, x.all, t);
           const frac = mix(x.month / maxM, x.all / maxA, t);
           const isOne = aRank(x.name) === 0 && t > 0.6;
@@ -368,7 +368,7 @@ const Top = ({ f }: { f: number }) => {
               <Art seed={x.seed} size={46} round />
               <div style={{ width: 290, fontFamily: FONT, fontSize: 24, fontWeight: 620, color: C.paper, whiteSpace: "nowrap" }}>{x.name}</div>
               <div style={{ flex: 1, height: 8, borderRadius: 4, background: "#23252b" }}>
-                <div style={{ width: `${(frac * 100 * r(f, a + 8 + i, 20)).toFixed(2)}%`, height: 8, borderRadius: 4, background: C.lamp }} />
+                <div style={{ width: `${(frac * 100).toFixed(2)}%`, height: 8, borderRadius: 4, background: C.lamp }} />
               </div>
               <div style={{ width: 110, textAlign: "right", fontFamily: FONT, fontSize: 24, fontWeight: 680, color: C.paper, fontVariantNumeric: "tabular-nums" }}>{fmt(val)}</div>
             </div>
@@ -387,16 +387,16 @@ const ArtistShot = ({ f }: { f: number }) => {
   const a = v(9.56);
   const b = v(12.52);
   const count = r(f, va(1.5) - 2, 30, E.out);
-  const first = r(f, va(2.88) - 2, 12);
-  const line = r(f, va(2.88), 24, E.inOut);
+  const first = r(f, va(2.88) - 2, 10);
+  const line = 1;
   const rnd = mulberry32(31);
   const yearly = YEARS.map((_, i) => 0.25 + 0.75 * Math.min(1, (0.3 + i / 12) * (0.7 + rnd() * 0.5)));
   return (
     <Stage f={f} a={a} b={b}>
       <Say f={f} size={110} style={{ left: 120, top: 120, width: 1680 }} words={[{ t: "Your", at: va(0) }, { t: "#1", at: va(0.16), lit: true }, { t: "artist.", at: va(0.82) }]} />
       {/* Who: the artist, large, on the left. */}
-      <div style={{ position: "absolute", left: 120, top: 360, opacity: r(f, a + 4, 12), transform: `scale(${mix(0.85, 1, r(f, a + 4, 16, E.pop)).toFixed(3)})`, transformOrigin: "0% 50%" }}>
-        <div style={{ transform: `rotate(${((f - a) * 0.12).toFixed(2)}deg)` }}>
+      <div style={{ position: "absolute", left: 120, top: 360, }}>
+        <div>
           <Art seed={1} size={330} round />
         </div>
         <div style={{ ...headStyle(76), marginTop: 40 }}>Nova Reyes</div>
@@ -408,7 +408,7 @@ const ArtistShot = ({ f }: { f: number }) => {
           <Label style={{ fontSize: 24 }}>Plays, all time</Label>
           <div style={{ ...headStyle(150), marginTop: 6, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.05em" }}>{fmt(12418 * count)}</div>
         </div>
-        <div style={{ position: "absolute", left: 44, top: 248, display: "flex", alignItems: "baseline", gap: 18, opacity: first, transform: `translateY(${((1 - first) * 16).toFixed(1)}px)` }}>
+        <div style={{ position: "absolute", left: 44, top: 248, display: "flex", alignItems: "baseline", gap: 18, opacity: first, }}>
           <Label style={{ fontSize: 24 }}>First play</Label>
           <div style={{ ...headStyle(44) }}>Mar 4, 2011</div>
         </div>
@@ -416,7 +416,7 @@ const ArtistShot = ({ f }: { f: number }) => {
         <div style={{ position: "absolute", left: 44, top: 540, width: 832, height: 2, background: EDGE, transform: `scaleX(${line.toFixed(4)})`, transformOrigin: "0 50%" }} />
         {YEARS.map((y, i) => {
           const x = 44 + (i / (YEARS.length - 1)) * 800;
-          const on = r(f, va(2.88) + i * 1.3, 12, E.out);
+          const on = 1;
           const h = 150 * yearly[i] * on;
           return (
             <div key={y} style={{ position: "absolute", left: x, top: 540 - h, width: 34, height: h, borderRadius: "6px 6px 0 0", background: C.lamp, opacity: 0.5 + 0.5 * (i / (YEARS.length - 1)) }}>
@@ -450,14 +450,14 @@ const Sessions = ({ f }: { f: number }) => {
             <div key={d} style={{ position: "absolute", left: 40, right: 40, top: 110 + li * 92, height: 72 }}>
               <div style={{ position: "absolute", left: 0, top: 22, fontFamily: FONT, fontSize: 22, color: MUTE }}>{d}</div>
               {blocks.map((bk, k) => {
-                const at = a + 6 + li * 3 + k * 7;
-                const grow = r(f, at, 16, E.out);
                 const W = 1440;
+                const headX = head * W; // playhead position within the lanes
+                const grow = 1;
                 return (
                   <div key={k} style={{ position: "absolute", left: 90 + bk.start * W, top: 6, width: bk.len * W * grow, height: 60, borderRadius: 12, background: "#1d1f24", boxShadow: `inset 0 0 0 1.5px ${EDGE}`, overflow: "hidden", display: "flex", alignItems: "center", gap: 6, padding: "0 8px" }}>
                     {Array.from({ length: bk.plays }, (_, p) => {
-                      const on = r(f, at + 3 + p * 1.5, 6, E.pop);
-                      return <Art key={p} seed={(bk.seed * 7 + p) % 40} size={40} style={{ opacity: on, transform: `scale(${(0.5 + 0.5 * on).toFixed(3)})` }} />;
+                      const px = bk.start * W + 14 + p * 46; // this play's x
+                      return <Art key={p} seed={(bk.seed * 7 + p) % 40} size={40} style={{ opacity: headX >= px ? 1 : 0.12 }} />;
                     })}
                   </div>
                 );
@@ -497,7 +497,7 @@ const Taste = ({ f }: { f: number }) => {
           ))}
         </div>
         {Array.from({ length: W }, (_, w) => {
-          const on = r(f, a + 4 + w * 1.2, 12, E.out);
+          const on = 1;
           const syn = 0.12 + 0.55 * Math.min(1, Math.max(0, (w / (W - 1)) * shift * 1.25));
           const rest = 1 - syn;
           const parts = [rest * 0.42, rest * 0.33, syn, rest * 0.25];
@@ -532,13 +532,13 @@ const LiveImport = ({ f }: { f: number }) => {
   const b = v(20.82);
   const drop = r(f, v(17.56), 14, E.pop);
   const imp = v(19.48);
-  const zip = r(f, imp - 8, 16, E.out);
+  
   const fill = r(f, imp + 6, 26, E.inOut);
   return (
     <Stage f={f} a={a} b={b}>
       <Panel style={{ left: 120, top: 330, width: 820, height: 640 }}>
         <div style={{ position: "absolute", left: 36, top: 30, display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp, opacity: 0.5 + 0.5 * Math.abs(Math.sin(f / 6)) }} />
+          <span style={{ width: 14, height: 14, borderRadius: 7, background: C.lamp, opacity: 1 }} />
           <span style={{ ...headStyle(32) }}>Recently played</span>
         </div>
         {[{ t: "Neon Harbor", a: "The Midnight Arcade", s: 21 }, ...RECENT].map((x, i) => {
@@ -557,10 +557,10 @@ const LiveImport = ({ f }: { f: number }) => {
         })}
       </Panel>
       {/* The export arrives and the past streams in. */}
-      <Panel style={{ left: 980, top: 330, width: 820, height: 640, opacity: zip, transform: `translateY(${((1 - zip) * 60).toFixed(1)}px)` }}>
+      <Panel style={{ left: 980, top: 330, width: 820, height: 640 }}>
         <div style={{ position: "absolute", left: 40, top: 34, ...headStyle(32) }}>Import your history</div>
         <div style={{ position: "absolute", left: 40, top: 110, right: 40, height: 140, borderRadius: 18, boxShadow: `inset 0 0 0 2px ${EDGE}`, display: "flex", alignItems: "center", gap: 22, padding: "0 28px" }}>
-          <div style={{ width: 74, height: 90, borderRadius: 10, background: "#22242a", boxShadow: `inset 0 0 0 1.5px ${EDGE}`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10, fontFamily: FONT, fontSize: 16, fontWeight: 700, color: MUTE, transform: `translateY(${((1 - r(f, imp - 4, 14, E.pop)) * -90).toFixed(1)}px)` }}>ZIP</div>
+          <div style={{ width: 74, height: 90, borderRadius: 10, background: "#22242a", boxShadow: `inset 0 0 0 1.5px ${EDGE}`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10, fontFamily: FONT, fontSize: 16, fontWeight: 700, color: MUTE, }}>ZIP</div>
           <div>
             <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 640, color: C.paper }}>Extended streaming history</div>
             <div style={{ fontFamily: FONT, fontSize: 19, color: MUTE }}>from Spotify's data export</div>
@@ -593,11 +593,11 @@ const Devices = ({ f }: { f: number }) => {
   const a = v(20.82);
   const b = v(23.08);
   const ph = r(f, v(22.2) - 6, 18, E.pop);
-  const tilt = r(f, a, b - a, (t) => t);
+  
   return (
     <Stage f={f} a={a} b={b}>
       <AbsoluteFill style={{ perspective: 1800 }}>
-        <div style={{ position: "absolute", left: 120, top: 290, width: 1240, height: 740, borderRadius: 18, background: "#101114", boxShadow: `0 0 0 1.5px ${EDGE}`, transform: `rotateY(${mix(10, 4, tilt).toFixed(2)}deg)`, transformOrigin: "0% 50%", overflow: "hidden" }}>
+        <div style={{ position: "absolute", left: 120, top: 290, width: 1240, height: 740, borderRadius: 18, background: "#101114", boxShadow: `0 0 0 1.5px ${EDGE}`, transformOrigin: "0% 50%", overflow: "hidden" }}>
           <div style={{ height: 42, background: "#17181c", display: "flex", alignItems: "center", gap: 8, paddingLeft: 18 }}>
             {[0, 1, 2].map((i) => <span key={i} style={{ width: 12, height: 12, borderRadius: 6, background: C.grille }} />)}
             <span style={{ marginLeft: 420, padding: "4px 60px", borderRadius: 7, background: "#0b0c0f", color: MUTE, fontFamily: FONT, fontSize: 14 }}>spotussi.local</span>
@@ -612,11 +612,11 @@ const Devices = ({ f }: { f: number }) => {
               <div key={x.l} style={{ flex: 1, height: 140, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: "18px 20px" }}>
                 <Label>{x.l}</Label>
                 <div style={{ ...headStyle(44), marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
-                  {fmt(x.n * r(f, a + i * 3, 24))}
+                  {fmt(x.n)}
                   {x.u ?? ""}
                 </div>
                 <div style={{ display: "flex", gap: 5, marginTop: 10 }}>
-                  {Array.from({ length: 14 }, (_, k) => <span key={k} style={{ width: 9, height: 9, borderRadius: 5, background: k < 6 + i * 2 && f > a + i * 3 + k ? C.lamp : C.grille }} />)}
+                  {Array.from({ length: 14 }, (_, k) => <span key={k} style={{ width: 9, height: 9, borderRadius: 5, background: k < 6 + i * 2 ? C.lamp : C.grille }} />)}
                 </div>
               </div>
             ))}
@@ -625,14 +625,14 @@ const Devices = ({ f }: { f: number }) => {
             <Label style={{ position: "absolute", left: 20, top: 18 }}>Plays by day</Label>
             {Array.from({ length: 28 }, (_, i) => {
               const hgt = 80 + 280 * Math.abs(Math.sin(i * 1.7) * 0.6 + Math.sin(i * 0.4) * 0.4);
-              const on = r(f, a + 4 + i * 0.6, 14);
+              const on = 1;
               return <div key={i} style={{ position: "absolute", left: 24 + i * 26, bottom: 24, width: 16, height: hgt * on, borderRadius: 4, background: C.lamp, opacity: i === 18 ? 1 : 0.62 }} />;
             })}
           </div>
           <div style={{ position: "absolute", left: 810, top: 240, width: 370, height: 480, borderRadius: 14, background: PANEL, boxShadow: `inset 0 0 0 1.5px ${EDGE}`, padding: 20 }}>
             <Label>Top artists</Label>
             {ARTISTS.slice(0, 5).map((x, i) => (
-              <div key={x.name} style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20, opacity: r(f, a + 6 + i * 2, 10) }}>
+              <div key={x.name} style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20, opacity: 1 }}>
                 <Art seed={x.seed} size={44} round />
                 <span style={{ fontFamily: FONT, fontSize: 20, fontWeight: 620, color: C.paper }}>{x.name}</span>
               </div>
@@ -656,7 +656,7 @@ const SignOff = ({ f }: { f: number }) => {
   const pitch = size / 3.786;
   const rr = pitch * 0.393;
   const lockW = size * (1606.1 / 1157 + 4855 / 1157);
-  const word = r(f, a + 14, 14);
+  const word = r(f, a + 2, 10);
   const free = r(f, v(23.9) - 3, 12);
   const cmd = v(25.5);
   const typed = Math.max(0, Math.min(CMD.length, Math.floor((f - cmd) * 0.9)));
@@ -665,13 +665,13 @@ const SignOff = ({ f }: { f: number }) => {
   const enter = r(f, a, 10);
   return (
     <AbsoluteFill style={{ opacity: enter * (1 - fade) }}>
-      <div style={{ position: "absolute", left: 960 - lockW / 2, top: 230, width: lockW, height: size, transform: `translateY(${mix(80, 0, r(f, cmd - 10, 16, E.inOut)).toFixed(1)}px)` }}>
+      <div style={{ position: "absolute", left: 960 - lockW / 2, top: 230, width: lockW, height: size, }}>
         <svg width={size} height={size} style={{ position: "absolute", overflow: "visible" }}>
           {Array.from({ length: 16 }, (_, i) => {
             const col = Math.floor(i / 4);
             const row = i % 4;
             const k = LIT.findIndex(([c, w]) => c === col && w === row);
-            const on = k >= 0 ? r(f, a + 4 + k * 1.2, 6, E.pop) : 0;
+            const on = k >= 0 ? r(f, a + 2, 8) : 0;
             return (
               <g key={i}>
                 <circle cx={rr + col * pitch} cy={rr + row * pitch} r={rr} fill={C.grille} />
@@ -680,16 +680,16 @@ const SignOff = ({ f }: { f: number }) => {
             );
           })}
         </svg>
-        <Img src={staticFile("logo/word.svg")} style={{ position: "absolute", left: size * (1606.1 / 1157), top: 0, width: size * (4855 / 1157), height: size, opacity: word, transform: `translateX(${((1 - word) * -40).toFixed(1)}px)`, filter: word < 0.99 ? `blur(${((1 - word) * 12).toFixed(1)}px)` : undefined }} />
+        <Img src={staticFile("logo/word.svg")} style={{ position: "absolute", left: size * (1606.1 / 1157), top: 0, width: size * (4855 / 1157), height: size, opacity: word, }} />
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 450, textAlign: "center", ...headStyle(64), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.02em", opacity: free, transform: `translateY(${mix(80, 0, r(f, cmd - 10, 16, E.inOut)).toFixed(1)}px)`, filter: free < 0.99 ? `blur(${((1 - free) * 12).toFixed(1)}px)` : undefined }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 450, textAlign: "center", ...headStyle(64), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.02em", opacity: free }}>
         Free and <span style={{ color: C.lamp }}>open source</span>
       </div>
       {/* The call to action: the install command types into a terminal pill, the repo under it. */}
-      <div style={{ position: "absolute", left: 960 - 420, top: 600, width: 840, height: 100, borderRadius: 50, background: "#101114", boxShadow: `0 0 0 2px ${EDGE}`, opacity: box, transform: `scale(${mix(0.9, 1, box).toFixed(3)})`, display: "flex", alignItems: "center", padding: "0 44px", gap: 22, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 38, color: C.paper }}>
+      <div style={{ position: "absolute", left: 960 - 420, top: 600, width: 840, height: 100, borderRadius: 50, background: "#101114", boxShadow: `0 0 0 2px ${EDGE}`, opacity: box, display: "flex", alignItems: "center", padding: "0 44px", gap: 22, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 38, color: C.paper }}>
         <span style={{ color: C.lamp }}>$</span>
         <span>{CMD.slice(0, typed)}</span>
-        <span style={{ width: 18, height: 40, background: C.lamp, opacity: Math.floor(f / 8) % 2 ? 1 : 0.2, marginLeft: -14 }} />
+        <span style={{ width: 18, height: 40, background: C.lamp, opacity: typed < CMD.length ? 1 : 0, marginLeft: -14 }} />
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, top: 740, textAlign: "center", ...headStyle(46), fontStretch: "112%", fontWeight: 640, letterSpacing: "-0.01em", opacity: r(f, cmd + 18, 12) }}>
         github.com/jasoncronje/spotussi
