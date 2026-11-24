@@ -1,4 +1,4 @@
-// The spotussi launch film (draft 14), built as motion design. Every piece of UI is drawn in code in
+// The spotussi launch film (draft 15), built as motion design. Every piece of UI is drawn in code in
 // the app's own design language (graphite panels, Archivo, lamp meters), with invented artists and
 // generated cover art. Voice-over and music only. Ends on the call to action.
 //
@@ -385,8 +385,9 @@ const Year = ({ f }: { f: number }) => {
   );
 };
 
-// ── 2. The introduction: what this is, said once. The Wrapped page shrinks into the first lamp of
-// the mark, the rest of the meter lights, the name and one plain line follow. Then the lockup
+// ── 2. The introduction: what this is, said once ("This is spotussi. Free, open-source stats for
+// your Spotify."). The Wrapped page shrinks into the first lamp of the mark, the rest of the meter
+// lights, the name and the plain line arrive as she says them. Then the lockup
 // travels to the corner of the history slide and stays there while the year flips by.
 const INTRO = { size: 190, y: 372 };
 const SMALL = { size: 64, x: 120, y: 330 };
@@ -403,6 +404,8 @@ const Intro = ({ f }: { f: number }) => {
   const dot: Rect = { x: big.x + first.cx - first.rr, y: big.y + first.cy - first.rr, w: first.rr * 2, h: first.rr * 2, r: first.rr };
   const rc = lerpRect(page, dot, fly);
   const landed = a + 9;
+  const name = w("brand") - 3; // "This is" lights the meter; the wordmark arrives with the name
+  const line = w("free") - 1; // and the plain line as she says it
   // The lockup → the corner of the history slide.
   const shrink = morph(f, hist);
   const size = mix(big.size, SMALL.size, shrink);
@@ -414,8 +417,8 @@ const Intro = ({ f }: { f: number }) => {
         size={size}
         grille={r(f, a + 2, 7)}
         lamp={(i) => (i === 0 ? (f >= landed ? 1 : 0) : r(f, landed + i * 1.1, 4))}
-        word={r(f, a + 6, 10)}
-        wordDx={(1 - r(f, a + 6, 12)) * -28}
+        word={r(f, name, 10)}
+        wordDx={(1 - r(f, name, 12)) * -28}
         opacity={1 - r(f, sv - 8, 5, E.in)}
       />
       {f < landed ? (
@@ -426,7 +429,7 @@ const Intro = ({ f }: { f: number }) => {
         </div>
       ) : null}
       {f < hist ? (
-        <div style={{ position: "absolute", left: 0, right: 0, top: INTRO.y + INTRO.size + 74, textAlign: "center", ...headStyle(60), opacity: r(f, w("brand") + 14, 10) * (1 - leave(f, hist)), transform: `translateY(${((1 - r(f, w("brand") + 14, 12)) * 24 - leave(f, hist) * 20).toFixed(1)}px)` }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top: INTRO.y + INTRO.size + 74, textAlign: "center", ...headStyle(60), opacity: r(f, line, 10) * (1 - leave(f, hist)), transform: `translateY(${((1 - r(f, line, 12)) * 24 - leave(f, hist) * 20).toFixed(1)}px)` }}>
           Free, <span style={{ color: C.lamp }}>open-source</span> stats for your Spotify.
         </div>
       ) : null}
@@ -861,10 +864,7 @@ const Captions = ({ f }: { f: number }) => {
   const out = CUT.end - END_OUT;
   const ph = r(f, pocket - 8, 18, E.land);
   const phOut = leave(f, out);
-  // The third way in arrives on the first beat after she has said "pocket".
-  let agentBeat = TIMING.cutBeats.end;
-  while (beat(agentBeat - 1) >= w("pocketEnd") - 2) agentBeat--;
-  const agent = beat(agentBeat);
+  const agent = w("agent") - 2; // "or just ask your agent"
   const way: React.CSSProperties = { top: 944, textAlign: "center", fontFamily: FONT, fontSize: 28, fontWeight: 560, color: C.mist };
   return (
     <>
@@ -927,12 +927,12 @@ const Captions = ({ f }: { f: number }) => {
           <span style={{ marginLeft: "auto", padding: "5px 14px", borderRadius: 14, background: "#23252b", fontFamily: FONT, fontSize: 19, fontWeight: 640, color: C.mist }}>MCP</span>
         </div>
         {/* The exchange arrives in order: the question, the tool it calls, the answer. */}
-        <div style={{ marginTop: 34, marginLeft: 34, padding: "16px 20px", borderRadius: "20px 20px 6px 20px", background: "#23252b", fontFamily: FONT, fontSize: 25, fontWeight: 560, lineHeight: 1.3, color: C.paper, opacity: r(f, agent + 5, 7) }}>Who did I play most this summer?</div>
-        <div style={{ marginTop: 30, display: "flex", alignItems: "center", gap: 10, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 19, color: MUTE, opacity: r(f, agent + 11, 7) }}>
+        <div style={{ marginTop: 34, marginLeft: 34, padding: "16px 20px", borderRadius: "20px 20px 6px 20px", background: "#23252b", fontFamily: FONT, fontSize: 25, fontWeight: 560, lineHeight: 1.3, color: C.paper, opacity: r(f, agent + 4, 7) }}>Who did I play most this summer?</div>
+        <div style={{ marginTop: 30, display: "flex", alignItems: "center", gap: 10, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 19, color: MUTE, opacity: r(f, agent + 10, 7) }}>
           <span style={{ width: 9, height: 9, borderRadius: 5, background: C.lamp }} />
           spotussi · get_top
         </div>
-        <div style={{ marginTop: 26, opacity: r(f, agent + 17, 8) }}>
+        <div style={{ marginTop: 26, opacity: r(f, agent + 16, 8) }}>
           {[
             { x: ARTISTS[0], n: 412 },
             { x: ARTISTS[2], n: 365 },
@@ -955,14 +955,14 @@ const Captions = ({ f }: { f: number }) => {
 };
 
 // ── 10. Sign-off and call to action. The window folds into the mark and the meter lights on the
-// music's downbeat as she says the name; then the repo; then "Self-host in one command" and the
-// command, which types itself.
+// music's downbeat as she says the name; the repo follows; then "Self-host in one command" and
+// the command, which types itself.
 const CMD = "docker compose up -d";
 const SignOff = ({ f }: { f: number }) => {
   const a = CUT.end;
   if (f < a - 4) return null;
   const host = w("selfHost");
-  const repo = r(f, w("free") - 1, 10);
+  const repo = r(f, w("signOff") + 14, 10); // the repo follows the name
   const box = r(f, host - 3, 10);
   const typed = Math.max(0, Math.min(CMD.length, Math.floor(f - (host + 2))));
   const fade = r(f, FINAL + 6, DURATION - FINAL - 8, E.inOut);
@@ -1005,7 +1005,7 @@ export const Launch = ({ bgm = true }: { bgm?: boolean }) => {
       <AbsoluteFill style={{ background: "#000", opacity: 1 - r(f, 0, 20, E.inOut) }} />
       {bgm ? <Music /> : null}
       <Sequence from={Math.round(TIMING.voOffset * FPS)}>
-        <Audio src={staticFile("audio/vo-v2.wav")} volume={MASTER} />
+        <Audio src={staticFile("audio/vo-v4.wav")} volume={MASTER} />
       </Sequence>
     </AbsoluteFill>
   );

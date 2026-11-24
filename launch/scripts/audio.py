@@ -3,16 +3,17 @@
 
     cd launch && uv run --python 3.12 --with numpy --with scipy scripts/audio.py
 
-Reads   public/audio/vo.wav      the approved voice take (one continuous read, pauses cut in at slide changes)
+Reads   public/audio/vo-v3.wav   the voice take (one continuous read)
         public/audio/bgm-v3.wav  the EDM loop (124 BPM, flat: no intro, no drop, no ending)
-Writes  public/audio/vo-v2.wav   the same take; only the lengths of the silent pauses at the eight slide
-                                 changes move (tens of ms), so every slide change can sit on a beat
+Writes  public/audio/vo-v4.wav   the same take; only the silent pauses at the ten slide changes are
+                                 moved (by 0.25 s at most, 0.6 s before the sign-off), so every slide
+                                 change can sit on a beat
         public/audio/bgm-v4.wav  the same loop re-cut to the film: sped up 2.4% (127 BPM), a filtered intro
                                  that opens when spotussi arrives, the track's own fill and lift moved under
                                  the end card, and a final hit that rings out (it had no ending)
         src/timing.json          word cues, slide-change frames and the beat grid, read by Motion.tsx
 
-Nothing is generated here: no new voice, no new music, no sound effects from a library. Deterministic.
+Nothing is generated here: the voice take and the loop are inputs. Deterministic.
 """
 import json
 import math
@@ -28,39 +29,48 @@ FPS = 30
 VO_OFFSET = 0.3  # the voice file starts this far into the film
 
 # ── Voice ────────────────────────────────────────────────────────────────────────────────────
-# Word onsets in vo.wav, in seconds, read off its energy envelope (whisper's word starts include the
-# silence before a phrase, so they run up to half a second early).
+# vo-v3.wav is the take as recorded (ElevenLabs "Laurel", eleven_v4, one continuous read), sped up
+# 6% and levelled to about -16 LUFS:
+#   ffmpeg -i palette/vo4-laurel.mp3 -af "atempo=1.06,loudnorm=I=-15.9:TP=-1.6:LRA=11" -ar 44100 -ac 1 vo-v3.wav
+# The script: "Spotify Wrapped comes once a year. This is Spot-oo-see. Free, open-source stats for
+# your Spotify. Your whole listening history, every single day, on your own server. Your real top
+# ten. Not just this month's. Your number one artist. Twelve thousand plays, since twenty eleven.
+# Every listening session, play by play. Watch your taste move, week on week. It logs every play as
+# it happens, and imports everything before. On your desktop, in your pocket, or just ask your
+# agent. Spot-oo-see. Self-host in one command."
+#
+# Word onsets in vo-v3.wav, in seconds. Phrase starts are read off its energy envelope (whisper's
+# word starts include the silence before a phrase, so they run early); words inside a phrase are
+# whisper's.
 WORDS = {
-    "spotify": 0.15, "comes": 1.01, "once": 1.16,
-    "brand": 2.59, "every": 5.15, "on": 6.15,
-    "real": 7.63, "top": 8.04, "notJust": 9.09,
-    "numberOne": 10.46, "twelve": 11.89, "since": 12.81,
-    "session": 14.80, "playByPlay": 16.14,
-    "watch": 17.535, "week": 18.77,
-    "logs": 19.955, "asItHappens": 20.80, "and": 21.56, "imports": 21.75,
-    "desktop": 23.855, "pocket": 24.85, "pocketEnd": 25.63,
-    "signOff": 26.04, "free": 27.05, "selfHost": 28.64, "end": 30.30,
+    "spotify": 0.16, "comes": 1.06, "once": 1.30,
+    "thisIs": 2.41, "brand": 3.10, "free": 4.036,
+    "history": 6.645, "every": 8.171, "on": 9.134,
+    "real": 10.456, "notJust": 11.863,
+    "numberOne": 13.070, "twelve": 14.677, "since": 15.92,
+    "session": 17.410, "playByPlay": 18.717,
+    "watch": 19.785, "week": 21.10,
+    "logs": 22.070, "asItHappens": 23.12, "and": 23.80, "imports": 24.10,
+    "desktop": 25.732, "pocket": 26.62, "agent": 27.458,
+    "signOff": 28.909, "selfHost": 29.882, "end": 31.543,
 }
 # Every slide change: its name, the first word of the new slide, the natural gap before that word
-# (end of the previous phrase to the onset) and how far that gap may change, in seconds. Most may
-# move a few hundredths either way. Three are held open on purpose: the intro slide needs a clean
-# break before the history slide, the year needs room to flip by before "On your own server", and
-# the third way in ("ask your agent", which the voice does not say yet) plays before the sign-off.
+# (end of the previous phrase to the onset) and how far that gap may change, in seconds. The take
+# runs its sentences close together (about 0.27 s), which suits the film, so the pauses move only as
+# far as the beat needs. The last one is opened: the agent's answer needs a moment on screen before
+# the sign-off.
 SLIDES = [
-    ("intro", "brand", 0.42, (-0.06, 0.17)),
-    ("history", "every", 0.22, (0.10, 0.36)),
-    ("server", "on", 0.10, (0.80, 1.25)),
-    ("top", "real", 0.42, (-0.06, 0.17)),
-    ("artist", "numberOne", 0.40, (-0.06, 0.17)),
-    ("sessions", "session", 0.50, (-0.06, 0.17)),
-    ("taste", "watch", 0.455, (-0.06, 0.17)),
-    ("live", "logs", 0.415, (-0.06, 0.17)),
-    ("devices", "desktop", 0.425, (-0.06, 0.17)),
-    ("end", "signOff", 0.41, (1.45, 1.95)),
+    ("intro", "thisIs", 0.294, (-0.05, 0.25)),
+    ("history", "history", 0.299, (-0.05, 0.25)),
+    ("server", "on", 0.100, (-0.03, 0.25)),
+    ("top", "real", 0.269, (-0.04, 0.25)),
+    ("artist", "numberOne", 0.264, (-0.04, 0.25)),
+    ("sessions", "session", 0.304, (-0.05, 0.25)),
+    ("taste", "watch", 0.264, (-0.04, 0.25)),
+    ("live", "logs", 0.284, (-0.05, 0.25)),
+    ("devices", "desktop", 0.264, (-0.04, 0.25)),
+    ("end", "signOff", 0.269, (0.30, 0.62)),
 ]
-# Two of the cut-in pauses landed inside a word's decaying tail, leaving a faint remnant after the hole.
-# Mute the remnant so the word simply ends: (from, to) in vo.wav seconds.
-REMNANTS = [(7.301, 7.43), (25.717, 25.80)]
 
 # ── Music ────────────────────────────────────────────────────────────────────────────────────
 BEAT_NATIVE = 0.48391  # seconds per beat in bgm-v3.wav (124 BPM), from a fit over its 84 kicks
@@ -69,7 +79,7 @@ SPEED = 128 / 125  # +2.4%: plain resampling, so no time-stretch artefacts (pitc
 BEAT = BEAT_NATIVE / SPEED
 LEAD = (0.11, 0.25)  # a slide change lands on a beat this long before its first word
 LIFT_BEAT = 32  # in the source: a two-beat fill, then hats and a crash come in on this beat
-OUTRO_BEATS = 12  # three bars from the end card's downbeat to the final hit
+OUTRO_BEATS = 8  # two bars from the end card's downbeat to the final hit
 TAIL = 1.05  # seconds the final hit rings before the film ends
 
 
@@ -116,10 +126,8 @@ def solve_pauses():
 
 
 def build_voice(deltas):
-    sr, x = wavfile.read(AUDIO / "vo.wav")
+    sr, x = wavfile.read(AUDIO / "vo-v3.wav")
     assert x.ndim == 1 and x.dtype == np.int16
-    for a, b in REMNANTS:
-        x[int(a * sr) : int(b * sr)] = 0
     z = np.concatenate([[0], (x == 0).astype(np.int8), [0]])
     edges = np.diff(z)
     runs = [(a, b) for a, b in zip(np.where(edges == 1)[0], np.where(edges == -1)[0]) if b - a > sr * 0.02]
@@ -132,15 +140,18 @@ def build_voice(deltas):
         if before:
             edits.append((before[-1][0], before[-1][1], d))
             continue
-        assert d >= 0, word
         lo, hi = int((on - gap) * sr), int((on - 0.03) * sr)
         win = int(0.01 * sr)
         level = [float(np.mean(x[i : i + win].astype(np.float64) ** 2)) for i in range(lo, hi - win, win // 4)]
         at = lo + int(np.argmin(level)) * (win // 4) + win // 2
+        # Opening a pause inserts silence here; closing one removes the silence around here.
+        cut = int(round(max(0.0, -d) * sr))
+        a, b = at - cut // 2, at - cut // 2 + cut
+        assert lo <= a and b <= hi, word
         n = int(0.004 * sr)
-        x[at - n : at] = (x[at - n : at] * np.linspace(1, 0, n)).astype(np.int16)
-        x[at : at + n] = (x[at : at + n] * np.linspace(0, 1, n)).astype(np.int16)
-        edits.append((at, at, d))
+        x[a - n : a] = (x[a - n : a] * np.linspace(1, 0, n)).astype(np.int16)
+        x[b : b + n] = (x[b : b + n] * np.linspace(0, 1, n)).astype(np.int16)
+        edits.append((a, b, d))
     out, pos = [], 0
     for a, b, d in edits:
         n = (b - a) + int(round(d * sr))
@@ -149,7 +160,7 @@ def build_voice(deltas):
         pos = b
     out.append(x[pos:])
     y = np.concatenate(out)
-    wavfile.write(AUDIO / "vo-v2.wav", sr, y)
+    wavfile.write(AUDIO / "vo-v4.wav", sr, y)
     starts = [a / sr for a, _, _ in edits]
     return lambda t: t + sum(d for s, d in zip(starts, deltas) if s < t), len(y) / sr
 
@@ -285,7 +296,7 @@ def main():
     for name, w, _, _ in SLIDES:
         tb = phase + cut_beats[name] * BEAT
         print("  %-9s beat %2d  f%5.1f  first word f%5.1f  lead %.1f f" % (name, cut_beats[name], tb * FPS, words[w] * FPS, (words[w] - tb) * FPS))
-    print("voice ends %.2f s, final hit %.2f s (f%.1f), film %d frames = %.2f s, vo-v2 %.2f s" % (words["end"], t_final, t_final * FPS, frames, frames / FPS, vo_len))
+    print("voice ends %.2f s, final hit %.2f s (f%.1f), film %d frames = %.2f s, vo-v4 %.2f s" % (words["end"], t_final, t_final * FPS, frames, frames / FPS, vo_len))
 
 
 if __name__ == "__main__":
