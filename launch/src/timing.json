@@ -1,0 +1,48 @@
+{
+  "fps": 30,
+  "duration": 990,
+  "voOffset": 0.3,
+  "beat": {
+    "phase": 0.2774,
+    "period": 0.472568
+  },
+  "cutBeats": {
+    "lock": 5,
+    "top": 16,
+    "artist": 22,
+    "sessions": 31,
+    "taste": 37,
+    "live": 42,
+    "devices": 50,
+    "end": 55
+  },
+  "finalBeat": 67,
+  "words": {
+    "spotify": 0.45,
+    "comes": 1.31,
+    "once": 1.46,
+    "spotussi": 2.89,
+    "every": 5.45,
+    "on": 6.45,
+    "real": 7.949,
+    "top": 8.359,
+    "notJust": 9.409,
+    "numberOne": 10.784,
+    "twelve": 12.214,
+    "since": 13.134,
+    "session": 15.124,
+    "playByPlay": 16.464,
+    "watch": 17.873,
+    "week": 19.108,
+    "logs": 20.293,
+    "asItHappens": 21.138,
+    "and": 21.898,
+    "imports": 22.088,
+    "desktop": 24.156,
+    "pocket": 25.151,
+    "brand": 26.379,
+    "free": 27.389,
+    "selfHost": 28.979,
+    "end": 30.639
+  }
+}
