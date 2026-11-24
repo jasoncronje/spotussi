@@ -13,19 +13,28 @@ const hash = (s) => {
   for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
   return h;
 };
-const artists = JSON.parse(readFileSync(new URL('./catalog.json', import.meta.url), 'utf8'));
+// SPOTUSSI_CATALOG points at another catalog (e.g. a fresh fetch in .cache).
+const artists = JSON.parse(readFileSync(process.env.SPOTUSSI_CATALOG ?? new URL('./catalog.json', import.meta.url), 'utf8'));
 /** Genres for the top-genres lists, in rank order, to match the artists. */
 const genres = [...new Set(artists.flatMap((a) => a.genres))];
 
-export async function rewriter(base) {
-  // The ranking the app opens on (web/src/lib/ranges.ts: DEFAULT_PRESET).
-  const top = await (await fetch(`${base}/api/v1/top/artists?range=last_4w&limit=${artists.length}`)).json();
+// `range` is the ranking the catalog's order follows (default: the one the app
+// opens on, web/src/lib/ranges.ts: DEFAULT_PRESET). `tracks` pins chosen mock
+// track IDs to real tracks: { [mockId]: { artist, track } } (names).
+export async function rewriter(base, { range = 'last_4w', tracks = {} } = {}) {
+  const top = await (await fetch(`${base}/api/v1/top/artists?range=${range}&limit=${artists.length}`)).json();
   const artistOf = new Map(top.items.map((it, i) => [it.artist.id, artists[i]]));
   const albumOf = new Map();
   const trackOf = new Map();
   const used = new Map();
   const genreOf = new Map();
   const unknown = new Set();
+  const pinned = new Set(Object.keys(tracks));
+  for (const [id, pin] of Object.entries(tracks)) {
+    const a = artists.find((x) => x.name === pin.artist);
+    const al = a.albums.find((x) => x.tracks.some((t) => t.name === pin.track));
+    trackOf.set(id, { artist: a, album: al, track: al.tracks.find((t) => t.name === pin.track) });
+  }
 
   const artist = (id) => {
     if (!artistOf.has(id)) artistOf.set(id, artists[hash(id) % RANKED]);
@@ -80,6 +89,8 @@ export async function rewriter(base) {
         // The real track's own artist; the mock's invented features go.
         if (o.artists?.length) o.artists = [{ ...o.artists[0], name: t.artist.name }];
         if (typeof o.duration_ms === 'number') o.duration_ms = t.track.ms;
+        // A pinned track shows its own album's cover, even where mock albums are shared.
+        if (pinned.has(o.id) && typeof o.image_url === 'string') o.image_url = o.image_url.replace(/\.svg.*$/, `.svg?track=${o.id}`);
         for (const [k, v] of Object.entries(o)) if (!['album', 'artists'].includes(k)) o[k] = visit(v, k);
         return o;
       }
@@ -102,7 +113,8 @@ export async function rewriter(base) {
     if (Array.isArray(node)) return node.forEach(plays);
     if (!node || typeof node !== 'object') return;
     const t = node.track;
-    if (t && typeof node.ms_played === 'number' && typeof t.duration_ms === 'number' && trackOf.has(t.id)) {
+    // A top-list row's ms_played is a total over its plays, not one play.
+    if (t && typeof node.plays !== 'number' && typeof node.ms_played === 'number' && typeof t.duration_ms === 'number' && trackOf.has(t.id)) {
       const share = Math.min(1, node.ms_played / (node.__was ?? t.duration_ms));
       node.ms_played = Math.round((share > 0.97 ? 1 : share) * t.duration_ms);
       if (typeof node.played_at === 'number' && typeof node.ended_at === 'number') node.ended_at = node.played_at + node.ms_played;
@@ -114,7 +126,7 @@ export async function rewriter(base) {
   const was = (node) => {
     if (Array.isArray(node)) return node.forEach(was);
     if (!node || typeof node !== 'object') return;
-    if (node.track && typeof node.ms_played === 'number' && typeof node.track.duration_ms === 'number') node.__was = node.track.duration_ms;
+    if (node.track && typeof node.plays !== 'number' && typeof node.ms_played === 'number' && typeof node.track.duration_ms === 'number') node.__was = node.track.duration_ms;
     Object.values(node).forEach(was);
   };
 
@@ -132,6 +144,8 @@ export async function rewriter(base) {
       const m = url.match(/\/_mock\/img\/(\w+)\/([^/.]+)\.svg/);
       if (!m) return null;
       const [, kind, id] = m;
+      const pin = url.match(/[?&]track=([^&]+)/)?.[1];
+      if (pin && trackOf.has(pin)) return readFileSync(new URL(`../${trackOf.get(pin).album.cover}`, import.meta.url));
       const file = kind === 'artist' ? artist(id).image : kind === 'album' ? album(id).album.cover : null;
       return file ? readFileSync(new URL(`../${file}`, import.meta.url)) : null;
     },
@@ -139,8 +153,8 @@ export async function rewriter(base) {
 }
 
 /** Routes the browser's API and artwork responses through the rewriter. */
-export async function intercept(b, base) {
-  const r = await rewriter(base);
+export async function intercept(b, base, opts) {
+  const r = await rewriter(base, opts);
   b.on('Fetch.requestPaused', async (e) => {
     const { requestId, request, responseStatusCode: status, responseHeaders: headers = [] } = e;
     const type = headers.find((h) => /^content-type$/i.test(h.name))?.value ?? '';
