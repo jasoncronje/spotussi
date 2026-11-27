@@ -10,7 +10,7 @@ A fast, self-hosted listening-stats dashboard for one Spotify account: live capt
   <img alt="The Overview page: time listened, plays, top artists and tracks, plays by day and the listening clock, shown with mock data." src="docs/project/screenshots/readme/overview-desktop-light.png" width="880">
 </picture>
 
-> **0.1 beta.** The data model and the API can still change between 0.x releases; read the [release notes](https://github.com/jasoncronje/spotussi/releases) and back up before upgrading.
+> **0.1 beta.** The data model and the API can still change between 0.x releases; read the [release notes](https://github.com/ussi-group/spotussi/releases) and back up before upgrading.
 
 ## Quick start
 

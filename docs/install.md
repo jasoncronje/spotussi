@@ -91,7 +91,7 @@ API and MCP clients use API tokens and can't pass the SSO login page, so give th
 
 ## Standalone binaries
 
-Each [release](https://github.com/jasoncronje/spotussi/releases) has static binaries for Linux and macOS (amd64, arm64) with the UI built in, plus `SHA256SUMS`:
+Each [release](https://github.com/ussi-group/spotussi/releases) has static binaries for Linux and macOS (amd64, arm64) with the UI built in, plus `SHA256SUMS`:
 
 ```sh
 sha256sum -c SHA256SUMS --ignore-missing   # macOS: shasum -a 256 -c SHA256SUMS --ignore-missing
@@ -119,7 +119,7 @@ WantedBy=multi-user.target
 
 ## Updating
 
-Read the [release notes](https://github.com/jasoncronje/spotussi/releases) first. During 0.x an update can change the API or trigger a full rebuild of derived data (it runs automatically on start). Migrations run on start and only go forward, so take a backup before updating.
+Read the [release notes](https://github.com/ussi-group/spotussi/releases) first. During 0.x an update can change the API or trigger a full rebuild of derived data (it runs automatically on start). Migrations run on start and only go forward, so take a backup before updating.
 
 ```sh
 docker compose pull && docker compose up -d

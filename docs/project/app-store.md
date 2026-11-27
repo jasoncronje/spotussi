@@ -34,7 +34,7 @@ Readiness review of the iPhone app (D41) against Apple's App Review Guidelines (
 | Age rating | 4+. Every questionnaire answer is No or None (no user-generated content, social features, web browsing, messaging, ads, mature themes) |
 | Privacy | Data Not Collected |
 | Privacy policy URL | `https://spotussi.app/privacy` |
-| Support URL | `https://github.com/jasoncronje/spotussi/issues` (public once the repo is) |
+| Support URL | `https://github.com/ussi-group/spotussi/issues` (public once the repo is) |
 | Screenshots | `brand/marketing/app-store/`, taken in demo mode. App Store Connect now takes iPhone screenshots only in the 6.1"/6.3" slot (1206×2622 among others) and rejects 1320×2868, so the uploads are those images scaled to 1206×2622 (`sips -z 2622 1206`; same aspect within 0.1%). iPhone Duo has its own slot (1398×2034 outer, 2007×2853 inner): upload `brand/marketing/app-store/duo-inner/` and `duo-outer/` as they are, no scaling |
 | Availability | Free, every country except China mainland. China now needs a Security Assessment and an AIGC services declaration under App Compliance; add it once those are filed |
 | Content rights | Yes: shows third-party content (Spotify metadata and artwork) with the rights to do so |

@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting. Please don't paste real listening history, Spotify tokens, API tokens or the instance key; mock mode (`spotussi serve --mock`) can usually show the problem. Security problems go through [private reporting](https://github.com/jasoncronje/spotussi/security/advisories/new) instead.
+        Thanks for reporting. Please don't paste real listening history, Spotify tokens, API tokens or the instance key; mock mode (`spotussi serve --mock`) can usually show the problem. Security problems go through [private reporting](https://github.com/ussi-group/spotussi/security/advisories/new) instead.
   - type: input
     id: version
     attributes:

@@ -981,7 +981,7 @@ const SignOff = ({ f }: { f: number }) => {
   return (
     <AbsoluteFill style={{ opacity: 1 - fade }}>
       <Lockup x={RECT.mark.x} y={END_LOCK.y} size={END_LOCK.size} grille={r(f, a - 4, 5)} lamp={(i) => r(f, a - 1 + i * 0.8, 4)} word={r(f, a, 8)} wordDx={(1 - r(f, a, 10)) * -24} />
-      <div style={{ ...centred, top: 452, ...headStyle(54), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.015em", opacity: repo, transform: `translateY(${((1 - repo) * 20).toFixed(1)}px)` }}>github.com/jasoncronje/spotussi</div>
+      <div style={{ ...centred, top: 452, ...headStyle(54), fontStretch: "112%", fontWeight: 660, letterSpacing: "-0.015em", opacity: repo, transform: `translateY(${((1 - repo) * 20).toFixed(1)}px)` }}>github.com/ussi-group/spotussi</div>
       {/* The call to action: the label, then the install command types into a terminal pill. */}
       <div style={{ ...centred, top: 636, fontFamily: FONT, fontSize: 34, fontWeight: 560, color: C.mist, opacity: box }}>Self-host in one command</div>
       <div style={{ position: "absolute", left: 960 - 420, top: 696, width: 840, height: 100, boxSizing: "border-box", borderRadius: 50, background: "#101114", boxShadow: `0 0 0 2px ${EDGE}`, opacity: box, display: "flex", alignItems: "center", padding: "0 44px", gap: 22, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 38, color: C.paper }}>
