@@ -101,16 +101,6 @@ struct AveragePanel: View {
         }
         .chartXScale(domain: trend.points.map(\.key))
         .chartYScale(domain: scale.domain)
-        .chartXAxis {
-            // Labels on the chosen few only; see SharePanel.
-            AxisMarks(values: ticks) { value in
-                AxisValueLabel {
-                    if let key = value.as(String.self) {
-                        Text(trend.bucket.tick(key))
-                    }
-                }
-            }
-        }
         .chartYAxis {
             AxisMarks(position: .leading, values: scale.ticks) { value in
                 AxisGridLine()
@@ -122,6 +112,7 @@ struct AveragePanel: View {
             }
         }
         .chartXSelection(value: $selected)
+        .chartTickLabels(ticks) { trend.bucket.tick($0) }
         .frame(height: chartHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
