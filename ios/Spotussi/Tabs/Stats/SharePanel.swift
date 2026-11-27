@@ -68,7 +68,7 @@ struct SharePanel: View {
         let colors = Tone.series.map { $0.color(for: scheme) }
         let grille = Tone.grille.color(for: scheme)
         let scale = breakdown.scale
-        let ticks = Set(ChartAxis.keys(breakdown.columns.map(\.key)))
+        let ticks = ChartAxis.keys(breakdown.columns.map(\.key))
         return Chart {
             ForEach(breakdown.columns) { column in
                 let dimmed = selected != nil && selected != column.key
@@ -90,12 +90,13 @@ struct SharePanel: View {
         }
         .chartYScale(domain: 0...scale)
         .chartXAxis {
-            // Every bucket gets a mark, and only the chosen few a label:
-            // given string values, Charts labelled every column, which
-            // ran together into one unreadable line.
-            AxisMarks { value in
-                if let key = value.as(String.self), ticks.contains(key) {
-                    AxisValueLabel {
+            // Marks on the chosen few only. Given string values, Charts
+            // labelled every column, and leaving the label out of a mark
+            // didn't stop it: the default label came back and the dates ran
+            // together into one unreadable line. Explicit values do.
+            AxisMarks(values: ticks) { value in
+                AxisValueLabel {
+                    if let key = value.as(String.self) {
                         Text(breakdown.bucket.tick(key))
                     }
                 }
