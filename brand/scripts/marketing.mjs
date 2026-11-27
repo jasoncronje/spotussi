@@ -83,14 +83,16 @@ function phone(src, w, style = '') {
 // ── A drawn iPhone Duo panel. The corner radii are the simulator's own
 // (capabilities.plist, in points, upper-left clockwise): the inner display is
 // 669 points wide with 55-point corners all round; the outer is 466 wide with
-// tight 8-point corners on the hinge side and 59-point ones on the other. The
-// outer capture already carries its camera, so nothing is drawn over it. The
-// inner panel shows the fold as a faint crease across its middle (portrait
-// turns the book-style fold on its side), and a thicker hinge spine runs down
-// the outer panel's left edge.
+// tight 8-point corners on the hinge side and 59-point ones on the other.
+// Screenshots leave the camera out, so the outer panel's punch-hole is drawn
+// where the simulator's own view puts it (centre 1255,143 px, 111 px across,
+// on the 1398 px panel); the inner panel has none. The inner panel shows the
+// fold as a faint crease across its middle (portrait turns the book-style
+// fold on its side), and a thicker hinge spine runs down the outer panel's
+// left edge.
 const DUO = {
 	inner: { cw: 2007, ch: 2853, pts: 669, corners: [55, 55, 55, 55], bezel: 0.02, crease: true },
-	outer: { cw: 1398, ch: 2034, pts: 466, corners: [8, 59, 59, 8], bezel: 0.024, spine: true }
+	outer: { cw: 1398, ch: 2034, pts: 466, corners: [8, 59, 59, 8], bezel: 0.024, spine: true, camera: { x: 1255, y: 143, d: 111 } }
 };
 
 function duo(src, w, style, dev) {
@@ -103,8 +105,16 @@ function duo(src, w, style, dev) {
 	const crease = dev.crease
 		? `<b style="left:${pad}px;right:${pad}px;top:${pad + sh / 2 - sw * 0.012}px;height:${sw * 0.024}px"></b>`
 		: '';
+	const cam = dev.camera && {
+		d: (dev.camera.d / dev.cw) * sw,
+		x: pad + spine + (dev.camera.x / dev.cw) * sw,
+		y: pad + (dev.camera.y / dev.cw) * sw
+	};
+	const camera = cam
+		? `<i style="left:${cam.x - cam.d / 2}px;top:${cam.y - cam.d / 2}px;width:${cam.d}px;height:${cam.d}px;transform:none"></i>`
+		: '';
 	return `<div class="phone duo" style="width:${w}px;height:${sh + 2 * pad}px;border-radius:${radii(pad)};padding:${pad}px ${pad}px ${pad}px ${pad + spine}px;${style}">
-<img src="${src}" style="width:${sw}px;height:${sh}px;border-radius:${radii(0)}">${crease}</div>`;
+<img src="${src}" style="width:${sw}px;height:${sh}px;border-radius:${radii(0)}">${crease}${camera}</div>`;
 }
 
 const page = (css, body) => `<!doctype html><html><head><meta charset="utf-8"><style>${FONT}
