@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"spotussi/internal/accent"
 	"spotussi/internal/trust"
 )
 
@@ -40,6 +41,8 @@ type Config struct {
 	// BaseURL overrides the externally visible URL used for OAuth redirects
 	// (BASE_URL, optional, D12). Empty means "derive from the request".
 	BaseURL string
+	// Accent is the web UI's deployment-wide highlight seed (ACCENT_COLOR).
+	Accent accent.Seed
 	// AuthMode selects browser authentication (AUTH_MODE, default
 	// password, D13).
 	AuthMode AuthMode
@@ -142,6 +145,11 @@ func FromLookup(lookup func(string) (string, bool)) (Config, error) {
 		CaptureEnabled: true, HydrateEnabled: true, LibrarySyncEnabled: true, HydrateSpotifyLookups: true, ImportMaxBytes: DefaultImportMaxBytes,
 		MetadataOEmbed: true, MetadataDeezer: true, MetadataListenBrainz: true, MetadataMusicBrainz: true}
 	var errs []error
+	if seed, err := accent.Parse(get("ACCENT_COLOR")); err != nil {
+		errs = append(errs, fmt.Errorf("ACCENT_COLOR %w", err))
+	} else {
+		cfg.Accent = seed
+	}
 	number := func(key string, lo, hi float64) float64 {
 		v := get(key)
 		if v == "" {

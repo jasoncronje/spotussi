@@ -143,7 +143,7 @@ func serve(args []string) error {
 	spotifyClient := spotify.New(spotify.Options{DB: database, Keyring: keys,
 		Limiter: spotify.NewLimiter(spotify.LimiterConfig{Rate: cfg.SpotifyRate, Burst: cfg.SpotifyBurst,
 			LiveReserve: cfg.SpotifyLiveReserve}, nil)})
-	opts := api.Options{Version: version, Mode: "live", UI: web.UI(), DB: database,
+	opts := api.Options{Version: version, Mode: "live", UI: web.UI(), Accent: cfg.Accent, DB: database,
 		Auth: authSvc, Spotify: spotifyClient,
 		BaseURL: cfg.BaseURL, Proxies: cfg.TrustedProxies,
 		LoopbackPort:   spotify.LoopbackPort{Default: cfg.Port, Override: cfg.SpotifyLoopbackPort},
