@@ -89,19 +89,6 @@ struct SharePanel: View {
             }
         }
         .chartYScale(domain: 0...scale)
-        .chartXAxis {
-            // Marks on the chosen few only. Given string values, Charts
-            // labelled every column, and leaving the label out of a mark
-            // didn't stop it: the default label came back and the dates ran
-            // together into one unreadable line. Explicit values do.
-            AxisMarks(values: ticks) { value in
-                AxisValueLabel {
-                    if let key = value.as(String.self) {
-                        Text(breakdown.bucket.tick(key))
-                    }
-                }
-            }
-        }
         .chartYAxis {
             AxisMarks(position: .leading, values: [0, scale / 2, scale]) { value in
                 AxisValueLabel {
@@ -115,6 +102,7 @@ struct SharePanel: View {
         .chartPlotStyle { plot in
             plot.mask { LampStripes() }
         }
+        .chartTickLabels(ticks) { breakdown.bucket.tick($0) }
         .frame(height: chartHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
