@@ -304,7 +304,7 @@
 <p class="px-1 text-xs text-muted-foreground">
 	spotussi is free software under AGPL-3.0.
 	<a
-		href="https://github.com/jasoncronje/spotussi"
+		href="https://github.com/ussi-group/spotussi"
 		target="_blank"
 		rel="noopener"
 		class="underline underline-offset-2 hover:text-foreground">Source code</a

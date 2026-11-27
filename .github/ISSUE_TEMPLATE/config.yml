@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/jasoncronje/spotussi/security/advisories/new
+    url: https://github.com/ussi-group/spotussi/security/advisories/new
     about: Please report security problems privately, not in a public issue (see SECURITY.md).
   - name: Documentation
-    url: https://github.com/jasoncronje/spotussi/tree/main/docs
+    url: https://github.com/ussi-group/spotussi/tree/main/docs
     about: Install, import, configuration, backup and the API.

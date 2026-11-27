@@ -6,7 +6,7 @@ The dashboard runs on a documented, read-only HTTP API, and the same queries are
 
 - **Reference:** `/api/docs` on your instance (the OpenAPI 3.1 spec is [`api/openapi.yaml`](../api/openapi.yaml)).
 - **Tokens:** create read-only API tokens in **Settings → API & MCP** and send them as `Authorization: Bearer spt_…`. They can call every `GET` endpoint under `/api/v1` except credential management and the backup download.
-- **Stability:** during 0.x the API can change between releases; breaking changes are listed in the [release notes](https://github.com/jasoncronje/spotussi/releases).
+- **Stability:** during 0.x the API can change between releases; breaking changes are listed in the [release notes](https://github.com/ussi-group/spotussi/releases).
 
 ## MCP
 
