@@ -76,7 +76,7 @@ struct AveragePanel: View {
     private func chart(_ trend: AverageTrend) -> some View {
         let lamp = Tone.lamp.color(for: scheme)
         let scale = trend.scale
-        let ticks = Set(ChartAxis.keys(trend.points.map(\.key)))
+        let ticks = ChartAxis.keys(trend.points.map(\.key))
         let line = trend.runs.enumerated().flatMap { run, points in
             points.map { LinePoint(id: $0.id, run: run, key: $0.key, value: $0.value ?? 0) }
         }
@@ -103,9 +103,9 @@ struct AveragePanel: View {
         .chartYScale(domain: scale.domain)
         .chartXAxis {
             // Labels on the chosen few only; see SharePanel.
-            AxisMarks { value in
-                if let key = value.as(String.self), ticks.contains(key) {
-                    AxisValueLabel {
+            AxisMarks(values: ticks) { value in
+                AxisValueLabel {
+                    if let key = value.as(String.self) {
                         Text(trend.bucket.tick(key))
                     }
                 }
