@@ -1,5 +1,7 @@
 # App Store submission
 
+**Submitted 2026-11-26:** version 0.1.0, build 4, waiting for review.
+
 Readiness review of the iPhone app (D41) against Apple's App Review Guidelines (as updated October 16, 2026) and Spotify's Developer Policy, done 2026-11-23. The TestFlight steps are in [ios/README.md](../../ios/README.md#shipping-to-testflight); this file is what the App Store submission needs on top.
 
 ## Blockers
@@ -29,12 +31,41 @@ Readiness review of the iPhone app (D41) against Apple's App Review Guidelines (
 | Field | Value |
 |---|---|
 | Category | Music |
-| Age rating | 4+. Questionnaire: no user-generated content, no social features, no web browsing, no messaging |
+| Age rating | 4+. Every questionnaire answer is No or None (no user-generated content, social features, web browsing, messaging, ads, mature themes) |
 | Privacy | Data Not Collected |
 | Privacy policy URL | `https://spotussi.app/privacy` |
 | Support URL | `https://github.com/jasoncronje/spotussi/issues` (public once the repo is) |
-| Screenshots | `brand/marketing/app-store/` (1320×2868, the 6.9" slot), taken in demo mode |
+| Screenshots | `brand/marketing/app-store/`, taken in demo mode. App Store Connect now takes iPhone screenshots only in the 6.1"/6.3" slot (1206×2622 among others) and rejects 1320×2868, so the uploads are those images scaled to 1206×2622 (`sips -z 2622 1206`; same aspect within 0.1%). iPhone Duo has its own slot (1398×2034 outer, 2007×2853 inner) |
+| Availability | Free, every country except China mainland. China now needs a Security Assessment and an AIGC services declaration under App Compliance; add it once those are filed |
+| Content rights | Yes: shows third-party content (Spotify metadata and artwork) with the rights to do so |
+| Release | Automatic after approval |
 | Sign-in required | No (the reviewer uses the demo) |
+
+### Listing copy
+
+- **Subtitle:** Your self-hosted music stats
+- **Promotional text:** See every play since day one: top artists, tracks and albums, listening sessions and stats, straight from the server you run at home.
+- **Keywords:** listening stats,music history,top artists,top tracks,self-hosted,charts,plays,sessions,habits
+- **Marketing URL:** `https://spotussi.app`
+- **Copyright:** 2026 Jason Cronje
+- **Description:**
+
+> Spotussi is the iPhone companion for spotussi, the open-source server you run yourself to keep statistics about your own Spotify listening. Your history stays on your server; the app reads it.
+>
+> • Top artists, tracks and albums for any period, ranked by plays or by time listened
+> • Artist, album and track pages with play counts, first and last listens
+> • Your full play history and listening sessions: when you listened, for how long, and what you played
+> • Stats: time listened, plays by day, the listening clock and your averages
+> • Your library and playlists, with "Open in Spotify" on everything
+> • Search across everything you have ever played
+>
+> Pairing takes a few seconds: scan the QR code your server shows and you're in. There are no accounts, no sign-in and no tracking. The app collects no data and contains no third-party SDKs.
+>
+> Spotussi needs a spotussi server, which you can set up from spotussi.app. No server yet? Tap "Try the demo" on the first screen to explore every screen with sample data.
+>
+> Spotussi is not affiliated with or endorsed by Spotify.
+
+Keep "Spotify" and "free" out of the name, subtitle and keywords.
 
 ### Notes for App Review
 
