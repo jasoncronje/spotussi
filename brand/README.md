@@ -78,12 +78,16 @@ uv run --with fonttools --with brotli --with uharfbuzz python brand/scripts/outl
 
 ## iPhone marketing images
 
-`brand/marketing/` holds the iPhone app's marketing images, built by `node brand/scripts/marketing.mjs` from real demo-mode captures in `brand/marketing/captures/` (iPhone 18 Pro simulator, dark appearance, Try the demo, status bar at 9:41):
+`brand/marketing/` holds the iPhone app's marketing images, built by `node brand/scripts/marketing.mjs` from real demo-mode captures (dark appearance, Try the demo, status bar at 9:41): `brand/marketing/captures/` from the iPhone 18 Pro simulator, `captures/duo-inner/` and `captures/duo-outer/` from the iPhone Duo simulator (iOS 27.1) unfolded and folded, both in portrait. `node brand/scripts/marketing.mjs duo` rebuilds only the Duo sets; `iphone`, `duo-inner`, `duo-outer` and `wide` pick single sets.
 
 | File | Use |
 | --- | --- |
 | `marketing/app-store/01…07-*.png` | App Store screenshots, 1320×2868 (6.9" slot) |
+| `marketing/app-store/duo-inner/01…07-*.png` | App Store screenshots, iPhone Duo slot, inner display, 2007×2853 portrait |
+| `marketing/app-store/duo-outer/01…07-*.png` | App Store screenshots, iPhone Duo slot, outer display, 1398×2034 portrait |
 | `marketing/wide-1920x1080.png` | Site hero, posts, slides |
 | `marketing/social-1200x630.png` | Open Graph / social card for the app |
 
-The phone frame is drawn in the script, not taken from Apple's bezels, so it can live in this repo. To refresh, re-capture the screens with the same names and run the script again.
+The phone frames are drawn in the script, not taken from Apple's bezels, so it can live in this repo. To refresh, re-capture the screens with the same names and run the script again.
+
+The Duo sets keep the same seven screens, headlines and order. The app is iPhone-only, but on the Duo it fills both displays at their own size (669×951 points inner, 466×678 outer) rather than running letterboxed, so the captures show it as it runs. The Duo frame uses the simulator's own corner radii (55 points all round inside; 8 on the hinge side and 59 on the other outside), draws a faint crease across the inner panel and a hinge spine down the outer panel's left edge. The outer captures carry the camera cut-out themselves. To capture: open the Duo, `fold open` (or `fold closed`) and `orientation portrait` with agent-device, `simctl status_bar <udid> override --time 9:41`, then take each screen at `--pixel-density 3`.
